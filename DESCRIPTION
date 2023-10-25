@@ -15,4 +15,5 @@ Imports:
     ggplot2,
     jsonlite,
     magrittr,
-    readr
+    readr,
+    treeio

@@ -40,7 +40,7 @@ ui <- fluidPage(
   useShinyjs(),
 
   titlePanel("Clonal Evolution Model"),
-  species_layout_prompt()
+  species_layout_prompt(),
 )
 
 # Define the server logic
