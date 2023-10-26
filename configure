@@ -1,0 +1,26 @@
+set -x
+set -e
+
+which cmake
+
+rm -rf _builds
+
+git clone https://github.com/albertocasagrande/RACES.git
+
+cmake -H./RACES/ -B_builds \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=_install \
+    -DCMAKE_SHARED_LIBRARY_PREFIX_CXX="" \
+    -DONLY_LIBRARIES=1 -DAVOID_OPTIONAL_LIBS=1
+    #-DCMAKE_VERBOSE_MAKEFILE=ON \
+
+cmake --build _builds --target install --config Release
+
+# Linux
+cp _install/lib/libRACES.so src/ || echo "Failed: libRACES.so -> src"
+
+# Mac
+cp _install/lib/RACES.dylib src/libRACES.so || echo "Failed: RACES.dylib -> src"
+cp _install/lib/libRACES.a src/libRACES.so || echo "Failed: libRACES.dylib -> src"
+
+Rscript attributes.R
