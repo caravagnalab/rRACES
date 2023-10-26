@@ -1,0 +1,5 @@
+#PKG_LIBS = `$(R_HOME)/bin/Rscript -e \ "RcppClassic:::LdFlags()"` 
+
+PKG_LIBS = -L. -lRACES
+
+PKG_CXXFLAGS = -I../_install/include/
