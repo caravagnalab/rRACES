@@ -1,3 +1,7 @@
+  <!-- badges: start -->
+  [![R-CMD-check](https://github.com/caravagnalab/rRACES/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/caravagnalab/rRACES/actions/workflows/R-CMD-check.yaml)
+  <!-- badges: end -->
+
 # rRACES
 
 rRACES is a R wrapper for [RACES](https://github.com/albertocasagrande/RACES).
