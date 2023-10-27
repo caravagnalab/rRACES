@@ -7,3 +7,5 @@
 .*.swp
 *.gz
 RcppExports.*
+inst/doc
+*.so
