@@ -14,7 +14,7 @@ Authors@R:
 Description: This is a wrapper for RACES. This package supports 
         spacial evolution of different clones, different epigenetic 
         clone states, timed-triggered driver mutations.
-License: GPL3
+License: GPL-3 + file LICENSE
 LinkingTo: Rcpp
 Encoding: UTF-8
 SystemRequirements: C++17
