@@ -3,7 +3,7 @@ set -e
 
 which cmake
 
-rm -rf _builds
+rm -rf _builds _include RACES
 
 git clone https://github.com/albertocasagrande/RACES.git
 
