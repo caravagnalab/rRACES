@@ -7,8 +7,14 @@
 #' @exportS3Method print.Simulation
 #'
 #' @examples
-print.Simulation <- function(x, ...) {
-  cat("Object with value:", x$get_genotype_names(), "\n")
+print.rraces <- function(x, ...) {
+  
+  cli::cli_h1(paste("rRACES:", x$name))
+  
+  sp_name = x$simulation$get_species_names()
+  
+  cli::cli_alert("Species {.field {sp_name}}")
+  
   invisible(x)
 }
 
