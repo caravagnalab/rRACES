@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![pkgdown](https://github.com/caravagnalab/rRACES/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/caravagnalab/rRACES/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
   
-`rRACES` is the R wrapper for [RACES](https://github.com/albertocasagrande/RACES), a C++ tumour evolution simulator.
+`rRACES` is a R wrapper for [RACES](https://github.com/albertocasagrande/RACES), a C++ tumour evolution simulator.
 
 #### Help and support
 
