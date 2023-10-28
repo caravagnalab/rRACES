@@ -1,4 +1,9 @@
 useDynLib(rRACES, .registration=TRUE)
 import(methods, Rcpp)
 
+S3method(print,rraces)
 export(Simulation)
+export(set_initial_cell)
+export(create_simulation)
+export(plot_state)
+export(add_species)

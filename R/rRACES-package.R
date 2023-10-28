@@ -1,8 +1,9 @@
 loadModule("Drivers", TRUE)
 
 ## usethis namespace: start
-#' @importFrom cli cli_h1
 #' @importFrom cli cli_alert
+#' @importFrom cli cli_h1
+#' @importFrom crayon underline
 #' @importFrom dplyr arrange
 #' @importFrom dplyr filter
 #' @importFrom dplyr group_by
