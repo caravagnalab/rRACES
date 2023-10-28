@@ -1,48 +1,61 @@
-# useDynLib(rRACES, .registration=TRUE)
-# import(methods, Rcpp)
-# exportPattern("^[[:alpha:]]+")
-
 devtools::load_all()
 
 # Create a new simulation and set the simulation data directory
 # to be "output_dir". A 1000x1000-cells tissue is automatically
 # added to the simulation
-sim <- new(Simulation, "output_dir")
+x <- create_simulation(
+  name = "My Test rRACES",
+  output_dir = "some_folder",
+  tissue = "A fake liver",
+  tissue_size = c(4000, 4000)
+)
 
 # Add two species, "A" and "B", having epigenetic states
-sim$add_species(name = "A",
-                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                growth_rates = c("+" = 0.2, "-" = 0.08),
-                death_rates = c("+" = 0.1, "-" = 0.01))
+x = add_species(
+    x,
+    name = "A",
+    epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+    growth_rates = c("+" = 0.2, "-" = 0.08),
+    death_rates = c("+" = 0.1, "-" = 0.01),
+    ancestor = NULL,
+    time_of_origin = 0
+)
 
-sim$add_species(name = "B",
-                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                growth_rates = c("+" = 0.1, "-" = 0.3),
-                death_rates = c("+" = 0.05, "-" = 0.1))
-
+x = add_species(
+  x,
+  name = "B",
+  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+  growth_rates = c("+" = 0.25, "-" = 0.15),
+  death_rates = c("+" = 0.05, "-" = 0.05),
+  ancestor = "A",
+  time_of_origin = 10
+)
 
 # Program a timed transition from species "A" to
 # species "B" at time 60
-sim$add_timed_mutation("A", "B", 60)
-
-# Get the simulation species with epigenetic state names
-sim$get_species_names()
+x$simulation$add_timed_mutation("A", "B", 60)
 
 # Add one cell to the simulated tissue
-sim$add_cell(genotype_name = "A+", x = 500, y = 500)
+x = set_initial_cell(
+  x,
+  species = "A",
+  epistate = '+',
+  position = c(500, 500)
+)
 
 # Run the simulation up to time 110
-sim$run_up_to(110)
+x = run(x, time = 110)
 
-# Get simulation time (you will get 110)
-sim$get_clock()
+# Plot the state of the simulation (number of cells)
+plot_state(x)
+
 
 # Get the cells in the tissue at current simulation time
-sim$get_cells()
+x$simulation$get_cells()
 
 # Get the cells in the tissue rectangular sample having [500,500]
 # and [505,505] as lower and upper corners, respectively
-sim$get_cells(c(500, 500), c(505, 505))
+x$simulation$get_cells(c(500, 500), c(505, 505))
 
 # Get the cells in the tissue having epigenetic state "-"
 sim$get_cells(c("A", "B"), c("-"))

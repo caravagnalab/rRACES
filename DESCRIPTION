@@ -24,7 +24,8 @@ Imports:
     dplyr,
     Rcpp (>= 1.0.11),
     ggplot2,
-    cli
+    cli,
+    crayon
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,
