@@ -24,3 +24,6 @@ cp _install/lib/libRACES.so src/ || echo "Failed: libRACES.so -> src"
 # Mac
 cp _install/lib/RACES.dylib src/libRACES.so || echo "Failed: RACES.dylib -> src"
 cp _install/lib/libRACES.a src/libRACES.so || echo "Failed: libRACES.dylib -> src"
+
+${R_HOME}/bin/R --vanilla --silent -e 'Rcpp::compileAttributes()'
+
