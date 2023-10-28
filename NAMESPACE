@@ -1,8 +1,3 @@
 useDynLib(rRACES, .registration=TRUE)
 import(methods, Rcpp)
 
-export(add_cell)
-export(add_species)
-export(get_genotype_names)
-export(set_tissue)
-export(run_up_to)
