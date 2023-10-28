@@ -8,5 +8,9 @@
 *.gz
 RcppExports.*
 inst/doc
+docs
+pkgdown
+_builds
+_install
 *.so
 *.o
