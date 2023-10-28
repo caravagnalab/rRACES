@@ -1,3 +1,4 @@
 useDynLib(rRACES, .registration=TRUE)
 import(methods, Rcpp)
 
+export(Simulation)
