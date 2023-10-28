@@ -7,6 +7,8 @@ rm -rf _builds
 
 git clone https://github.com/albertocasagrande/RACES.git
 
+(cd RACES; git checkout c7cd9011)
+
 cmake -H./RACES/ -B_builds \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=_install \
