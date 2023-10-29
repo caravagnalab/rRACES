@@ -76,6 +76,16 @@ sim$add_cell(genotype_name = "A+", x = 500, y = 500)
 # cells in the species B-
 sim$run_up_to_size("B-", 100)
 
+# Get the number of fired event per species 
+sim$get_firings()
+
+# Run the simulation up until number of deaths in B-
+# is at least 100
+sim$run_up_to_event("death", "B", "-", 100)
+
+# Get the number of fired event per species. The row
+# "death", "B", "-" reports 100 firings
+sim$get_firings()
 
 # Get simulation time
 sim$get_clock()
