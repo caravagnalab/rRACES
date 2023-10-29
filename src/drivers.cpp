@@ -21,22 +21,49 @@
 #include <Rcpp.h>
 
 #include "simulation.hpp"
+#include "ending_conditions.hpp"
 
 using namespace Rcpp;
 
-struct RCloser : public Races::Drivers::Simulation::Closer
+template<typename SIMULATION_TEST>
+struct RTest : public SIMULATION_TEST
 {
-  bool closing() const
+  size_t counter;
+
+  template<typename ...Args>
+  explicit RTest(Args...args):
+      SIMULATION_TEST(args...), counter{0}
+  {} 
+
+  bool operator()(const Races::Drivers::Simulation::Simulation& simulation)
   {
-    try {
-      Rcpp::checkUserInterrupt();
-    } catch (...) {
-      return true;
+    if (++counter >= 10000) {
+      counter = 0;
+      try {
+        Rcpp::checkUserInterrupt();
+      } catch (...) {
+        return true;
+      }
     }
 
-    return false;
+    using namespace Races::Drivers::Simulation;
+
+    return static_cast<const SIMULATION_TEST*>(this)->operator()(simulation);
   }
 };
+
+const Races::Drivers::GenotypeId& 
+get_genotype_id(const Races::Drivers::Simulation::Tissue& tissue,
+                const std::string& genotype_name)
+{
+  for (const auto& species: tissue) {
+    if (species.get_genomic_name() == genotype_name) {
+      return species.get_genomic_id();
+    }
+  }
+
+  throw std::domain_error("Unknown genotype \""+genotype_name+"\"");
+}
 
 std::set<Races::Drivers::EpigeneticGenotypeId> 
 get_epigenetic_ids(const Races::Drivers::Simulation::Tissue& tissue,
@@ -403,13 +430,24 @@ public:
     static_cast<RS::Simulation*>(this)->add_driver_mutation(source,destination,time);
   }
 
-  void run_up_to(const Races::Time& time)
+  void run_up_to_time(const Races::Time& time)
   {
     Races::UI::ProgressBar bar;
 
-    RCloser closer;
+    RTest<Races::Drivers::Simulation::TimeTest> ending_test{time};
 
-    static_cast<Races::Drivers::Simulation::Simulation*>(this)->run_up_to(time, bar, closer);
+    static_cast<Races::Drivers::Simulation::Simulation*>(this)->run(ending_test, bar);
+  }
+
+  void run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
+  {
+    Races::UI::ProgressBar bar;
+
+    const auto& species_id = tissue().get_species(species_name).get_id();
+
+    RTest<Races::Drivers::Simulation::SpeciesCountTest> ending_test{species_id, num_of_cells};
+
+    static_cast<Races::Drivers::Simulation::Simulation*>(this)->run(ending_test, bar);
   }
 
   List get_species_names() const
@@ -507,7 +545,11 @@ RCPP_MODULE(Drivers){
   // get_counts
   .method("get_counts", &Simulation::get_counts, "Get the current number of cells per species")
 
-  // run_up_to
-  .method("run_up_to", &Simulation::run_up_to, 
-          "Simulate the system up to the specified simulation time");
+  // run_up_to_time
+  .method("run_up_to_time", &Simulation::run_up_to_time, 
+          "Simulate the system up to the specified simulation time")
+
+  // run_up_to_size
+  .method("run_up_to_size", &Simulation::run_up_to_size, 
+          "Simulate the system up to the specified number of cells in the species");
 }
