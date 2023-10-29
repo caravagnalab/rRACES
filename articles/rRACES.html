@@ -140,7 +140,16 @@ simulation - running a simulation up to a specified simulated time</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">505</span>, <span class="fl">505</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Report the number of cells per species at the current simulation time</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get the simulation directory</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_directory</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get the tissue name</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_tissue_name</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Get the tissue size</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_tissue_size</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>At the end of the computation, the directory <code>output_dir</code>
 will contain simulated data usable by RACES.</p>
 </div>
