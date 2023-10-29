@@ -52,6 +52,55 @@ struct RTest : public SIMULATION_TEST
   }
 };
 
+const std::map<std::string, Races::Drivers::CellEventType> event_names{
+  {"death",  Races::Drivers::CellEventType::DEATH},
+  {"growth", Races::Drivers::CellEventType::DUPLICATION},
+  {"switch", Races::Drivers::CellEventType::EPIGENETIC_EVENT},
+};
+
+size_t count_events(const Races::Drivers::Simulation::SpeciesStatistics& statistics,
+                    const Races::Drivers::CellEventType& event)
+{
+  switch(event)
+  {
+    case Races::Drivers::CellEventType::DEATH:
+      return statistics.killed_cells;
+    case Races::Drivers::CellEventType::DUPLICATION:
+      return statistics.num_duplications;
+    case Races::Drivers::CellEventType::EPIGENETIC_EVENT:
+      return statistics.num_of_epigenetic_events();
+    default:
+      throw std::domain_error("get_counts: unsupported event");
+  }
+}
+
+void handle_unknown_event(const std::string& event)
+{
+  std::ostringstream oss;
+
+  oss << "Event \"" << event << "\" is not supported. " << std::endl
+      << "Supported events are ";
+
+  size_t i{0};
+  for (const auto& [name, type] : event_names) {
+    if (i>0) {
+      if (event_names.size()!=2) {
+        oss << ",";
+      }
+    }
+
+    if ((++i)+1==event_names.size()) {
+      oss << " and ";
+    }
+
+    oss << "\"" << name << "\"";
+  }
+
+  oss << ".";
+
+  throw std::domain_error(oss.str());
+}
+
 const Races::Drivers::GenotypeId& 
 get_genotype_id(const Races::Drivers::Simulation::Tissue& tissue,
                 const std::string& genotype_name)
@@ -180,11 +229,11 @@ class Simulation : private Races::Drivers::Simulation::Simulation
     size_t num_of_rows = count_driver_mutated_cells(tissue(), lower_corner, upper_corner,
                                                     species_filter, epigenetic_filter);
 
-    NumericVector ids(num_of_rows);
+    IntegerVector ids(num_of_rows);
     CharacterVector species_names(num_of_rows);
     CharacterVector epi_stati(num_of_rows);
-    NumericVector x_pos(num_of_rows);
-    NumericVector y_pos(num_of_rows);
+    IntegerVector x_pos(num_of_rows);
+    IntegerVector y_pos(num_of_rows);
 
     size_t i{0};
     for (auto x=lower_corner[0]; x<=upper_corner[0]; ++x) {
@@ -277,10 +326,10 @@ public:
 
     for (const std::string states: {"+","-"}) {
       if (growth_rates.containsElementNamed(states.c_str())) {
-        genotype[states].set_rate(CellEventType::DUPLICATE, as<double>(growth_rates[states]));
+        genotype[states].set_rate(CellEventType::DUPLICATION, as<double>(growth_rates[states]));
       }
       if (death_rates.containsElementNamed(states.c_str())) {
-        genotype[states].set_rate(CellEventType::DIE, as<double>(death_rates[states]));
+        genotype[states].set_rate(CellEventType::DEATH, as<double>(death_rates[states]));
       }
     }
 
@@ -293,8 +342,8 @@ public:
 
     Genotype genotype(name, {});
 
-    genotype[""].set_rate(CellEventType::DUPLICATE, growth_rate);
-    genotype[""].set_rate(CellEventType::DIE, death_rate);
+    genotype[""].set_rate(CellEventType::DUPLICATION, growth_rate);
+    genotype[""].set_rate(CellEventType::DEATH, death_rate);
 
     static_cast<Races::Drivers::Simulation::Simulation*>(this)->add_species(genotype);
   }
@@ -319,7 +368,7 @@ public:
 
     CharacterVector species_names(num_of_rows);
     CharacterVector epi_stati(num_of_rows);
-    NumericVector counts(num_of_rows);
+    IntegerVector counts(num_of_rows);
 
     size_t i{0};
     for (const auto& species: tissue()) {
@@ -450,6 +499,59 @@ public:
     static_cast<Races::Drivers::Simulation::Simulation*>(this)->run(ending_test, bar);
   }
 
+  void run_up_to_event(const std::string& event, const std::string& species_name,
+                       const std::string& epistate, const size_t& threshold)
+  {
+    Races::UI::ProgressBar bar;
+
+    if (event_names.count(event)==0) {
+      handle_unknown_event(event);
+    }
+
+    namespace RS = Races::Drivers::Simulation;
+
+    const auto& species_id = tissue().get_species(species_name+epistate).get_id();
+
+    RTest<RS::EventCountTest> ending_test{event_names.at(event), species_id, threshold};
+
+    static_cast<RS::Simulation*>(this)->run(ending_test, bar);
+  }
+
+  List get_firings() const
+  {
+    using namespace Races::Drivers;
+
+    size_t num_of_rows(event_names.size()*tissue().num_of_species());
+
+    CharacterVector events(num_of_rows);
+    CharacterVector species_names(num_of_rows);
+    CharacterVector epistati(num_of_rows);
+    IntegerVector firings(num_of_rows);
+
+    const auto& t_stats = get_statistics();
+
+    size_t i{0};
+    for (const auto& species: tissue()) {
+      for (const auto& [event_name, event_code]: event_names) {
+        events[i] = event_name;
+        species_names[i] = species.get_genomic_name();
+        
+        const auto& signature = species.get_methylation_signature();
+        epistati[i] = Genotype::signature_to_string(signature);
+
+        if (t_stats.contains_data_for(species)) {
+          firings[i] = count_events(t_stats.at(species), event_code);
+        } else {
+          firings[i] = 0;
+        }
+        ++i;
+      }
+    }
+
+    return DataFrame::create(_["events"]=events, _["species"]=species_names,
+                             _["epistate"]=epistati, _["firings"]=firings);
+  }
+
   List get_species_names() const
   {
     auto genotypes = this->tissue().get_genotypes();
@@ -545,9 +647,17 @@ RCPP_MODULE(Drivers){
   // get_counts
   .method("get_counts", &Simulation::get_counts, "Get the current number of cells per species")
 
+  // get_firings
+  .method("get_firings", &Simulation::get_firings,
+          "Get the current number of simulated events per species")
+
   // run_up_to_time
   .method("run_up_to_time", &Simulation::run_up_to_time, 
           "Simulate the system up to the specified simulation time")
+
+  // run_up_to_event
+  .method("run_up_to_event", &Simulation::run_up_to_event, 
+          "Simulate the system up to the specified number of events")
 
   // run_up_to_size
   .method("run_up_to_size", &Simulation::run_up_to_size, 

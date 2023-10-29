@@ -7,7 +7,7 @@ rm -rf _builds _include RACES
 
 git clone https://github.com/albertocasagrande/RACES.git
 
-(cd RACES; git checkout 715f45485d44)
+(cd RACES; git checkout 4d45d78c0af)
 
 cmake -H./RACES/ -B_builds \
     -DCMAKE_BUILD_TYPE=Release \
