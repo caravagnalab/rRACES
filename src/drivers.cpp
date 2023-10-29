@@ -424,6 +424,25 @@ public:
 
     return R_genotypes;
   }
+
+  inline
+  std::string get_directory() const
+  { 
+    return std::string(get_logger().get_directory());
+  }
+
+  inline
+  const std::string& get_tissue_name() const
+  {
+    return tissue().get_name();
+  }
+
+  IntegerVector get_tissue_size() const
+  {
+    auto size_vect = tissue().size();
+
+    return {size_vect[0], size_vect[1]};
+  }
 };
 
 namespace RS = Races::Drivers::Simulation;
@@ -475,6 +494,15 @@ RCPP_MODULE(Drivers){
           "Get cell data from the simulated tissue")
   .method("get_cells", (List (Simulation::*)() const)(&Simulation::get_cells),
           "Get cell data from the simulated tissue")
+
+  // get_name
+  .method("get_directory", &Simulation::get_directory, "Get the simulation directory")
+
+  // get_tissue_name
+  .method("get_tissue_name", &Simulation::get_tissue_name, "Get the simulation tissue name")
+
+  // get_tissue_size
+  .method("get_tissue_size", &Simulation::get_tissue_size, "Get the simulation tissue size")
 
   // get_counts
   .method("get_counts", &Simulation::get_counts, "Get the current number of cells per species")
