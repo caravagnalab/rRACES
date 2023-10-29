@@ -16,7 +16,6 @@ sim$add_species(name = "B",
                 growth_rates = c("+" = 0.25, "-" = 0.15),
                 death_rates = c("+" = 0.05, "-" = 0.05))
 
-
 # Program a timed transition from species "A" to
 # species "B" at time 60
 sim$add_timed_mutation("A", "B", 60)
@@ -50,5 +49,14 @@ sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))
 
 # Report the number of cells per species at the current simulation time
 sim$get_counts()
+
+# Get the simulation directory
+sim$get_directory()
+
+# Get the tissue name
+sim$get_tissue_name()
+
+# Get the tissue size
+sim$get_tissue_size()
 
 # plot_simulation_counts(sim)

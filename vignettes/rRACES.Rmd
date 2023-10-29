@@ -80,6 +80,15 @@ sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))
 
 # Report the number of cells per species at the current simulation time
 sim$get_counts()
+
+# Get the simulation directory
+sim$get_directory()
+
+# Get the tissue name
+sim$get_tissue_name()
+
+# Get the tissue size
+sim$get_tissue_size()
 ```
 
 At the end of the computation, the directory `output_dir` will contain 
