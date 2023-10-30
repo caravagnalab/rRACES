@@ -115,13 +115,13 @@ get_genotype_id(const Races::Drivers::Simulation::Tissue& tissue,
 }
 
 std::set<Races::Drivers::EpigeneticGenotypeId> 
-get_epigenetic_ids(const Races::Drivers::Simulation::Tissue& tissue,
-                   const std::set<std::string>& species_name)
+get_epigenetic_ids_from_genotype_name(const Races::Drivers::Simulation::Tissue& tissue,
+                                      const std::set<std::string>& genotype_name)
 {
   std::set<Races::Drivers::EpigeneticGenotypeId > epigenetic_ids;
 
   for (const auto& species: tissue) {
-    if (species_name.count(species.get_genomic_name())>0) {
+    if (genotype_name.count(species.get_genomic_name())>0) {
       epigenetic_ids.insert(species.get_id());
     }
   }
@@ -230,7 +230,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
                                                     species_filter, epigenetic_filter);
 
     IntegerVector ids(num_of_rows);
-    CharacterVector species_names(num_of_rows);
+    CharacterVector genotype_names(num_of_rows);
     CharacterVector epi_stati(num_of_rows);
     IntegerVector x_pos(num_of_rows);
     IntegerVector y_pos(num_of_rows);
@@ -251,7 +251,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
                && epigenetic_filter.count(sign_string)>0) { 
 
             ids[i] = cell.get_id();
-            species_names[i] = species.get_genomic_name();
+            genotype_names[i] = species.get_genomic_name();
 
             epi_stati[i] = Genotype::signature_to_string(signature);
 
@@ -264,7 +264,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
       }
     }
 
-    return DataFrame::create(_["cell_id"]=ids, _["species"]=species_names,
+    return DataFrame::create(_["cell_id"]=ids, _["genotype"]=genotype_names,
                              _["epistate"]=epi_stati, _["position_x"]=x_pos,
                              _["position_y"]=y_pos);
   }
@@ -366,20 +366,20 @@ public:
 
     size_t num_of_rows = tissue().num_of_species();
 
-    CharacterVector species_names(num_of_rows);
+    CharacterVector genotype_names(num_of_rows);
     CharacterVector epi_stati(num_of_rows);
     IntegerVector counts(num_of_rows);
 
     size_t i{0};
     for (const auto& species: tissue()) {
-      species_names[i] = species.get_genomic_name();
+      genotype_names[i] = species.get_genomic_name();
       const auto& signature = species.get_methylation_signature();
       epi_stati[i] = Genotype::signature_to_string(signature);
       counts[i] = species.num_of_cells();
       ++i;
     }
 
-    return DataFrame::create(_["species"]=species_names, _["epistate"]=epi_stati,
+    return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_stati,
                              _["counts"]=counts);
   }
 
@@ -400,13 +400,13 @@ public:
   List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const
   {
-    std::set<Races::Drivers::EpigeneticGenotypeId> epigenetic_ids;
+    std::set<Races::Drivers::EpigeneticGenotypeId> species_ids;
 
     for (const auto& species: tissue()) {
-      epigenetic_ids.insert(species.get_id());
+      species_ids.insert(species.get_id());
     }
 
-    return get_cells(lower_corner, upper_corner, epigenetic_ids, {"+", "-"});
+    return get_cells(lower_corner, upper_corner, species_ids, {"+", "-"});
   }
 
   List get_cells(const SEXP& first_param, const SEXP& second_param) const
@@ -460,15 +460,15 @@ public:
 
   List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
-                 const std::vector<std::string>& species_filter,
+                 const std::vector<std::string>& genotype_filter,
                  const std::vector<std::string>& epigenetic_filter) const
   {
-    std::set<std::string> species_set(species_filter.begin(), species_filter.end());
+    std::set<std::string> genotype_set(genotype_filter.begin(), genotype_filter.end());
     std::set<std::string> epigenetic_set(epigenetic_filter.begin(), epigenetic_filter.end());
 
-    auto epigenetic_ids = get_epigenetic_ids(tissue(), species_set);
+    auto species_ids = get_epigenetic_ids_from_genotype_name(tissue(), genotype_set);
 
-    return get_cells(lower_corner, upper_corner, epigenetic_ids, epigenetic_set);
+    return get_cells(lower_corner, upper_corner, species_ids, epigenetic_set);
   }
 
   void add_driver_mutation(const std::string& source, const std::string& destination,
@@ -499,7 +499,7 @@ public:
     static_cast<Races::Drivers::Simulation::Simulation*>(this)->run(ending_test, bar);
   }
 
-  void run_up_to_event(const std::string& event, const std::string& species_name,
+  void run_up_to_event(const std::string& event, const std::string& genomic_name,
                        const std::string& epistate, const size_t& threshold)
   {
     Races::UI::ProgressBar bar;
@@ -510,7 +510,7 @@ public:
 
     namespace RS = Races::Drivers::Simulation;
 
-    const auto& species_id = tissue().get_species(species_name+epistate).get_id();
+    const auto& species_id = tissue().get_species(genomic_name+epistate).get_id();
 
     RTest<RS::EventCountTest> ending_test{event_names.at(event), species_id, threshold};
 
@@ -524,7 +524,7 @@ public:
     size_t num_of_rows(event_names.size()*tissue().num_of_species());
 
     CharacterVector events(num_of_rows);
-    CharacterVector species_names(num_of_rows);
+    CharacterVector genotype_names(num_of_rows);
     CharacterVector epistati(num_of_rows);
     IntegerVector firings(num_of_rows);
 
@@ -534,7 +534,7 @@ public:
     for (const auto& species: tissue()) {
       for (const auto& [event_name, event_code]: event_names) {
         events[i] = event_name;
-        species_names[i] = species.get_genomic_name();
+        genotype_names[i] = species.get_genomic_name();
         
         const auto& signature = species.get_methylation_signature();
         epistati[i] = Genotype::signature_to_string(signature);
@@ -548,7 +548,7 @@ public:
       }
     }
 
-    return DataFrame::create(_["events"]=events, _["species"]=species_names,
+    return DataFrame::create(_["events"]=events, _["genotype"]=genotype_names,
                              _["epistate"]=epistati, _["firings"]=firings);
   }
 
