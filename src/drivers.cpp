@@ -403,7 +403,7 @@ public:
     std::set<Races::Drivers::EpigeneticGenotypeId> epigenetic_ids;
 
     for (const auto& species: tissue()) {
-      epigenetic_ids.insert(species.get_genomic_id());
+      epigenetic_ids.insert(species.get_id());
     }
 
     return get_cells(lower_corner, upper_corner, epigenetic_ids, {"+", "-"});
