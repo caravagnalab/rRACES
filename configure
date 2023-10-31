@@ -3,27 +3,13 @@ set -e
 
 which cmake
 
-rm -rf _builds _include RACES
 
-git clone https://github.com/albertocasagrande/RACES.git
+if [ ! -d RACES ]; then
 
-(cd RACES; git checkout 4d45d78c0af)
+    git clone https://github.com/albertocasagrande/RACES.git
 
-cmake -H./RACES/ -B_builds \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=_install \
-    -DCMAKE_SHARED_LIBRARY_PREFIX_CXX="" \
-    -DONLY_LIBRARIES=1 -DAVOID_OPTIONAL_LIBS=1
-    #-DCMAKE_VERBOSE_MAKEFILE=ON \
+    (cd RACES; git checkout 3c3c9d07bb347d5 && rm -rf .git )
 
-cmake --build _builds --target install --config Release
-
-# Linux
-cp _install/lib/libRACES.so src/ || echo "Failed: libRACES.so -> src"
-
-# Mac
-cp _install/lib/RACES.dylib src/libRACES.so || echo "Failed: RACES.dylib -> src"
-cp _install/lib/libRACES.a src/libRACES.so || echo "Failed: libRACES.dylib -> src"
+fi
 
 ${R_HOME}/bin/R --vanilla --silent -e 'Rcpp::compileAttributes()'
-

@@ -19,11 +19,11 @@ knitr::opts_chunk$set(
 [![pkgdown](https://github.com/caravagnalab/rRACES/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/caravagnalab/rRACES/actions/workflows/pkgdown.yaml)
 <!-- badges: end -->
   
-`rRACES` is an R wrapper for [RACES](https://github.com/albertocasagrande/RACES), a C++ tumour evolution simulator.
+`rRACES` is an R Wrapper for [RACES](https://github.com/albertocasagrande/RACES/), a C++ tumour evolution simulator.
 
 #### Help and support
 
-[![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg)](https://caravagnalab.github.io/rRACES)
+[![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg)](https://caravagnalab.github.io/rRACES/)
 -----
   
 ### Installation
@@ -39,6 +39,7 @@ of you can compile the package locally with:
 
 ```shell
 git clone https://github.com/caravagnalab/rRACES.git
+(cd rRACES && R --vanilla --silent -e 'roxygen2::roxygenise()')
 R CMD build rRACES
 R CMD install rRACES_*.tar.gz
 ```
@@ -49,5 +50,5 @@ R CMD install rRACES_*.tar.gz
   
 Giulio Caravagna, Alberto Casagrande. Cancer Data Science (CDS) Laboratory.
 
-[![](https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg)](https://github.com/caravagnalab)
+[![](https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg)](https://github.com/caravagnalab/)
 [![](https://img.shields.io/badge/CDS%20Lab%20webpage-https://www.caravagnalab.org/-red.svg)](https://www.caravagnalab.org/)

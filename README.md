@@ -13,7 +13,7 @@ evolution simulator.
 
 #### Help and support
 
-## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg)](https://caravagnalab.github.io/rRACES)
+## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg)](https://caravagnalab.github.io/rRACES/)
 
 ### Installation
 
@@ -28,6 +28,7 @@ of you can compile the package locally with:
 
 ``` shell
 git clone https://github.com/caravagnalab/rRACES.git
+(cd rRACES && R --vanilla --silent -e 'roxygen2::roxygenise()')
 R CMD build rRACES
 R CMD install rRACES_*.tar.gz
 ```

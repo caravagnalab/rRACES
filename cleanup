@@ -1,1 +1,1 @@
-rm -rf RACES _install _builds
+rm -rf RACES _install _builds races_*

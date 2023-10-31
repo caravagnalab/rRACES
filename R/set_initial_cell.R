@@ -12,8 +12,6 @@
 #'
 #' @return A simulation object.
 #' @export
-#'
-#' @examples
 set_initial_cell = function(
     x,
     species,
