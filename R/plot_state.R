@@ -8,8 +8,6 @@
 #'
 #' @return A ggplot plot.
 #' @export
-#'
-#' @examples
 plot_state = function(x)
 {
   counts = x$simulation$get_counts()

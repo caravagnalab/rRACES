@@ -3,12 +3,16 @@
 #' @description
 #' This function adds one new species to the simulation. The species has its own
 #' evolutionary parameter, an ancestor, and a time in which it is created. There
-#' are special cases for the first species included, as well as several consistency
-#' checks.
+#' are special cases for the first species included, as well as several
+#' consistency checks.
 #' 
-#' @param name A mnemonic simulation name, default "My RACES simulation".
-#' @param output_dir RACES will output simulation data in this folder, by 
-#' default "output_races". If the folder exists an error is raised.
+#' @param x A simulation.
+#' @param name The genotype of the new species.
+#' @param epigenetic_rates The epigenetic rates of the new species.
+#' @param growth_rates The duplication rates of the new species.
+#' @param death_rates The death rates of the new species.
+#' @param ancestor The genotype from which the new species will arise.
+#' @param time_of_origin The time at which the new species will arise.
 #'
 #' @return A simulation object.
 #' @export

@@ -1,3 +1,12 @@
 ^\.github$
+^.vscode$
+^src/*\.o$
+^src/*\.so$
+^src/RcppExports.cpp$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.RData$
+^\.Rhistory$
+^README.Rmd$
+^nobuild$
+^races_*-*$

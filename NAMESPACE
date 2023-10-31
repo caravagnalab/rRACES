@@ -1,4 +1,6 @@
 useDynLib(rRACES, .registration=TRUE)
+importFrom("stats", "filter", "time")
+importFrom("dplyr", "pull", "row_number", "%>%")
 import(methods, Rcpp)
 
 S3method(print,rraces)

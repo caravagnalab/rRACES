@@ -11,8 +11,6 @@
 #'
 #' @return A ggplot plot.
 #' @export
-#'
-#' @examples
 plot_firings = function(x)
 {
   # t = x$get_simulated_clock()

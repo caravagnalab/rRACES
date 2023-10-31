@@ -3,15 +3,12 @@
 #' @param x An object returned by `create_simulation`.
 #' @param ... Ellipsis.
 #'
-#' @return
 #' @exportS3Method print.rraces
-#'
-#' @examples
 print.rraces <- function(x, ...) {
   
   cli::cli_rule(
     left = paste(crayon::bold("rRACES:"), x$name),
-    righ = paste("⏱ ", x$simulation$get_clock())
+    righ = paste("\u23F1 ", x$simulation$get_clock())
   )
   cat('\n')
   

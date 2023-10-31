@@ -7,6 +7,8 @@
 #' @param name A mnemonic simulation name, default "My RACES simulation".
 #' @param output_dir RACES will output simulation data in this folder, by 
 #' default "output_races". If the folder exists an error is raised.
+#' @param tissue The tissue name.
+#' @param tissue_size The tissue size.
 #'
 #' @return A simulation object.
 #' @export
