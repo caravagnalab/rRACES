@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>rRACES: An R wrapper for RACES • rRACES</title>
+<title>rRACES: An R Wrapper for RACES • rRACES</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="rRACES: An R wrapper for RACES">
+<script src="pkgdown.js"></script><meta property="og:title" content="rRACES: An R Wrapper for RACES">
 <meta property="og:description" content="This is a wrapper for RACES. This package supports 
         spacial evolution of different clones, different epigenetic 
         clone states, timed-triggered driver mutations.">
@@ -80,7 +80,7 @@
 </div>
 <div class="section level2">
 <h2 id="section">
-<a href="https://caravagnalab.github.io/rRACES" class="external-link"><img src="https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg"></a><a class="anchor" aria-label="anchor" href="#section"></a>
+<a href="https://caravagnalab.github.io/rRACES/" class="external-link"><img src="https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg"></a><a class="anchor" aria-label="anchor" href="#section"></a>
 </h2>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -91,6 +91,7 @@
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"caravagnalab/rRACES"</span><span class="op">)</span></span></code></pre></div>
 <p>of you can compile the package locally with:</p>
 <pre class="shell"><code>git clone https://github.com/caravagnalab/rRACES.git
+(cd rRACES &amp;&amp; R --vanilla --silent -e 'roxygen2::roxygenise()')
 R CMD build rRACES
 R CMD install rRACES_*.tar.gz</code></pre>
 <hr>
