@@ -39,12 +39,13 @@ create_simulation = function(
   
   # internal state information
   x$name = name
-  x$has_species = x$has_initial_cell = FALSE
+  x$has_species = x$has_initial_cell = x$lineages = FALSE
   x$species = dplyr::tibble(
     species = character(),
+    genotype = character(),
+    epistate = character(),
     ancestor = character(),
     time = numeric(),
-    epistate = character(),
     rgrowth = numeric(),
     rdeath = numeric(),
     repigenetic = numeric(),
