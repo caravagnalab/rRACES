@@ -14,7 +14,7 @@
 #' @export
 set_initial_cell = function(
     x,
-    species,
+    genotype,
     epistate,
     position
 )
@@ -24,11 +24,11 @@ set_initial_cell = function(
   if(x$has_initial_cell)
     cli::cli_abort("An initial cell has already been added!")
   
-  if(is.null(species) | is.null(epistate) | is.null(position))
+  if(is.null(genotype) | is.null(epistate) | is.null(position))
     cli::cli_abort("NULL parameters!")
   
-  if(!(species %in% x$species$species))
-    cli::cli_abort("This species is not in the simulation")
+  if(!(genotype %in% x$species$genotype))
+    cli::cli_abort("This genotype is not in the simulation")
   
   if(!(is.vector(position)))
     cli::cli_abort("Position requires a vector (x, y)")
@@ -36,12 +36,12 @@ set_initial_cell = function(
   if(!is.numeric(position[1]) | !is.numeric(position[2]))
     cli::cli_abort("Position requires a numeric vector (x, y)")
   
-  genotype_name = paste0(species, epistate)
+  species_name = paste0(genotype, epistate)
   
   x$simulation$add_cell(
-    genotype_name = genotype_name, 
-    x = position[1], 
-    y = position[2]
+    species_name, 
+    position[1], 
+    position[2]
   )
   
   x$has_initial_cell = TRUE

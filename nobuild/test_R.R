@@ -16,9 +16,7 @@ x = add_species(
     name = "A",
     epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
     growth_rates = c("+" = 0.2, "-" = 0.08),
-    death_rates = c("+" = 0.1, "-" = 0.01),
-    ancestor = NULL,
-    time_of_origin = 0
+    death_rates = c("+" = 0.1, "-" = 0.01)
 )
 
 x = add_species(
@@ -26,46 +24,63 @@ x = add_species(
   name = "B",
   epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
   growth_rates = c("+" = 0.25, "-" = 0.15),
-  death_rates = c("+" = 0.05, "-" = 0.05),
-  ancestor = "A",
-  time_of_origin = 10
+  death_rates = c("+" = 0.05, "-" = 0.05)
 )
 
 # Program a timed transition from species "A" to
 # species "B" at time 60
-x$simulation$add_timed_mutation("A", "B", 60)
+x = add_genotype_evolution(x, "A", "B", 60)
 
 # Add one cell to the simulated tissue
 x = set_initial_cell(
   x,
-  species = "A",
-  epistate = '+',
+  genotype = "A",
+  epistate = "+",
   position = c(500, 500)
 )
 
-# Run the simulation up to time 110
-x = run(x, time = 110)
+# Run the simulation up to some time
+x = run(x, what = list(time = 80))
+
+# Get the counts for species A+
+Ap_count = x$simulation$get_counts() %>% 
+  filter(genotype == "A", epistate == '+') %>% 
+  pull(counts)
+
+print(Ap_count)
+
+# Run until we get 1000 more of A+
+x = run(x, what = list(genotype = 'A', epistate = '+', size = Ap_count + 1000))
+
+# Check that we have Ap_count + 1000
+x$simulation$get_counts() %>% 
+  filter(genotype == "A", epistate == '+') %>% 
+  pull(counts)
+
+# See how many firings we had
+x$simulation$get_firings()
+
+# Get the counts for species A+
+Ap_switches = x$simulation$get_firings() %>% 
+  filter(genotype == "A", epistate == '+', events == 'switch') %>% 
+  pull(firings)
+
+print(Ap_switches)
+
+# Run until we get 200 more of A+ switching to A-
+x = run(x, what = list(genotype = 'A', epistate = '+', event = 'switch', count = Ap_switches + 200))
+
+# Check that we have Ap_switches + 200
+x$simulation$get_firings() %>% 
+  filter(genotype == "A", epistate == '+', events == 'switch') %>% 
+  pull(firings)
+
+x$simulation$get_counts() %>% 
+  filter(genotype == "A", epistate == '+') %>% 
+  pull(counts)
 
 # Plot the state of the simulation (number of cells)
 plot_state(x)
 
-
-# Get the cells in the tissue at current simulation time
-x$simulation$get_cells()
-
-# Get the cells in the tissue rectangular sample having [500,500]
-# and [505,505] as lower and upper corners, respectively
-x$simulation$get_cells(c(500, 500), c(505, 505))
-
-# Get the cells in the tissue having epigenetic state "-"
-sim$get_cells(c("A", "B"), c("-"))
-
-# Get the cells in the tissue having epigenetic state "-" and, at
-# the same time, belonging to rectangular sample bounded by [500,500]
-# and [505,505] as lower and upper corners, respectively
-sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))
-
-# Report the number of cells per species at the current simulation time
-sim$get_counts()
-
-# plot_simulation_counts(sim)
+# Plot the cells in the tissue at current simulation time
+plot_tissue(x)

@@ -1,32 +1,38 @@
 # My own private getters for the species table
-AncestorOf = function(x,s){
+ExistsSpecies = function(x, genotype){
   x$species %>% 
-    filter(species == s) %>% 
+    filter(genotype == !!genotype) %>% 
+    nrow()
+}
+
+AncestorOf = function(x, genotype){
+  x$species %>% 
+    filter(genotype == !!genotype) %>% 
     filter(row_number() == 1) %>% 
     pull(ancestor)
 }
 
-TimeOf = function(x,s){
+TimeOf = function(x, genotype){
   x$species %>% 
-    filter(species == s) %>% 
+    filter(genotype == !!genotype) %>% 
     filter(row_number() == 1) %>% 
     pull(time)
 }
 
-GRateOf = function(x, s, e) {
+GRateOf = function(x, genotype, epistate) {
   x$species %>%
-    filter(species == s, epistate == e) %>%
+    filter(genotype == !!genotype, epistate == !!epistate) %>%
     pull(rgrowth)
 }
 
-DRateOf = function(x,s,e){
+DRateOf = function(x, genotype, epistate) {
   x$species %>%
-    filter(species == s, epistate == e) %>%
+    filter(genotype == !!genotype, epistate == !!epistate) %>%
     pull(rdeath)
 }
 
-ERateOf = function(x,s,e){
+ERateOf = function(x, genotype, epistate) {
   x$species %>%
-    filter(species == s, epistate == e) %>%
+    filter(genotype == !!genotype, epistate == !!epistate) %>%
     pull(repigenetic)
 }
