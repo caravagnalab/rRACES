@@ -1,1 +1,13 @@
 rm -rf RACES _install _builds races_*
+
+if [ ! -f man/Simulation.Rd ]; then
+    if [ ! -f .roxygen.lock ]; then 
+        touch .roxygen.lock
+
+        ${R_HOME}/bin/R --vanilla --silent -e 'Rcpp::compileAttributes()'
+        ${R_HOME}/bin/R --vanilla --silent -e 'roxygen2::roxygenise(roclets=c("rd"))'
+        rm .roxygen.lock
+
+        rm -rf races_*
+    fi
+fi
