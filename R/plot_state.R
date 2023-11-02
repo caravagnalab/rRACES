@@ -26,7 +26,7 @@ plot_state = function(x)
       alpha = 'Epistate', 
       title = paste0(sim_title, ' (t = ', time, ')'),
       subtitle = paste("Tissue:", tissue_title, '[', tissue_size, ']'),
-      caption = paste("Total number of cells", counts$n %>% sum())
+      caption = paste("Total number of cells", counts$counts %>% sum())
     ) +
     ggplot2::theme_void(base_size = 10) +
     ggplot2::scale_fill_manual(values = get_species_colors(counts$genotype %>% unique)) +

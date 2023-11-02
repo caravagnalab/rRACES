@@ -1,0 +1,161 @@
+---
+title: "RCpp interface"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Rcpp_interface}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(rRACES)
+```
+
+# Simulating tumour growth
+
+This is an example run with the Rcpp interface.
+
+## Tissue specification
+
+We create a new simulation and set one custom output data directory where RACES will dump outputs (binary files). A 1000x1000-cells tissue is automatically added to the simulation.
+```{r}
+sim <- new(Simulation, "output_dir")
+```
+
+Now, `sim` is an S4 class `Simulation`, which exposes a number of getters that we are showing in this example.
+```{r}
+# Get the simulation directory, i.e., "output_dir"
+sim$get_directory()
+
+# Get the tissue size, i.e., c(1000,1000)
+sim$get_tissue_size()
+```
+
+We can change the tissue conformation, and name the tissue to anything we want.
+```{r}
+# Set the tissue name and size to different values
+sim$set_tissue("Liver", 1200, 900)
+
+# Get the tissue name, i.e., "Liver"
+sim$get_tissue_name()
+
+# Get the tissue size, i.e., c(1200,900)
+sim$get_tissue_size()
+```
+
+## Species and their evolutionary relations
+
+In order to simulate the evolution of some species we need to add them to our object. This process defines the evolutionary parameters of the species. For example, we define two genotypes `A` and `B`, with their epigenetic states `+`/`-`, called epistates. Overall, we define the 4 species:
+
+- `A+` and `A-`, as a proxy for the genotype `A` with the reversible `+`/`-` marker;
+- `B+` and `B-`, as a proxy for the genotype `B` with the reversible `+`/`-` marker;
+
+For each species we define the parameters:
+
+- growth rates $\lambda$: rate at which cells duplicate inheriting the epigenetic marker (e.g., one cell of type `A+` creates two cells of type `A+`);
+- death rates: rate at which cells di (e.g., one cell of type `A+` is removed from the simulation);
+- epigenetic_rates: : rate `+-` or `-+` at which cells duplicate and flip the epigenetic marker (e.g., one cell of type `A+` determines one type `A+` and one of type `A-`, or viceversa);
+
+```{r}
+# Add two species, "A" and "B", having epigenetic states
+sim$add_species(name = "A",
+                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                growth_rates = c("+" = 0.2, "-" = 0.08),
+                death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$add_species(name = "B",
+                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                growth_rates = c("+" = 0.1, "-" = 0.3),
+                death_rates = c("+" = 0.05, "-" = 0.1))
+```
+
+At this point no evolutionary relation between the genotypes `A` and `B` is defined. We need to add a parent/child relation which will fire at a predefined simulation time, in any of the cells in the `+`/`-` state. 
+
+For example, I can program a timed transition from species one cell of genotype `A` to one of genotype `B`, at time `30`. In this case, a cell at random from species `A+` or `A-` will be selected and will be assigned a new type `B+` or `B-` depending on its epistate.
+
+```{r}
+# Program a timed transition from "A" to "B" at time 30
+sim$add_timed_mutation("A", "B", 60)
+
+# Get the simulation species with epigenetic state names
+sim$get_species_names()
+```
+
+## Initial cell displacement
+
+To be able to simulate the model, an initial cell needs to be displaced in the tissue. We add one cell of species `A+` (genotype `A` in epistate `+`) in position `(500, 500)`.
+
+```{r}
+sim$add_cell("A+", 500, 500)
+```
+
+We can query the current state of the simulation, and extract the cell position
+```{r}
+# Counts per species
+sim$get_counts()
+
+# Cells position
+sim$get_cells()
+```
+
+## Simulation of the evolution of the species
+
+At the beginnig, the simulation clock is `0` and no events have fired.
+```{r}
+# Get the number of fired event per species
+sim$get_firings()
+
+# Get simulation time
+sim$get_clock()
+```
+
+There are 3 ways to move the simulation forward:
+
+- advancing until a new time `t` is reached;
+- advancing until a species reaches a certain size;
+- advancing until a desired number of firings (of one particular event) has happened.
+
+```{r}
+# Run the simulation up until the there are less than 100 cells in the species B-
+sim$run_up_to_size("B-", 100)
+
+# Counts per species reports now B- equal to 100
+sim$get_counts()
+
+# Run the simulation up until number of deaths in B- is at least 100
+sim$run_up_to_event("death", "B", "-", 100)
+
+# Get the number of fired event per species. The row "death", "B", "-" reports 100 firings
+sim$get_firings()
+
+# Run the simulation up to time 110
+sim$run_up_to_time(110)
+
+# Get simulation time, i.e., 110
+sim$get_clock()
+```
+
+At this point, we can query the simulation configuration in a number of ways
+
+```{r}
+# Get the cells in the tissue at current simulation time
+sim$get_cells() %>% head()
+
+# Get the cells in the tissue rectangular sample having [500,500] and [505,505] as lower and upper corners, respectively
+sim$get_cells(c(500, 500), c(505, 505))  %>% head()
+
+# Get the cells in the tissue having epigenetic state "-"
+sim$get_cells(c("A", "B"), c("-")) %>% head()
+
+# Get the cells in the tissue having epigenetic state "-" and, at the same time, belonging to rectangular sample bounded by [500,500] and [505,505] as lower and upper corners, respectively
+sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))  %>% head()
+```
+
+At the end of the computation, the output directory will contain simulated data usable by RACES 

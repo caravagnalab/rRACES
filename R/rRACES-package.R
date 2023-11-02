@@ -18,6 +18,7 @@ loadModule("Drivers", TRUE)
 #' @importFrom ggplot2 scale_color_manual
 #' @importFrom ggplot2 scale_fill_brewer
 #' @importFrom ggplot2 scale_fill_manual
+#' @importFrom knitr kable
 #' @importFrom RColorBrewer brewer.pal
 ## usethis namespace: end
 NULL
