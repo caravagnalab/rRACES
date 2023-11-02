@@ -20,37 +20,39 @@ sim$get_tissue_name()
 # Get the tissue size, i.e., c(1200,900)
 sim$get_tissue_size()
 
-# Add two species, "A" and "B", having epigenetic states
+# Add two species having the genotype "A": "A+" and "A-"
 sim$add_species(name = "A",
                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                 growth_rates = c("+" = 0.2, "-" = 0.08),
                 death_rates = c("+" = 0.1, "-" = 0.01))
 
+# Add two species having the genotype "B": "B+" and "B-"
 sim$add_species(name = "B",
                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                 growth_rates = c("+" = 0.25, "-" = 0.15),
                 death_rates = c("+" = 0.05, "-" = 0.05))
 
-# Program a timed transition from species "A" to
-# species "B" at time 30
+# Schedule a mutation at time 60 from one of the species of
+# genotype "A" to the species of "B" having the same
+# epigenetic state
 sim$add_timed_mutation("A", "B", 60)
 
-# Get the simulation species with epigenetic state names
+# Get the simulation species name
 sim$get_species_names()
 
 # Add one cell to the simulated tissue
-sim$add_cell(genotype_name = "A+", x = 500, y = 500)
+sim$add_cell(species = "A+", x = 500, y = 500)
 
-# Run the simulation up until the there are less than 100 
+# Run the simulation up until the there are less than 100
 # cells in the species B-
 sim$run_up_to_size("B-", 100)
 
-# Get the number of fired event per species 
+# Get the number of fired event per species
 sim$get_firings()
 
 # Run the simulation up until number of deaths in B-
 # is at least 100
-sim$run_up_to_event("death", "B", "-", 100)
+sim$run_up_to_event("death", "B-", 100)
 
 # Get the number of fired event per species. The row
 # "death", "B", "-" reports 100 firings

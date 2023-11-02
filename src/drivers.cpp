@@ -193,6 +193,71 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //'
 //'   `Simulation` also allows users to schedule mutations from one 
 //'   genotype to a different genotype.
+//' @field add_cell Implant one cell in the tissue \itemize{
+//' \item \emph{Parameter:} \code{species} - The name of the new cell species.
+//' \item \emph{Parameter:} \code{x} - The position on the x axis of the cell.
+//' \item \emph{Parameter:} \code{y} - The position on the y axis of the cell.
+//' }
+//' @field add_species Adds new species \itemize{
+//' \item \emph{Parameter:} \code{genotype} - The genotype name of the new species.
+//' \item \emph{Parameter:} \code{epigenetic_rates} - The epigenetic rates of the new species (optional).
+//' \item \emph{Parameter:} \code{growth_rates} - The duplication rates of the new species.
+//' \item \emph{Parameter:} \code{death_rates} - The death rates of the new species.
+//' }
+//' @field add_timed_mutation Schedules a genotype mutation \itemize{
+//' \item \emph{Parameter:} \code{src} - The name of the genotype from which the mutation occurs.
+//' \item \emph{Parameter:} \code{dest} - The name of the genotype to which the mutation leads.
+//' \item \emph{Parameter:} \code{time} - The simulated time at which the mutation will occurs.
+//' }
+//' @field get_cells Gets the tissue cells \itemize{
+//' \item \emph{Parameter:} \code{lower_corner} - The lower-left corner of the selection frame (optional).
+//' \item \emph{Parameter:} \code{upper_corner} - The upper-right corner of the selection frame (optional).
+//' \item \emph{Parameter:} \code{genotype_filter} - The vector of the to-be-selected genotype names (optional).
+//' \item \emph{Parameter:} \code{epigenetic_filter} - The vector of the to-be-selected epigenetic states (optional).
+//' \item \emph{Returns:} A data frame reporting "cell_id", "genotype", "epistate", "position_x",
+//'    and "position_y" for each cells satisfying the provided filters and laying 
+//'    in the input frame.
+//' }
+//' @field get_clock Gets the simulated time \itemize{
+//' \item \emph{Returns:} The time simulated by the simulation.
+//' }
+//' @field get_counts Counts the number of cells \itemize{
+//' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "counts" for each
+//'      species in the simulation.
+//' }
+//' @field get_directory Gets the simulation directory \itemize{
+//' \item \emph{Returns:} The directory in which the simulation is saving its progress.
+//' }
+//' @field get_firings Gets the number of fired events \itemize{
+//' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", and "fired"
+//'     for each event type, genotype, and epigenetic states.
+//' }
+//' @field get_species_names Gets the species name \itemize{
+//' \item \emph{Returns:} The vector of the species names.
+//' }
+//' @field get_tissue_name Gets the tissue name \itemize{
+//' \item \emph{Returns:} The name of the simulated tissue.
+//' }
+//' @field get_tissue_size Gets the size of the simulated tissue \itemize{
+//' \item \emph{Returns:} The vector `c(x_size, y_size)` of the simulated tissue.
+//' }
+//' @field run_up_to_event Simulates cell evolution \itemize{
+//' \item \emph{Parameter:} \code{event} - The considered event, i.e., one among "growth", "death", and "switch".
+//' \item \emph{Parameter:} \code{species} - The species whose event number is considered.
+//' \item \emph{Parameter:} \code{num_of_events} - The threshold for the event number.
+//' }
+//' @field run_up_to_size Simulates cell evolution \itemize{
+//' \item \emph{Parameter:} \code{species} - The species whose number of cells is considered.
+//' \item \emph{Parameter:} \code{num_of_cells} - The threshold for the cell number.
+//' }
+//' @field run_up_to_time Simulates cell evolution \itemize{
+//' \item \emph{Parameter:} \code{time} - The final simulation time.
+//' }
+//' @field set_tissue Sets tissue name and size \itemize{
+//' \item \emph{Parameter:} \code{name} - The new name of the tissue (optional).
+//' \item \emph{Parameter:} \code{width} - The width of the new tissue.
+//' \item \emph{Parameter:} \code{height} - The height of the new tissue.
+//' }
 class Simulation : private Races::Drivers::Simulation::Simulation
 {
   static bool has_names(const List& list, std::vector<std::string> aimed_names)
@@ -363,8 +428,8 @@ Simulation::Simulation(const std::string& output_dir):
 
 //' @name Simulation$new
 //' @title Constructs a new Simulation
-//' @param output_dir The output directory
-//' @param seed The seed for the pseudo-random generator
+//' @param output_dir The output directory (optional).
+//' @param seed The seed for the pseudo-random generator (optional).
 //' @examples
 //' sim <- new(Simulation)
 //' sim <- new(Simulation, "test")
@@ -375,7 +440,7 @@ Simulation::Simulation(const std::string& output_dir, const int& seed):
 
 //' @name Simulation$set_tissue 
 //' @title Sets tissue name and size
-//' @param name The new name of the tissue.
+//' @param name The new name of the tissue (optional).
 //' @param width The width of the new tissue.
 //' @param height The height of the new tissue.
 //' @examples
@@ -405,7 +470,7 @@ void Simulation::set_tissue(const uint16_t& width, const uint16_t& height)
 //'      optional parameter `epigenetic_rate` is missing, this
 //'      method creates only one species with no epigenetic states.
 //' @param genotype The genotype name of the new species.
-//' @param epigenetic_rates The epigenetic rates of the new species.
+//' @param epigenetic_rates The epigenetic rates of the new species (optional).
 //' @param growth_rates The duplication rates of the new species.
 //' @param death_rates The death rates of the new species.
 //' @examples
@@ -590,10 +655,10 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //'      which the data are sampled. The optional parameters `genotype_filter`
 //'      and `epigenetic_filter` filter the collected cell data according to
 //'      the cell genotype and epigenetic state.
-//' @param lower_corner The lower-left corner of the selection frame.
-//' @param upper_corner The upper-right corner of the selection frame.
-//' @param genotype_filter The vector of the to-be-selected genotype names.
-//' @param epigenetic_filter The vector of the to-be-selected epigenetic states.
+//' @param lower_corner The lower-left corner of the selection frame (optional).
+//' @param upper_corner The upper-right corner of the selection frame (optional).
+//' @param genotype_filter The vector of the to-be-selected genotype names (optional).
+//' @param epigenetic_filter The vector of the to-be-selected epigenetic states (optional).
 //' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x", 
 //'    and "position_y" for each cells satisfying the provided filters and laying 
 //'    in the input frame.
@@ -768,7 +833,7 @@ void Simulation::run_up_to_size(const std::string& species, const size_t& num_of
 //' @title Simulates cell evolution
 //' @description This method simulates cell evolution until the number of events that 
 //'         have occurred to cells of a species reaches a specified threshold.
-//' @param event The considered event, i.e., one among "grown", "death", and "switch".
+//' @param event The considered event, i.e., one among "growth", "death", and "switch".
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
 //' @examples
@@ -822,7 +887,7 @@ Races::Time Simulation::get_clock() const
 //' @name Simulation$get_firings 
 //' @title Gets the number of fired events 
 //' @return A data frame reporting "event", "genotype", "epistate", and "fired"
-//'     for each event type, genotype, and epigenetic states
+//'     for each event type, genotype, and epigenetic states.
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_species(genotype = "A",
@@ -898,7 +963,7 @@ const std::string& Simulation::get_tissue_name() const
 
 //' @name Simulation$get_tissue_size 
 //' @title Gets the size of the simulated tissue
-//' @return The vector `c(x_size, y_size)` of the simulated tissue
+//' @return The vector `c(x_size, y_size)` of the simulated tissue.
 //' @examples
 //' sim <- new(Simulation)
 //' sim$set_tissue("Liver", 1200, 900)
