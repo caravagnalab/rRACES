@@ -45,6 +45,9 @@ set_initial_cell = function(
   )
   
   x$has_initial_cell = TRUE
+  x$initial_cell = list(species_name, 
+                        position[1], 
+                        position[2])
   
   return(x)
 }

@@ -42,7 +42,7 @@ add_genotype_evolution = function(x,
       ancestor = ifelse(
         genotype == genotype_to,
         genotype_from,
-        genotype_to
+        ancestor
       ),
       time = ifelse(
         genotype == genotype_to,
@@ -50,6 +50,24 @@ add_genotype_evolution = function(x,
         time
       )
     )
+  
+  df = x$species %>% 
+    select(ancestor, genotype, time) %>% 
+    distinct %>% 
+    rename(from = ancestor, to = genotype)
+  
+  which_roots = df %>% dplyr::filter(is.na(from)) %>% pull(to)
+  
+  df = rbind(df,
+                 data.frame(
+                   from = 'GL',
+                   to = which_roots,
+                   time = 0,
+                   stringsAsFactors = FALSE
+                 )) %>% 
+    dplyr::filter(!is.na(from))
+  
+  x$clone_tree = tidygraph::as_tbl_graph(df)
   
   x$has_species = TRUE
 

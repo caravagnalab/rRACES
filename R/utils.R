@@ -7,32 +7,41 @@ ExistsSpecies = function(x, genotype){
 
 AncestorOf = function(x, genotype){
   x$species %>% 
-    filter(genotype == !!genotype) %>% 
-    filter(row_number() == 1) %>% 
-    pull(ancestor)
+    dplyr::filterfilter(genotype == !!genotype) %>% 
+    dplyr::filterfilter(row_number() == 1) %>% 
+    dplyr::filterpull(ancestor)
 }
 
 TimeOf = function(x, genotype){
   x$species %>% 
-    filter(genotype == !!genotype) %>% 
-    filter(row_number() == 1) %>% 
+    dplyr::filter(genotype == !!genotype) %>% 
+    dplyr::filter(row_number() == 1) %>% 
     pull(time)
 }
 
 GRateOf = function(x, genotype, epistate) {
   x$species %>%
-    filter(genotype == !!genotype, epistate == !!epistate) %>%
-    pull(rgrowth)
+    dplyr::filterfilter(genotype == !!genotype, epistate == !!epistate) %>%
+    dplyr::filterpull(rgrowth)
 }
 
 DRateOf = function(x, genotype, epistate) {
   x$species %>%
-    filter(genotype == !!genotype, epistate == !!epistate) %>%
-    pull(rdeath)
+    dplyr::filterfilter(genotype == !!genotype, epistate == !!epistate) %>%
+    dplyr::filterpull(rdeath)
 }
 
 ERateOf = function(x, genotype, epistate) {
   x$species %>%
-    filter(genotype == !!genotype, epistate == !!epistate) %>%
-    pull(repigenetic)
+    dplyr::filterfilter(genotype == !!genotype, epistate == !!epistate) %>%
+    dplyr::filterpull(repigenetic)
 }
+# 
+# obj_status = function(x){
+#   can_simulate
+#   if(x$has_species & x$has_initial_cell)
+#   "rRACES object",
+#   "Species added",
+#   "Initial state"
+#   
+# }

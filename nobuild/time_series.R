@@ -27,6 +27,15 @@ x = add_species(
   death_rates = c("+" = 0.02, "-" = 0.02)
 )
 
+x = add_species(
+  x,
+  name = "B",
+  epigenetic_rates = c("+-" = 0.001, "-+" = 0.01),
+  growth_rates = c("+" = 0.2, "-" = 0.2),
+  death_rates = c("+" = 0.0, "-" = 0.0)
+)
+
+
 # Program a timed transition from species "A" to
 # species "B" at time 60
 x = add_genotype_evolution(x, "A", "B", 20)
@@ -102,5 +111,20 @@ Muller_plot(
   my_theme()
 
 
+Muller_df_pop <- add_empty_pop(Muller_df)
+id_list <- sort(unique(Muller_df_pop$Identity)) # list of legend entries, omitting NA
+
+ggplot(Muller_df_pop, 
+       aes_string(x = "Generation", 
+                  y = "Population", 
+                  group = "Group_id", 
+                  fill = "Identity", 
+                  colour = "Identity")) + 
+  geom_area() +
+  theme(legend.position = "right") +
+  guides(linetype = FALSE, color = FALSE) + 
+  scale_fill_manual(name = "Identity", values = c(`WT` = 'gainsboro', sp_colors_p, sp_colors_m), breaks = id_list) +
+  scale_color_manual(values = c(`WT` = 'gainsboro', sp_colors_p, sp_colors_m)) +
+  my_theme()
 
 
