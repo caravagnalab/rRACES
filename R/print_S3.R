@@ -97,8 +97,8 @@ print.rraces <- function(x, ...) {
     counts_tab = x$simulation$get_counts()
     
     my_tab = x$species %>% 
-      left_join(counts_tab, by = c('genotype', 'epistate')) %>% 
-      select(species, ancestor, time, rgrowth, rdeath, repigenetic, counts)
+      dplyr::left_join(counts_tab, by = c('genotype', 'epistate')) %>% 
+      dplyr::select(species, ancestor, time, rgrowth, rdeath, repigenetic, counts)
     colnames(my_tab)[4:6] = c(" \u03BB ", " \u03B4 ", " \u03B5 ")
     
     cat("   ",

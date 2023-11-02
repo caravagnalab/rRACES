@@ -29,7 +29,15 @@ x = add_species(
 
 x = add_species(
   x,
-  name = "B",
+  name = "C",
+  epigenetic_rates = c("+-" = 0.001, "-+" = 0.01),
+  growth_rates = c("+" = 0.2, "-" = 0.2),
+  death_rates = c("+" = 0.0, "-" = 0.0)
+)
+
+x = add_species(
+  x,
+  name = "D",
   epigenetic_rates = c("+-" = 0.001, "-+" = 0.01),
   growth_rates = c("+" = 0.2, "-" = 0.2),
   death_rates = c("+" = 0.0, "-" = 0.0)
@@ -39,6 +47,8 @@ x = add_species(
 # Program a timed transition from species "A" to
 # species "B" at time 60
 x = add_genotype_evolution(x, "A", "B", 20)
+x = add_genotype_evolution(x, "B", "C", 35)
+x = add_genotype_evolution(x, "B", "D", 45)
 
 # Add one cell to the simulated tissue
 x = set_initial_cell(
@@ -49,7 +59,7 @@ x = set_initial_cell(
 )
 
 time_series = lapply(
-  seq(20, 60, by = 1),
+  seq(20, 80, by = 1),
   function(t) 
   { 
     run(x, what = list(time = t))
@@ -64,13 +74,18 @@ time_series = lapply(
   Reduce(f = bind_rows) %>% 
   as_tibble()
 
-time_series %>% ggplot() +
+plot_state(x)
+plot_tissue(x)
+
+time_series %>%
+  # dplyr::filter(species == 'B+') %>%
+  ggplot() +
   my_theme() +
   geom_point(aes(x = time, y = counts, color = genotype, alpha = epistate)) +
   geom_line(aes(x = time, y = counts, color = genotype, alpha = epistate)) +
   ggplot2::scale_color_manual(values = get_species_colors(time_series$genotype %>% unique)) +
   ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5))  +
-  ggplot2::theme(legend.position = 'bottom') 
+  ggplot2::theme(legend.position = 'bottom')
   
 
 library(ggmuller)
@@ -88,12 +103,12 @@ edges = data.frame(
 )
 
 edges = data.frame(
-  Parent = c("WT", "A+", "A+", "B+"),
-  Identity = c("A+", "A-", "B+", "B-")
+  Parent = c("WT", "A+", "A+", "B+", "B+", "C+", "B+", "D+"),
+  Identity = c("A+", "A-", "B+", "B-", "C+", "C-", "D+", "D-")
 )
 Muller_df <- get_Muller_df(edges, pop_df)
 
-sp_colors = get_species_colors(c("A", "B"))
+sp_colors = get_species_colors(c("A", "B", "C", "D"))
 
 sp_colors_p = sp_colors
 sp_colors_m = alpha(sp_colors, 0.5)
