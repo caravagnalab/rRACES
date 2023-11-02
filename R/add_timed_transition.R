@@ -38,7 +38,7 @@ add_genotype_evolution = function(x,
   x$simulation$add_timed_mutation(genotype_from, genotype_to, time)
   
   x$species = x$species %>% 
-    mutate(
+    dplyr::mutate(
       ancestor = ifelse(
         genotype == genotype_to,
         genotype_from,
@@ -52,9 +52,9 @@ add_genotype_evolution = function(x,
     )
   
   df = x$species %>% 
-    select(ancestor, genotype, time) %>% 
-    distinct %>% 
-    rename(from = ancestor, to = genotype)
+    dplyr::select(ancestor, genotype, time) %>% 
+    dplyr::distinct %>% 
+    dplyr::rename(from = ancestor, to = genotype)
   
   which_roots = df %>% dplyr::filter(is.na(from)) %>% pull(to)
   
