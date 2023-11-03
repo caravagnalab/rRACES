@@ -106,33 +106,33 @@ get_genotype_id(const Races::Drivers::Simulation::Tissue& tissue,
                 const std::string& genotype_name)
 {
   for (const auto& species: tissue) {
-    if (species.get_genomic_name() == genotype_name) {
-      return species.get_genomic_id();
+    if (species.get_genotype_name () == genotype_name) {
+      return species.get_id();
     }
   }
 
   throw std::domain_error("Unknown genotype \""+genotype_name+"\"");
 }
 
-std::set<Races::Drivers::EpigeneticGenotypeId> 
-get_epigenetic_ids_from_genotype_name(const Races::Drivers::Simulation::Tissue& tissue,
-                                      const std::set<std::string>& genotype_name)
+std::set<Races::Drivers::SpeciesId> 
+get_species_ids_from_genotype_name(const Races::Drivers::Simulation::Tissue& tissue,
+                                   const std::set<std::string>& genotype_name)
 {
-  std::set<Races::Drivers::EpigeneticGenotypeId > epigenetic_ids;
+  std::set<Races::Drivers::SpeciesId > species_ids;
 
   for (const auto& species: tissue) {
-    if (genotype_name.count(species.get_genomic_name())>0) {
-      epigenetic_ids.insert(species.get_id());
+    if (genotype_name.count(species.get_genotype_name ())>0) {
+      species_ids.insert(species.get_id());
     }
   }
 
-  return epigenetic_ids;
+  return species_ids;
 }
 
 size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tissue,
                                   const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
                                   const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
-                                  const std::set<Races::Drivers::EpigeneticGenotypeId>& species_filter,
+                                  const std::set<Races::Drivers::SpeciesId>& species_filter,
                                   const std::set<std::string>& epigenetic_filter)
 {
   using namespace Races::Drivers;
@@ -155,14 +155,14 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
   for (auto x=lower_corner[0]; x<=upper_corner[0]; ++x) {
     for (auto y=lower_corner[1]; y<=upper_corner[1]; ++y) {
       auto cell_proxy = tissue({x,y});
-      if (cell_proxy.has_driver_mutations()) {
+      if (!cell_proxy.is_wild_type()) {
         const CellInTissue& cell = cell_proxy;
 
-        if (species_filter.count(cell.get_epigenetic_id())>0) {
+        if (species_filter.count(cell.get_species_id())>0) {
 
-          const auto& species = tissue.get_species(cell.get_epigenetic_id());
+          const auto& species = tissue.get_species(cell.get_species_id());
           const auto& signature = species.get_methylation_signature();
-          auto sign_string = Genotype::signature_to_string(signature);
+          auto sign_string = GenotypeProperties::signature_to_string(signature);
 
           if (epigenetic_filter.count(sign_string)>0) {
             ++total;
@@ -204,7 +204,7 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Parameter:} \code{growth_rates} - The duplication rates of the new species.
 //' \item \emph{Parameter:} \code{death_rates} - The death rates of the new species.
 //' }
-//' @field add_timed_mutation Schedules a genotype mutation \itemize{
+//' @field schedule_genotype_mutation Schedules a genotype mutation \itemize{
 //' \item \emph{Parameter:} \code{src} - The name of the genotype from which the mutation occurs.
 //' \item \emph{Parameter:} \code{dest} - The name of the genotype to which the mutation leads.
 //' \item \emph{Parameter:} \code{time} - The simulated time at which the mutation will occurs.
@@ -294,7 +294,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
 
   List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
-                 const std::set<Races::Drivers::EpigeneticGenotypeId> &species_filter,
+                 const std::set<Races::Drivers::SpeciesId> &species_filter,
                  const std::set<std::string> &epigenetic_filter) const
   {
     namespace RS = Races::Drivers::Simulation;
@@ -322,21 +322,21 @@ class Simulation : private Races::Drivers::Simulation::Simulation
     for (auto x=lower_corner[0]; x<=upper_corner[0]; ++x) {
       for (auto y=lower_corner[1]; y<=upper_corner[1]; ++y) {
         auto cell_proxy = tissue()({x,y});
-        if(cell_proxy.has_driver_mutations()) {
+        if(!cell_proxy.is_wild_type()) {
 
           const RS::CellInTissue& cell = cell_proxy;
           
-          const auto& species = tissue().get_species(cell.get_epigenetic_id());
+          const auto& species = tissue().get_species(cell.get_species_id());
           const auto& signature = species.get_methylation_signature();
-          auto sign_string = Genotype::signature_to_string(signature);
+          auto sign_string = GenotypeProperties::signature_to_string(signature);
           
-          if (species_filter.count(cell.get_epigenetic_id())>0
+          if (species_filter.count(cell.get_species_id())>0
                && epigenetic_filter.count(sign_string)>0) { 
 
             ids[i] = cell.get_id();
-            genotype_names[i] = species.get_genomic_name();
+            genotype_names[i] = species.get_genotype_name ();
 
-            epi_stati[i] = Genotype::signature_to_string(signature);
+            epi_stati[i] = GenotypeProperties::signature_to_string(signature);
 
             x_pos[i] = x;
             y_pos[i] = y;
@@ -391,8 +391,8 @@ public:
                  const std::vector<std::string>& genotype_filter,
                  const std::vector<std::string>& epigenetic_filter) const;
 
-  void add_timed_mutation(const std::string& source, const std::string& destination,
-                          const Races::Time& time);
+  void schedule_genotype_mutation(const std::string& source, const std::string& destination,
+                                  const Races::Time& time);
 
   void run_up_to_time(const Races::Time& time);
 
@@ -504,7 +504,7 @@ void Simulation::add_species(const std::string& genotype, const List& epigenetic
                 "the death rate for \"+\" and \"-\"");
   }
 
-  Genotype real_genotype(genotype, {{epigenetic_rates["+-"],epigenetic_rates["-+"]}});
+  GenotypeProperties real_genotype(genotype, {{epigenetic_rates["+-"],epigenetic_rates["-+"]}});
 
   for (const std::string states: {"+","-"}) {
     if (growth_rates.containsElementNamed(states.c_str())) {
@@ -522,7 +522,7 @@ void Simulation::add_species(const std::string& genotype, const double& growth_r
 {
   using namespace Races::Drivers;
 
-  Genotype real_genotype(genotype, {});
+  GenotypeProperties real_genotype(genotype, {});
 
   real_genotype[""].set_rate(CellEventType::DUPLICATION, growth_rate);
   real_genotype[""].set_rate(CellEventType::DEATH, death_rate);
@@ -542,15 +542,15 @@ void Simulation::add_species(const std::string& genotype, const double& growth_r
 //' sim$get_species_names()
 CharacterVector Simulation::get_species_names() const
 {
-  auto genotypes = this->tissue().get_genotypes();
+  CharacterVector R_species(tissue().num_of_species());
 
-  CharacterVector R_genotypes(genotypes.size());
-
-  for (size_t i=0; i<genotypes.size(); ++i) {
-    R_genotypes[i] = genotypes[i].get_epigenetic_name();
+  size_t i{0};
+  for (const auto& species : tissue()) {
+    R_species[i] = species.get_name();
+    ++i;
   }
 
-  return R_genotypes;
+  return R_species;
 }
 
 //' @name Simulation$add_cell 
@@ -589,7 +589,7 @@ List Simulation::get_cells() const
 List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
                            const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const
 {
-  std::set<Races::Drivers::EpigeneticGenotypeId> species_ids;
+  std::set<Races::Drivers::SpeciesId> species_ids;
 
   for (const auto& species: tissue()) {
     species_ids.insert(species.get_id());
@@ -672,7 +672,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //'                 epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
 //'                 growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                 death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_timed_mutation(src = "A", dst = "B", time = 50)
+//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$add_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
 //' 
@@ -699,7 +699,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
   std::set<std::string> genotype_set(genotype_filter.begin(), genotype_filter.end());
   std::set<std::string> epigenetic_set(epigenetic_filter.begin(), epigenetic_filter.end());
 
-  auto species_ids = get_epigenetic_ids_from_genotype_name(tissue(), genotype_set);
+  auto species_ids = get_species_ids_from_genotype_name(tissue(), genotype_set);
 
   return get_cells(lower_corner, upper_corner, species_ids, epigenetic_set);
 }
@@ -712,7 +712,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
 //' sim <- new(Simulation)
 //' sim$add_species("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_species("B", growth_rate = 0.15, death_rate = 0.05)
-//' sim$add_timed_mutation(src = "A", dst = "B", time = 50)
+//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$add_cell("A", 500, 500)
 //' sim$run_up_to_time(70)
 //'
@@ -730,9 +730,9 @@ List Simulation::get_counts() const
 
   size_t i{0};
   for (const auto& species: tissue()) {
-    genotype_names[i] = species.get_genomic_name();
+    genotype_names[i] = species.get_genotype_name ();
     const auto& signature = species.get_methylation_signature();
-    epi_stati[i] = Genotype::signature_to_string(signature);
+    epi_stati[i] = GenotypeProperties::signature_to_string(signature);
     counts[i] = species.num_of_cells();
     ++i;
   }
@@ -741,7 +741,7 @@ List Simulation::get_counts() const
                             _["counts"]=counts);
 }
 
-//' @name Simulation$add_timed_mutation
+//' @name Simulation$schedule_genotype_mutation
 //' @title Schedules a genotype mutation
 //' @description This method schedules a genotype mutation that can occur 
 //'      from any of the species of the source genotype to the species of 
@@ -773,13 +773,13 @@ List Simulation::get_counts() const
 //'                 death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # schedule an evolution from genotype "A" to genotype "B" at time 50
-//' sim$add_timed_mutation(src = "A", dst = "B", time = 50)
-void Simulation::add_timed_mutation(const std::string& src, const std::string& dest,
-                                    const Races::Time& time)
+//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
+void Simulation::schedule_genotype_mutation(const std::string& src, const std::string& dest,
+                                            const Races::Time& time)
 {
   namespace RS = Races::Drivers::Simulation;
 
-  static_cast<RS::Simulation*>(this)->add_driver_mutation(src,dest,time);
+  static_cast<RS::Simulation*>(this)->schedule_genotype_mutation(src,dest,time);
 }
 
 //' @name Simulation$run_up_to_time
@@ -916,10 +916,10 @@ List Simulation::get_firings() const
   for (const auto& species: tissue()) {
     for (const auto& [event_name, event_code]: event_names) {
       events[i] = event_name;
-      genotype_names[i] = species.get_genomic_name();
+      genotype_names[i] = species.get_genotype_name ();
       
       const auto& signature = species.get_methylation_signature();
-      epistati[i] = Genotype::signature_to_string(signature);
+      epistati[i] = GenotypeProperties::signature_to_string(signature);
 
       if (t_stats.contains_data_for(species)) {
         firings[i] = count_events(t_stats.at(species), event_code);
@@ -1002,8 +1002,8 @@ RCPP_MODULE(Drivers){
                                                const double&))(&Simulation::add_species),
           "Add a new species")
 
-  // add_timed_mutation
-  .method("add_timed_mutation", &Simulation::add_timed_mutation,
+  // schedule_genotype_mutation
+  .method("schedule_genotype_mutation", &Simulation::schedule_genotype_mutation,
           "Add a timed mutation between two different species")
 
   // get_species_name

@@ -71,7 +71,7 @@ sim$add_species(name = "A",
                 death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$add_species(name = "B",
-                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
                 growth_rates = c("+" = 0.1, "-" = 0.3),
                 death_rates = c("+" = 0.05, "-" = 0.1))
 ```
@@ -81,8 +81,8 @@ At this point no evolutionary relation between the genotypes `A` and `B` is defi
 For example, I can program a timed transition from species one cell of genotype `A` to one of genotype `B`, at time `30`. In this case, a cell at random from species `A+` or `A-` will be selected and will be assigned a new type `B+` or `B-` depending on its epistate.
 
 ```{r}
-# Program a timed transition from "A" to "B" at time 30
-sim$add_timed_mutation("A", "B", 60)
+# Schedule a timed genotype mutation from "A" to "B" at time 30
+sim$schedule_genotype_mutation("A", "B", 60)
 
 # Get the simulation species with epigenetic state names
 sim$get_species_names()
@@ -123,16 +123,18 @@ There are 3 ways to move the simulation forward:
 - advancing until a desired number of firings (of one particular event) has happened.
 
 ```{r}
-# Run the simulation up until the there are less than 100 cells in the species B-
-sim$run_up_to_size("B-", 100)
+# Run the simulation up until the there are less than 30
+# cells in the species B-
+sim$run_up_to_size("B-", 30)
 
-# Counts per species reports now B- equal to 100
+# Counts per species reports now B- equal to 30
 sim$get_counts()
 
-# Run the simulation up until number of deaths in B- is at least 100
-sim$run_up_to_event("death", "B", "-", 100)
+# Run the simulation up until number of deaths in B+ is at least 35
+sim$run_up_to_event("death", "B+", 35)
 
-# Get the number of fired event per species. The row "death", "B", "-" reports 100 firings
+# Get the number of fired event per species. The row "death",
+# "B", "+" reports 35 firings
 sim$get_firings()
 
 # Run the simulation up to time 110
@@ -145,17 +147,24 @@ sim$get_clock()
 At this point, we can query the simulation configuration in a number of ways
 
 ```{r}
+# to use %>%
+require(dplyr)
+
 # Get the cells in the tissue at current simulation time
 sim$get_cells() %>% head()
 
-# Get the cells in the tissue rectangular sample having [500,500] and [505,505] as lower and upper corners, respectively
+# Get the cells in the tissue rectangular sample having
+# [500,500] and [505,505] as lower and upper corners, respectively
 sim$get_cells(c(500, 500), c(505, 505))  %>% head()
 
 # Get the cells in the tissue having epigenetic state "-"
 sim$get_cells(c("A", "B"), c("-")) %>% head()
 
-# Get the cells in the tissue having epigenetic state "-" and, at the same time, belonging to rectangular sample bounded by [500,500] and [505,505] as lower and upper corners, respectively
+# Get the cells in the tissue having epigenetic state "-" and,
+# at the same time, belonging to rectangular sample bounded by
+# [500,500] and [505,505] as lower and upper corners, respectively
 sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))  %>% head()
 ```
 
-At the end of the computation, the output directory will contain simulated data usable by RACES 
+At the end of the computation, the directory `output_dir` will contain simulated data usable by RACES.
+

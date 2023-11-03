@@ -35,7 +35,7 @@ sim$add_species(name = "B",
 # Schedule a mutation at time 60 from one of the species of
 # genotype "A" to the species of "B" having the same
 # epigenetic state
-sim$add_timed_mutation("A", "B", 60)
+sim$schedule_genotype_mutation("A", "B", 60)
 
 # Get the simulation species name
 sim$get_species_names()
