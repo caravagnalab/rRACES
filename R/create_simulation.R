@@ -54,7 +54,7 @@ create_simulation = function(
   cli::cli_alert_info("{crayon::underline('New simulation')} {.field {name}}, with results in folder {.field {output_dir}}")
   
   # create a tissue
-  x$simulation$set_tissue(tissue, tissue_size[1], tissue_size[2])
+  x$simulation$update_tissue(tissue, tissue_size[1], tissue_size[2])
   cli::cli_alert_info("{crayon::underline('Tissue')} {.field {tissue}} [{.field {tissue_size[1]} x {tissue_size[2]}}]")
   
   return(x)
