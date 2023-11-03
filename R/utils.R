@@ -1,40 +1,40 @@
 # My own private getters for the species table
 ExistsSpecies = function(x, genotype){
-  x$species %>% 
-    filter(genotype == !!genotype) %>% 
-    nrow()
+  # x$species %>% 
+  #   dplyr::filter(genotype == !!genotype) %>% 
+  #   nrow()
 }
 
 AncestorOf = function(x, genotype){
   x$species %>% 
-    dplyr::filterfilter(genotype == !!genotype) %>% 
-    dplyr::filterfilter(row_number() == 1) %>% 
-    dplyr::filterpull(ancestor)
+    dplyr::filter(genotype == !!genotype) %>% 
+    dplyr::filter(row_number() == 1) %>% 
+    dplyr::pull(ancestor)
 }
 
 TimeOf = function(x, genotype){
   x$species %>% 
     dplyr::filter(genotype == !!genotype) %>% 
     dplyr::filter(row_number() == 1) %>% 
-    pull(time)
+    dplyr::pull(time)
 }
 
 GRateOf = function(x, genotype, epistate) {
   x$species %>%
-    dplyr::filterfilter(genotype == !!genotype, epistate == !!epistate) %>%
-    dplyr::filterpull(rgrowth)
+    dplyr::filter(genotype == !!genotype, epistate == !!epistate) %>%
+    dplyr::pull(rgrowth)
 }
 
 DRateOf = function(x, genotype, epistate) {
   x$species %>%
-    dplyr::filterfilter(genotype == !!genotype, epistate == !!epistate) %>%
-    dplyr::filterpull(rdeath)
+    dplyr::filter(genotype == !!genotype, epistate == !!epistate) %>%
+    dplyr::pull(rdeath)
 }
 
 ERateOf = function(x, genotype, epistate) {
   x$species %>%
-    dplyr::filterfilter(genotype == !!genotype, epistate == !!epistate) %>%
-    dplyr::filterpull(repigenetic)
+    dplyr::filter(genotype == !!genotype, epistate == !!epistate) %>%
+    dplyr::pull(repigenetic)
 }
 # 
 # obj_status = function(x){

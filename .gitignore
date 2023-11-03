@@ -15,3 +15,5 @@ _install
 *.so
 *.o
 *.Rd
+*.log
+*.lock
