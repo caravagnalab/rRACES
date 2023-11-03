@@ -2,7 +2,7 @@
 title: "RCpp interface"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Rcpp_interface}
+  %\VignetteIndexEntry{Rcpp interface}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(rRACES)
+
+library(dplyr)
 ```
 
 # Simulating tumour growth
@@ -81,8 +83,8 @@ At this point no evolutionary relation between the genotypes `A` and `B` is defi
 For example, I can program a timed transition from species one cell of genotype `A` to one of genotype `B`, at time `30`. In this case, a cell at random from species `A+` or `A-` will be selected and will be assigned a new type `B+` or `B-` depending on its epistate.
 
 ```{r}
-# Schedule a timed genotype mutation from "A" to "B" at time 30
-sim$schedule_genotype_mutation("A", "B", 60)
+# Program a timed transition from "A" to "B" at time 20
+sim$add_timed_mutation("A", "B", 20)
 
 # Get the simulation species with epigenetic state names
 sim$get_species_names()
@@ -93,7 +95,7 @@ sim$get_species_names()
 To be able to simulate the model, an initial cell needs to be displaced in the tissue. We add one cell of species `A+` (genotype `A` in epistate `+`) in position `(500, 500)`.
 
 ```{r}
-sim$add_cell("A+", 500, 500)
+sim$add_cell("A+", 1000, 1000)
 ```
 
 We can query the current state of the simulation, and extract the cell position
@@ -123,22 +125,29 @@ There are 3 ways to move the simulation forward:
 - advancing until a desired number of firings (of one particular event) has happened.
 
 ```{r}
-# Run the simulation up until the there are less than 30
-# cells in the species B-
-sim$run_up_to_size("B-", 30)
 
-# Counts per species reports now B- equal to 30
+# Run the simulation up until the there are less than 500 cells in the species A+
+sim$run_up_to_size("A+", 500)
+
+# Counts per species reports now A+ equal to 500
 sim$get_counts()
+```
 
-# Run the simulation up until number of deaths in B+ is at least 35
-sim$run_up_to_event("death", "B+", 35)
+```{r}
+Amd_firings = sim$get_firings() %>% 
+  dplyr::filter(event == 'death', genotype == 'A', epistate == '-') %>% 
+  dplyr::pull(fired)
 
-# Get the number of fired event per species. The row "death",
-# "B", "+" reports 35 firings
+# Run the simulation up until number of deaths in A- is at least 100
+sim$run_up_to_event("death", "A-", Amd_firings + 50)
+
+# Get the number of fired event per species. The row "death", "A", "-" reports 50 more values
 sim$get_firings()
+```
 
-# Run the simulation up to time 110
-sim$run_up_to_time(110)
+```{r}
+# Run the simulation 15 more units of time
+sim$run_up_to_time(sim$get_clock() + 15)
 
 # Get simulation time, i.e., 110
 sim$get_clock()

@@ -2,7 +2,7 @@
 title: "R interface"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{R_interface}
+  %\VignetteIndexEntry{R interface}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,6 +16,10 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(rRACES)
+
+# For pipes and plots
+library(dplyr)
+library(ggplot2)
 ```
 
 # Simulating tumour growth
@@ -31,7 +35,7 @@ x <- create_simulation(
   name = "My Test rRACES",        # Name of the simulation
   output_dir = "some_folder",     # Output folder
   tissue = "A fake liver",        # Name of the tissue
-  tissue_size = c(1000, 1000)     # Size of the tissue
+  tissue_size = c(400, 400)     # Size of the tissue
 )
 ```
 
@@ -78,7 +82,7 @@ We define the evolutionary relation between the involved genotypes.
 
 ```{r, eval=FALSE}
 # Program a timed transition from species "A" to species "B" at time 60
-x = add_genotype_evolution(x, "A", "B", 60)
+x = add_genotype_evolution(x, "A", "B", 20)
 ```
 
 ## Initial cell displacement
@@ -91,7 +95,7 @@ x = set_initial_cell(
   x,
   genotype = "A",
   epistate = "+",
-  position = c(500, 500)
+  position = c(200, 200)
 )
 
 # Query the internal object
@@ -113,11 +117,10 @@ Run the simulation up to some time
 # Clock is 0
 x$simulation$get_clock()
 
-x = run(x, what = list(time = 80))
+x = run(x, what = list(time = 70))
 
-# Clock (it is ~80)
+# Clock
 x$simulation$get_clock()
-
 ```
 
 We can plot the proportion of all species in the simulation.
@@ -154,19 +157,20 @@ plot_tissue(x) + facet_grid(genotype~epistate)
 Run the simulation up to when a species reaches a certain size
 ```{r, eval=FALSE}
 # Get the counts for species A+
-Ap_count = x$simulation$get_counts() %>%
-  filter(genotype == "A", epistate == "+") %>%
-  pull(counts)
+Ap_count = x$simulation$get_counts() %>% 
+  dplyr::filter(genotype == "A", epistate == '+') %>% 
+  dplyr::pull(counts)
 
 print(Ap_count)
 
 # Run until we get 1000 more of A+
-x = run(x, what = list(genotype = "A", epistate = "+", size = Ap_count + 1000))
+
+x = run(x, what = list(genotype = 'A', epistate = '+', size = Ap_count + 1500))
 
 # Check that we have Ap_count + 1000
-x$simulation$get_counts() %>%
-  filter(genotype == "A", epistate == "+") %>%
-  pull(counts)
+x$simulation$get_counts() %>% 
+  dplyr::filter(genotype == "A", epistate == '+') %>% 
+  dplyr::pull(counts)
 ```
 
 ```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE, eval=FALSE}
@@ -182,24 +186,28 @@ Run until we have certain number of events.
 x$simulation$get_firings()
 
 # Get the counts for species A+
-Ap_switches = x$simulation$get_firings() %>%
-  filter(genotype == "A", epistate == "+", events == "switch") %>%
-  pull(firings)
+
+Ap_switches = x$simulation$get_firings() %>% 
+  dplyr::filter(genotype == "A", epistate == '+', event == 'switch') %>% 
+  dplyr::pull(fired)
 
 print(Ap_switches)
 
-# Run until we get 200 more of A+ switching to A-
-x = run(x, what = list(genotype = "A", epistate = "+",
-                       event = "switch", count = Ap_switches + 200))
+# Run until we get more of A+ switching to A-
+x = run(x, what = list(genotype = 'A', epistate = '+', event = 'switch', count = Ap_switches + 1000))
 
-# Check that we have Ap_switches + 200
-x$simulation$get_firings() %>%
-  filter(genotype == "A", epistate == "+", events == "switch") %>%
-  pull(firings)
+# Check that we have more Ap_switches
+x$simulation$get_firings() %>% 
+  dplyr::filter(genotype == "A", epistate == '+', event == 'switch') %>% 
+  dplyr::pull(fired)
 
-x$simulation$get_counts() %>%
-  filter(genotype == "A", epistate == "+") %>%
-  pull(counts)
+x$simulation$get_counts() %>% 
+  dplyr::filter(genotype == "A", epistate == '+') %>% 
+  dplyr::pull(counts)
+```
+```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE}
+plot_state(x)
+plot_tissue(x)
 ```
 
 Plot firings statistics

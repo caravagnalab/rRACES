@@ -1,0 +1,59 @@
+url: https://caravagnalab.github.io/rRACES/
+template:
+  bootstrap: 5
+
+repo:
+  url:
+    home: https://github.com/caravagnalab/rRACES/
+    source: https://github.com/caravagnalab/rRACES
+    issue: https://github.com/caravagnalab/rRACES/issues
+    user: https://github.com/caravagnalab
+
+authors:
+  Cancer Data Science Laboratory:
+    href: https://www.caravagnalab.org/
+
+
+reference:
+- title: Simulation RCpp interface 
+  desc:  Methods for the S4 class Simulation
+  contents:
+  - Simulation$add_cell
+  - Simulation$add_species
+  - Simulation$add_timed_mutation
+  - Simulation$get_cells
+  - Simulation$get_clock
+  - Simulation$get_counts
+  - Simulation$get_directory
+  - Simulation$get_firings
+  - Simulation$get_species_names
+  - Simulation$get_tissue_name
+  - Simulation$get_tissue_size
+  - Simulation$new
+  - Simulation$run_up_to_event
+  - Simulation$run_up_to_size
+  - Simulation$run_up_to_time
+  - Simulation$set_tissue
+  - Simulation
+
+- title: Simulation R interface
+  desc:  Methods for the S3 class
+  contents:
+  - add_genotype_evolution
+  - add_species
+  - create_simulation
+  - example_R_tumour
+  - plot_firings
+  - plot_state
+  - plot_tissue
+  - print.rraces
+  - run
+  - set_initial_cell
+  
+
+
+
+
+
+
+

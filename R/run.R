@@ -1,12 +1,37 @@
-#' Title
+#' Run a simulation.
 #'
-#' @param x 
-#' @param what 
+#' @description
+#' This function runs a simulation forward in time, advancing the simulation to 
+#' a specific point based on the provided parameters. The function takes a simulation
+#' object `x` as the first argument and a list of named parameters (parameter `what`) 
+#' that specify how to advance the simulation. 
+#' 
+#' The parameters can include:
+#' - `time`: to move the simulation clock up to `time`;
+#' - `genotype`/`epistate`/`size`: to move the simulation clock up to when the
+#' species defined by `genotype` and `epistate` reaches size `size`;
+#' - `genotype`/`epistate`/ `event`/`count`: to move the simulation clock up to 
+#' when the model has fired `count` events of type `event` (any of `death`, `growth`
+#' or `switch`) for the species defined by `genotype` and `epistate`.
+#'  
+#' The progress bar will show the percentage to completion of the appropriate task.
 #'
-#' @return
+#' @param x A simulation object.
+#' @param what A list of named parameters that specify how to advance the simulation. 
+#' The parameters are discussed in the description of this function.
+#'
+#' @return An updated simulation object.
+#'
 #' @export
 #'
 #' @examples
+#'
+#' # Example of using the function
+#' x = create_simulation()
+#' x = add_species(x, "A")
+#' x = set_initial_cell(x, "A", "+", c(50, 50))
+#' x = run(x, list(time = 60))
+#' x
 run = function(
     x,
     what
@@ -27,9 +52,16 @@ run = function(
   # Time
   if('time' %in% names(what)) x = run_aux_time(x, what[['time']])
   else{
-    if('size' %in% names(what)) x = run_aux_size(x, what[['genotype']], what[['epistate']], what[['size']])
+    if('size' %in% names(what)) x = run_aux_size(x, 
+                                                 what[['genotype']], 
+                                                 what[['epistate']], 
+                                                 what[['size']])
     
-    if('event' %in% names(what)) x = run_aux_event(x, event = what[['event']], what[['genotype']], what[['epistate']], what[['count']])
+    if('event' %in% names(what)) x = run_aux_event(x, 
+                                                   event = what[['event']], 
+                                                   genotype = what[['genotype']], 
+                                                   epistate = what[['epistate']], 
+                                                   count = what[['count']])
   }
   
   cli::cli_h3("New simulation state")
@@ -71,13 +103,12 @@ run_aux_size = function(x, genotype, epistate, size)
   if(size < 0)
     cli::cli_abort("Size cannot be negative.")
 
-    
   if(!(genotype %in% x$species$genotype))
     cli::cli_abort("Genotype does not exist in the simulation.")
   
   cc = x$simulation$get_counts() %>% 
-    filter(genotype == !!genotype, epistate == !!epistate) %>% 
-    pull(counts)
+    dplyr::filter(genotype == !!genotype, epistate == !!epistate) %>% 
+    dplyr::pull(counts)
   
   cli::cli_alert_info("{.field {genotype}} with epistate {.field {epistate}} has count {.field {cc}}, target is {.field {size}}.")
   
@@ -106,12 +137,12 @@ run_aux_event = function(x, event, genotype, epistate, count)
     cli::cli_abort("Event not recognised: use any of 'death', 'growth' or 'switch'.")
   
   cc = x$simulation$get_firings() %>% 
-    filter(genotype == !!genotype, epistate == !!epistate, events == event) %>% 
-    pull(firings)
+    dplyr::filter(genotype == !!genotype, epistate == !!epistate, event == !!event) %>% 
+    dplyr::pull(fired)
   
   cli::cli_alert_info("{.field {genotype}} with epistate {.field {epistate}} has count {.field {cc}} for eventt {.field {event}}, target is {.field {count}}.")
   
-  x$simulation$run_up_to_event(event, paste(genotype, epistate), count)
-  
+  x$simulation$run_up_to_event(event, paste0(genotype, epistate), count)
+
   return(x)
 }

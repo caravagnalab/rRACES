@@ -1,13 +1,13 @@
 #' Add the initial cell of the simulation.
 #' 
 #' @description
-#' Creates a cell from which the simulation will start. The cell needs a species,
-#' a epistate and a position to be placed into. Once this is inserted, no other
+#' Creates a cell from which the simulation will start. The cell needs to be defined
+#' by genotype, epistate and a position to be placed into. Once this is inserted, no other
 #' initial cells can be placed.
 #'
 #' @param x A simulation object.
-#' @param species A valid species.
-#' @param epistate An epigenetic state.
+#' @param genotype A valid genotype.
+#' @param epistate A valid epigenetic state.
 #' @param position A numeric `(x,y)` vector for the position of the cell.
 #'
 #' @return A simulation object.

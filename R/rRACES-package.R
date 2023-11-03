@@ -20,5 +20,6 @@ loadModule("Drivers", TRUE)
 #' @importFrom ggplot2 scale_fill_manual
 #' @importFrom knitr kable
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom tidygraph as_tbl_graph
 ## usethis namespace: end
 NULL

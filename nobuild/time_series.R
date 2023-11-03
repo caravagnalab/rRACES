@@ -77,6 +77,8 @@ time_series = lapply(
 plot_state(x)
 plot_tissue(x)
 
+plot_tissue(x) + facet_grid(genotype~epistate)
+
 time_series %>%
   # dplyr::filter(species == 'B+') %>%
   ggplot() +

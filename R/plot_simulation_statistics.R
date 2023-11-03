@@ -1,16 +1,19 @@
-
-
-
 #' Plot the number of stochastic events in the simulation.
 #' 
 #' @description
-#' A piechart with events split by type, species and epigentic state where they
+#' A piechart with events split by type, genotype and epigentic state where they
 #' occurred. It also provides annotations for the simulation information.
 #'
 #' @param x A simulation.
 #'
 #' @return A ggplot plot.
 #' @export
+#' @examples
+#' x = create_simulation()
+#' x = add_species(x, "A")
+#' x = set_initial_cell(x, "A", "+", c(50, 50))
+#' x = run(x, list(time = 60))
+#' plot_firings(x)
 plot_firings = function(x)
 {
   # t = x$get_simulated_clock()

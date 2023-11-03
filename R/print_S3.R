@@ -1,9 +1,20 @@
-#' S3 print object for rRACES.
+#' S3 print for rRACES object.
+#' @description
+#' S3 print method.
 #'
 #' @param x An object returned by `create_simulation`.
 #' @param ... Ellipsis.
 #'
-#' @exportS3Method print.rraces
+#' @export
+#' 
+#' @examples
+#' 
+#' # Example of using the function
+#' x = create_simulation()
+#' x = add_species(x, "A")
+#' x = set_initial_cell(x, "A", "+", c(50, 50))
+#' x = run(x, list(time = 60))
+#' print(x)
 print.rraces <- function(x, ...) {
   
   SIM_status = (x$has_species & x$has_initial_cell)
@@ -35,12 +46,12 @@ print.rraces <- function(x, ...) {
       x$name
       ),
     righ = paste0(
-      crayon::red("▣ "),
+      crayon::red("\u25A3 "),
       x$simulation$get_tissue_name(),
       " [",
       paste(x$simulation$get_tissue_size(), collapse = 'x'),
       "]",
-      crayon::red("\t⏱ "),
+      crayon::red("\t\u23F1 "),
       x$simulation$get_clock()
     )
   )

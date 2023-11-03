@@ -8,6 +8,13 @@
 #'
 #' @return A ggplot plot.
 #' @export
+#' 
+#' @examples
+#' x = create_simulation()
+#' x = add_species(x, "A")
+#' x = set_initial_cell(x, "A", "+", c(50, 50))
+#' x = run(x, list(time = 60))
+#' plot_state(x)
 plot_state = function(x)
 {
   counts = x$simulation$get_counts()
