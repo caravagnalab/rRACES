@@ -8,7 +8,7 @@ if [ ! -d RACES ]; then
 
     git clone https://github.com/albertocasagrande/RACES.git
 
-    (cd RACES; git checkout 6636290 && rm -rf .git )
+    (cd RACES; git checkout a1f2b97 && rm -rf .git )
 
 fi
 

@@ -88,7 +88,7 @@ run_aux_size = function(x, genotype, epistate, size)
 
 run_aux_event = function(x, event, genotype, epistate, count)
 {
-  # sim$run_up_to_event("death", "B", "-", 100)
+  # sim$run_up_to_event("death", "B-", 100)
   
   if(is.null(event) | is.null(genotype) | is.null(epistate) | is.null(count))
     cli::cli_abort("NULL parameters!")
@@ -111,7 +111,7 @@ run_aux_event = function(x, event, genotype, epistate, count)
   
   cli::cli_alert_info("{.field {genotype}} with epistate {.field {epistate}} has count {.field {cc}} for eventt {.field {event}}, target is {.field {count}}.")
   
-  x$simulation$run_up_to_event(event, genotype, epistate, count)
+  x$simulation$run_up_to_event(event, paste(genotype, epistate), count)
   
   return(x)
 }

@@ -35,7 +35,7 @@ add_genotype_evolution = function(x,
     )
 
   # We can add it now
-  x$simulation$add_timed_mutation(genotype_from, genotype_to, time)
+  x$simulation$schedule_genotype_mutation(genotype_from, genotype_to, time)
   
   x$species = x$species %>% 
     dplyr::mutate(
