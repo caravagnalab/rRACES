@@ -7,7 +7,7 @@ plot_VAFs = function(x)
   
   x %>%
     ggplot2::ggplot() +
-    ggplot2::geom_histogram(ggplot2::aes(VAF, fill = cause), binwidth = 0.01) +
+    ggplot2::geom_histogram(ggplot2::aes(.data$VAF, fill = .data$cause), binwidth = 0.01) +
     ggplot2::guides(fill = ggplot2::guide_legend("")) +
     ggplot2::xlim(0,1) +
     my_theme() +
@@ -27,7 +27,7 @@ plot_depth = function(x)
   
   x %>%
     ggplot2::ggplot() +
-    ggplot2::geom_histogram(ggplot2::aes(coverage,fill = type), bins = 30) +
+    ggplot2::geom_histogram(ggplot2::aes(.data$coverage, fill = .data$type), bins = 30) +
     my_theme() +
     ggplot2::labs(
       caption = paste(nchr, "chromosomes", nmut, "mutations"),

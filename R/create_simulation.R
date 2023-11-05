@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' create_simulation()
+#' create_simulation(output_dir="create_simulation_test")
 create_simulation = function(
     name = "My RACES simulation",
     output_dir = 'output_races',

@@ -3,16 +3,16 @@ devtools::load_all()
 # Create a new simulation and set the simulation data directory
 # to be "test". A 1000x1000-cells tissue is automatically
 # added to the simulation
-sim <- new(Simulation, "test")
+sim <- new(Simulation, "test_directory")
 
-# Get the simulation directory, i.e., "test"
+# Get the simulation directory, i.e., "test_directory"
 sim$get_directory()
 
 # Get the tissue size, i.e., c(1000,1000)
 sim$get_tissue_size()
 
 # Set the tissue name and size
-sim$set_tissue("Liver", 1200, 900)
+sim$update_tissue("Liver", 1200, 900)
 
 # Get the tissue name, i.e., "Liver"
 sim$get_tissue_name()
@@ -20,17 +20,17 @@ sim$get_tissue_name()
 # Get the tissue size, i.e., c(1200,900)
 sim$get_tissue_size()
 
-# Add two species having the genotype "A": "A+" and "A-"
-sim$add_species(name = "A",
-                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                growth_rates = c("+" = 0.2, "-" = 0.08),
-                death_rates = c("+" = 0.1, "-" = 0.01))
+# add genotype "A" together with their species
+sim$add_genotype(name = "A",
+                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                 growth_rates = c("+" = 0.2, "-" = 0.08),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
 
-# Add two species having the genotype "B": "B+" and "B-"
-sim$add_species(name = "B",
-                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                growth_rates = c("+" = 0.25, "-" = 0.15),
-                death_rates = c("+" = 0.05, "-" = 0.05))
+# add genotype "B" together with their species
+sim$add_genotype(name = "B",
+                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
+                 growth_rates = c("+" = 0.1, "-" = 0.3),
+                 death_rates = c("+" = 0.05, "-" = 0.1))
 
 # Schedule a mutation at time 60 from one of the species of
 # genotype "A" to the species of "B" having the same
@@ -67,6 +67,8 @@ sim$get_clock()
 # 2       A        + 105715
 # 3       B        -    100
 # 4       B        +   1371
+# 5       C        -      0
+# 6       C        +      0
 sim$get_counts()
 
 # Run the simulation up to time 110
@@ -91,3 +93,15 @@ sim$get_cells(c("A", "B"), c("-"))
 sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))
 
 # plot_simulation_counts(sim)
+
+
+# add genotype "C" together with their species
+sim$add_genotype(name = "C",
+                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                 growth_rates = c("+" = 0.25, "-" = 0.15),
+                 death_rates = c("+" = 0.05, "-" = 0.05))
+
+sim$get_cells()
+
+
+sim$get_species_names()

@@ -10,8 +10,8 @@ x <- create_simulation(
   tissue_size = c(4000, 4000)
 )
 
-# Add two species, "A" and "B", having epigenetic states
-x = add_species(
+# Add two genotype, "A" and "B", having epigenetic states
+x = add_genotype(
     x,
     name = "A",
     epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -19,7 +19,7 @@ x = add_species(
     death_rates = c("+" = 0.1, "-" = 0.01)
 )
 
-x = add_species(
+x = add_genotype(
   x,
   name = "B",
   epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -62,18 +62,19 @@ x$simulation$get_firings()
 
 # Get the counts for species A+
 Ap_switches = x$simulation$get_firings() %>% 
-  filter(genotype == "A", epistate == '+', events == 'switch') %>% 
-  pull(firings)
+  filter(genotype == "A", epistate == '+', event == 'switch') %>% 
+  pull(fired)
 
 print(Ap_switches)
 
 # Run until we get 200 more of A+ switching to A-
-x = run(x, what = list(genotype = 'A', epistate = '+', event = 'switch', count = Ap_switches + 200))
+x = run(x, what = list(genotype = 'A', epistate = '+', 
+                       event = 'switch', count = Ap_switches + 200))
 
 # Check that we have Ap_switches + 200
 x$simulation$get_firings() %>% 
-  filter(genotype == "A", epistate == '+', events == 'switch') %>% 
-  pull(firings)
+  filter(genotype == "A", epistate == '+', event == 'switch') %>% 
+  pull(fired)
 
 x$simulation$get_counts() %>% 
   filter(genotype == "A", epistate == '+') %>% 

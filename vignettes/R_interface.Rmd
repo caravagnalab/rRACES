@@ -29,6 +29,9 @@ This is an example run with the R interface, it follows the same lines of the Rc
 ## Creating a simulation
 
 In the R interface we create with a single command the simulation and tissue
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+unlink("some_folder", recursive = TRUE)
+```
 
 ```{r}
 x <- create_simulation(
@@ -56,8 +59,8 @@ x$simulation
 Species are addedd following a logic as for the Rcpp interface.
 
 ```{r}
-# Add species A
-x = add_species(
+# Add genotype A
+x = add_genotype(
     x,
     name = "A",
     epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -65,8 +68,8 @@ x = add_species(
     death_rates = c("+" = 0.1, "-" = 0.01)
 )
 
-# Add species B
-x = add_species(
+# Add genotype B
+x = add_genotype(
   x,
   name = "B",
   epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -81,7 +84,7 @@ x
 We define the evolutionary relation between the involved genotypes.
 
 ```{r, eval=FALSE}
-# Program a timed transition from species "A" to species "B" at time 60
+# Program a timed transition from genotype "A" to genotype "B" at time 60
 x = add_genotype_evolution(x, "A", "B", 20)
 ```
 

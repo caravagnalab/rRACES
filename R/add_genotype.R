@@ -1,10 +1,10 @@
-#' Add a species to a simulation.
+#' Add a genotype to a simulation.
 #'
 #' @description
-#' This function adds one new species to the simulation. 
+#' This function adds one new genotype to the simulation.
 #' 
 #' @param x A simulation.
-#' @param name The genotype of the new species.
+#' @param name The genotype name.
 #' @param epigenetic_rates The epigenetic rates of the new species.
 #' @param growth_rates The duplication rates of the new species.
 #' @param death_rates The death rates of the new species.
@@ -13,12 +13,12 @@
 #' @export
 #'
 #' @examples
-#' create_simulation()
-add_species = function(x,
-                       name = "A",
-                       epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                       growth_rates = c("+" = 0.2, "-" = 0.08),
-                       death_rates = c("+" = 0.1, "-" = 0.01))
+#' x <- create_simulation(output_dir="add_genotype_test")
+add_genotype = function(x,
+                        name = "A",
+                        epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                        growth_rates = c("+" = 0.2, "-" = 0.08),
+                        death_rates = c("+" = 0.1, "-" = 0.01))
 {
   stopifnot(inherits(x, 'rraces'))
   
@@ -54,7 +54,7 @@ add_species = function(x,
   }
   
   # We can add it now
-  x$simulation$add_species(
+  x$simulation$add_genotype(
     name = name,
     epigenetic_rates = epigenetic_rates,
     growth_rates = growth_rates,

@@ -9,32 +9,32 @@ AncestorOf = function(x, genotype){
   x$species %>% 
     dplyr::filter(genotype == !!genotype) %>% 
     dplyr::filter(row_number() == 1) %>% 
-    dplyr::pull(ancestor)
+    dplyr::pull(.data$ancestor)
 }
 
 TimeOf = function(x, genotype){
   x$species %>% 
     dplyr::filter(genotype == !!genotype) %>% 
     dplyr::filter(row_number() == 1) %>% 
-    dplyr::pull(time)
+    dplyr::pull(.data$time)
 }
 
 GRateOf = function(x, genotype, epistate) {
   x$species %>%
     dplyr::filter(genotype == !!genotype, epistate == !!epistate) %>%
-    dplyr::pull(rgrowth)
+    dplyr::pull(.data$rgrowth)
 }
 
 DRateOf = function(x, genotype, epistate) {
   x$species %>%
     dplyr::filter(genotype == !!genotype, epistate == !!epistate) %>%
-    dplyr::pull(rdeath)
+    dplyr::pull(.data$rdeath)
 }
 
 ERateOf = function(x, genotype, epistate) {
   x$species %>%
     dplyr::filter(genotype == !!genotype, epistate == !!epistate) %>%
-    dplyr::pull(repigenetic)
+    dplyr::pull(.data$repigenetic)
 }
 # 
 # obj_status = function(x){

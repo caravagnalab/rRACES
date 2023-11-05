@@ -21,10 +21,10 @@
 #' @examples
 #'
 #' # Example of using the function
-#' x <- create_simulation()
+#' x <- create_simulation(output_dir="add_genotype_evolution_test")
 #' # Add two species, "A" and "B", all default parameters
-#' x = add_species(x, "A")
-#' x = add_species(x, "B")
+#' x = add_genotype(x, "A")
+#' x = add_genotype(x, "B")
 #' #Program a timed transition 
 #' x = add_genotype_evolution(x, "A", "B", 10)
 #' print(x)
@@ -78,7 +78,7 @@ add_genotype_evolution = function(x,
     dplyr::distinct() %>% 
     dplyr::rename(from = ancestor, to = genotype)
   
-  which_roots = df %>% dplyr::filter(is.na(from)) %>% pull(to)
+  which_roots = df %>% dplyr::filter(is.na(.data$from)) %>% pull(.data$to)
   
   df = rbind(df,
                  data.frame(
@@ -87,7 +87,7 @@ add_genotype_evolution = function(x,
                    time = 0,
                    stringsAsFactors = FALSE
                  )) %>% 
-    dplyr::filter(!is.na(from))
+    dplyr::filter(!is.na(.data$from))
   
   x$clone_tree = tidygraph::as_tbl_graph(df)
   

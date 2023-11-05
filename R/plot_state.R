@@ -10,8 +10,8 @@
 #' @export
 #' 
 #' @examples
-#' x = create_simulation()
-#' x = add_species(x, "A")
+#' x = create_simulation(output_dir="plot_state_test")
+#' x = add_genotype(x, "A")
 #' x = set_initial_cell(x, "A", "+", c(50, 50))
 #' x = run(x, list(time = 60))
 #' plot_state(x)
