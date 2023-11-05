@@ -1,1 +1,21 @@
 ## TODO: Fill this file to support MS Windows
+
+which cmake
+
+rm -rf _builds _include RACES
+
+git clone https://github.com/albertocasagrande/RACES.git
+
+cd RACES
+
+git checkout 4d45d78c0af
+
+cd ..
+
+cmake RACES \
+	-B _builds \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=_install \
+    -DCMAKE_SHARED_LIBRARY_PREFIX_CXX="" \
+    -DONLY_LIBRARIES=1 \
+    -DAVOID_OPTIONAL_LIBS=1
