@@ -55,7 +55,7 @@ struct RTest : public SIMULATION_TEST
 const std::map<std::string, Races::Drivers::CellEventType> event_names{
   {"death",  Races::Drivers::CellEventType::DEATH},
   {"growth", Races::Drivers::CellEventType::DUPLICATION},
-  {"switch", Races::Drivers::CellEventType::EPIGENETIC_EVENT},
+  {"switch", Races::Drivers::CellEventType::EPIGENETIC_SWITCH},
 };
 
 size_t count_events(const Races::Drivers::Simulation::SpeciesStatistics& statistics,
@@ -67,7 +67,7 @@ size_t count_events(const Races::Drivers::Simulation::SpeciesStatistics& statist
       return statistics.killed_cells;
     case Races::Drivers::CellEventType::DUPLICATION:
       return statistics.num_duplications;
-    case Races::Drivers::CellEventType::EPIGENETIC_EVENT:
+    case Races::Drivers::CellEventType::EPIGENETIC_SWITCH:
       return statistics.num_of_epigenetic_events();
     default:
       throw std::domain_error("get_counts: unsupported event");
@@ -108,12 +108,32 @@ get_species_ids_from_genotype_name(const Races::Drivers::Simulation::Tissue& tis
   std::set<Races::Drivers::SpeciesId > species_ids;
 
   for (const auto& species: tissue) {
-    if (genotype_name.count(species.get_genotype_name ())>0) {
+    if (genotype_name.count(species.get_genotype_name())>0) {
       species_ids.insert(species.get_id());
     }
   }
 
   return species_ids;
+}
+
+Races::Drivers::Simulation::PositionInTissue 
+get_position_in_tissue(const std::vector<Races::Drivers::Simulation::AxisPosition>& position)
+{
+  if (position.size()==2) {
+    return {position[0], position[1]};
+  }
+
+  throw std::domain_error("rRACES supports only 2 dimensional space so far");
+}
+
+Races::Drivers::RectangleSet 
+get_rectangle(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
+              const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner)
+{
+  auto l_position = get_position_in_tissue(lower_corner);
+  auto u_position = get_position_in_tissue(upper_corner);
+
+  return {l_position, u_position};
 }
 
 size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tissue,
@@ -185,16 +205,24 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Parameter:} \code{x} - The position on the x axis of the cell.
 //' \item \emph{Parameter:} \code{y} - The position on the y axis of the cell.
 //' }
-//' @field add_species Adds new species \itemize{
-//' \item \emph{Parameter:} \code{genotype} - The genotype name of the new species.
-//' \item \emph{Parameter:} \code{epigenetic_rates} - The epigenetic rates of the new species (optional).
-//' \item \emph{Parameter:} \code{growth_rates} - The duplication rates of the new species.
-//' \item \emph{Parameter:} \code{death_rates} - The death rates of the new species.
+//' @field add_genotype Adds a genotype and its species \itemize{
+//' \item \emph{Parameter:} \code{genotype} - The genotype name.
+//' \item \emph{Parameter:} \code{epigenetic_rates} - The epigenetic rates of the genotype species (optional).
+//' \item \emph{Parameter:} \code{growth_rates} - The duplication rates of the genotype species.
+//' \item \emph{Parameter:} \code{death_rates} - The death rates of the genotype species.
 //' }
 //' @field choose_cell_in Chooses one cell in a genotype \itemize{
 //' \item \emph{Parameter:} \code{genotype} - The genotype of the cell to choose.
+//' \item \emph{Parameter:} \code{lower_corner} - The lower left corner of a rectangular selection (optional).
+//' \item \emph{Parameter:} \code{upper_corner} - The upper right corner of a rectangular selection (optional).
 //' \item \emph{Returns:} A list reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
+//' }
+//' @field get_cell Gets one the tissue cells \itemize{
+//' \item \emph{Parameter:} \code{x} - The position of the aimed cell on the x axis.
+//' \item \emph{Parameter:} \code{y} - The position of the aimed cell on the y axis.
+//' \item \emph{Returns:} A data frame reporting "cell_id", "genotype", "epistate", "position_x",
+//'    and "position_y" of the aimed cell.
 //' }
 //' @field get_cells Gets the tissue cells \itemize{
 //' \item \emph{Parameter:} \code{lower_corner} - The lower-left corner of the selection frame (optional).
@@ -232,13 +260,23 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' @field get_tissue_size Gets the size of the simulated tissue \itemize{
 //' \item \emph{Returns:} The vector `c(x_size, y_size)` of the simulated tissue.
 //' }
+//' @field mutate_progeny Generate a mutated offspring \itemize{
+//' \item \emph{Parameter:} \code{cell_position} - The position of the cell whose offspring will mutate.
+//' \item \emph{Parameter:} \code{mutated_genotype} - The genotype of the mutated cell.
+//' }
+//' or
+//' \itemize{
+//' \item \emph{Parameter:} \code{x} - The position of the cell whose progeny will mutate on the x axis.
+//' \item \emph{Parameter:} \code{y} - The position of the cell whose progeny will mutate on the y axis.
+//' \item \emph{Parameter:} \code{mutated_genotype} - The genotype of the mutated cell.
+//' }
 //' @field schedule_genotype_mutation Schedules a genotype mutation \itemize{
 //' \item \emph{Parameter:} \code{src} - The name of the genotype from which the mutation occurs.
 //' \item \emph{Parameter:} \code{dest} - The name of the genotype to which the mutation leads.
 //' \item \emph{Parameter:} \code{time} - The simulated time at which the mutation will occurs.
 //' }
 //' @field run_up_to_event Simulates cell evolution \itemize{
-//' \item \emph{Parameter:} \code{event} - The considered event, i.e., one among "growth", "death", and "switch".
+//' \item \emph{Parameter:} \code{event} - The considered event type, i.e., "growth", "death", or "switch".
 //' \item \emph{Parameter:} \code{species} - The species whose event number is considered.
 //' \item \emph{Parameter:} \code{num_of_events} - The threshold for the event number.
 //' }
@@ -326,7 +364,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
         if(!cell_proxy.is_wild_type()) {
 
           const RS::CellInTissue& cell = cell_proxy;
-          
+
           const auto& species = tissue().get_species(cell.get_species_id());
           const auto& signature = species.get_methylation_signature();
           auto sign_string = GenotypeProperties::signature_to_string(signature);
@@ -335,7 +373,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
                && epigenetic_filter.count(sign_string)>0) { 
 
             ids[i] = cell.get_id();
-            genotype_names[i] = species.get_genotype_name ();
+            genotype_names[i] = species.get_genotype_name();
 
             epi_stati[i] = GenotypeProperties::signature_to_string(signature);
 
@@ -353,6 +391,21 @@ class Simulation : private Races::Drivers::Simulation::Simulation
                              _["position_y"]=y_pos);
   }
 
+  List wrap_a_cell(const Races::Drivers::Simulation::CellInTissue& cell) const
+  {
+    using namespace Races::Drivers;
+
+    const auto& species = tissue().get_species(cell.get_species_id());
+
+    const auto& genotype_name = find_genotype_name(species.get_genotype_id());
+
+    auto epistate = GenotypeProperties::signature_to_string(species.get_methylation_signature());
+
+    return List::create(_["cell_id"]=cell.get_id(), _["genotype"]=genotype_name,
+                        _["epistate"]=epistate, _["position_x"]=cell.x,
+                        _["position_y"]=cell.y);
+  }
+
 public:
   Simulation();
 
@@ -366,10 +419,10 @@ public:
 
   void update_tissue(const uint16_t& width, const uint16_t& height);
 
-  void add_species(const std::string& genotype, const List& epigenetic_rates, 
-                   const List& growth_rates, const List& death_rates);
+  void add_genotype(const std::string& genotype, const List& epigenetic_rates, 
+                    const List& growth_rates, const List& death_rates);
 
-  void add_species(const std::string& genotype, const double& growth_rate, const double& death_rate);
+  void add_genotype(const std::string& genotype, const double& growth_rate, const double& death_rate);
 
   inline Races::Time get_clock() const;
 
@@ -378,6 +431,9 @@ public:
   List get_counts() const;
 
   inline List get_cells() const;
+
+  List get_cell(const Races::Drivers::Simulation::AxisPosition& x,
+                const Races::Drivers::Simulation::AxisPosition& y) const;
 
   List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const;
@@ -419,6 +475,26 @@ public:
   void update_rates(const std::string& species_name, const List& list);
 
   List choose_cell_in(const std::string& genotype_name);
+
+  List choose_cell_in(const std::string& genotype_name,
+                      const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                      const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner);
+
+  void mutate_progeny(const Races::Drivers::Simulation::AxisPosition& x,
+                      const Races::Drivers::Simulation::AxisPosition& y,
+                      const std::string& mutated_genotype);
+
+  void mutate_progeny(const List& cell_position, const std::string& mutated_genotype);
+
+  size_t get_death_activation_level() const
+  {
+    return death_activation_level;
+  }
+
+  void set_death_activation_level(size_t death_activation_level)
+  {
+    Races::Drivers::Simulation::Simulation::death_activation_level = death_activation_level;
+  }
 };
 
 Simulation::Simulation():
@@ -451,7 +527,7 @@ Simulation::Simulation(const std::string& output_dir, const int& seed):
 //' @param width The width of the new tissue.
 //' @param height The height of the new tissue.
 //' @examples
-//' sim <- new(Simulation)
+//' sim <- new(Simulation, "update_tissue_test")
 //'
 //' # set the tissue size, but not the name
 //' sim$update_tissue(1200, 900)
@@ -468,31 +544,31 @@ void Simulation::update_tissue(const uint16_t& width, const uint16_t& height)
   Races::Drivers::Simulation::Simulation::set_tissue("A tissue", {width, height});
 }
 
-//' @name Simulation$add_species 
-//' @title Adds new species
-//' @description This method adds species to the simulation. If the 
-//'      optional parameter `epigenetic_rate` is provided, then two
-//'      new species having the same genotype name and opposite
-//'      epigenetic states are created. On the contrary, when the
+//' @name Simulation$add_genotype 
+//' @title Adds a genotype and its species
+//' @description This method adds a genotype and its species to the
+//'      simulation. If the optional parameter `epigenetic_rate` is 
+//'      provided, then two new species having the same genotype and 
+//'      opposite epigenetic states are created. When, instead, the
 //'      optional parameter `epigenetic_rate` is missing, this
 //'      method creates only one species with no epigenetic states.
-//' @param genotype The genotype name of the new species.
-//' @param epigenetic_rates The epigenetic rates of the new species (optional).
-//' @param growth_rates The duplication rates of the new species.
-//' @param death_rates The death rates of the new species.
+//' @param genotype The genotype name.
+//' @param epigenetic_rates The epigenetic rates of the genotype species (optional).
+//' @param growth_rates The duplication rates of the genotype species.
+//' @param death_rates The death rates of the genotype species.
 //' @examples
-//' sim <- new(Simulation)
+//' sim <- new(Simulation, "add_genotype_test")
 //'
 //' # create the two species "A+" and "A-". They both have genotype "A".
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # create the species "C" its genotype is "C".
-//' sim$add_species(genotype = "C", growth_rate = 0.2, death_rate = 0.1)
-void Simulation::add_species(const std::string& genotype, const List& epigenetic_rates, 
-                             const List& growth_rates, const List& death_rates)
+//' sim$add_genotype(genotype = "C", growth_rate = 0.2, death_rate = 0.1)
+void Simulation::add_genotype(const std::string& genotype, const List& epigenetic_rates, 
+                              const List& growth_rates, const List& death_rates)
 {
   using namespace Races::Drivers;
 
@@ -522,10 +598,11 @@ void Simulation::add_species(const std::string& genotype, const List& epigenetic
     }
   }
 
-  Races::Drivers::Simulation::Simulation::add_species(real_genotype);
+  Races::Drivers::Simulation::Simulation::add_genotype(real_genotype);
 }
 
-void Simulation::add_species(const std::string& genotype, const double& growth_rate, const double& death_rate)
+void Simulation::add_genotype(const std::string& genotype, const double& growth_rate,
+                              const double& death_rate)
 {
   using namespace Races::Drivers;
 
@@ -534,16 +611,16 @@ void Simulation::add_species(const std::string& genotype, const double& growth_r
   real_genotype[""].set_rate(CellEventType::DUPLICATION, growth_rate);
   real_genotype[""].set_rate(CellEventType::DEATH, death_rate);
 
-  Races::Drivers::Simulation::Simulation::add_species(real_genotype);
+  Races::Drivers::Simulation::Simulation::add_genotype(real_genotype);
 }
 
 //' @name Simulation$get_species_names 
 //' @title Gets the species name
 //' @return The vector of the species names.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species("A", growth_rate = 0.2, death_rate = 0.1)
-//' sim$add_species("B", growth_rate = 0.15, death_rate = 0.05)
+//' sim <- new(Simulation, "get_species_names_test")
+//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //'
 //' # get the added species. In this case, "A" and "B"
 //' sim$get_species_names()
@@ -566,11 +643,11 @@ CharacterVector Simulation::get_species_names() const
 //' @param x The position on the x axis of the cell.
 //' @param y The position on the y axis of the cell.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "add_cell_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # add into the tissue a cell of species "A+" in position (500,500)
 //' sim$add_cell("A+", 500, 500)
@@ -582,7 +659,7 @@ void Simulation::add_cell(const std::string& species_name, const uint16_t& x, co
 List Simulation::get_cells() const
 {
   namespace RS = Races::Drivers::Simulation;
-  
+
   std::vector<RS::AxisPosition> upper_corner = tissue().size();
   upper_corner.resize(2);
 
@@ -591,6 +668,42 @@ List Simulation::get_cells() const
   }
 
   return get_cells({0,0}, upper_corner);
+}
+
+//' @name Simulation$get_cell
+//' @title Gets one of the tissue cells
+//' @description This method collects some data of the aimed cell without altering 
+//'      the tissue.
+//' @param x The position of the aimed cell on the x axis.
+//' @param y The position of the aimed cell on the y axis.
+//' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x", 
+//'    and "position_y" of the aimed cell.
+//' @examples
+//' sim <- new(Simulation, "get_cell_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_genotype(genotype = "B",
+//'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.3, "-" = 0.1),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
+//' sim$add_cell("A+", 500, 500)
+//' sim$run_up_to_time(70)
+//' 
+//' # collect all the cells in the tissue
+//' sim$get_cell(501, 502)
+List Simulation::get_cell(const Races::Drivers::Simulation::AxisPosition& x,
+                          const Races::Drivers::Simulation::AxisPosition& y) const
+{
+  namespace RS = Races::Drivers::Simulation;
+
+  RS::PositionInTissue pos{x,y};
+
+  const RS::CellInTissue& cell = tissue()({x,y});
+
+  return wrap_a_cell(cell);
 }
 
 List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
@@ -643,7 +756,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
                            const std::vector<std::string>& epigenetic_filter) const
 {
   namespace RS = Races::Drivers::Simulation;
-  
+
   std::vector<RS::AxisPosition> upper_corner = tissue().size();
   upper_corner.resize(2);
 
@@ -670,15 +783,15 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //'    and "position_y" for each cells satisfying the provided filters and laying 
 //'    in the input frame.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_species(genotype = "B",
-//'                 epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.3, "-" = 0.1),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "get_cells_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_genotype(genotype = "B",
+//'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.3, "-" = 0.1),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$add_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
@@ -716,9 +829,9 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
 //' @return A data frame reporting "genotype", "epistate", "counts" for each 
 //'      species in the simulation.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species("A", growth_rate = 0.2, death_rate = 0.1)
-//' sim$add_species("B", growth_rate = 0.15, death_rate = 0.05)
+//' sim <- new(Simulation, "get_counts_test")
+//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$add_cell("A", 500, 500)
 //' sim$run_up_to_time(70)
@@ -737,7 +850,7 @@ List Simulation::get_counts() const
 
   size_t i{0};
   for (const auto& species: tissue()) {
-    genotype_names[i] = species.get_genotype_name ();
+    genotype_names[i] = species.get_genotype_name();
     const auto& signature = species.get_methylation_signature();
     epi_stati[i] = GenotypeProperties::signature_to_string(signature);
     counts[i] = species.num_of_cells();
@@ -769,15 +882,15 @@ List Simulation::get_counts() const
 //' @param dest The name of the genotype to which the mutation leads.
 //' @param time The simulated time at which the mutation will occurs.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_species(genotype = "B",
-//'                 epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.3, "-" = 0.1),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "schedule_genotype_mutation_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_genotype(genotype = "B",
+//'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.3, "-" = 0.1),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # schedule an evolution from genotype "A" to genotype "B" at time 50
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
@@ -791,8 +904,8 @@ void Simulation::schedule_genotype_mutation(const std::string& src, const std::s
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim <- new(Simulation, "run_up_to_time_test")
+//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_cell("A", 500, 500)
 //'
 //' # simulate the tissue up to simulate timed 100
@@ -813,11 +926,11 @@ void Simulation::run_up_to_time(const Races::Time& time)
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "run_up_to_size_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$add_cell("A+", 500, 500)
 //'
 //' # simulate the tissue until the species "A+" account for 100 
@@ -838,15 +951,15 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 //' @title Simulates cell evolution
 //' @description This method simulates cell evolution until the number of events that 
 //'         have occurred to cells of a species reaches a specified threshold.
-//' @param event The considered event, i.e., one among "growth", "death", and "switch".
+//' @param event The considered event, i.e., "growth", "death", or "switch".
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "run_up_to_event_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$add_cell("A+", 500, 500)
 //'
 //' # simulate the cell evolution until the number of epigenetic events from 
@@ -874,11 +987,11 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
 //' @title Gets the simulated time
 //' @return The time simulated by the simulation.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "get_clock_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$add_cell("A+", 500, 500)
 //' sim$run_up_to_event("switch", "A+", 100)
 //'
@@ -894,11 +1007,11 @@ Races::Time Simulation::get_clock() const
 //' @return A data frame reporting "event", "genotype", "epistate", and "fired"
 //'     for each event type, genotype, and epigenetic states.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "get_firings_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$add_cell("A+", 500, 500)
 //' sim$run_up_to_event("switch", "A+", 100)
 //'
@@ -921,7 +1034,7 @@ List Simulation::get_firings() const
   for (const auto& species: tissue()) {
     for (const auto& [event_name, event_code]: event_names) {
       events[i] = event_name;
-      genotype_names[i] = species.get_genotype_name ();
+      genotype_names[i] = species.get_genotype_name();
       
       const auto& signature = species.get_methylation_signature();
       epistati[i] = GenotypeProperties::signature_to_string(signature);
@@ -970,7 +1083,7 @@ const std::string& Simulation::get_tissue_name() const
 //' @title Gets the size of the simulated tissue
 //' @return The vector `c(x_size, y_size)` of the simulated tissue.
 //' @examples
-//' sim <- new(Simulation)
+//' sim <- new(Simulation, "get_tissue_size_test")
 //' sim$update_tissue("Liver", 1200, 900)
 //'
 //' # get the tissue size, i.e., expecting c(1200,900)
@@ -987,11 +1100,11 @@ IntegerVector Simulation::get_tissue_size() const
 //' @param species The species whose rates are aimed.
 //' @return The list of the species rates.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "get_rates_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # Get the rates of "A-". In this case c("growth"=0.08, "death"=0.01, "switch"=0.02) is expected
 //' sim$get_rates("A-")
@@ -1014,11 +1127,11 @@ List Simulation::get_rates(const std::string& species_name) const
 //' @param species The species whose rates must be updated.
 //' @param rates The list of rates to be updated.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "update_rates_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # Set the death and epigenetic switch rates of "A-" to 0
 //' sim$update_rates("A-", c(switch=0, death=0))
@@ -1037,41 +1150,109 @@ void Simulation::update_rates(const std::string& species_name, const List& rates
 //' @name Simulation$choose_cell_in
 //' @title Chooses one cell in a genotype
 //' @description This method chooses one of the cells whose genotype
-//'         is `genotype`.
+//'         is `genotype`. Optionally, the lower and upper corners 
+//'         of a tissue rectangular selection can be provided
+//'         to obtain one cell in the rectangle.
 //' @param genotype The genotype of the cell to choose.
+//' @param lower_corner The lower corner of the rectangular selection (optional).
+//' @param upper_corner The upper corner of the rectangular selection (optional).
 //' @return A list reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
 //' @examples
-//' sim <- new(Simulation)
-//' sim$add_species(genotype = "A",
-//'                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_species(genotype = "B",
-//'                 epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
-//'                 growth_rates = c("+" = 0.15, "-" = 0.3),
-//'                 death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim <- new(Simulation, "choose_cell_in_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_genotype(genotype = "B",
+//'                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.15, "-" = 0.3),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$add_cell("A+", 500, 500)
-//' sim$schedule_genotype_mutation("A","B",40)
+//' sim$death_activation_level = 100
+//' sim$schedule_genotype_mutation("A","B",20)
 //' sim$run_up_to_size(species = "B-", num_of_cells = 50)
 //'
-//' # Randomly choose one cell in "B"
+//' # Randomly choose one cell in "B" in the tissue
 //' sim$choose_cell_in(genotype = "B")
-List Simulation::choose_cell_in(const std::string& genotype_name)
+List Simulation::choose_cell_in(const std::string& genotype_name, 
+                                const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                                const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner)
 {
-  using namespace Races::Drivers;
+  namespace RS = Races::Drivers::Simulation;
 
-  const auto& cell = Races::Drivers::Simulation::Simulation::choose_cell_in(genotype_name);
+  auto rectangle = get_rectangle(lower_corner, upper_corner);
+  const auto& cell = RS::Simulation::choose_cell_in(genotype_name, rectangle);
 
-  auto species = tissue().get_species(cell.get_species_id());
-
-  auto epistate = GenotypeProperties::signature_to_string(species.get_methylation_signature());
-
-  return List::create(_["cell_id"]=cell.get_id(), _["genotype"]=genotype_name,
-                      _["epistate"]=epistate, _["position_x"]=cell.x,
-                      _["position_y"]=cell.y);
+  return wrap_a_cell(cell);
 }
 
+List Simulation::choose_cell_in(const std::string& genotype_name)
+{
+  namespace RS = Races::Drivers::Simulation;
+
+  const auto& cell = RS::Simulation::choose_cell_in(genotype_name);
+
+  return wrap_a_cell(cell);
+}
+
+void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& x,
+                                const Races::Drivers::Simulation::AxisPosition& y,
+                                const std::string& mutated_genotype)
+{
+  auto pos_in_tissue = get_position_in_tissue({x,y});
+
+  namespace RS = Races::Drivers::Simulation;
+
+  RS::Simulation::simulate_genotype_mutation(pos_in_tissue, mutated_genotype);
+}
+
+//' @name Simulation$mutate_progeny
+//' @title Generate a mutated progeny
+//' @description This method simulates both the duplication of the cell in the 
+//'       specified position and the birth of one cells of a given 
+//'       genotype that preserves the epigenetic status of the original cell.
+//'       The mutated cell will be located in the position of its parent.
+//' @param cell_position The position of the cell whose offspring will mutate.
+//' @param mutated_genotype The genotype of the mutated cell.
+//' @examples
+//' sim <- new(Simulation, "mutate_progeny_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_cell("A+", 500, 500)
+//' sim$run_up_to_time(70)
+//'
+//' sim$add_genotype(genotype = "B",
+//'                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.15, "-" = 0.3),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//'
+//' # duplicate the cell in position (503, 492). One of 
+//' # its direct descendents will have genotype "B"
+//' sim$mutate_progeny(503, 492, "B")
+//'
+//' # the output of `choose_cell_in` and `get_cell` can also be used
+//' # as input for `mutate_progeny`
+//' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+void Simulation::mutate_progeny(const List& cell_position, 
+                                const std::string& mutated_genotype)
+{
+  namespace RS = Races::Drivers::Simulation;
+
+  std::vector<Races::Drivers::Simulation::AxisPosition> vector_position;
+
+  for (const std::string axis : {"x", "y"}) {
+    auto field = "position_"+axis;
+    if (!cell_position.containsElementNamed(field.c_str())) {
+      throw std::domain_error("Missing \"" + field + "\" element from the list.");
+    }
+    vector_position.push_back(as<RS::AxisPosition>(cell_position[field]));
+  }
+
+  return mutate_progeny(vector_position[0], vector_position[1], mutated_genotype);
+}
 
 namespace RS = Races::Drivers::Simulation;
 namespace RD = Races::Drivers;
@@ -1083,15 +1264,21 @@ RCPP_MODULE(Drivers){
   .constructor<std::string>("Crete a simulation whose parameter is the output directory")
   .constructor<std::string, int>("Crete a simulation: the first parameter is the output directory; the second one is the random seed")
 
-  // add_species
-  .method("add_species", (void (Simulation::*)(const std::string&, const List&, const List&,
-                                               const List&))(&Simulation::add_species),
+  // add_genotype
+  .method("add_genotype", (void (Simulation::*)(const std::string&, const List&, const List&,
+                                                const List&))(&Simulation::add_genotype),
           "Add a new species with epigenetic status")
-  .method("add_species", (void (Simulation::*)(const std::string&, const double&,
-                                               const double&))(&Simulation::add_species),
+  .method("add_genotype", (void (Simulation::*)(const std::string&, const double&,
+                                                const double&))(&Simulation::add_genotype),
           "Add a new species")
 
-  .method("choose_cell_in", &Simulation::choose_cell_in, "Randomly choose one cell in a genotype")
+  .method("choose_cell_in", (List (Simulation::*)(const std::string&))(&Simulation::choose_cell_in), 
+          "Randomly choose one cell in a genotype")
+
+  .method("choose_cell_in", (List (Simulation::*)(const std::string&,
+                                                  const std::vector<RS::AxisPosition>&, 
+                                                  const std::vector<RS::AxisPosition>&))(&Simulation::choose_cell_in), 
+          "Randomly choose one cell having a specified genotype in a rectangular selection")
 
   // schedule_genotype_mutation
   .method("schedule_genotype_mutation", &Simulation::schedule_genotype_mutation,
@@ -1104,19 +1291,27 @@ RCPP_MODULE(Drivers){
   // add_cell
   .method("add_cell", &Simulation::add_cell, "Place a cell in the tissue")
 
+  .property( "death_activation_level", &Simulation::get_death_activation_level, &Simulation::set_death_activation_level, 
+          "The number of cells in a species that activate cell death" )
+
   // get_clock
   .method("get_clock", &Simulation::get_clock, "Get the current simulation time")
+
+  // get_cell
+  .method("get_cell", (List (Simulation::*)(const RS::AxisPosition&,
+                                            const RS::AxisPosition&) const)(&Simulation::get_cell),
+          "Get one cell from the simulated tissue")
 
   // get_cells
   .method("get_cells", (List (Simulation::*)(const std::vector<RS::AxisPosition>&, 
                                              const std::vector<RS::AxisPosition>&,
                                              const std::vector<std::string>&,
                                              const std::vector<std::string>&) const)(&Simulation::get_cells),
-          "Get cell data from the simulated tissue")
+          "Get cells from the simulated tissue")
   .method("get_cells", (List (Simulation::*)(const SEXP&, const SEXP&) const)(&Simulation::get_cells),
-          "Get cell data from the simulated tissue")
+          "Get cells from the simulated tissue")
   .method("get_cells", (List (Simulation::*)() const)(&Simulation::get_cells),
-          "Get cell data from the simulated tissue")
+          "Get cells from the simulated tissue")
 
   // get_name
   .method("get_directory", &Simulation::get_directory, "Get the simulation directory")
@@ -1137,6 +1332,15 @@ RCPP_MODULE(Drivers){
   // get_rates
   .method("get_rates", &Simulation::get_rates, 
           "Get the rates of a species")
+  
+  // mutate
+  .method("mutate_progeny",  (void (Simulation::*)(const List&, const std::string&))
+                                                  (&Simulation::mutate_progeny), 
+          "Duplicate a cell and mutate one of its children")
+  .method("mutate_progeny",  (void (Simulation::*)(const RS::AxisPosition&,
+                                                   const RS::AxisPosition&, const std::string&))
+                                                  (&Simulation::mutate_progeny), 
+          "Duplicate a cell and mutate one of its children")
 
   // run_up_to_time
   .method("run_up_to_time", &Simulation::run_up_to_time, 

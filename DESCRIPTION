@@ -7,9 +7,10 @@ Authors@R: c(
     person("Giulio", "Caravagna", email = "gcaravagna@units.it", role = c("aut", "cre")),
     person("Alberto", "Casagrande", role = "aut"))
 Maintainer: Giulio Caravagna <gcaravagna@units.it>
-Description: This is a wrapper for RACES. This package supports 
-        spacial evolution of different clones, different epigenetic 
-        clone states, timed-triggered driver mutations.
+Description: A wrapper for RACES. This package supports 
+        spacial evolution of different clones, different 
+        epigenetic clone states, timed-triggered driver 
+        mutations.
 License: GPL-3 + file LICENSE
 LinkingTo: Rcpp
 Encoding: UTF-8

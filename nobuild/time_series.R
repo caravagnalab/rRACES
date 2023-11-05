@@ -10,8 +10,8 @@ x <- create_simulation(
   tissue_size = c(2000, 2000)
 )
 
-# Add two species, "A" and "B", having epigenetic states
-x = add_species(
+# Add two genotype, "A" and "B", having epigenetic states
+x = add_genotype(
   x,
   name = "A",
   epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -19,7 +19,7 @@ x = add_species(
   death_rates = c("+" = 0.1, "-" = 0.01)
 )
 
-x = add_species(
+x = add_genotype(
   x,
   name = "B",
   epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -27,7 +27,7 @@ x = add_species(
   death_rates = c("+" = 0.02, "-" = 0.02)
 )
 
-x = add_species(
+x = add_genotype(
   x,
   name = "C",
   epigenetic_rates = c("+-" = 0.001, "-+" = 0.01),
@@ -35,7 +35,7 @@ x = add_species(
   death_rates = c("+" = 0.0, "-" = 0.0)
 )
 
-x = add_species(
+x = add_genotype(
   x,
   name = "D",
   epigenetic_rates = c("+-" = 0.001, "-+" = 0.01),

@@ -19,8 +19,10 @@ reference:
   desc:  Methods for the S4 class Simulation
   contents:
   - Simulation$add_cell
-  - Simulation$add_species
-  - Simulation$add_timed_mutation
+  - Simulation$add_genotype
+  - Simulation$schedule_genotype_mutation
+  - Simulation$choose_cell_in
+  - Simulation$get_cell
   - Simulation$get_cells
   - Simulation$get_clock
   - Simulation$get_counts
@@ -30,17 +32,19 @@ reference:
   - Simulation$get_tissue_name
   - Simulation$get_tissue_size
   - Simulation$new
+  - Simulation$mutate_progeny
   - Simulation$run_up_to_event
   - Simulation$run_up_to_size
   - Simulation$run_up_to_time
-  - Simulation$set_tissue
+  - Simulation$update_tissue
+  - Simulation$update_rates
   - Simulation
 
 - title: Simulation R interface
   desc:  Methods for the S3 class
   contents:
   - add_genotype_evolution
-  - add_species
+  - add_genotype
   - create_simulation
   - example_R_tumour
   - plot_firings
