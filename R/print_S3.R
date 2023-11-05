@@ -11,7 +11,7 @@ print.rraces <- function(x, ...) {
   
   cli::cli_rule(
     left = paste(crayon::bold("rRACES:"), x$name),
-    righ = paste("⏱ ", x$simulation$get_clock())
+    righ = paste("\u23F0 ", x$simulation$get_clock())
   )
   cat('\n')
   

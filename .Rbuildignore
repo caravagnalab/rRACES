@@ -3,6 +3,7 @@
 ^.gitignore$
 ^.travis.yml$
 ^.git/.*$
+^\.RACES\.git$
 ^\.github$
 ^_pkgdown\.yml$
 ^docs$
