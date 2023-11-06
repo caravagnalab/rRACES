@@ -587,7 +587,7 @@ void Simulation::add_genotype(const std::string& genotype, const List& epigeneti
                 "the death rate for \"+\" and \"-\"");
   }
 
-  GenotypeProperties real_genotype(genotype, {{epigenetic_rates["+-"],epigenetic_rates["-+"]}});
+  GenotypeProperties real_genotype(genotype, {{epigenetic_rates["-+"],epigenetic_rates["+-"]}});
 
   for (const std::string states: {"+","-"}) {
     if (growth_rates.containsElementNamed(states.c_str())) {
@@ -1291,6 +1291,7 @@ RCPP_MODULE(Drivers){
   // add_cell
   .method("add_cell", &Simulation::add_cell, "Place a cell in the tissue")
 
+  // death_activation_level
   .property( "death_activation_level", &Simulation::get_death_activation_level, &Simulation::set_death_activation_level, 
           "The number of cells in a species that activate cell death" )
 
