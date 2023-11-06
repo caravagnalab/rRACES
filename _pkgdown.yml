@@ -15,8 +15,8 @@ authors:
 
 
 reference:
-- title: Simulation RCpp interface 
-  desc:  Methods for the S4 class Simulation
+- title: Simulation interface 
+  desc:  Methods for the spacial simulation
   contents:
   - Simulation$add_cell
   - Simulation$add_genotype
@@ -26,9 +26,9 @@ reference:
   - Simulation$get_cells
   - Simulation$get_clock
   - Simulation$get_counts
-  - Simulation$get_directory
   - Simulation$get_firings
-  - Simulation$get_species_names
+  - Simulation$get_name
+  - Simulation$get_species
   - Simulation$get_tissue_name
   - Simulation$get_tissue_size
   - Simulation$new
@@ -39,20 +39,9 @@ reference:
   - Simulation$update_tissue
   - Simulation$update_rates
   - Simulation
-
-- title: Simulation R interface
-  desc:  Methods for the S3 class
-  contents:
-  - add_genotype_evolution
-  - add_genotype
-  - create_simulation
-  - example_R_tumour
   - plot_firings
   - plot_state
   - plot_tissue
-  - print.rraces
-  - run
-  - set_initial_cell
   
 
 

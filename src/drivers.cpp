@@ -74,6 +74,12 @@ size_t count_events(const Races::Drivers::Simulation::SpeciesStatistics& statist
   }
 }
 
+inline std::string get_signature_string(const Races::Drivers::Simulation::Species& species)
+{
+  const auto& signature = species.get_methylation_signature();
+  return Races::Drivers::GenotypeProperties::signature_to_string(signature);
+}
+
 void handle_unknown_event(const std::string& event)
 {
   std::ostringstream oss;
@@ -168,8 +174,7 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
         if (species_filter.count(cell.get_species_id())>0) {
 
           const auto& species = tissue.get_species(cell.get_species_id());
-          const auto& signature = species.get_methylation_signature();
-          auto sign_string = GenotypeProperties::signature_to_string(signature);
+          auto sign_string = get_signature_string(species);
 
           if (epigenetic_filter.count(sign_string)>0) {
             ++total;
@@ -240,19 +245,20 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "counts" for each
 //'      species in the simulation.
 //' }
-//' @field get_directory Gets the simulation directory \itemize{
-//' \item \emph{Returns:} The directory in which the simulation is saving its progress.
-//' }
 //' @field get_firings Gets the number of fired events \itemize{
 //' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", and "fired"
 //'     for each event type, genotype, and epigenetic states.
+//' }
+//' @field get_name Gets the simulation name \itemize{
+//' \item \emph{Returns:} The simulation name, which corresponds to the name of the directory 
+//'         in which the simulation is saving its progresses.
 //' }
 //' @field get_rates Gets the rates of a species\itemize{
 //' \item \emph{Parameter:} \code{species} - The species whose rates are aimed.
 //' \item \emph{Returns:} The list of the species names.
 //' }
-//' @field get_species_names Gets the species name \itemize{
-//' \item \emph{Returns:} The vector of the species names.
+//' @field get_species Gets the species \itemize{
+//' \item \emph{Returns:} A data frame describing the registered species.
 //' }
 //' @field get_tissue_name Gets the tissue name \itemize{
 //' \item \emph{Returns:} The name of the simulated tissue.
@@ -353,7 +359,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
 
     IntegerVector ids(num_of_rows);
     CharacterVector genotype_names(num_of_rows);
-    CharacterVector epi_stati(num_of_rows);
+    CharacterVector epi_states(num_of_rows);
     IntegerVector x_pos(num_of_rows);
     IntegerVector y_pos(num_of_rows);
 
@@ -366,8 +372,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
           const RS::CellInTissue& cell = cell_proxy;
 
           const auto& species = tissue().get_species(cell.get_species_id());
-          const auto& signature = species.get_methylation_signature();
-          auto sign_string = GenotypeProperties::signature_to_string(signature);
+          const auto sign_string = get_signature_string(species);
           
           if (species_filter.count(cell.get_species_id())>0
                && epigenetic_filter.count(sign_string)>0) { 
@@ -375,7 +380,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
             ids[i] = cell.get_id();
             genotype_names[i] = species.get_genotype_name();
 
-            epi_stati[i] = GenotypeProperties::signature_to_string(signature);
+            epi_states[i] = sign_string;
 
             x_pos[i] = x;
             y_pos[i] = y;
@@ -387,7 +392,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
     }
 
     return DataFrame::create(_["cell_id"]=ids, _["genotype"]=genotype_names,
-                             _["epistate"]=epi_stati, _["position_x"]=x_pos,
+                             _["epistate"]=epi_states, _["position_x"]=x_pos,
                              _["position_y"]=y_pos);
   }
 
@@ -424,9 +429,13 @@ public:
 
   void add_genotype(const std::string& genotype, const double& growth_rate, const double& death_rate);
 
+  List add_genotype(const List& prova);
+
   inline Races::Time get_clock() const;
 
-  inline void add_cell(const std::string& species_name, const uint16_t& x, const uint16_t& y);
+  void add_cell(const std::string& species_name,
+                const Races::Drivers::Simulation::AxisPosition& x,
+                const Races::Drivers::Simulation::AxisPosition& y);
 
   List get_counts() const;
 
@@ -460,10 +469,10 @@ public:
 
   List get_firings() const;
 
-  CharacterVector get_species_names() const;
+  List get_species() const;
 
   inline
-  std::string get_directory() const;
+  std::string get_name() const;
 
   inline
   const std::string& get_tissue_name() const;
@@ -534,12 +543,15 @@ Simulation::Simulation(const std::string& output_dir, const int& seed):
 //'
 //' # set the tissue size and its name
 //' sim$update_tissue("Liver", 1200, 900)
-void Simulation::update_tissue(const std::string& name, const uint16_t& width, const uint16_t& height)
+void Simulation::update_tissue(const std::string& name,
+                               const Races::Drivers::Simulation::AxisSize& width, 
+                               const Races::Drivers::Simulation::AxisSize& height)
 {
   Races::Drivers::Simulation::Simulation::set_tissue(name, {width, height});
 }
 
-void Simulation::update_tissue(const uint16_t& width, const uint16_t& height)
+void Simulation::update_tissue(const Races::Drivers::Simulation::AxisSize& width, 
+                               const Races::Drivers::Simulation::AxisSize& height)
 {
   Races::Drivers::Simulation::Simulation::set_tissue("A tissue", {width, height});
 }
@@ -614,27 +626,54 @@ void Simulation::add_genotype(const std::string& genotype, const double& growth_
   Races::Drivers::Simulation::Simulation::add_genotype(real_genotype);
 }
 
-//' @name Simulation$get_species_names 
-//' @title Gets the species name
-//' @return The vector of the species names.
+//' @name Simulation$get_species
+//' @title Gets the species
+//' @return A data frame reporting "genotype", "epistate", "growth_rate", 
+//'    "death_rate", and "switch_rate" for each registered species.
 //' @examples
-//' sim <- new(Simulation, "get_species_names_test")
+//' sim <- new(Simulation, "get_species_test")
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //'
-//' # get the added species. In this case, "A" and "B"
-//' sim$get_species_names()
-CharacterVector Simulation::get_species_names() const
+//' # get the added species and their rates. In this case, "A" 
+//' # and "B"
+//' sim$get_species()
+List Simulation::get_species() const
 {
-  CharacterVector R_species(tissue().num_of_species());
+  size_t num_of_rows = tissue().num_of_species();
+
+  CharacterVector genotype_names(num_of_rows), epi_states(num_of_rows);
+  NumericVector switch_rates(num_of_rows), duplication_rates(num_of_rows),
+                death_rates(num_of_rows);
+
+  using namespace Races::Drivers;
 
   size_t i{0};
-  for (const auto& species : tissue()) {
-    R_species[i] = species.get_name();
+  for (const auto& species: tissue()) {
+    genotype_names[i] = species.get_genotype_name();
+    duplication_rates[i] = species.get_rate(CellEventType::DUPLICATION);
+    death_rates[i] = species.get_rate(CellEventType::DEATH);
+    epi_states[i] = get_signature_string(species);
+
+    const auto& species_switch_rates = species.get_epigenetic_switch_rates();
+    switch(species_switch_rates.size()) {
+      case 0: 
+        switch_rates[i] = NA_REAL;
+        break;
+      case 1:
+        switch_rates[i] = species_switch_rates.begin()->second;
+        break;
+      default:
+        throw std::runtime_error("rRACES does not support multiple promoters");
+    }
+  
     ++i;
   }
 
-  return R_species;
+  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states,
+                            _["growth_rate"]=duplication_rates, 
+                            _["death_rate"]=death_rates,
+                            _["switch_rate"]=switch_rates);
 }
 
 //' @name Simulation$add_cell 
@@ -651,8 +690,14 @@ CharacterVector Simulation::get_species_names() const
 //'
 //' # add into the tissue a cell of species "A+" in position (500,500)
 //' sim$add_cell("A+", 500, 500)
-void Simulation::add_cell(const std::string& species_name, const uint16_t& x, const uint16_t& y)
+void Simulation::add_cell(const std::string& species_name, 
+                          const Races::Drivers::Simulation::AxisPosition& x,
+                          const Races::Drivers::Simulation::AxisPosition& y)
 {
+  if (tissue().num_of_cells()>0) {
+    warning("Warning: the tissue already contains a cell.");
+  }
+
   tissue().add_cell(species_name, {x,y});
 }
 
@@ -698,8 +743,6 @@ List Simulation::get_cell(const Races::Drivers::Simulation::AxisPosition& x,
                           const Races::Drivers::Simulation::AxisPosition& y) const
 {
   namespace RS = Races::Drivers::Simulation;
-
-  RS::PositionInTissue pos{x,y};
 
   const RS::CellInTissue& cell = tissue()({x,y});
 
@@ -845,19 +888,18 @@ List Simulation::get_counts() const
   size_t num_of_rows = tissue().num_of_species();
 
   CharacterVector genotype_names(num_of_rows);
-  CharacterVector epi_stati(num_of_rows);
+  CharacterVector epi_states(num_of_rows);
   IntegerVector counts(num_of_rows);
 
   size_t i{0};
   for (const auto& species: tissue()) {
     genotype_names[i] = species.get_genotype_name();
-    const auto& signature = species.get_methylation_signature();
-    epi_stati[i] = GenotypeProperties::signature_to_string(signature);
+    epi_states[i] = get_signature_string(species);
     counts[i] = species.num_of_cells();
     ++i;
   }
 
-  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_stati,
+  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states,
                             _["counts"]=counts);
 }
 
@@ -900,6 +942,13 @@ void Simulation::schedule_genotype_mutation(const std::string& src, const std::s
   Races::Drivers::Simulation::Simulation::schedule_genotype_mutation(src,dest,time);
 }
 
+inline void validate_non_empty_tissue(const Races::Drivers::Simulation::Tissue& tissue)
+{
+  if (tissue.num_of_cells()==0) {
+    throw std::domain_error("The tissue does not contain any cell.");
+  }
+}
+
 //' @name Simulation$run_up_to_time
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
@@ -912,6 +961,8 @@ void Simulation::schedule_genotype_mutation(const std::string& src, const std::s
 //' sim$run_up_to_time(100)
 void Simulation::run_up_to_time(const Races::Time& time)
 {
+  validate_non_empty_tissue(tissue());
+
   Races::UI::ProgressBar bar;
 
   RTest<Races::Drivers::Simulation::TimeTest> ending_test{time};
@@ -939,6 +990,8 @@ void Simulation::run_up_to_time(const Races::Time& time)
 void Simulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
 {
   Races::UI::ProgressBar bar;
+
+  validate_non_empty_tissue(tissue());
 
   const auto& species_id = tissue().get_species(species_name).get_id();
 
@@ -969,6 +1022,8 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
                                  const size_t& num_of_events)
 {
   Races::UI::ProgressBar bar;
+
+  validate_non_empty_tissue(tissue());
 
   if (event_names.count(event)==0) {
     handle_unknown_event(event);
@@ -1025,7 +1080,7 @@ List Simulation::get_firings() const
 
   CharacterVector events(num_of_rows);
   CharacterVector genotype_names(num_of_rows);
-  CharacterVector epistati(num_of_rows);
+  CharacterVector epi_states(num_of_rows);
   IntegerVector firings(num_of_rows);
 
   const auto& t_stats = get_statistics();
@@ -1035,9 +1090,7 @@ List Simulation::get_firings() const
     for (const auto& [event_name, event_code]: event_names) {
       events[i] = event_name;
       genotype_names[i] = species.get_genotype_name();
-      
-      const auto& signature = species.get_methylation_signature();
-      epistati[i] = GenotypeProperties::signature_to_string(signature);
+      epi_states[i] = get_signature_string(species);
 
       if (t_stats.contains_data_for(species)) {
         firings[i] = count_events(t_stats.at(species), event_code);
@@ -1049,18 +1102,19 @@ List Simulation::get_firings() const
   }
 
   return DataFrame::create(_["event"]=events, _["genotype"]=genotype_names,
-                            _["epistate"]=epistati, _["fired"]=firings);
+                           _["epistate"]=epi_states, _["fired"]=firings);
 }
 
-//' @name Simulation$get_directory 
-//' @title Gets the simulation directory
-//' @return The directory in which the simulation is saving its progress.
+//' @name Simulation$get_name 
+//' @title Gets the simulation name
+//' @return The simulation name, which corresponds to the name of the directory 
+//'         in which the simulation is saving its progresses.
 //' @examples
 //' sim <- new(Simulation, "test")
 //'
 //' # Expecting "test"
-//' sim$get_directory()
-std::string Simulation::get_directory() const
+//' sim$get_name()
+std::string Simulation::get_name() const
 { 
   return std::string(get_logger().get_directory());
 }
@@ -1264,6 +1318,9 @@ RCPP_MODULE(Drivers){
   .constructor<std::string>("Crete a simulation whose parameter is the output directory")
   .constructor<std::string, int>("Crete a simulation: the first parameter is the output directory; the second one is the random seed")
 
+  // add_cell
+  .method("add_cell", &Simulation::add_cell, "Place a cell in the tissue")
+
   // add_genotype
   .method("add_genotype", (void (Simulation::*)(const std::string&, const List&, const List&,
                                                 const List&))(&Simulation::add_genotype),
@@ -1284,15 +1341,13 @@ RCPP_MODULE(Drivers){
   .method("schedule_genotype_mutation", &Simulation::schedule_genotype_mutation,
           "Add a timed mutation between two different species")
 
-  // get_species_name
-  .method("get_species_names", &Simulation::get_species_names,
-          "Get the names of the species added to the simulation")
-
-  // add_cell
-  .method("add_cell", &Simulation::add_cell, "Place a cell in the tissue")
+  // get_species
+  .method("get_species", &Simulation::get_species,
+          "Get the species added to the simulation")
 
   // death_activation_level
-  .property( "death_activation_level", &Simulation::get_death_activation_level, &Simulation::set_death_activation_level, 
+  .property( "death_activation_level", &Simulation::get_death_activation_level, 
+                                       &Simulation::set_death_activation_level, 
           "The number of cells in a species that activate cell death" )
 
   // get_clock
@@ -1315,7 +1370,7 @@ RCPP_MODULE(Drivers){
           "Get cells from the simulated tissue")
 
   // get_name
-  .method("get_directory", &Simulation::get_directory, "Get the simulation directory")
+  .method("get_name", &Simulation::get_name, "Get the simulation name")
 
   // get_tissue_name
   .method("get_tissue_name", &Simulation::get_tissue_name, "Get the simulation tissue name")
@@ -1360,9 +1415,10 @@ RCPP_MODULE(Drivers){
           "Update the rates of a species")
 
   // update_tissue
-  .method("update_tissue", (void (Simulation::*)(const std::string&, const uint16_t&, 
-                                              const uint16_t&))(&Simulation::update_tissue),
+  .method("update_tissue", (void (Simulation::*)(const std::string&, const RS::AxisSize&, 
+                                                 const RS::AxisSize&))(&Simulation::update_tissue),
           "Update tissue name and size")
-  .method("update_tissue", (void (Simulation::*)(const uint16_t&, const uint16_t&))(&Simulation::update_tissue),
+  .method("update_tissue", (void (Simulation::*)(const RS::AxisSize&,
+                                                 const RS::AxisSize&))(&Simulation::update_tissue),
           "Update tissue size");
 }
