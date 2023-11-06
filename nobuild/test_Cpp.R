@@ -1,12 +1,12 @@
 devtools::load_all()
 
-# Create a new simulation and set the simulation data directory
+# Create a new simulation and set the simulation name
 # to be "test". A 1000x1000-cells tissue is automatically
 # added to the simulation
-sim <- new(Simulation, "test_directory")
+sim <- new(Simulation, "test")
 
-# Get the simulation directory, i.e., "test_directory"
-sim$get_directory()
+# Get the simulation name, i.e., "test"
+sim$get_name()
 
 # Get the tissue size, i.e., c(1000,1000)
 sim$get_tissue_size()
@@ -37,8 +37,8 @@ sim$add_genotype(name = "B",
 # epigenetic state
 sim$schedule_genotype_mutation("A", "B", 60)
 
-# Get the simulation species name
-sim$get_species_names()
+# Get the simulation species
+sim$get_species()
 
 # Add one cell to the simulated tissue
 sim$add_cell(species = "A+", x = 500, y = 500)
@@ -101,7 +101,11 @@ sim$add_genotype(name = "C",
                  growth_rates = c("+" = 0.25, "-" = 0.15),
                  death_rates = c("+" = 0.05, "-" = 0.05))
 
-sim$get_cells()
 
+# Plot the state of the simulation (number of cells)
+plot_state(sim)
 
-sim$get_species_names()
+# Plot the cells in the tissue at current simulation time
+plot_tissue(sim)
+
+print(sim)
