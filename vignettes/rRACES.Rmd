@@ -58,7 +58,7 @@ sim <- new(Simulation, "Test")
 The `sim` object exposes methods to get information about the simulation and control it.
 
 ```{r}
-# Get the simulation directory, i.e., "output_dir"
+# Get the simulation directory, i.e., "Test"
 sim$get_name()
 
 # Get the tissue size, i.e., c(1000,1000)
@@ -302,4 +302,8 @@ Plot firings statistics
 plot_firings(sim)
 ```
 
-At the end of the computation, the directory `output_dir` will contain simulated data usable by RACES.
+At the end of the computation, the directory `Test` will contain simulated data usable by RACES.
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+unlink("Test", recursive = TRUE)
+```

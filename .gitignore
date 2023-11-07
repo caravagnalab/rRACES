@@ -17,3 +17,4 @@ _install
 *.Rd
 *.log
 *.lock
+RACES

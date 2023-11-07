@@ -3,6 +3,7 @@
 ^src/*\.o$
 ^src/*\.so$
 ^src/RcppExports.cpp$
+^_pkgdown\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.RData$
@@ -10,3 +11,9 @@
 ^README.Rmd$
 ^nobuild$
 ^races_*-*$
+^pkgdown$
+^doc$
+^RACES$
+^_install$
+^_builds$
+^Makefile$

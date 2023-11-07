@@ -1,4 +1,4 @@
-rm -rf RACES _install _builds races_*
+#rm -rf RACES _install _builds races_*
 
 if [ ! -f man/Simulation.Rd ]; then
     if [ ! -f .roxygen.lock ]; then 
