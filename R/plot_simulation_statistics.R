@@ -19,6 +19,7 @@
 #' sim$run_up_to_time(60)
 #' plot_firings(sim)
 plot_firings <- function(simulation) {
+  stopifnot(inherits(simulation, "Rcpp_Simulation"))
 
   firings <- simulation$get_firings() %>%
     dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
