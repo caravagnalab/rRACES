@@ -1,5 +1,31 @@
 #PKG_LIBS = `$(R_HOME)/bin/Rscript -e \ "RcppClassic:::LdFlags()"` 
 
-PKG_LIBS = -L. -lRACES
+BUILD_DIR =     ../_builds
+INSTALL_DIR =   ../_install
 
-PKG_CXXFLAGS = -I../_install/include/
+PKG_LIBS += -L$(INSTALL_DIR)/lib/ -lRACES
+
+PKG_CXXFLAGS += -I$(INSTALL_DIR)/include/
+
+LIBRACES = $(INSTALL_DIR)/lib/libRACES.so
+
+all: 	$(LIBRACES)
+
+$(LIBRACES):   
+	cmake -H../RACES/ -B$(BUILD_DIR) \
+	-DCMAKE_BUILD_TYPE=Release \
+	-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
+	-DBUILD_ONLY_LIBRARIES:bool=true \
+	-DUSE_OPTIONAL_LIBS:bool=false \
+	-DBUILD_SHARED_LIBS:bool=false
+
+	cmake --build $(BUILD_DIR) --target install --config Release
+
+	# mac/linux
+	cp $(INSTALL_DIR)/lib/*RACES.a $(LIBRACES)
+
+.PHONY: all clean
+
+clean:
+	rm -f $(OBJECTS) $(SHLIB) $(BUILD_DIR)
+

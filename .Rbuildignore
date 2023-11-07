@@ -4,6 +4,10 @@
 ^.travis.yml$
 ^.git/.*$
 ^\.github$
+^.vscode$
+^src/*\.o$
+^src/*\.so$
+^src/RcppExports.cpp$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
@@ -16,3 +20,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\./RACES/\.git$
+^RACES$
+^_install$
+^_builds$
+^Makefile$

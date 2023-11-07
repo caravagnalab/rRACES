@@ -14,3 +14,7 @@ _builds
 _install
 *.so
 *.o
+*.Rd
+*.log
+*.lock
+RACES

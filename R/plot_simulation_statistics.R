@@ -1,55 +1,49 @@
-
-
-
 #' Plot the number of stochastic events in the simulation.
-#' 
-#' @description
-#' A piechart with events split by type, species and epigentic state where they
-#' occurred. It also provides annotations for the simulation information.
 #'
-#' @param x A simulation.
+#' @description
+#' A pie chart with events split by type, genotype and epigentic state
+#' where they occurred. It also provides annotations for the simulation
+#' information.
+#'
+#' @param simulation A simulation.
 #'
 #' @return A ggplot plot.
 #' @export
-#'
 #' @examples
-plot_firings = function(x)
-{
-  # t = x$get_simulated_clock()
-  # counts = x$get_simulated_counts()
-  # info = x$get_info()
-  
-  # Until the getters are fake
-  firings = tibble::tibble(
-    event = c("growth", "death", "switch+-", "switch-+", "growth", "death", "switch+-", "switch-+"),
-    species = c("A", "A", "A", "A", "C", "C", "C", "C"),
-    epistate = c("+", "+", "+", "-", "+", "+", "+", "-"),
-    n = c(1000, 400, 3224, 334, 4223,2322, 2243,4224)
-  )
-  
-  info = tibble::tibble(
-    field = c("name", "tissue", "tissue_size"),
-    value = c("My Simulation", "Liver", "100x100")
-  )
-  
-  sim_title = info %>% filter(field == 'name') %>% pull(value)
-  tissue_title = info %>% filter(field == 'tissue') %>% pull(value)
-  tissue_size = info %>% filter(field == 'tissue_size') %>% pull(value)
-  
+#' sim <- new(Simulation, "plot_firings_test")
+#' sim$add_genotype(genotype = "A",
+#'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
+#'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+#'                  death_rates = c("+" = 0.1, "-" = 0.01))
+#' sim$add_cell("A+", 500, 500)
+#' sim$run_up_to_time(60)
+#' plot_firings(sim)
+plot_firings <- function(simulation) {
+
+  firings <- simulation$get_firings() %>%
+    dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
+
+  time <- simulation$get_clock() %>% round(digits = 3)
+
+  sim_title <- simulation$get_name()
+  tissue_title <- simulation$get_tissue_name()
+  tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
+
   ggplot2::ggplot(firings) +
-    ggplot2::geom_bar(stat = 'identity', 
-                      ggplot2::aes(x = "", y = n, fill = event, alpha = epistate)) +
-    ggplot2::facet_wrap(~species) +
+    ggplot2::geom_bar(stat = "identity",
+                      ggplot2::aes(x = "", y = .data$fired,
+                                   fill = .data$event)) +
+    ggplot2::facet_grid(.data$genotype ~ .data$epistate) +
     ggplot2::coord_polar(theta = "y") +
     ggplot2::labs(
-      fill = "Event", 
-      alpha = 'Epigenetic', 
-      title = paste0(sim_title, ' (t = 44)'),
-      subtitle = paste(tissue_title, 'of size', tissue_size),
-      caption = paste("Total number of events", firings$n %>% sum())
+      fill = "Event",
+      x = "",
+      y = "",
+      title = paste0(sim_title, " (t = ", time, ")"),
+      subtitle = paste(tissue_title, "of size", tissue_size),
+      caption = paste("Total number of events", firings$fired %>% sum())
     ) +
-    # ggplot2::theme_void(base_size = 10) +
-    ggplot2::scale_fill_brewer(palette = 'Dark2') +
-    ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5))  +
-    ggplot2::theme(legend.position = 'bottom')
+    my_theme() +
+    ggplot2::scale_fill_brewer(palette = "Dark2") +
+    ggplot2::theme(legend.position = "bottom")
 }

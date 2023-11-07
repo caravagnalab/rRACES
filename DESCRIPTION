@@ -1,33 +1,34 @@
 Package: rRACES
 Type: Package
-Title: rRACES: An R wrapper for RACES
+Title: rRACES: An R Wrapper for RACES
 Version: 0.0.1
 Date: 2023-10-25
-Authors@R: 
-  c(person(given = "Giulio",
-           family = "Caravagna",
-           role = c("aut", "cre"),
-           email = "gcaravagna@units.it"),
-    person(given = "Alberto",
-           family = "Casagrande",
-           role = "aut"))
-Description: This is a wrapper for RACES. This package supports 
-        spacial evolution of different clones, different epigenetic 
-        clone states, timed-triggered driver mutations.
+Authors@R: c(
+    person("Giulio", "Caravagna", email = "gcaravagna@units.it", role = c("aut", "cre")),
+    person("Alberto", "Casagrande", role = "aut"))
+Maintainer: Giulio Caravagna <gcaravagna@units.it>
+Description: A wrapper for RACES. This package supports 
+        spacial evolution of different clones, different 
+        epigenetic clone states, timed-triggered driver 
+        mutations.
 License: GPL-3 + file LICENSE
 LinkingTo: Rcpp
 Encoding: UTF-8
-SystemRequirements: C++17
+SystemRequirements: C++17, GNU make
 Imports: 
-    methods,
-    magrittr,
     dplyr,
     Rcpp (>= 1.0.11),
     ggplot2,
     cli,
-    crayon
+    crayon,
+    RColorBrewer,
+    knitr,
+    rlang
 RoxygenNote: 7.2.3
 Suggests: 
-    knitr,
     rmarkdown
 VignetteBuilder: knitr
+Depends: 
+    methods,
+    R (>= 2.10)
+LazyData: true
