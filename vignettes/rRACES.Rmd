@@ -89,8 +89,8 @@ For example, we may define two genotypes `A` and `B`, with their epigenetic stat
 For each species, we need to define:
 
 - growth rate $\lambda$: rate at which cells duplicate inheriting the epigenetic marker (e.g., one cell of type `A+` creates two cells of type `A+`);
-- death rate: rate at which cells di (e.g., one cell of type `A+` is removed from the simulation);
-- epigenetic rate: : rate `+-` or `-+` at which cells duplicate and flip the epigenetic marker of one of the progeny (e.g., one cell of type `A+` determines one type `A+` and one of type `A-`, or vice versa);
+- death rate $\delta$: rate at which cells di (e.g., one cell of type `A+` is removed from the simulation);
+- epigenetic rate $\epsilon$: rate `+-` or `-+` at which cells duplicate and flip the epigenetic marker of one of the progeny (e.g., one cell of type `A+` determines one type `A+` and one of type `A-`, or vice versa);
 
 ```{r}
 # add two genotype, "A" and "B", together with their species
@@ -124,32 +124,8 @@ sim$schedule_genotype_mutation("A", "B", 40)
 sim$get_species()
 ```
 
-Any species that has a death rate greater than 0 can become extinct as soon as
-it appears due to the premature death of the progenitor cell. This phenomenon 
-is called *drift*. 
 
-While drift occurs in Nature, it can make simulating by chance a specific 
-(and possible long) sequence of mutations complicated.
-
-Users can avoid drift by setting the *death activation level*. 
-This value is the minimum number of cells in a species that
-enables cell death. The cell of a species $S$ can die if and only if that $S$
-has reached the death activation level at least once during the simulation. 
-
-This threshold holds for all the species and it is set to 1 by default.
-
-```{r}
-sim$death_activation_level
-```
-
-However, it can be risen as much as we want to avoid species drift.
-
-```{r}
-sim$death_activation_level <- 50
-```
-
-
-### Initial cell displacement
+### Initial cell positioning
 
 To be able to simulate the model, an initial cell needs to be displaced in the 
 tissue. We add one cell of species `A+` (genotype `A` in epistate `+`) in position 
@@ -168,7 +144,7 @@ sim$get_counts()
 sim$get_cells()
 ```
 
-### Simulation of the evolution of the species
+### Species evolution
 
 At the beginnig, the simulation clock is `0` and no events have been fired.
 ```{r}
@@ -289,6 +265,71 @@ sim$mutate_progeny(cell, "C")
 # the new cell in the original position has genotype "C"
 sim$get_cell(cell$position_x, cell$position_y)
 ```
+
+We can retrieve the simulation initial condition by calling 
+the `Simulation` method `get_added_cells()`.
+
+```{r}
+# The cells manually added to the simulation
+sim$get_added_cells()
+```
+
+### Drift and the death activation level
+
+Any species that has a death rate greater than 0 can become extinct as soon as
+it appears due to the premature death of the progenitor cell. This phenomenon 
+is called *drift*. 
+
+While drift occurs in Nature, it can make simulating by chance a specific 
+(and possible long) sequence of mutations complicated.
+
+Users can avoid drift by setting the *death activation level*. 
+This value is the minimum number of cells in a species that
+enables cell death. The cell of a species $S$ can die if and only if that $S$
+has reached the death activation level at least once during the simulation. 
+
+This threshold holds for all the species and it is set to 1 by default.
+
+```{r}
+sim$death_activation_level
+```
+
+However, it can be risen as much as we want to avoid species drift.
+
+```{r}
+sim$death_activation_level <- 50
+```
+
+### The lineage graph
+
+The *lineage graph* represents the species derivations. It 
+is a graph (network) between species and it contains an edge
+from a species $A$ to a species $P$ if and only if 
+one of the cells in $P$ is direct descentent of a cell in 
+$A$. In this case, $A$ and $P$ are called *ancestor* and 
+*progeny*, respectively. 
+
+The lineage graph maintains, for each edge, the time of the 
+first mutation or switch from the ancestor to the progeny.
+While the lineage graph on genotypes is traditionally acyclic, 
+dealing with epigenetic states frequently leads to cyclic
+lineage graphs.
+
+The lineage graph of the current simulation can be obtained 
+as follow.
+
+```{r}
+# The cells manually added to the simulation
+sim$get_lineage_graph()
+```
+
+The lineage graph contains a special species: the 
+`Wild-type` species. Whenever a cell is manually added 
+to the simulation, an edge from the `Wild-type` to the 
+cell species is added to the lineage graph.
+
+
+### Ploting simulation results
 
 The state of simulation can be depicted by using three different plotting functions.
 

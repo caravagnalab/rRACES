@@ -18,3 +18,4 @@ _install
 *.log
 *.lock
 RACES
+*.pdf
