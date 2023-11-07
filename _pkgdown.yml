@@ -15,8 +15,8 @@ authors:
 
 
 reference:
-- title: Simulation interface 
-  desc:  Methods for the spacial simulation
+- title: "Simulation interface"
+  desc:  "Spacial simulation classes and methods"
   contents:
   - Simulation$add_cell
   - Simulation$add_genotype
@@ -28,6 +28,7 @@ reference:
   - Simulation$get_counts
   - Simulation$get_firings
   - Simulation$get_name
+  - Simulation$get_rates
   - Simulation$get_species
   - Simulation$get_tissue_name
   - Simulation$get_tissue_size
