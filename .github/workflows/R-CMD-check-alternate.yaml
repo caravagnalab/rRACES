@@ -101,6 +101,7 @@ jobs:
         uses: jwlawson/actions-setup-cmake@v1.13
         with:
           cmake-version: 'latest'
+          github-api-token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Use cmake
         run: cmake --version
