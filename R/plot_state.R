@@ -19,6 +19,8 @@
 #' sim$run_up_to_time(60)
 #' plot_state(sim)
 plot_state <- function(simulation) {
+  stopifnot(inherits(simulation, "Rcpp_Simulation"))
+
   counts <- simulation$get_counts()
   time <- simulation$get_clock() %>% round(digits = 3)
 
