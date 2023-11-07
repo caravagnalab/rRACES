@@ -17,6 +17,7 @@
 
 #include <vector>
 #include <set>
+#include <algorithm>
 
 #include <Rcpp.h>
 
@@ -223,6 +224,11 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Returns:} A list reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
 //' }
+//' @field get_added_cells Gets the cells manually added to the simulation \itemize{
+//' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "position_x",
+//'         "position_y", and "time" for each cells manually added to 
+//'         the simulation.
+//' }
 //' @field get_cell Gets one the tissue cells \itemize{
 //' \item \emph{Parameter:} \code{x} - The position of the aimed cell on the x axis.
 //' \item \emph{Parameter:} \code{y} - The position of the aimed cell on the y axis.
@@ -252,6 +258,10 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' @field get_name Gets the simulation name \itemize{
 //' \item \emph{Returns:} The simulation name, which corresponds to the name of the directory 
 //'         in which the simulation is saving its progresses.
+//' }
+//' @field get_lineage_graph Gets the simulation lineage graph\itemize{
+//' \item \emph{Returns:} A data frame reporting "ancestor", "progeny", and "first_occurrence" 
+//'         of each species-to-species transition.
 //' }
 //' @field get_rates Gets the rates of a species\itemize{
 //' \item \emph{Parameter:} \code{species} - The species whose rates are aimed.
@@ -437,6 +447,8 @@ public:
                 const Races::Drivers::Simulation::AxisPosition& x,
                 const Races::Drivers::Simulation::AxisPosition& y);
 
+  List get_added_cells() const;
+
   List get_counts() const;
 
   inline List get_cells() const;
@@ -456,6 +468,8 @@ public:
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
                  const std::vector<std::string>& genotype_filter,
                  const std::vector<std::string>& epigenetic_filter) const;
+  
+  List get_lineage_graph() const;
 
   void schedule_genotype_mutation(const std::string& source, const std::string& destination,
                                   const Races::Time& time);
@@ -690,15 +704,17 @@ List Simulation::get_species() const
 //'
 //' # add into the tissue a cell of species "A+" in position (500,500)
 //' sim$add_cell("A+", 500, 500)
-void Simulation::add_cell(const std::string& species_name, 
+void Simulation::add_cell(const std::string& species_name,
                           const Races::Drivers::Simulation::AxisPosition& x,
                           const Races::Drivers::Simulation::AxisPosition& y)
 {
-  if (tissue().num_of_cells()>0) {
+  if (tissue().num_of_mutated_cells()>0) {
     warning("Warning: the tissue already contains a cell.");
   }
 
-  tissue().add_cell(species_name, {x,y});
+  const auto& species = tissue().get_species(species_name);
+
+  Races::Drivers::Simulation::Simulation::add_cell(species.get_id(), {x,y});
 }
 
 List Simulation::get_cells() const
@@ -903,6 +919,66 @@ List Simulation::get_counts() const
                             _["counts"]=counts);
 }
 
+std::map<Races::Drivers::SpeciesId, std::string> 
+get_species_id2name(const Races::Drivers::Simulation::Tissue& tissue)
+{
+  std::map<Races::Drivers::SpeciesId, std::string> id2name;
+  for (const auto& species : tissue) {
+    id2name[species.get_id()] = species.get_name();
+  }
+
+  return id2name;
+}
+
+//' @name Simulation$get_added_cells
+//' @title Gets the cells manually added to the simulation
+//' @return A data frame reporting "genotype", "epistate", "position_x",
+//'         "position_y", and "time" for each cells manually added to 
+//'         the simulation.
+//' @examples
+//' sim <- new(Simulation, "get_added_cells")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_genotype(genotype = "B",
+//'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.3, "-" = 0.1),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 30)
+//' sim$add_cell("A+", 500, 500)
+//' sim$run_up_to_time(50)
+//'
+//' # counts the number of cells per species
+//' sim$get_added_cells()
+List Simulation::get_added_cells() const
+{
+  using namespace Races::Drivers;
+
+  namespace RS = Races::Drivers::Simulation;
+
+  size_t num_of_rows = RS::Simulation::get_added_cells().size();
+
+  CharacterVector genotype_names(num_of_rows),  epi_states(num_of_rows);
+  IntegerVector position_x(num_of_rows), position_y(num_of_rows);
+  NumericVector time(num_of_rows);
+
+  size_t i{0};
+  for (const auto& added_cell: RS::Simulation::get_added_cells()) {
+    const auto& species = tissue().get_species(added_cell.species_id);
+    genotype_names[i] = find_genotype_name(species.get_genotype_id());
+    epi_states[i] = get_signature_string(species);
+    position_x[i] = added_cell.x;
+    position_y[i] = added_cell.y;
+    time[i] = added_cell.time;
+    ++i;
+  }
+
+  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states,
+                           _["position_x"]=position_x,  _["position_y"]=position_y,
+                           _["time"] = time);
+}
+
 //' @name Simulation$schedule_genotype_mutation
 //' @title Schedules a genotype mutation
 //' @description This method schedules a genotype mutation that can occur 
@@ -940,6 +1016,102 @@ void Simulation::schedule_genotype_mutation(const std::string& src, const std::s
                                             const Races::Time& time)
 {
   Races::Drivers::Simulation::Simulation::schedule_genotype_mutation(src,dest,time);
+}
+
+// sorting LineageEdge by time
+struct TimedLineageEdge : public Races::Drivers::Simulation::LineageEdge
+{
+  Races::Time time;
+
+  TimedLineageEdge():
+    Races::Drivers::Simulation::LineageEdge(), time(0)
+  {}
+
+  TimedLineageEdge(const Races::Drivers::Simulation::LineageEdge& edge, const Races::Time& time):
+    Races::Drivers::Simulation::LineageEdge(edge), time(time)
+  {}
+};
+
+struct TimedLineageEdgeCmp
+{
+  bool operator()(const TimedLineageEdge& a, const TimedLineageEdge& b)
+  {
+    return (a.time<b.time 
+            || (a.time==b.time && (a.get_ancestor()<b.get_ancestor()))
+            || (a.time==b.time && (a.get_ancestor()==b.get_ancestor()) 
+                && (a.get_progeny()<b.get_progeny())));
+  }
+};
+
+std::vector<TimedLineageEdge> sorted_timed_edges(const Races::Drivers::Simulation::Simulation& simulation)
+{
+  const auto& lineage_graph = simulation.get_lineage_graph();
+  const size_t num_of_edges = lineage_graph.num_of_edges();
+
+  std::vector<TimedLineageEdge> timed_edges;
+  
+  timed_edges.reserve(num_of_edges);
+
+  for (const auto& [edge, edge_time] : lineage_graph) {
+    timed_edges.push_back({edge, edge_time});
+  }
+  
+  TimedLineageEdgeCmp cmp;
+  sort(timed_edges.begin(), timed_edges.end(), cmp);
+
+  return timed_edges;
+}
+
+//' @name Simulation$get_lineage_graph
+//' @title Gets the simulation lineage graph
+//' @description At the beginning of the computation only the species of the added
+//'         cells are present in the tissue. As the simulation proceeds new species 
+//'         arise as a consequence of either genotype mutations or epigenetic 
+//'         switches. The *lineage graph* stores these species evolutions and it 
+//'         reports the first occurrence time of any species-to-species transition.
+//'
+//'         This method returns the lineage graph of the simulation.
+//' @return A data frame reporting "ancestor", "progeny", and "first_occurrence" of
+//'         each species-to-species transition.
+//' @examples
+//' sim <- new(Simulation, "get_lineage_graph_test")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_genotype(genotype = "B",
+//'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.3, "-" = 0.1),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 20)
+//' sim$run_up_to_time(50)
+//'
+//' sim$get_lineage_graph()
+List Simulation::get_lineage_graph() const
+{
+  const auto species_id2name = get_species_id2name(tissue());
+
+  const auto timed_edges = sorted_timed_edges(*this);
+
+  CharacterVector ancestors(timed_edges.size()), progeny(timed_edges.size());
+  NumericVector first_cross(timed_edges.size());
+
+  size_t i{0};
+  for (const auto& timed_edge : timed_edges) {
+    ancestors[i] = (timed_edge.get_ancestor() != WILD_TYPE_SPECIES ? 
+                    species_id2name.at(timed_edge.get_ancestor()): 
+                    "Wild-type");
+    
+    progeny[i] = (timed_edge.get_progeny() != WILD_TYPE_SPECIES ? 
+                  species_id2name.at(timed_edge.get_progeny()): 
+                  "Wild-type");
+    first_cross[i] = timed_edge.time;
+
+    ++i;
+  }
+
+  return DataFrame::create(_["ancestor"]=ancestors, _["progeny"]=progeny,
+                            _["first_cross"]=first_cross);
 }
 
 inline void validate_non_empty_tissue(const Races::Drivers::Simulation::Tissue& tissue)
@@ -1372,11 +1544,19 @@ RCPP_MODULE(Drivers){
   // get_name
   .method("get_name", &Simulation::get_name, "Get the simulation name")
 
+  // get_lineage_graph
+  .method("get_lineage_graph", &Simulation::get_lineage_graph,
+          "Get the simulation lineage graph")
+
   // get_tissue_name
   .method("get_tissue_name", &Simulation::get_tissue_name, "Get the simulation tissue name")
 
   // get_tissue_size
   .method("get_tissue_size", &Simulation::get_tissue_size, "Get the simulation tissue size")
+
+  // get_added_cells
+  .method("get_added_cells", &Simulation::get_added_cells, 
+          "Get the cells manually added to the simulation")
 
   // get_counts
   .method("get_counts", &Simulation::get_counts, "Get the current number of cells per species")

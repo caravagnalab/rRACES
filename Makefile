@@ -9,11 +9,11 @@ docs:
 	R --vanilla --silent -e 'Rcpp::compileAttributes()'
 	R --vanilla --silent -e 'roxygen2::roxygenise(roclets=c("rd"))'
 
-build:
+build: 
 	(cd .. && R CMD build --no-manual $(PKGSRC))
 
-build-cran:
-	(cd ..; && R CMD build $(PKGSRC))
+build-cran: 
+	(cd .. && R CMD build $(PKGSRC))
 
 install: build
 	(cd .. && R CMD INSTALL $(PKGNAME)_$(PKGVERS).tar.gz)
@@ -28,4 +28,5 @@ clean:
 	rm -rf _install _builds RACES 
 	rm src/RcppExports.cpp src/*.o src/*.so R/RcppExports.R
 	rm -rf man/*.Rd
+	rm .roxygen.lock
 	(cd .. && rm -rf $(PKGNAME).Rcheck)

@@ -1,5 +1,7 @@
 devtools::load_all()
 
+unlink("test", recursive = TRUE)
+
 # Create a new simulation and set the simulation name
 # to be "test". A 1000x1000-cells tissue is automatically
 # added to the simulation
@@ -109,3 +111,9 @@ plot_state(sim)
 plot_tissue(sim)
 
 print(sim)
+
+sim$get_lineage_graph()
+
+sim$get_added_cells()
+
+unlink("test", recursive = TRUE)
