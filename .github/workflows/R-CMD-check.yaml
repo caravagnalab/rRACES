@@ -47,3 +47,8 @@ jobs:
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: ./
