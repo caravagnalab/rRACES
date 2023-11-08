@@ -22,12 +22,16 @@ reference:
   - Simulation$add_genotype
   - Simulation$schedule_genotype_mutation
   - Simulation$choose_cell_in
+  - Simulation$death_activation_level
+  - Simulation$history_delta
   - Simulation$get_added_cells
   - Simulation$get_cell
   - Simulation$get_cells
   - Simulation$get_clock
+  - Simulation$get_count_history
   - Simulation$get_counts
   - Simulation$get_firings
+  - Simulation$get_firing_history
   - Simulation$get_lineage_graph
   - Simulation$get_name
   - Simulation$get_rates

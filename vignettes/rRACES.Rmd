@@ -25,8 +25,6 @@ It can:
 
 ## Simulating tumour growth
 
-This is an example run for spacial simulation.
-
 The first step to use `rRACES` is to load it.
 
 ```{r setup}
@@ -146,20 +144,12 @@ sim$get_cells()
 
 ### Species evolution
 
-At the beginnig, the simulation clock is `0` and no events have been fired.
-```{r}
-# Get the number of fired event per species
-sim$get_firings()
-
-# Get simulation time
-sim$get_clock()
-```
-
-There are 3 ways to move the simulation forward:
+There are 3 ways to let the simulation evolve:
 
 - advancing until a new time `t` is reached;
-- advancing until a species reaches a certain size;
-- advancing until a desired number of firings (of one particular event) has happened.
+- advancing until the number of cells in a species reaches a given threshold;
+- advancing until a desired number of firings (of one particular event) has
+occurred.
 
 ```{r}
 
@@ -170,6 +160,7 @@ sim$run_up_to_size("A+", 500)
 # Counts per species now reports 500 for A+
 sim$get_counts()
 
+# Get the number of fired event per species
 sim$get_firings()
 ```
 
@@ -250,6 +241,7 @@ $[450,500]\times [550, 600]$, we need to:
 # [450,500]x[550,600]
 cell <- sim$choose_cell_in("A",  c(450, 550), c(500, 600))
 
+# se the selected cell
 cell
 
 # add the genotype "C" together with its species
@@ -270,9 +262,60 @@ We can retrieve the simulation initial condition by calling
 the `Simulation` method `get_added_cells()`.
 
 ```{r}
-# The cells manually added to the simulation
 sim$get_added_cells()
 ```
+
+### Time series data collection and presentation
+
+At the end of any `run_to_*` 
+methods, RACES stores the data about the number 
+of species cells and that of event firings. rRACES offers the 
+time series of these data to users by means of two `Simulation` methods
+
+
+The firing evolution can be obtained by using the method `get_firing_history`.
+```{r, eval=FALSE}
+sim$get_firing_history()
+```
+
+For example, the total number of the deaths on `B+` at the end of the 
+three previous calls of the `run_to_*` methods can be obtained 
+by using the following code.
+
+```{r}
+sim$get_firing_history() %>%
+  filter(event == "death", genotype == "B", epistate == "-")
+```
+
+If we are instead interested into the changes in the number of cells 
+per species, we can use the method `get_count_history()`.
+
+```{r}
+sim$get_firing_history() %>%
+  filter(event == "death", genotype == "B", epistate == "-")
+```
+
+
+If we are interested in collecting the number of cells per species or 
+event firings also during the evaluation of a `run_to_*` method, 
+we must set the `Simulation` property `history_delta`. 
+
+```{r}
+sim$history_delta
+```
+
+By default, `history_delta` is set to 0, but it 
+can be set to any positive real value $d$ so to sample the simulation
+statistics every $d$ time units.
+
+```{r}
+# set the history delta
+sim$history_delta <- 20
+
+# get the new history delta
+sim$history_delta
+```
+
 
 ### Drift and the death activation level
 
@@ -284,9 +327,10 @@ While drift occurs in Nature, it can make simulating by chance a specific
 (and possible long) sequence of mutations complicated.
 
 Users can avoid drift by setting the *death activation level*. 
-This value is the minimum number of cells in a species that
-enables cell death. The cell of a species $S$ can die if and only if that $S$
-has reached the death activation level at least once during the simulation. 
+This value is the minimum number of cells that
+enables cell death in a species. The cell of a species $S$ can die if and 
+only if that $S$ has reached the death activation level at least once 
+during the simulation. 
 
 This threshold holds for all the species and it is set to 1 by default.
 
@@ -297,7 +341,11 @@ sim$death_activation_level
 However, it can be risen as much as we want to avoid species drift.
 
 ```{r}
+# set the death activation level
 sim$death_activation_level <- 50
+
+# get the new death activation level
+sim$death_activation_level
 ```
 
 ### The lineage graph
@@ -319,7 +367,7 @@ The lineage graph of the current simulation can be obtained
 as follow.
 
 ```{r}
-# The cells manually added to the simulation
+# get the lineage graph
 sim$get_lineage_graph()
 ```
 
