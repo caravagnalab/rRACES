@@ -1302,7 +1302,7 @@ List Simulation::get_firings() const
 //'     and "time" for each event type, for each species, and for each 
 //'     sampled time.
 //' @examples
-//' sim <- new(Simulation, "get_firing_history")
+//' sim <- new(Simulation, "get_firing_history_test")
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1394,7 +1394,7 @@ List Simulation::get_firing_history(const Races::Time& minimum_time,
 //' @return A data frame reporting "genotype", "epistate", "counts",
 //'     and "time" for each species, and for each sampled time.
 //' @examples
-//' sim <- new(Simulation, "get_counts_test")
+//' sim <- new(Simulation, "get_count_history")
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
