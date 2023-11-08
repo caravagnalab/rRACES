@@ -39,6 +39,9 @@ sim$add_genotype(name = "B",
 # epigenetic state
 sim$schedule_genotype_mutation("A", "B", 60)
 
+# Set history delta
+sim$history_delta <- 20
+
 # Get the simulation species
 sim$get_species()
 

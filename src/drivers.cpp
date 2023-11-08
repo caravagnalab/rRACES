@@ -224,6 +224,7 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Returns:} A list reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
 //' }
+//' @field death_activation_level The number of cells that activates cell death in a species
 //' @field get_added_cells Gets the cells manually added to the simulation \itemize{
 //' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "position_x",
 //'         "position_y", and "time" for each cells manually added to 
@@ -247,13 +248,21 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' @field get_clock Gets the simulated time \itemize{
 //' \item \emph{Returns:} The time simulated by the simulation.
 //' }
+//' @field get_count_history Gets the history of the number of cells per species \itemize{
+//' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "counts",
+//'     and "time" for each species and for each sampled time.
+//' }
 //' @field get_counts Counts the number of cells \itemize{
 //' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "counts" for each
 //'      species in the simulation.
 //' }
+//' @field get_firing_history Gets the history of the number of fired events \itemize{
+//' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", "fired", 
+//'      and "time" for each event type, for each species, and for each sampled time.
+//' }
 //' @field get_firings Gets the number of fired events \itemize{
 //' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", and "fired"
-//'     for each event type, genotype, and epigenetic states.
+//'     for each event type and for each species.
 //' }
 //' @field get_name Gets the simulation name \itemize{
 //' \item \emph{Returns:} The simulation name, which corresponds to the name of the directory 
@@ -447,9 +456,19 @@ public:
                 const Races::Drivers::Simulation::AxisPosition& x,
                 const Races::Drivers::Simulation::AxisPosition& y);
 
+  size_t count_history_sample_in(const Races::Time& minimum_time,
+                                 const Races::Time& maximum_time) const;
+
   List get_added_cells() const;
 
   List get_counts() const;
+
+  List get_count_history() const;
+
+  List get_count_history(const Races::Time& minimum_time) const;
+
+  List get_count_history(const Races::Time& minimum_time,
+                         const Races::Time& maximum_time) const;
 
   inline List get_cells() const;
 
@@ -483,6 +502,13 @@ public:
 
   List get_firings() const;
 
+  List get_firing_history() const;
+
+  List get_firing_history(const Races::Time& minimum_time) const;
+
+  List get_firing_history(const Races::Time& minimum_time, 
+                          const Races::Time& maximum_time) const;
+
   List get_species() const;
 
   inline
@@ -514,9 +540,23 @@ public:
     return death_activation_level;
   }
 
-  void set_death_activation_level(size_t death_activation_level)
+  void set_death_activation_level(const size_t death_activation_level)
   {
     Races::Drivers::Simulation::Simulation::death_activation_level = death_activation_level;
+  }
+
+  Races::Time get_history_delta() const
+  {
+    return Races::Drivers::Simulation::Simulation::get_statistics().history_time_delta;
+  }
+
+  void set_history_delta(const Races::Time history_time_delta)
+  {
+    if (history_time_delta<0) {
+      throw std::domain_error("The history time delta value must be non-negative.");
+    }
+
+    Races::Drivers::Simulation::Simulation::get_statistics().history_time_delta = history_time_delta;
   }
 };
 
@@ -1246,35 +1286,176 @@ Races::Time Simulation::get_clock() const
 //' sim$get_firings()
 List Simulation::get_firings() const
 {
-  using namespace Races::Drivers;
+  const auto last_time_sample = get_statistics().get_last_time_in_history();
 
-  size_t num_of_rows(event_names.size()*tissue().num_of_species());
+  auto df = get_firing_history(last_time_sample, last_time_sample);
 
-  CharacterVector events(num_of_rows);
-  CharacterVector genotype_names(num_of_rows);
-  CharacterVector epi_states(num_of_rows);
+  return DataFrame::create(_["event"]=df["event"], _["genotype"]=df["genotype"],
+                           _["epistate"]=df["epistate"], _["fired"]=df["fired"]);
+}
+
+//' @name Simulation$get_firing_history 
+//' @title Gets the history of the number of fired events 
+//' @description This method returns a data frame reporting the number of 
+//'           events fired up to each sampled simulation time.
+//' @return A data frame reporting "event", "genotype", "epistate", "fired",
+//'     and "time" for each event type, for each species, and for each 
+//'     sampled time.
+//' @examples
+//' sim <- new(Simulation, "get_firing_history")
+//' sim$add_genotype(genotype = "A",
+//'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                  growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$add_cell("A+", 500, 500)
+//' sim$history_delta <- 20 
+//' sim$run_up_to_time(70)
+//'
+//' # get the number of event fired per event and species
+//' sim$get_firing_history()
+List Simulation::get_firing_history() const
+{
+  return get_firing_history(0);
+}
+
+List Simulation::get_firing_history(const Races::Time& minimum_time) const
+{
+  if (get_statistics().get_history().size()==0) {
+    return get_firing_history(0,0);
+  }
+
+  const auto last_time_sample = get_statistics().get_last_time_in_history();
+
+  return get_firing_history(minimum_time, last_time_sample);
+}
+
+size_t Simulation::count_history_sample_in(const Races::Time& minimum_time, 
+                                           const Races::Time& maximum_time) const
+{
+  size_t num_of_samples{0};
+  const auto& history = get_statistics().get_history();
+  auto series_it = history.lower_bound(minimum_time);
+  while (series_it != history.end()
+         && series_it->first <= maximum_time) {
+      ++num_of_samples;
+      ++series_it;
+  }
+
+  return num_of_samples;
+}
+
+List Simulation::get_firing_history(const Races::Time& minimum_time,
+                                    const Races::Time& maximum_time) const
+{
+  //using namespace Races::Drivers;
+
+  const size_t rows_per_sample = event_names.size()*tissue().num_of_species();
+  const size_t num_of_rows = count_history_sample_in(minimum_time, maximum_time)*rows_per_sample;
+
+  CharacterVector events(num_of_rows), genotype_names(num_of_rows),
+                  epi_states(num_of_rows);
   IntegerVector firings(num_of_rows);
-
-  const auto& t_stats = get_statistics();
+  NumericVector times(num_of_rows);
 
   size_t i{0};
-  for (const auto& species: tissue()) {
-    for (const auto& [event_name, event_code]: event_names) {
-      events[i] = event_name;
-      genotype_names[i] = species.get_genotype_name();
-      epi_states[i] = get_signature_string(species);
+  const auto& history = get_statistics().get_history();
+  auto series_it = history.lower_bound(minimum_time);
+  while (series_it != history.end() && series_it->first <= maximum_time) {
+    const auto& time = series_it->first;
+    const auto& t_stats = series_it->second;
+    for (const auto& species: tissue()) {
+      for (const auto& [event_name, event_code]: event_names) {
+        events[i] = event_name;
+        genotype_names[i] = species.get_genotype_name();
+        epi_states[i] = get_signature_string(species);
 
-      if (t_stats.contains_data_for(species)) {
-        firings[i] = count_events(t_stats.at(species), event_code);
-      } else {
-        firings[i] = 0;
+        const auto& species_it = t_stats.find(species.get_id());
+        if (species_it != t_stats.end()) {
+          firings[i] = count_events(species_it->second, event_code);
+        } else {
+          firings[i] = 0;
+        }
+        times[i] = time;
+        ++i;
       }
-      ++i;
     }
+    ++series_it;
   }
 
   return DataFrame::create(_["event"]=events, _["genotype"]=genotype_names,
-                           _["epistate"]=epi_states, _["fired"]=firings);
+                           _["epistate"]=epi_states, _["fired"]=firings,
+                           _["time"]=times);
+}
+
+//' @name Simulation$get_count_history
+//' @title Gets the history of the number of cells per species
+//' @description This method returns a data frame reporting the number of 
+//'           species cells in each sampled simulation time.
+//' @return A data frame reporting "genotype", "epistate", "counts",
+//'     and "time" for each species, and for each sampled time.
+//' @examples
+//' sim <- new(Simulation, "get_counts_test")
+//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
+//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
+//' sim$add_cell("A", 500, 500)
+//' sim$history_delta <- 20 
+//' sim$run_up_to_time(70)
+//' 
+//' # get the history of species counts
+//' sim$get_count_history()
+List Simulation::get_count_history() const
+{
+  return get_count_history(0);
+}
+
+List Simulation::get_count_history(const Races::Time& minimum_time) const
+{
+  if (get_statistics().get_history().size()==0) {
+    return get_count_history(0,0);
+  }
+
+  const auto last_time_sample = get_statistics().get_last_time_in_history();
+
+  return get_count_history(minimum_time, last_time_sample);
+}
+
+List Simulation::get_count_history(const Races::Time& minimum_time,
+                                   const Races::Time& maximum_time) const
+{
+  //using namespace Races::Drivers;
+
+  const size_t rows_per_sample = tissue().num_of_species();
+  const size_t num_of_rows = count_history_sample_in(minimum_time, maximum_time)*rows_per_sample;
+
+  CharacterVector genotype_names(num_of_rows), epi_states(num_of_rows);
+  IntegerVector counts(num_of_rows);
+  NumericVector times(num_of_rows);
+
+  size_t i{0};
+  const auto& history =  get_statistics().get_history();
+  auto series_it = history.lower_bound(minimum_time);
+  while (series_it != history.end() && series_it->first <= maximum_time) {
+    const auto& time = series_it->first;
+    const auto& t_stats = series_it->second;
+    for (const auto& species: tissue()) {
+      genotype_names[i] = species.get_genotype_name();
+      epi_states[i] = get_signature_string(species);
+
+      const auto& species_it = t_stats.find(species.get_id());
+      if (species_it != t_stats.end()) {
+        counts[i] = species_it->second.curr_cells;
+      } else {
+        counts[i] = 0;
+      }
+      times[i] = time;
+      ++i;
+    }
+    ++series_it;
+  }
+
+  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states, 
+                           _["count"]=counts, _["time"]=times);
 }
 
 //' @name Simulation$get_name 
@@ -1480,6 +1661,35 @@ void Simulation::mutate_progeny(const List& cell_position,
   return mutate_progeny(vector_position[0], vector_position[1], mutated_genotype);
 }
 
+//' @name Simulation$death_activation_level
+//' @title The number of cells that activates cell death in a species.
+//' @description This value is the minimum number of cells that
+//'       enables cell death in a species. The cell of a species $S$ can die
+//'       if and only if that $S$ has reached the death activation level at
+//'       least once during the simulation.
+//' @examples
+//' sim <- new(Simulation, "death_activation_level_test")
+//'
+//' # get the simulation death activation level
+//' sim$death_activation_level
+//'
+//' # set the death activation level to 50
+//' sim$death_activation_level <- 50
+
+
+//' @name Simulation$history_delta
+//' @title The delta time between time series samples
+//' @description This value is the maximum time between two successive 
+//'          time series data samples. 
+//' @examples
+//' sim <- new(Simulation, "death_activation_level_test")
+//'
+//' # get the delta time between two time series samples (0 by default)
+//' sim$history_delta
+//'
+//' # set the delta time between two time series samples
+//' sim$death_activation_level <- 20
+
 namespace RS = Races::Drivers::Simulation;
 namespace RD = Races::Drivers;
 
@@ -1518,9 +1728,9 @@ RCPP_MODULE(Drivers){
           "Get the species added to the simulation")
 
   // death_activation_level
-  .property( "death_activation_level", &Simulation::get_death_activation_level, 
-                                       &Simulation::set_death_activation_level, 
-          "The number of cells in a species that activate cell death" )
+  .property("death_activation_level", &Simulation::get_death_activation_level, 
+                                      &Simulation::set_death_activation_level, 
+            "The number of cells in a species that activates cell death" )
 
   // get_clock
   .method("get_clock", &Simulation::get_clock, "Get the current simulation time")
@@ -1560,10 +1770,18 @@ RCPP_MODULE(Drivers){
 
   // get_counts
   .method("get_counts", &Simulation::get_counts, "Get the current number of cells per species")
+  
+  // get_count_history
+  .method("get_count_history", (List (Simulation::*)() const)&Simulation::get_count_history,
+          "Get the number of simulated events per species along the computation")
 
   // get_firings
   .method("get_firings", &Simulation::get_firings,
           "Get the current number of simulated events per species")
+
+  // get_firing_history
+  .method("get_firing_history", (List (Simulation::*)() const)&Simulation::get_firing_history,
+          "Get the number of simulated events per species along the computation")
 
   // get_rates
   .method("get_rates", &Simulation::get_rates, 
@@ -1589,6 +1807,11 @@ RCPP_MODULE(Drivers){
   // run_up_to_size
   .method("run_up_to_size", &Simulation::run_up_to_size, 
           "Simulate the system up to the specified number of cells in the species")
+
+  // history_delta
+  .property("history_delta", &Simulation::get_history_delta, 
+                             &Simulation::set_history_delta, 
+            "The sampling delta for the get_*_history functions" )
 
   // update rates
   .method("update_rates", &Simulation::update_rates, 
