@@ -8,6 +8,8 @@
 *.gz
 RcppExports.*
 inst/doc
+vignettes/*.html
+vignettes/*.R
 docs
 pkgdown
 _builds
