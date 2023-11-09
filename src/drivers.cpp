@@ -547,16 +547,12 @@ public:
 
   Races::Time get_history_delta() const
   {
-    return Races::Drivers::Simulation::Simulation::get_statistics().history_time_delta;
+    return Races::Drivers::Simulation::Simulation::get_statistics().get_history_delta();
   }
 
   void set_history_delta(const Races::Time history_time_delta)
   {
-    if (history_time_delta<0) {
-      throw std::domain_error("The history time delta value must be non-negative.");
-    }
-
-    Races::Drivers::Simulation::Simulation::get_statistics().history_time_delta = history_time_delta;
+    Races::Drivers::Simulation::Simulation::get_statistics().set_history_delta(history_time_delta);
   }
 };
 
