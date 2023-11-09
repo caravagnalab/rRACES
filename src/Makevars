@@ -9,9 +9,19 @@ PKG_CXXFLAGS += -I$(INSTALL_DIR)/include/
 
 LIBRACES = $(INSTALL_DIR)/lib/libRACES.so
 
-all: 	$(LIBRACES)
+all: 	$(LIBRACES) ../man/Simulation.Rd
 
-$(LIBRACES):   
+../man/Simulation.Rd:
+	@if [ ! -f .roxygen.lock ]; then \
+		touch .roxygen.lock; \
+		(cd .. \
+		 && ${R_HOME}/bin/R --vanilla --silent -e 'Rcpp::compileAttributes()' \
+		 && ${R_HOME}/bin/R --vanilla --silent -e 'roxygen2::roxygenise(roclets=c("rd"))'); \
+		rm .roxygen.lock; \
+		rm -rf races_*; \
+	fi
+
+$(LIBRACES): ../man/Simulation.Rd
 	cmake -H../RACES/ -B$(BUILD_DIR) \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=$(INSTALL_DIR) \
