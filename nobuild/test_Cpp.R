@@ -46,7 +46,7 @@ sim$history_delta <- 20
 sim$get_species()
 
 # Add one cell to the simulated tissue
-sim$add_cell(species = "A+", x = 500, y = 500)
+sim$place_cell(species = "A+", x = 500, y = 500)
 
 # Run the simulation up until the there are less than 100
 # cells in the species B-

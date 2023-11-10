@@ -171,7 +171,7 @@ in the tissue. We add one cell of species `A+` (genotype `A` in epistate
 `+`) in position `(500, 500)`.
 
 ```{r}
-sim$add_cell("A+", 500, 500)
+sim$place_cell("A+", 500, 500)
 ```
 
 #### Visualisation of cell counts
@@ -461,7 +461,7 @@ sim_ts$add_genotype(name = "A",
                     growth_rates = 0.08,
                     death_rates = 0.01)
 
-sim_ts$add_cell("A", 500, 500)
+sim_ts$place_cell("A", 500, 500)
 
 sim_ts$run_up_to_size("A", 4000)
 

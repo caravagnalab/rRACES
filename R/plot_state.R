@@ -15,7 +15,7 @@
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 #'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 #'                  death_rates = c("+" = 0.1, "-" = 0.01))
-#' sim$add_cell("A+", 500, 500)
+#' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
 #' plot_state(sim)
 plot_state <- function(simulation) {

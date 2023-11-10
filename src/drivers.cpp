@@ -206,11 +206,6 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //'
 //'   `Simulation` also allows users to schedule mutations from one 
 //'   genotype to a different genotype.
-//' @field add_cell Implant one cell in the tissue \itemize{
-//' \item \emph{Parameter:} \code{species} - The name of the new cell species.
-//' \item \emph{Parameter:} \code{x} - The position on the x axis of the cell.
-//' \item \emph{Parameter:} \code{y} - The position on the y axis of the cell.
-//' }
 //' @field add_genotype Adds a genotype and its species \itemize{
 //' \item \emph{Parameter:} \code{genotype} - The genotype name.
 //' \item \emph{Parameter:} \code{epigenetic_rates} - The epigenetic rates of the genotype species (optional).
@@ -294,6 +289,11 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Parameter:} \code{x} - The position of the cell whose progeny will mutate on the x axis.
 //' \item \emph{Parameter:} \code{y} - The position of the cell whose progeny will mutate on the y axis.
 //' \item \emph{Parameter:} \code{mutated_genotype} - The genotype of the mutated cell.
+//' }
+//' @field place_cell Place one cell in the tissue \itemize{
+//' \item \emph{Parameter:} \code{species} - The name of the new cell species.
+//' \item \emph{Parameter:} \code{x} - The position on the x axis of the cell.
+//' \item \emph{Parameter:} \code{y} - The position on the y axis of the cell.
 //' }
 //' @field schedule_genotype_mutation Schedules a genotype mutation \itemize{
 //' \item \emph{Parameter:} \code{src} - The name of the genotype from which the mutation occurs.
@@ -454,9 +454,9 @@ public:
 
   inline Races::Time get_clock() const;
 
-  void add_cell(const std::string& species_name,
-                const Races::Drivers::Simulation::AxisPosition& x,
-                const Races::Drivers::Simulation::AxisPosition& y);
+  void place_cell(const std::string& species_name,
+                  const Races::Drivers::Simulation::AxisPosition& x,
+                  const Races::Drivers::Simulation::AxisPosition& y);
 
   size_t count_history_sample_in(const Races::Time& minimum_time,
                                  const Races::Time& maximum_time) const;
@@ -743,23 +743,23 @@ List Simulation::get_species() const
                             _["switch_rate"]=switch_rates);
 }
 
-//' @name Simulation$add_cell 
-//' @title Implant one cell in the tissue 
+//' @name Simulation$place_cell 
+//' @title Place one cell in the tissue 
 //' @param species The name of the new cell species.
 //' @param x The position on the x axis of the cell.
 //' @param y The position on the y axis of the cell.
 //' @examples
-//' sim <- new(Simulation, "add_cell_test")
+//' sim <- new(Simulation, "place_cell_test")
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # add into the tissue a cell of species "A+" in position (500,500)
-//' sim$add_cell("A+", 500, 500)
-void Simulation::add_cell(const std::string& species_name,
-                          const Races::Drivers::Simulation::AxisPosition& x,
-                          const Races::Drivers::Simulation::AxisPosition& y)
+//' sim$place_cell("A+", 500, 500)
+void Simulation::place_cell(const std::string& species_name,
+                            const Races::Drivers::Simulation::AxisPosition& x,
+                            const Races::Drivers::Simulation::AxisPosition& y)
 {
   if (sim_ptr->tissue().num_of_mutated_cells()>0) {
     warning("Warning: the tissue already contains a cell.");
@@ -803,7 +803,7 @@ List Simulation::get_cells() const
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
 //' 
 //' # collect all the cells in the tissue
@@ -905,7 +905,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
 //' 
 //' # collect all the cells in the tissue
@@ -945,7 +945,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
-//' sim$add_cell("A", 500, 500)
+//' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_time(70)
 //'
 //' # counts the number of cells per species
@@ -999,7 +999,7 @@ get_species_id2name(const Races::Drivers::Simulation::Tissue& tissue)
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 30)
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(50)
 //'
 //' # counts the number of cells per species
@@ -1180,7 +1180,7 @@ inline void validate_non_empty_tissue(const Races::Drivers::Simulation::Tissue& 
 //' @examples
 //' sim <- new(Simulation, "run_up_to_time_test")
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
-//' sim$add_cell("A", 500, 500)
+//' sim$place_cell("A", 500, 500)
 //'
 //' # simulate the tissue up to simulate timed 100
 //' sim$run_up_to_time(100)
@@ -1207,7 +1207,7 @@ void Simulation::run_up_to_time(const Races::Time& time)
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //'
 //' # simulate the tissue until the species "A+" account for 100 
 //' # contemporary cells
@@ -1238,7 +1238,7 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //'
 //' # simulate the cell evolution until the number of epigenetic events from 
 //' # the species "A+" is less than 100.
@@ -1272,7 +1272,7 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_event("switch", "A+", 100)
 //'
 //' # get the simulated time
@@ -1292,7 +1292,7 @@ Races::Time Simulation::get_clock() const
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_event("switch", "A+", 100)
 //'
 //' # get the number of event fired per event and species
@@ -1320,7 +1320,7 @@ List Simulation::get_firings() const
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$history_delta <- 20 
 //' sim$run_up_to_time(70)
 //'
@@ -1411,7 +1411,7 @@ List Simulation::get_firing_history(const Races::Time& minimum_time,
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
-//' sim$add_cell("A", 500, 500)
+//' sim$place_cell("A", 500, 500)
 //' sim$history_delta <- 20 
 //' sim$run_up_to_time(70)
 //' 
@@ -1588,7 +1588,7 @@ void Simulation::update_rates(const std::string& species_name, const List& rates
 //'                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.15, "-" = 0.3),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$death_activation_level = 100
 //' sim$schedule_genotype_mutation("A","B",20)
 //' sim$run_up_to_size(species = "B-", num_of_cells = 50)
@@ -1641,7 +1641,7 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
 //'
 //' sim$add_genotype(genotype = "B",
@@ -1718,7 +1718,7 @@ void Simulation::mutate_progeny(const List& cell_position,
 //'                  death_rates = c("+"=0.05, "-"=0.005))
 //'
 //' # place a cell in the tissue
-//' sim$add_cell("A+", 500, 500)
+//' sim$place_cell("A+", 500, 500)
 //'
 //' # simulate up to time 50
 //' sim$run_up_to_time(50)
@@ -1747,8 +1747,8 @@ RCPP_MODULE(Drivers){
   .constructor<std::string>("Crete a simulation whose parameter is the output directory")
   .constructor<std::string, int>("Crete a simulation: the first parameter is the output directory; the second one is the random seed")
 
-  // add_cell
-  .method("add_cell", &Simulation::add_cell, "Place a cell in the tissue")
+  // place_cell
+  .method("place_cell", &Simulation::place_cell, "Place a cell in the tissue")
 
   // add_genotype
   .method("add_genotype", (void (Simulation::*)(const std::string&, const List&, const List&,
