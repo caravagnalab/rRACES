@@ -8,18 +8,18 @@ my_theme <- function() {
 get_species_colors <- function(x) {
   
   paired_species = x$get_species() %>% 
-    dplyr::filter(!is.na(epistate)) %>% 
+    dplyr::filter(!is.na(.data$epistate)) %>% 
     dplyr::mutate(
-      species = paste0(genotype, epistate)
+      species = paste0(.data$genotype, .data$epistate)
     ) %>% 
-    dplyr::arrange(genotype)
+    dplyr::arrange(.data$genotype)
   
   unpaired_species = x$get_species() %>% 
-    dplyr::filter(is.na(epistate)) %>% 
+    dplyr::filter(is.na(.data$epistate)) %>% 
     dplyr::mutate(
-      species = paste0(genotype, epistate)
+      species = paste0(.data$genotype, .data$epistate)
     ) %>% 
-    dplyr::arrange(genotype)
+    dplyr::arrange(.data$genotype)
   
   # Unpaired
   unp_colour = NULL

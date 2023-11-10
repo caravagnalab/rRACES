@@ -24,7 +24,8 @@
 plot_timeseries <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
   
-  counts <- simulation$get_count_history() %>% mutate(species = paste0(genotype, epistate))
+  counts <- simulation$get_count_history() %>% 
+            mutate(species = paste0(.data$genotype, .data$epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
   
   ncells = simulation$get_counts() %>% dplyr::pull(counts) %>% sum()
@@ -36,9 +37,9 @@ plot_timeseries <- function(simulation) {
   colors = get_species_colors(simulation)
   
   ggplot2::ggplot(counts) +
-    ggplot2::geom_line(ggplot2::aes(x = time, y = count,
+    ggplot2::geom_line(ggplot2::aes(x = time, y = .data$count,
                                     color = .data$species)) +
-    ggplot2::geom_point(ggplot2::aes(x = time, y = count,
+    ggplot2::geom_point(ggplot2::aes(x = time, y = .data$count,
                                      color = .data$species)) +
     ggplot2::labs(
       color = "Species",
