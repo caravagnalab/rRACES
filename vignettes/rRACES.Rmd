@@ -22,3 +22,5 @@ It can:
 - simulate a spatio-temporal stochastic process of tumour evolution;
 - define a tumour sampling strategy;
 - generating realistic sequencing data based on sampling and simulation.
+
+In the articles section of this website we present all the functionalities of this tool.
