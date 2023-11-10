@@ -322,8 +322,10 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Parameter:} \code{width} - The width of the new tissue.
 //' \item \emph{Parameter:} \code{height} - The height of the new tissue.
 //' }
-class Simulation : private Races::Drivers::Simulation::Simulation
+class Simulation
 {
+  std::shared_ptr<Races::Drivers::Simulation::Simulation> sim_ptr;  //!< The pointer to a RACES simulation object
+
   static bool has_names(const List& list, std::vector<std::string> aimed_names)
   {
     if (aimed_names.size() != static_cast<size_t>(list.size())) {
@@ -373,7 +375,7 @@ class Simulation : private Races::Drivers::Simulation::Simulation
       throw std::domain_error("The upper corner must be a vector having size 2");
     }
 
-    size_t num_of_rows = count_driver_mutated_cells(tissue(), lower_corner, upper_corner,
+    size_t num_of_rows = count_driver_mutated_cells(sim_ptr->tissue(), lower_corner, upper_corner,
                                                     species_filter, epigenetic_filter);
 
     IntegerVector ids(num_of_rows);
@@ -385,12 +387,12 @@ class Simulation : private Races::Drivers::Simulation::Simulation
     size_t i{0};
     for (auto x=lower_corner[0]; x<=upper_corner[0]; ++x) {
       for (auto y=lower_corner[1]; y<=upper_corner[1]; ++y) {
-        auto cell_proxy = tissue()({x,y});
+        auto cell_proxy = sim_ptr->tissue()({x,y});
         if(!cell_proxy.is_wild_type()) {
 
           const RS::CellInTissue& cell = cell_proxy;
 
-          const auto& species = tissue().get_species(cell.get_species_id());
+          const auto& species = sim_ptr->tissue().get_species(cell.get_species_id());
           const auto sign_string = get_signature_string(species);
           
           if (species_filter.count(cell.get_species_id())>0
@@ -419,9 +421,9 @@ class Simulation : private Races::Drivers::Simulation::Simulation
   {
     using namespace Races::Drivers;
 
-    const auto& species = tissue().get_species(cell.get_species_id());
+    const auto& species = sim_ptr->tissue().get_species(cell.get_species_id());
 
-    const auto& genotype_name = find_genotype_name(species.get_genotype_id());
+    const auto& genotype_name = sim_ptr->find_genotype_name(species.get_genotype_id());
 
     auto epistate = GenotypeProperties::signature_to_string(species.get_methylation_signature());
 
@@ -537,35 +539,50 @@ public:
 
   size_t get_death_activation_level() const
   {
-    return death_activation_level;
+    return sim_ptr->death_activation_level;
   }
 
   void set_death_activation_level(const size_t death_activation_level)
   {
-    Races::Drivers::Simulation::Simulation::death_activation_level = death_activation_level;
+    sim_ptr->death_activation_level = death_activation_level;
   }
 
   Races::Time get_history_delta() const
   {
-    return Races::Drivers::Simulation::Simulation::get_statistics().get_history_delta();
+    return sim_ptr->get_statistics().get_history_delta();
   }
 
   void set_history_delta(const Races::Time history_time_delta)
   {
-    Races::Drivers::Simulation::Simulation::get_statistics().set_history_delta(history_time_delta);
+    sim_ptr->get_statistics().set_history_delta(history_time_delta);
+  }
+
+  static Simulation load(const std::string& directory_name)
+  {
+    using namespace Races::Drivers::Simulation;
+
+    Simulation simulation;
+  
+    auto snapshot_path = BinaryLogger::find_last_snapshot_in(directory_name);
+    
+    Races::Archive::Binary::In archive(snapshot_path);
+
+    archive & *(simulation.sim_ptr);
+
+    return simulation;
   }
 };
 
 Simulation::Simulation():
-  Races::Drivers::Simulation::Simulation()
+  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>())
 {}
 
 Simulation::Simulation(const int& seed):
-  Races::Drivers::Simulation::Simulation(seed)
+  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(seed))
 {}
 
 Simulation::Simulation(const std::string& output_dir):
-  Races::Drivers::Simulation::Simulation(output_dir)
+  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(output_dir))
 {}
 
 //' @name Simulation$new
@@ -577,7 +594,7 @@ Simulation::Simulation(const std::string& output_dir):
 //' sim <- new(Simulation, "test")
 //' sim <- new(Simulation, "test", 13)
 Simulation::Simulation(const std::string& output_dir, const int& seed):
-  Races::Drivers::Simulation::Simulation(output_dir, seed)
+  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(output_dir, seed))
 {}
 
 //' @name Simulation$update_tissue 
@@ -597,13 +614,13 @@ void Simulation::update_tissue(const std::string& name,
                                const Races::Drivers::Simulation::AxisSize& width, 
                                const Races::Drivers::Simulation::AxisSize& height)
 {
-  Races::Drivers::Simulation::Simulation::set_tissue(name, {width, height});
+  sim_ptr->set_tissue(name, {width, height});
 }
 
 void Simulation::update_tissue(const Races::Drivers::Simulation::AxisSize& width, 
                                const Races::Drivers::Simulation::AxisSize& height)
 {
-  Races::Drivers::Simulation::Simulation::set_tissue("A tissue", {width, height});
+  sim_ptr->set_tissue("A tissue", {width, height});
 }
 
 //' @name Simulation$add_genotype 
@@ -660,7 +677,7 @@ void Simulation::add_genotype(const std::string& genotype, const List& epigeneti
     }
   }
 
-  Races::Drivers::Simulation::Simulation::add_genotype(real_genotype);
+  sim_ptr->add_genotype(real_genotype);
 }
 
 void Simulation::add_genotype(const std::string& genotype, const double& growth_rate,
@@ -673,7 +690,7 @@ void Simulation::add_genotype(const std::string& genotype, const double& growth_
   real_genotype[""].set_rate(CellEventType::DUPLICATION, growth_rate);
   real_genotype[""].set_rate(CellEventType::DEATH, death_rate);
 
-  Races::Drivers::Simulation::Simulation::add_genotype(real_genotype);
+  sim_ptr->add_genotype(real_genotype);
 }
 
 //' @name Simulation$get_species
@@ -690,7 +707,7 @@ void Simulation::add_genotype(const std::string& genotype, const double& growth_
 //' sim$get_species()
 List Simulation::get_species() const
 {
-  size_t num_of_rows = tissue().num_of_species();
+  size_t num_of_rows = sim_ptr->tissue().num_of_species();
 
   CharacterVector genotype_names(num_of_rows), epi_states(num_of_rows);
   NumericVector switch_rates(num_of_rows), duplication_rates(num_of_rows),
@@ -699,7 +716,7 @@ List Simulation::get_species() const
   using namespace Races::Drivers;
 
   size_t i{0};
-  for (const auto& species: tissue()) {
+  for (const auto& species: sim_ptr->tissue()) {
     genotype_names[i] = species.get_genotype_name();
     duplication_rates[i] = species.get_rate(CellEventType::DUPLICATION);
     death_rates[i] = species.get_rate(CellEventType::DEATH);
@@ -744,20 +761,20 @@ void Simulation::add_cell(const std::string& species_name,
                           const Races::Drivers::Simulation::AxisPosition& x,
                           const Races::Drivers::Simulation::AxisPosition& y)
 {
-  if (tissue().num_of_mutated_cells()>0) {
+  if (sim_ptr->tissue().num_of_mutated_cells()>0) {
     warning("Warning: the tissue already contains a cell.");
   }
 
-  const auto& species = tissue().get_species(species_name);
+  const auto& species = sim_ptr->tissue().get_species(species_name);
 
-  Races::Drivers::Simulation::Simulation::add_cell(species.get_id(), {x,y});
+  sim_ptr->add_cell(species.get_id(), {x,y});
 }
 
 List Simulation::get_cells() const
 {
   namespace RS = Races::Drivers::Simulation;
 
-  std::vector<RS::AxisPosition> upper_corner = tissue().size();
+  std::vector<RS::AxisPosition> upper_corner = sim_ptr->tissue().size();
   upper_corner.resize(2);
 
   for (auto& value : upper_corner) {
@@ -796,7 +813,7 @@ List Simulation::get_cell(const Races::Drivers::Simulation::AxisPosition& x,
 {
   namespace RS = Races::Drivers::Simulation;
 
-  const RS::CellInTissue& cell = tissue()({x,y});
+  const RS::CellInTissue& cell = sim_ptr->tissue()({x,y});
 
   return wrap_a_cell(cell);
 }
@@ -806,7 +823,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
 {
   std::set<Races::Drivers::SpeciesId> species_ids;
 
-  for (const auto& species: tissue()) {
+  for (const auto& species: sim_ptr->tissue()) {
     species_ids.insert(species.get_id());
   }
 
@@ -852,7 +869,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 {
   namespace RS = Races::Drivers::Simulation;
 
-  std::vector<RS::AxisPosition> upper_corner = tissue().size();
+  std::vector<RS::AxisPosition> upper_corner = sim_ptr->tissue().size();
   upper_corner.resize(2);
 
   for (auto& value : upper_corner) {
@@ -914,7 +931,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
   std::set<std::string> genotype_set(genotype_filter.begin(), genotype_filter.end());
   std::set<std::string> epigenetic_set(epigenetic_filter.begin(), epigenetic_filter.end());
 
-  auto species_ids = get_species_ids_from_genotype_name(tissue(), genotype_set);
+  auto species_ids = get_species_ids_from_genotype_name(sim_ptr->tissue(), genotype_set);
 
   return get_cells(lower_corner, upper_corner, species_ids, epigenetic_set);
 }
@@ -937,14 +954,14 @@ List Simulation::get_counts() const
 {
   using namespace Races::Drivers;
 
-  size_t num_of_rows = tissue().num_of_species();
+  size_t num_of_rows = sim_ptr->tissue().num_of_species();
 
   CharacterVector genotype_names(num_of_rows);
   CharacterVector epi_states(num_of_rows);
   IntegerVector counts(num_of_rows);
 
   size_t i{0};
-  for (const auto& species: tissue()) {
+  for (const auto& species: sim_ptr->tissue()) {
     genotype_names[i] = species.get_genotype_name();
     epi_states[i] = get_signature_string(species);
     counts[i] = species.num_of_cells();
@@ -993,16 +1010,16 @@ List Simulation::get_added_cells() const
 
   namespace RS = Races::Drivers::Simulation;
 
-  size_t num_of_rows = RS::Simulation::get_added_cells().size();
+  size_t num_of_rows = sim_ptr->get_added_cells().size();
 
   CharacterVector genotype_names(num_of_rows),  epi_states(num_of_rows);
   IntegerVector position_x(num_of_rows), position_y(num_of_rows);
   NumericVector time(num_of_rows);
 
   size_t i{0};
-  for (const auto& added_cell: RS::Simulation::get_added_cells()) {
-    const auto& species = tissue().get_species(added_cell.species_id);
-    genotype_names[i] = find_genotype_name(species.get_genotype_id());
+  for (const auto& added_cell: sim_ptr->get_added_cells()) {
+    const auto& species = sim_ptr->tissue().get_species(added_cell.species_id);
+    genotype_names[i] = sim_ptr->find_genotype_name(species.get_genotype_id());
     epi_states[i] = get_signature_string(species);
     position_x[i] = added_cell.x;
     position_y[i] = added_cell.y;
@@ -1051,7 +1068,7 @@ List Simulation::get_added_cells() const
 void Simulation::schedule_genotype_mutation(const std::string& src, const std::string& dest,
                                             const Races::Time& time)
 {
-  Races::Drivers::Simulation::Simulation::schedule_genotype_mutation(src,dest,time);
+  sim_ptr->schedule_genotype_mutation(src,dest,time);
 }
 
 // sorting LineageEdge by time
@@ -1125,9 +1142,9 @@ std::vector<TimedLineageEdge> sorted_timed_edges(const Races::Drivers::Simulatio
 //' sim$get_lineage_graph()
 List Simulation::get_lineage_graph() const
 {
-  const auto species_id2name = get_species_id2name(tissue());
+  const auto species_id2name = get_species_id2name(sim_ptr->tissue());
 
-  const auto timed_edges = sorted_timed_edges(*this);
+  const auto timed_edges = sorted_timed_edges(*sim_ptr);
 
   CharacterVector ancestors(timed_edges.size()), progeny(timed_edges.size());
   NumericVector first_cross(timed_edges.size());
@@ -1169,13 +1186,13 @@ inline void validate_non_empty_tissue(const Races::Drivers::Simulation::Tissue& 
 //' sim$run_up_to_time(100)
 void Simulation::run_up_to_time(const Races::Time& time)
 {
-  validate_non_empty_tissue(tissue());
+  validate_non_empty_tissue(sim_ptr->tissue());
 
   Races::UI::ProgressBar bar;
 
   RTest<Races::Drivers::Simulation::TimeTest> ending_test{time};
 
-  Races::Drivers::Simulation::Simulation::run(ending_test, bar);
+  sim_ptr->run(ending_test, bar);
 }
 
 //' @name Simulation$run_up_to_size
@@ -1199,13 +1216,13 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 {
   Races::UI::ProgressBar bar;
 
-  validate_non_empty_tissue(tissue());
+  validate_non_empty_tissue(sim_ptr->tissue());
 
-  const auto& species_id = tissue().get_species(species_name).get_id();
+  const auto& species_id = sim_ptr->tissue().get_species(species_name).get_id();
 
   RTest<Races::Drivers::Simulation::SpeciesCountTest> ending_test{species_id, num_of_cells};
 
-  Races::Drivers::Simulation::Simulation::run(ending_test, bar);
+  sim_ptr->run(ending_test, bar);
 }
 
 //' @name Simulation$run_up_to_event
@@ -1231,7 +1248,7 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
 {
   Races::UI::ProgressBar bar;
 
-  validate_non_empty_tissue(tissue());
+  validate_non_empty_tissue(sim_ptr->tissue());
 
   if (event_names.count(event)==0) {
     handle_unknown_event(event);
@@ -1239,11 +1256,11 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
 
   namespace RS = Races::Drivers::Simulation;
 
-  const auto& species_id = tissue().get_species(species_name).get_id();
+  const auto& species_id = sim_ptr->tissue().get_species(species_name).get_id();
 
   RTest<RS::EventCountTest> ending_test{event_names.at(event), species_id, num_of_events};
 
-  RS::Simulation::run(ending_test, bar);
+  sim_ptr->run(ending_test, bar);
 }
 
 //' @name Simulation$get_clock 
@@ -1262,7 +1279,7 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
 //' sim$get_clock()
 Races::Time Simulation::get_clock() const
 {
-  return Races::Drivers::Simulation::Simulation::get_time();
+  return sim_ptr->get_time();
 }
 
 //' @name Simulation$get_firings 
@@ -1282,7 +1299,7 @@ Races::Time Simulation::get_clock() const
 //' sim$get_firings()
 List Simulation::get_firings() const
 {
-  const auto last_time_sample = get_statistics().get_last_time_in_history();
+  const auto last_time_sample = sim_ptr->get_statistics().get_last_time_in_history();
 
   auto df = get_firing_history(last_time_sample, last_time_sample);
 
@@ -1316,11 +1333,11 @@ List Simulation::get_firing_history() const
 
 List Simulation::get_firing_history(const Races::Time& minimum_time) const
 {
-  if (get_statistics().get_history().size()==0) {
+  if (sim_ptr->get_statistics().get_history().size()==0) {
     return get_firing_history(0,0);
   }
 
-  const auto last_time_sample = get_statistics().get_last_time_in_history();
+  const auto last_time_sample = sim_ptr->get_statistics().get_last_time_in_history();
 
   return get_firing_history(minimum_time, last_time_sample);
 }
@@ -1329,7 +1346,7 @@ size_t Simulation::count_history_sample_in(const Races::Time& minimum_time,
                                            const Races::Time& maximum_time) const
 {
   size_t num_of_samples{0};
-  const auto& history = get_statistics().get_history();
+  const auto& history = sim_ptr->get_statistics().get_history();
   auto series_it = history.lower_bound(minimum_time);
   while (series_it != history.end()
          && series_it->first <= maximum_time) {
@@ -1345,7 +1362,7 @@ List Simulation::get_firing_history(const Races::Time& minimum_time,
 {
   //using namespace Races::Drivers;
 
-  const size_t rows_per_sample = event_names.size()*tissue().num_of_species();
+  const size_t rows_per_sample = event_names.size()*sim_ptr->tissue().num_of_species();
   const size_t num_of_rows = count_history_sample_in(minimum_time, maximum_time)*rows_per_sample;
 
   CharacterVector events(num_of_rows), genotype_names(num_of_rows),
@@ -1354,12 +1371,12 @@ List Simulation::get_firing_history(const Races::Time& minimum_time,
   NumericVector times(num_of_rows);
 
   size_t i{0};
-  const auto& history = get_statistics().get_history();
+  const auto& history = sim_ptr->get_statistics().get_history();
   auto series_it = history.lower_bound(minimum_time);
   while (series_it != history.end() && series_it->first <= maximum_time) {
     const auto& time = series_it->first;
     const auto& t_stats = series_it->second;
-    for (const auto& species: tissue()) {
+    for (const auto& species: sim_ptr->tissue()) {
       for (const auto& [event_name, event_code]: event_names) {
         events[i] = event_name;
         genotype_names[i] = species.get_genotype_name();
@@ -1407,11 +1424,11 @@ List Simulation::get_count_history() const
 
 List Simulation::get_count_history(const Races::Time& minimum_time) const
 {
-  if (get_statistics().get_history().size()==0) {
+  if (sim_ptr->get_statistics().get_history().size()==0) {
     return get_count_history(0,0);
   }
 
-  const auto last_time_sample = get_statistics().get_last_time_in_history();
+  const auto last_time_sample = sim_ptr->get_statistics().get_last_time_in_history();
 
   return get_count_history(minimum_time, last_time_sample);
 }
@@ -1421,7 +1438,7 @@ List Simulation::get_count_history(const Races::Time& minimum_time,
 {
   //using namespace Races::Drivers;
 
-  const size_t rows_per_sample = tissue().num_of_species();
+  const size_t rows_per_sample = sim_ptr->tissue().num_of_species();
   const size_t num_of_rows = count_history_sample_in(minimum_time, maximum_time)*rows_per_sample;
 
   CharacterVector genotype_names(num_of_rows), epi_states(num_of_rows);
@@ -1429,12 +1446,12 @@ List Simulation::get_count_history(const Races::Time& minimum_time,
   NumericVector times(num_of_rows);
 
   size_t i{0};
-  const auto& history =  get_statistics().get_history();
+  const auto& history = sim_ptr->get_statistics().get_history();
   auto series_it = history.lower_bound(minimum_time);
   while (series_it != history.end() && series_it->first <= maximum_time) {
     const auto& time = series_it->first;
     const auto& t_stats = series_it->second;
-    for (const auto& species: tissue()) {
+    for (const auto& species: sim_ptr->tissue()) {
       genotype_names[i] = species.get_genotype_name();
       epi_states[i] = get_signature_string(species);
 
@@ -1465,7 +1482,7 @@ List Simulation::get_count_history(const Races::Time& minimum_time,
 //' sim$get_name()
 std::string Simulation::get_name() const
 { 
-  return std::string(get_logger().get_directory());
+  return std::string(sim_ptr->get_logger().get_directory());
 }
 
 //' @name Simulation$get_tissue_name 
@@ -1479,7 +1496,7 @@ std::string Simulation::get_name() const
 //' sim$get_tissue_name()
 const std::string& Simulation::get_tissue_name() const
 {
-  return tissue().get_name();
+  return sim_ptr->tissue().get_name();
 }
 
 //' @name Simulation$get_tissue_size 
@@ -1493,7 +1510,7 @@ const std::string& Simulation::get_tissue_name() const
 //' sim$get_tissue_size()
 IntegerVector Simulation::get_tissue_size() const
 {
-  auto size_vect = tissue().size();
+  auto size_vect = sim_ptr->tissue().size();
 
   return {size_vect[0], size_vect[1]};
 }
@@ -1513,7 +1530,7 @@ IntegerVector Simulation::get_tissue_size() const
 //' sim$get_rates("A-")
 List Simulation::get_rates(const std::string& species_name) const
 {
-  auto& species = tissue().get_species(species_name);
+  auto& species = sim_ptr->tissue().get_species(species_name);
 
   List rates = List::create(_("growth") = species.get_rate(event_names.at("growth")),
                             _["death"] = species.get_rate(event_names.at("death")));
@@ -1541,7 +1558,7 @@ List Simulation::get_rates(const std::string& species_name) const
 void Simulation::update_rates(const std::string& species_name, const List& rates)
 {
   using namespace Races::Drivers;
-  auto& species = tissue().get_species(species_name);
+  auto& species = sim_ptr->tissue().get_species(species_name);
 
   for (const auto& [event_name, event_code]: event_names) {
     if (rates.containsElementNamed(event_name.c_str())) {
@@ -1585,7 +1602,7 @@ List Simulation::choose_cell_in(const std::string& genotype_name,
   namespace RS = Races::Drivers::Simulation;
 
   auto rectangle = get_rectangle(lower_corner, upper_corner);
-  const auto& cell = RS::Simulation::choose_cell_in(genotype_name, rectangle);
+  const auto& cell = sim_ptr->choose_cell_in(genotype_name, rectangle);
 
   return wrap_a_cell(cell);
 }
@@ -1594,7 +1611,7 @@ List Simulation::choose_cell_in(const std::string& genotype_name)
 {
   namespace RS = Races::Drivers::Simulation;
 
-  const auto& cell = RS::Simulation::choose_cell_in(genotype_name);
+  const auto& cell = sim_ptr->choose_cell_in(genotype_name);
 
   return wrap_a_cell(cell);
 }
@@ -1607,7 +1624,7 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 
   namespace RS = Races::Drivers::Simulation;
 
-  RS::Simulation::simulate_genotype_mutation(pos_in_tissue, mutated_genotype);
+  sim_ptr->simulate_genotype_mutation(pos_in_tissue, mutated_genotype);
 }
 
 //' @name Simulation$mutate_progeny
@@ -1685,6 +1702,40 @@ void Simulation::mutate_progeny(const List& cell_position,
 //'
 //' # set the delta time between two time series samples
 //' sim$death_activation_level <- 20
+
+
+//' @name recover_simulation
+//' @title Load a simulation
+//' @param name The name of the simulation to be recovered
+//' @examples
+//' # create a simulation having name "recover_simulation_test"
+//' sim <- new(Simulation, "recover_simulation_test")
+//'
+//' # add the species of "A"
+//' sim$add_genotype("A",
+//'                  epigenetic_rates=c("+-" = 0.01, "-+"=0.01),
+//'                  growth_rates = c("+"=0.1, "-"=0.01),
+//'                  death_rates = c("+"=0.05, "-"=0.005))
+//'
+//' # place a cell in the tissue
+//' sim$add_cell("A+", 500, 500)
+//'
+//' # simulate up to time 50
+//' run_up_to_time(50)
+//'
+//' # show the simulation
+//' sim
+//'
+//' # remove the object sim from the environment
+//' rm(list=c("sim"))
+//'
+//' # the object pointed by sim does not exist any more
+//' exists("sim")
+//' 
+//' # recover the simulation from the directory "recover_simulation_test"
+//' sim <- recover_simulation("recover_simulation_test")
+//'
+//' sim
 
 namespace RS = Races::Drivers::Simulation;
 namespace RD = Races::Drivers;
@@ -1820,4 +1871,8 @@ RCPP_MODULE(Drivers){
   .method("update_tissue", (void (Simulation::*)(const RS::AxisSize&,
                                                  const RS::AxisSize&))(&Simulation::update_tissue),
           "Update tissue size");
+
+  // recover_simulation
+  function("recover_simulation", &Simulation::load, 
+           "Recover a simulation");
 }
