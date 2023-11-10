@@ -7,9 +7,6 @@
     <loc>https://caravagnalab.github.io/rRACES/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/Growth.html</loc>
-  </url>
-  <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/Tissue_simulation.html</loc>
   </url>
   <url>
@@ -23,9 +20,6 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/index.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-add_cell.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-add_genotype.html</loc>
@@ -86,6 +80,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-new.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-place_cell.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_up_to_event.html</loc>
