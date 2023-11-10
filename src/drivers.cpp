@@ -425,9 +425,9 @@ class Simulation : private Races::Drivers::Simulation::Simulation
 
     auto epistate = GenotypeProperties::signature_to_string(species.get_methylation_signature());
 
-    return List::create(_["cell_id"]=cell.get_id(), _["genotype"]=genotype_name,
-                        _["epistate"]=epistate, _["position_x"]=cell.x,
-                        _["position_y"]=cell.y);
+    return DataFrame::create(_["cell_id"]=cell.get_id(), _["genotype"]=genotype_name,
+                             _["epistate"]=epistate, _["position_x"]=cell.x,
+                             _["position_y"]=cell.y);
   }
 
 public:
