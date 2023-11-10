@@ -1721,7 +1721,7 @@ void Simulation::mutate_progeny(const List& cell_position,
 //' sim$add_cell("A+", 500, 500)
 //'
 //' # simulate up to time 50
-//' run_up_to_time(50)
+//' sim$run_up_to_time(50)
 //'
 //' # show the simulation
 //' sim
