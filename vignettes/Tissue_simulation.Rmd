@@ -159,6 +159,9 @@ sim$add_genotype(name = "A",
 
 # updated object (counts refer to number of cells of each species)
 sim
+
+# Get the simulation species and their rates 
+sim$get_species()
 ```
 
 <!-- ### Time-triggered transitions -->
@@ -213,10 +216,9 @@ sim$get_cells()
 These information can be plot, either as piechar for counts, or as a
 spatial distribution for the whole tissue
 
-```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
-require(patchwork)
-
-plot_state(sim) + plot_tissue(sim)
+```{r,  fig.height=4, fig.width=3, message=FALSE, warning=FALSE}
+plot_state(sim) 
+plot_tissue(sim)
 ```
 
 > Note: since the plots are done with `ggplot` they can be assembled and
@@ -249,10 +251,8 @@ Counts per species now reports 500 for `A+`.
 sim$get_counts()
 ```
 
-```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
-require(patchwork)
-
-plot_state(sim) + plot_tissue(sim)
+```{r,  fig.height=4, fig.width=3, message=FALSE, warning=FALSE}
+plot_tissue(sim)
 ```
 
 #### Firing-based forward simulation
@@ -274,8 +274,8 @@ sim$run_up_to_event("death", "A-", 100)
 sim$get_firings()
 ```
 
-```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
-plot_state(sim) + plot_tissue(sim)
+```{r,  fig.height=4, fig.width=3, message=FALSE, warning=FALSE}
+plot_tissue(sim)
 ```
 
 #### Clock-based forward simulation
@@ -294,8 +294,8 @@ sim$run_up_to_time(sim$get_clock() + 15)
 sim$get_clock()
 ```
 
-```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
-plot_state(sim) + plot_tissue(sim)
+```{r,  fig.height=4, fig.width=3, message=FALSE, warning=FALSE}
+plot_tissue(sim)
 ```
 
 At this point, if we query the simulation configuration we will find
@@ -383,8 +383,9 @@ sim$get_counts()
 sim$run_up_to_size("B+", 1000)
 ```
 
-```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
-plot_state(sim) + plot_tissue(sim)
+```{r,  fig.height=4, fig.width=3, message=FALSE, warning=FALSE}
+plot_state(sim) 
+plot_tissue(sim)
 ```
 
 {r, fig.height=4, fig.width=6, message=FALSE,
@@ -426,8 +427,9 @@ sim$get_cell(cell$position_x, cell$position_y)
 sim$run_up_to_time(sim$get_clock() + 10)
 ```
 
-```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
-plot_state(sim) + plot_tissue(sim)
+```{r,  fig.height=4, fig.width=3, message=FALSE, warning=FALSE}
+plot_state(sim)
+plot_tissue(sim)
 ```
 
 ### Other operations
@@ -519,7 +521,7 @@ This threshold holds for all the species and it is set to 1 by default.
 sim$death_activation_level
 ```
 
-However, it can be risen as much as we want to avoid species drift.
+However, it can be risen as much as we want to avoid drift
 
 ```{r}
 sim$death_activation_level <- 50 
