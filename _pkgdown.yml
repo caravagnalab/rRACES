@@ -38,8 +38,8 @@ reference:
   - Simulation$get_species
   - Simulation$get_tissue_name
   - Simulation$get_tissue_size
-  - Simulation$new
   - Simulation$mutate_progeny
+  - Simulation$new
   - Simulation$run_up_to_event
   - Simulation$run_up_to_size
   - Simulation$run_up_to_time
@@ -49,6 +49,7 @@ reference:
   - plot_firings
   - plot_state
   - plot_tissue
+  - recover_simulation
   
 
 
