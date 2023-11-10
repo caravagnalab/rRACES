@@ -51,7 +51,6 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Growth.html">Simulating Tumour Growth</a>
     <a class="dropdown-item" href="../articles/Tissue_simulation.html">Tissue simulation</a>
   </div>
 </li>
@@ -97,14 +96,7 @@
     <h2 id="fields">Fields<a class="anchor" aria-label="anchor" href="#fields"></a></h2>
     
 
-<dl><dt><code>add_cell</code></dt>
-<dd><p>Implant one cell in the tissue</p><ul><li><p><em>Parameter:</em> <code>species</code> - The name of the new cell species.</p></li>
-<li><p><em>Parameter:</em> <code>x</code> - The position on the x axis of the cell.</p></li>
-<li><p><em>Parameter:</em> <code>y</code> - The position on the y axis of the cell.</p></li>
-</ul></dd>
-
-
-<dt><code>add_genotype</code></dt>
+<dl><dt><code>add_genotype</code></dt>
 <dd><p>Adds a genotype and its species</p><ul><li><p><em>Parameter:</em> <code>genotype</code> - The genotype name.</p></li>
 <li><p><em>Parameter:</em> <code>epigenetic_rates</code> - The epigenetic rates of the genotype species (optional).</p></li>
 <li><p><em>Parameter:</em> <code>growth_rates</code> - The duplication rates of the genotype species.</p></li>
@@ -219,6 +211,13 @@
 </ul><p>or</p><ul><li><p><em>Parameter:</em> <code>x</code> - The position of the cell whose progeny will mutate on the x axis.</p></li>
 <li><p><em>Parameter:</em> <code>y</code> - The position of the cell whose progeny will mutate on the y axis.</p></li>
 <li><p><em>Parameter:</em> <code>mutated_genotype</code> - The genotype of the mutated cell.</p></li>
+</ul></dd>
+
+
+<dt><code>place_cell</code></dt>
+<dd><p>Place one cell in the tissue</p><ul><li><p><em>Parameter:</em> <code>species</code> - The name of the new cell species.</p></li>
+<li><p><em>Parameter:</em> <code>x</code> - The position on the x axis of the cell.</p></li>
+<li><p><em>Parameter:</em> <code>y</code> - The position on the y axis of the cell.</p></li>
 </ul></dd>
 
 

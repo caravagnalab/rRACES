@@ -27,7 +27,6 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Growth.html">Simulating Tumour Growth</a>
     <a class="dropdown-item" href="../articles/Tissue_simulation.html">Tissue simulation</a>
   </div>
 </li>
@@ -76,11 +75,10 @@
 <span class="r-in"><span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span><span class="op">=</span><span class="fl">0.05</span>, <span class="st">"-"</span><span class="op">=</span><span class="fl">0.005</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># place a cell in the tissue</span></span></span>
-<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_cell</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># simulate up to time 50</span></span></span>
-<span class="r-in"><span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in run_up_to_time(50):</span> could not find function "run_up_to_time"</span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># show the simulation</span></span></span>
 <span class="r-in"><span><span class="va">sim</span></span></span>
@@ -89,8 +87,8 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  =====  ====  ======</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    species   λ       δ    ε    counts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  =====  ====  ======</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         A-  0.01  0.005  0.01    0   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         A+  0.10  0.050  0.01    1   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         A-  0.01  0.005  0.01    4   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         A+  0.10  0.050  0.01    22  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  =====  ====  ======</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># remove the object sim from the environment</span></span></span>
@@ -102,10 +100,16 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># recover the simulation from the directory "recover_simulation_test"</span></span></span>
 <span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">recover_simulation</span><span class="op">(</span><span class="st">"recover_simulation_test"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in recover_simulation("recover_simulation_test"):</span> could not find function "recover_simulation"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'sim' not found</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #00BB00;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> recover_simulation_test ────────────────────────────────</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  =====  ====  ======</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    species   λ       δ    ε    counts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  =====  ====  ======</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         A-  0.01  0.005  0.01    4   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         A+  0.10  0.050  0.01    22  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  =====  ====  ======</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
