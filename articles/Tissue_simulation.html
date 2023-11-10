@@ -166,7 +166,7 @@ the simulation and control it.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="specie-sand-their-evolutionary-relations">Specie sand their evolutionary relations<a class="anchor" aria-label="anchor" href="#specie-sand-their-evolutionary-relations"></a>
+<h2 id="species-evolution">Species evolution<a class="anchor" aria-label="anchor" href="#species-evolution"></a>
 </h2>
 <p>In order to simulate the evolution of some species we need to add
 them to <code>sim</code>. This process defines the evolutionary
@@ -258,23 +258,9 @@ simulation;</li>
 <span><span class="co">#&gt;   genotype epistate growth_rate death_rate switch_rate</span></span>
 <span><span class="co">#&gt; 1        A        -        0.08       0.01        0.01</span></span>
 <span><span class="co">#&gt; 2        A        +        0.20       0.10        0.01</span></span></code></pre></div>
-<!-- ### Time-triggered transitions -->
-<!-- To define an evolutionary relation between the genotypes `A` and `B`, we can set a parent/child relation that will fire at a predefined simulation time. This will mean that, a cell of genotype `A` will be randomly sampled and mutated to a cell of type `B`; the epistate is randomly chosen and maintained after mutation. -->
-<!-- For example, we program an `A`-to-`B` timed transition from at time `30`. -->
-<!-- ```{r} -->
-<!-- # Schedule a mutation at time 40 from one of the species of -->
-<!-- # genotype "A" to the species of "B" having the same -->
-<!-- # epigenetic state -->
-<!-- sim$schedule_genotype_mutation("A", "B", 40) -->
-<!-- # Print the object -->
-<!-- sim -->
-<!-- # Get the simulation species and their rates -->
-<!-- sim$get_species() -->
-<!-- ``` -->
-</div>
-<div class="section level3">
-<h3 id="initial-cell-positioning">Initial cell positioning<a class="anchor" aria-label="anchor" href="#initial-cell-positioning"></a>
-</h3>
+<div class="section level4">
+<h4 id="initial-cell-positioning">Initial cell positioning<a class="anchor" aria-label="anchor" href="#initial-cell-positioning"></a>
+</h4>
 <p>To be able to simulate the model, an initial cell needs to be
 displaced in the tissue. We add one cell of species <code>A+</code>
 (genotype <code>A</code> in epistate <code>+</code>) in position
@@ -282,9 +268,9 @@ displaced in the tissue. We add one cell of species <code>A+</code>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_cell</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="visualisation-of-cell-counts">Visualisation of cell counts<a class="anchor" aria-label="anchor" href="#visualisation-of-cell-counts"></a>
-</h3>
+<div class="section level4">
+<h4 id="visualisation-of-cell-counts">Visualisation of cell counts<a class="anchor" aria-label="anchor" href="#visualisation-of-cell-counts"></a>
+</h4>
 <p>We can query the current state of the simulation, and extract the
 cell position using two getters</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -311,8 +297,9 @@ spatial distribution for the whole tissue</p>
 assembled and customised.</p>
 </blockquote>
 </div>
+</div>
 <div class="section level3">
-<h3 id="species-evolution">Species evolution<a class="anchor" aria-label="anchor" href="#species-evolution"></a>
+<h3 id="species-evolution-1">Species evolution<a class="anchor" aria-label="anchor" href="#species-evolution-1"></a>
 </h3>
 <p>There are 3 ways to let the simulation evolve:</p>
 <ul>
@@ -454,54 +441,18 @@ For example, we can randomly select one cell in the genotype
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Stochastic sampling from the whole tissue</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 68158</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "+"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 481</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 575</span></span>
+<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
+<span><span class="co">#&gt; 1   68158        A        +        481        575</span></span>
 <span></span>
 <span><span class="co"># Calling it again may result in a different cell</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 68178</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "+"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 569</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 529</span></span>
+<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
+<span><span class="co">#&gt; 1   68178        A        +        569        529</span></span>
 <span></span>
 <span><span class="co"># Constrain sampling in the tissue rectangular selection [500,550]x[350,450] </span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">350</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">550</span>, <span class="fl">450</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 87012</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "+"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 502</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 426</span></span></code></pre></div>
+<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
+<span><span class="co">#&gt; 1   87012        A        +        502        426</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="evolving-species-by-driver-events">Evolving species by driver events<a class="anchor" aria-label="anchor" href="#evolving-species-by-driver-events"></a>
@@ -524,29 +475,16 @@ cell of genotype <code>B</code>;</p></li>
 <p>We locate a random cell and add the genotype</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Sampled cell</span></span>
-<span><span class="va">cell</span> <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span> </span>
+<span><span class="va">cell</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
 <span><span class="va">cell</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 68158</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "+"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 481</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 575</span></span>
+<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
+<span><span class="co">#&gt; 1   68158        A        +        481        575</span></span>
 <span></span>
 <span><span class="co"># Add genotype</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"B"</span>,</span>
 <span>                 epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,</span>
 <span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.3</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span>
-<span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
-<span>             <span class="op">)</span></span></code></pre></div>
+<span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then we inject the cell, and simulate a little bit.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">cell</span>, <span class="st">"B"</span><span class="op">)</span></span>
@@ -592,27 +530,14 @@ calling <code>choose_cell_in</code></p></li>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"C"</span>,</span>
 <span>                 epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
 <span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.2</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span>,</span>
-<span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
-<span>                 <span class="op">)</span></span>
+<span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">cell</span>, <span class="st">"C"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Everything should be correct</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cell</span><span class="op">(</span><span class="va">cell</span><span class="op">$</span><span class="va">position_x</span>, <span class="va">cell</span><span class="op">$</span><span class="va">position_y</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 1221399</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "C"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "-"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 487</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 566</span></span>
+<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
+<span><span class="co">#&gt; 1 1221399        C        -        487        566</span></span>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
@@ -652,100 +577,17 @@ species cells and that of event firings. rRACES makes these data
 accessible via specific getters.</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The firings</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firing_history</span><span class="op">(</span><span class="op">)</span> </span>
-<span><span class="co">#&gt;     event genotype epistate   fired      time</span></span>
-<span><span class="co">#&gt; 1   death        A        -       6  45.00946</span></span>
-<span><span class="co">#&gt; 2  growth        A        -      72  45.00946</span></span>
-<span><span class="co">#&gt; 3  switch        A        -       9  45.00946</span></span>
-<span><span class="co">#&gt; 4   death        A        +     344  45.00946</span></span>
-<span><span class="co">#&gt; 5  growth        A        +     874  45.00946</span></span>
-<span><span class="co">#&gt; 6  switch        A        +      39  45.00946</span></span>
-<span><span class="co">#&gt; 7   death        B        -       0  45.00946</span></span>
-<span><span class="co">#&gt; 8  growth        B        -       0  45.00946</span></span>
-<span><span class="co">#&gt; 9  switch        B        -       0  45.00946</span></span>
-<span><span class="co">#&gt; 10  death        B        +       0  45.00946</span></span>
-<span><span class="co">#&gt; 11 growth        B        +       0  45.00946</span></span>
-<span><span class="co">#&gt; 12 switch        B        +       0  45.00946</span></span>
-<span><span class="co">#&gt; 13  death        C        -       0  45.00946</span></span>
-<span><span class="co">#&gt; 14 growth        C        -       0  45.00946</span></span>
-<span><span class="co">#&gt; 15 switch        C        -       0  45.00946</span></span>
-<span><span class="co">#&gt; 16  death        C        +       0  45.00946</span></span>
-<span><span class="co">#&gt; 17 growth        C        +       0  45.00946</span></span>
-<span><span class="co">#&gt; 18 switch        C        +       0  45.00946</span></span>
-<span><span class="co">#&gt; 19  death        A        -     101  66.38608</span></span>
-<span><span class="co">#&gt; 20 growth        A        -     924  66.38608</span></span>
-<span><span class="co">#&gt; 21 switch        A        -     109  66.38608</span></span>
-<span><span class="co">#&gt; 22  death        A        +    4010  66.38608</span></span>
-<span><span class="co">#&gt; 23 growth        A        +    8512  66.38608</span></span>
-<span><span class="co">#&gt; 24 switch        A        +     430  66.38608</span></span>
-<span><span class="co">#&gt; 25  death        B        -       0  66.38608</span></span>
-<span><span class="co">#&gt; 26 growth        B        -       0  66.38608</span></span>
-<span><span class="co">#&gt; 27 switch        B        -       0  66.38608</span></span>
-<span><span class="co">#&gt; 28  death        B        +       0  66.38608</span></span>
-<span><span class="co">#&gt; 29 growth        B        +       0  66.38608</span></span>
-<span><span class="co">#&gt; 30 switch        B        +       0  66.38608</span></span>
-<span><span class="co">#&gt; 31  death        C        -       0  66.38608</span></span>
-<span><span class="co">#&gt; 32 growth        C        -       0  66.38608</span></span>
-<span><span class="co">#&gt; 33 switch        C        -       0  66.38608</span></span>
-<span><span class="co">#&gt; 34  death        C        +       0  66.38608</span></span>
-<span><span class="co">#&gt; 35 growth        C        +       0  66.38608</span></span>
-<span><span class="co">#&gt; 36 switch        C        +       0  66.38608</span></span>
-<span><span class="co">#&gt; 37  death        A        -     531  81.38625</span></span>
-<span><span class="co">#&gt; 38 growth        A        -    4806  81.38625</span></span>
-<span><span class="co">#&gt; 39 switch        A        -     542  81.38625</span></span>
-<span><span class="co">#&gt; 40  death        A        +   19229  81.38625</span></span>
-<span><span class="co">#&gt; 41 growth        A        +   40733  81.38625</span></span>
-<span><span class="co">#&gt; 42 switch        A        +    1969  81.38625</span></span>
-<span><span class="co">#&gt; 43  death        B        -       0  81.38625</span></span>
-<span><span class="co">#&gt; 44 growth        B        -       0  81.38625</span></span>
-<span><span class="co">#&gt; 45 switch        B        -       0  81.38625</span></span>
-<span><span class="co">#&gt; 46  death        B        +       0  81.38625</span></span>
-<span><span class="co">#&gt; 47 growth        B        +       0  81.38625</span></span>
-<span><span class="co">#&gt; 48 switch        B        +       0  81.38625</span></span>
-<span><span class="co">#&gt; 49  death        C        -       0  81.38625</span></span>
-<span><span class="co">#&gt; 50 growth        C        -       0  81.38625</span></span>
-<span><span class="co">#&gt; 51 switch        C        -       0  81.38625</span></span>
-<span><span class="co">#&gt; 52  death        C        +       0  81.38625</span></span>
-<span><span class="co">#&gt; 53 growth        C        +       0  81.38625</span></span>
-<span><span class="co">#&gt; 54 switch        C        +       0  81.38625</span></span>
-<span><span class="co">#&gt; 55  death        A        -    7487 106.53202</span></span>
-<span><span class="co">#&gt; 56 growth        A        -   67468 106.53202</span></span>
-<span><span class="co">#&gt; 57 switch        A        -    7431 106.53202</span></span>
-<span><span class="co">#&gt; 58  death        A        +  257563 106.53202</span></span>
-<span><span class="co">#&gt; 59 growth        A        +  541355 106.53202</span></span>
-<span><span class="co">#&gt; 60 switch        A        +   26124 106.53202</span></span>
-<span><span class="co">#&gt; 61  death        B        -     186 106.53202</span></span>
-<span><span class="co">#&gt; 62 growth        B        -     644 106.53202</span></span>
-<span><span class="co">#&gt; 63 switch        B        -      88 106.53202</span></span>
-<span><span class="co">#&gt; 64  death        B        +     151 106.53202</span></span>
-<span><span class="co">#&gt; 65 growth        B        +    1232 106.53202</span></span>
-<span><span class="co">#&gt; 66 switch        B        +     169 106.53202</span></span>
-<span><span class="co">#&gt; 67  death        C        -       0 106.53202</span></span>
-<span><span class="co">#&gt; 68 growth        C        -       0 106.53202</span></span>
-<span><span class="co">#&gt; 69 switch        C        -       0 106.53202</span></span>
-<span><span class="co">#&gt; 70  death        C        +       0 106.53202</span></span>
-<span><span class="co">#&gt; 71 growth        C        +       0 106.53202</span></span>
-<span><span class="co">#&gt; 72 switch        C        +       0 106.53202</span></span>
-<span><span class="co">#&gt; 73  death        A        -   20767 116.53203</span></span>
-<span><span class="co">#&gt; 74 growth        A        -  187414 116.53203</span></span>
-<span><span class="co">#&gt; 75 switch        A        -   20641 116.53203</span></span>
-<span><span class="co">#&gt; 76  death        A        +  703310 116.53203</span></span>
-<span><span class="co">#&gt; 77 growth        A        + 1478518 116.53203</span></span>
-<span><span class="co">#&gt; 78 switch        A        +   70825 116.53203</span></span>
-<span><span class="co">#&gt; 79  death        B        -    1740 116.53203</span></span>
-<span><span class="co">#&gt; 80 growth        B        -    6074 116.53203</span></span>
-<span><span class="co">#&gt; 81 switch        B        -     858 116.53203</span></span>
-<span><span class="co">#&gt; 82  death        B        +    1441 116.53203</span></span>
-<span><span class="co">#&gt; 83 growth        B        +   10312 116.53203</span></span>
-<span><span class="co">#&gt; 84 switch        B        +    1507 116.53203</span></span>
-<span><span class="co">#&gt; 85  death        C        -       1 116.53203</span></span>
-<span><span class="co">#&gt; 86 growth        C        -      15 116.53203</span></span>
-<span><span class="co">#&gt; 87 switch        C        -       4 116.53203</span></span>
-<span><span class="co">#&gt; 88  death        C        +       2 116.53203</span></span>
-<span><span class="co">#&gt; 89 growth        C        +       5 116.53203</span></span>
-<span><span class="co">#&gt; 90 switch        C        +       1 116.53203</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firing_history</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    event genotype epistate fired     time</span></span>
+<span><span class="co">#&gt; 1  death        A        -     6 45.00946</span></span>
+<span><span class="co">#&gt; 2 growth        A        -    72 45.00946</span></span>
+<span><span class="co">#&gt; 3 switch        A        -     9 45.00946</span></span>
+<span><span class="co">#&gt; 4  death        A        +   344 45.00946</span></span>
+<span><span class="co">#&gt; 5 growth        A        +   874 45.00946</span></span>
+<span><span class="co">#&gt; 6 switch        A        +    39 45.00946</span></span>
 <span></span>
-<span><span class="co"># For example, total number of the deaths on `B+` at the end of the previous calls of the `run_to_*` methods</span></span>
+<span><span class="co"># For example, total number of the deaths on `B+` at the end of the </span></span>
+<span><span class="co"># previous calls of the `run_to_*` methods</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firing_history</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">event</span> <span class="op">==</span> <span class="st">"death"</span>, <span class="va">genotype</span> <span class="op">==</span> <span class="st">"B"</span>, <span class="va">epistate</span> <span class="op">==</span> <span class="st">"-"</span><span class="op">)</span> </span>
 <span><span class="co">#&gt;   event genotype epistate fired      time</span></span>
@@ -756,69 +598,46 @@ accessible via specific getters.</p>
 <span><span class="co">#&gt; 5 death        B        -  1740 116.53203</span></span>
 <span></span>
 <span><span class="co"># The counts</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_count_history</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    genotype epistate  count      time</span></span>
-<span><span class="co">#&gt; 1         A        -     96  45.00946</span></span>
-<span><span class="co">#&gt; 2         A        +    500  45.00946</span></span>
-<span><span class="co">#&gt; 3         B        -      0  45.00946</span></span>
-<span><span class="co">#&gt; 4         B        +      0  45.00946</span></span>
-<span><span class="co">#&gt; 5         C        -      0  45.00946</span></span>
-<span><span class="co">#&gt; 6         C        +      0  45.00946</span></span>
-<span><span class="co">#&gt; 7         A        -   1144  66.38608</span></span>
-<span><span class="co">#&gt; 8         A        +   4181  66.38608</span></span>
-<span><span class="co">#&gt; 9         B        -      0  66.38608</span></span>
-<span><span class="co">#&gt; 10        B        +      0  66.38608</span></span>
-<span><span class="co">#&gt; 11        C        -      0  66.38608</span></span>
-<span><span class="co">#&gt; 12        C        +      0  66.38608</span></span>
-<span><span class="co">#&gt; 13        A        -   5702  81.38625</span></span>
-<span><span class="co">#&gt; 14        A        +  20077  81.38625</span></span>
-<span><span class="co">#&gt; 15        B        -      0  81.38625</span></span>
-<span><span class="co">#&gt; 16        B        +      0  81.38625</span></span>
-<span><span class="co">#&gt; 17        C        -      0  81.38625</span></span>
-<span><span class="co">#&gt; 18        C        +      0  81.38625</span></span>
-<span><span class="co">#&gt; 19        A        -  78674 106.53202</span></span>
-<span><span class="co">#&gt; 20        A        + 265098 106.53202</span></span>
-<span><span class="co">#&gt; 21        B        -    539 106.53202</span></span>
-<span><span class="co">#&gt; 22        B        +   1001 106.53202</span></span>
-<span><span class="co">#&gt; 23        C        -      0 106.53202</span></span>
-<span><span class="co">#&gt; 24        C        +      0 106.53202</span></span>
-<span><span class="co">#&gt; 25        A        - 193852 116.53203</span></span>
-<span><span class="co">#&gt; 26        A        + 650151 116.53203</span></span>
-<span><span class="co">#&gt; 27        B        -   1106 116.53203</span></span>
-<span><span class="co">#&gt; 28        B        +   1644 116.53203</span></span>
-<span><span class="co">#&gt; 29        C        -     12 116.53203</span></span>
-<span><span class="co">#&gt; 30        C        +      6 116.53203</span></span></code></pre></div>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_count_history</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   genotype epistate count     time</span></span>
+<span><span class="co">#&gt; 1        A        -    96 45.00946</span></span>
+<span><span class="co">#&gt; 2        A        +   500 45.00946</span></span>
+<span><span class="co">#&gt; 3        B        -     0 45.00946</span></span>
+<span><span class="co">#&gt; 4        B        +     0 45.00946</span></span>
+<span><span class="co">#&gt; 5        C        -     0 45.00946</span></span>
+<span><span class="co">#&gt; 6        C        +     0 45.00946</span></span></code></pre></div>
 <p>rRACES offers the possibility of performing a coarse-grained storing
-of this history, independently of the</p>
-<p>actual data stored after the evaluation of a <code>run_to_*</code>
-method. To do this, we must set the <code>Simulation</code> property
-<code>history_delta</code> (default <span class="math inline">\(1\)</span>). By default,
-<code>history_delta</code> is set to <span class="math inline">\(0\)</span>, but it can be set to any positive real
-value <span class="math inline">\(d\)</span> so to sample the simulation
+of this history, independently of the actual data stored after the
+evaluation of a <code>run_to_*</code> method. To do this, we can set the
+<code>Simulation</code> property <code>history_delta</code> (default
+<span class="math inline">\(1\)</span>). By default,
+<code>history_delta</code> is set to <span class="math inline">\(0\)</span>, but it can be set to any real value
+<span class="math inline">\(d\)</span> so to dump the simulation
 statistics every <span class="math inline">\(d\)</span> time units.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># default</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">history_delta</span> </span>
-<span><span class="co">#&gt; [1] 0</span></span>
+<code class="sourceCode R"><span><span class="co"># every time-point</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="va">history_delta</span> <span class="op">=</span> <span class="fl">1</span></span>
 <span></span>
 <span><span class="co"># Example time-series on a new simulation</span></span>
-<span><span class="va">sim_ts</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span>
+<span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"A"</span>,</span>
-<span>                 growth_rates <span class="op">=</span> <span class="fl">0.08</span>,</span>
-<span>                 death_rates <span class="op">=</span> <span class="fl">0.01</span></span>
-<span>                 <span class="op">)</span></span>
+<span>                    growth_rates <span class="op">=</span> <span class="fl">0.08</span>,</span>
+<span>                    death_rates <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">add_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim_ts</span><span class="op">$</span><span class="va">history_delta</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">4000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">get_count_history</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">count</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Tissue_simulation_files/figure-html/unnamed-chunk-29-1.png" width="700"></p>
-<p>##### Avoiding drift</p>
+<span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">4000</span><span class="op">)</span></span></code></pre></div>
+<p>The time-series can be plot using <code>plot_timeseries</code></p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Time-series plot</span></span>
+<span><span class="fu"><a href="../reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">sim_ts</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Tissue_simulation_files/figure-html/unnamed-chunk-30-1.png" width="384"></p>
+</div>
+<div class="section level5">
+<h5 id="avoiding-drift">Avoiding drift<a class="anchor" aria-label="anchor" href="#avoiding-drift"></a>
+</h5>
 <p>Any species that has a death rate greater than 0 can become extinct
 as soon as it appears due to the premature death of the progenitor cell.
 This phenomenon is called <em>drift</em>, and occurs spontaneously in
@@ -831,48 +650,12 @@ can die if and only if that $S$ has reached the death activation level
 at least once during the simulation.</p>
 <p>This threshold holds for all the species and it is set to 1 by
 default.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>However, it can be risen as much as we want to avoid drift</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">50</span> </span></code></pre></div>
-<!-- ### The lineage graph -->
-<!-- The *lineage graph* represents the species derivations. It  -->
-<!-- is a graph (network) between species and it contains an edge -->
-<!-- from a species $A$ to a species $P$ if and only if  -->
-<!-- one of the cells in $P$ is direct descentent of a cell in  -->
-<!-- $A$. In this case, $A$ and $P$ are called *ancestor* and  -->
-<!-- *progeny*, respectively.  -->
-<!-- The lineage graph maintains, for each edge, the time of the  -->
-<!-- first mutation or switch from the ancestor to the progeny. -->
-<!-- While the lineage graph on genotypes is traditionally acyclic,  -->
-<!-- dealing with epigenetic states frequently leads to cyclic -->
-<!-- lineage graphs. -->
-<!-- The lineage graph of the current simulation can be obtained  -->
-<!-- as follow. -->
-<!-- ```{r} -->
-<!-- # get the lineage graph -->
-<!-- sim$get_lineage_graph() -->
-<!-- ``` -->
-<!-- The lineage graph contains a special species: the  -->
-<!-- `Wild-type` species. Whenever a cell is manually added  -->
-<!-- to the simulation, an edge from the `Wild-type` to the  -->
-<!-- cell species is added to the lineage graph. -->
-<!-- ### Ploting simulation results -->
-<!-- The state of simulation can be depicted by using three different plotting functions. -->
-<!-- ```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE} -->
-<!-- plot_state(sim) -->
-<!-- plot_tissue(sim) -->
-<!-- ``` -->
-<!-- Plot firings statistics -->
-<!-- ```{r,  fig.height=4, fig.width=8, message=FALSE, warning=FALSE} -->
-<!-- plot_firings(sim) -->
-<!-- ``` -->
-<!-- At the end of the computation, the directory `Test` will contain simulated data usable by RACES. -->
-<!-- ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE} -->
-<!-- unlink("Test", recursive = TRUE) -->
-<!-- ``` -->
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">50</span></span></code></pre></div>
 </div>
 </div>
 </div>

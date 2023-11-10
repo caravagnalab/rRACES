@@ -88,528 +88,277 @@
 
     
     
-<p>The first step to use <code>rRACES</code> is to load it.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rRACES</span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="tissue-specification">Tissue specification<a class="anchor" aria-label="anchor" href="#tissue-specification"></a>
-</h3>
-<p>Simulations are represented by the class <code>Simulation</code>. In
-order to perform a simulation, a new object of this class must be
-created.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span></code></pre></div>
-<p>This step automatically builds a 1000x1000-cells tissue and sets the
-name of the simulation to be
-<code>races_&lt;date&gt;_&lt;hour&gt;</code>. The binary dump of the
-simulation will be saved in a directory having the same name of the
-simulation. A custom name can be provided by using a further parameter
-during the simulation creation.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>sim</code> object exposes methods to get information about
-the simulation and control it.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get the simulation directory, i.e., "Test"</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_name</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Test"</span></span>
-<span></span>
-<span><span class="co"># Get the tissue size, i.e., c(1000,1000)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_tissue_size</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1000 1000</span></span></code></pre></div>
-<p>We can change the tissue size and label it with a name.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Set the tissue name and size to different values</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">update_tissue</span><span class="op">(</span><span class="st">"Liver"</span>, <span class="fl">1200</span>, <span class="fl">900</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get the tissue name, i.e., "Liver"</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_tissue_name</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Liver"</span></span>
-<span></span>
-<span><span class="co"># Get the tissue size, i.e., c(1200,900)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_tissue_size</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 1200  900</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="species-and-their-evolutionary-relations">Species and their evolutionary relations<a class="anchor" aria-label="anchor" href="#species-and-their-evolutionary-relations"></a>
-</h3>
-<p>In order to simulate the evolution of some species we need to add
-them to our object. This process defines the evolutionary parameters of
-the species. For example, we may define two genotypes <code>A</code> and
-<code>B</code>, with their epigenetic states
-<code>+</code>/<code>-</code>, called epistates. By doing this, we
-define the 4 species distinct:</p>
-<ul>
-<li>
-<code>A+</code> and <code>A-</code>, as a proxy for the genotype
-<code>A</code> with the reversible <code>+</code>/<code>-</code>
-marker;</li>
-<li>
-<code>B+</code> and <code>B-</code>, as a proxy for the genotype
-<code>B</code> with the reversible <code>+</code>/<code>-</code>
-marker;</li>
-</ul>
-<p>For each species, we need to define:</p>
-<ul>
-<li>growth rate <span class="math inline">\(\lambda\)</span>: rate at
-which cells duplicate inheriting the epigenetic marker (e.g., one cell
-of type <code>A+</code> creates two cells of type <code>A+</code>);</li>
-<li>death rate <span class="math inline">\(\delta\)</span>: rate at
-which cells di (e.g., one cell of type <code>A+</code> is removed from
-the simulation);</li>
-<li>epigenetic rate <span class="math inline">\(\epsilon\)</span>: rate
-<code>+-</code> or <code>-+</code> at which cells duplicate and flip the
-epigenetic marker of one of the progeny (e.g., one cell of type
-<code>A+</code> determines one type <code>A+</code> and one of type
-<code>A-</code>, or vice versa);</li>
-</ul>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># add two genotype, "A" and "B", together with their species</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"A"</span>,</span>
-<span>                 epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.01</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>,</span>
-<span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.2</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span>,</span>
-<span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"B"</span>,</span>
-<span>                 epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,</span>
-<span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span>
-<span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>At this point no evolutionary relation between the genotypes
-<code>A</code> and <code>B</code> is defined. We need to add a
-parent/child relation which will fire at a predefined simulation time,
-in any of the cells in the <code>+</code>/<code>-</code> state.</p>
-<p>For example, I can program a timed transition from species one cell
-of genotype <code>A</code> to one of genotype <code>B</code>, at time
-<code>30</code>. In this case, a cell at random from species
-<code>A+</code> or <code>A-</code> will be selected and will be assigned
-a new type <code>B+</code> or <code>B-</code> depending on its
-epistate.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Schedule a mutation at time 40 from one of the species of</span></span>
-<span><span class="co"># genotype "A" to the species of "B" having the same</span></span>
-<span><span class="co"># epigenetic state</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">schedule_genotype_mutation</span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="fl">40</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get the simulation species and their rates</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_species</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   genotype epistate growth_rate death_rate switch_rate</span></span>
-<span><span class="co">#&gt; 1        A        -        0.08       0.01        0.01</span></span>
-<span><span class="co">#&gt; 2        A        +        0.20       0.10        0.01</span></span>
-<span><span class="co">#&gt; 3        B        -        0.30       0.10        0.05</span></span>
-<span><span class="co">#&gt; 4        B        +        0.10       0.05        0.05</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="initial-cell-positioning">Initial cell positioning<a class="anchor" aria-label="anchor" href="#initial-cell-positioning"></a>
-</h3>
-<p>To be able to simulate the model, an initial cell needs to be
-displaced in the tissue. We add one cell of species <code>A+</code>
-(genotype <code>A</code> in epistate <code>+</code>) in position
-<code>(500, 500)</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_cell</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
-<p>We can query the current state of the simulation, and extract the
-cell position</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Counts per species</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   genotype epistate counts</span></span>
-<span><span class="co">#&gt; 1        A        -      0</span></span>
-<span><span class="co">#&gt; 2        A        +      1</span></span>
-<span><span class="co">#&gt; 3        B        -      0</span></span>
-<span><span class="co">#&gt; 4        B        +      0</span></span>
-<span></span>
-<span><span class="co"># Cells position</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1       0        A        +        500        500</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="species-evolution">Species evolution<a class="anchor" aria-label="anchor" href="#species-evolution"></a>
-</h3>
-<p>There are 3 ways to let the simulation evolve:</p>
-<ul>
-<li>advancing until a new time <code>t</code> is reached;</li>
-<li>advancing until the number of cells in a species reaches a given
-threshold;</li>
-<li>advancing until a desired number of firings (of one particular
-event) has occurred.</li>
-</ul>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Run the simulation up until the there are less than 500 cells in</span></span>
-<span><span class="co"># the species A+</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Counts per species now reports 500 for A+</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   genotype epistate counts</span></span>
-<span><span class="co">#&gt; 1        A        -    114</span></span>
-<span><span class="co">#&gt; 2        A        +    501</span></span>
-<span><span class="co">#&gt; 3        B        -      0</span></span>
-<span><span class="co">#&gt; 4        B        +      0</span></span>
-<span></span>
-<span><span class="co"># Get the number of fired event per species</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firings</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     event genotype epistate fired</span></span>
-<span><span class="co">#&gt; 1   death        A        -     9</span></span>
-<span><span class="co">#&gt; 2  growth        A        -    91</span></span>
-<span><span class="co">#&gt; 3  switch        A        -    16</span></span>
-<span><span class="co">#&gt; 4   death        A        +   411</span></span>
-<span><span class="co">#&gt; 5  growth        A        +   944</span></span>
-<span><span class="co">#&gt; 6  switch        A        +    49</span></span>
-<span><span class="co">#&gt; 7   death        B        -     1</span></span>
-<span><span class="co">#&gt; 8  growth        B        -     0</span></span>
-<span><span class="co">#&gt; 9  switch        B        -     0</span></span>
-<span><span class="co">#&gt; 10  death        B        +     0</span></span>
-<span><span class="co">#&gt; 11 growth        B        +     0</span></span>
-<span><span class="co">#&gt; 12 switch        B        +     0</span></span></code></pre></div>
-<p>A small number of cell deaths have occurred in species “A-” up to
-this point. Let us simulate the system until there are 100 of them at
-least.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_event</span><span class="op">(</span><span class="st">"death"</span>, <span class="st">"A-"</span>, <span class="fl">100</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get the number of fired event per species. The row "death", "A",</span></span>
-<span><span class="co"># "-" now reports 100.</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firings</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;     event genotype epistate fired</span></span>
-<span><span class="co">#&gt; 1   death        A        -   101</span></span>
-<span><span class="co">#&gt; 2  growth        A        -   887</span></span>
-<span><span class="co">#&gt; 3  switch        A        -   101</span></span>
-<span><span class="co">#&gt; 4   death        A        +  3543</span></span>
-<span><span class="co">#&gt; 5  growth        A        +  7406</span></span>
-<span><span class="co">#&gt; 6  switch        A        +   384</span></span>
-<span><span class="co">#&gt; 7   death        B        -     1</span></span>
-<span><span class="co">#&gt; 8  growth        B        -     0</span></span>
-<span><span class="co">#&gt; 9  switch        B        -     0</span></span>
-<span><span class="co">#&gt; 10  death        B        +     0</span></span>
-<span><span class="co">#&gt; 11 growth        B        +     0</span></span>
-<span><span class="co">#&gt; 12 switch        B        +     0</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get the simulation clock</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 66.58678</span></span>
-<span></span>
-<span><span class="co"># Run the simulation for other 15 time units</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">15</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get again the simulation clock</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 81.58736</span></span></code></pre></div>
-<p>At this point, we can query the simulation configuration in a number
-of ways.</p>
-<p>Let us use <code>dplyr</code> to filter the query results.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load dplyr to use %&gt;%</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get the cells in the tissue at current simulation time</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   77048        A        +        414        491</span></span>
-<span><span class="co">#&gt; 2   66186        A        -        414        494</span></span>
-<span><span class="co">#&gt; 3   53809        A        -        414        496</span></span>
-<span><span class="co">#&gt; 4   73050        A        -        415        481</span></span>
-<span><span class="co">#&gt; 5   59168        A        +        415        485</span></span>
-<span><span class="co">#&gt; 6   58885        A        +        415        488</span></span>
-<span></span>
-<span><span class="co"># Get the cells in the tissue rectangular sample having</span></span>
-<span><span class="co"># [500,500] and [505,505] as lower and upper corners, respectively</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">505</span>, <span class="fl">505</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   72401        A        +        500        500</span></span>
-<span><span class="co">#&gt; 2   61490        A        +        500        501</span></span>
-<span><span class="co">#&gt; 3   63800        A        +        500        502</span></span>
-<span><span class="co">#&gt; 4   59803        A        +        500        503</span></span>
-<span><span class="co">#&gt; 5   67252        A        +        500        504</span></span>
-<span><span class="co">#&gt; 6   68196        A        +        500        505</span></span>
-<span></span>
-<span><span class="co"># Get the cells in the tissue having epigenetic state "-"</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   66186        A        -        414        494</span></span>
-<span><span class="co">#&gt; 2   53809        A        -        414        496</span></span>
-<span><span class="co">#&gt; 3   73050        A        -        415        481</span></span>
-<span><span class="co">#&gt; 4   72688        A        -        415        489</span></span>
-<span><span class="co">#&gt; 5   68388        A        -        415        490</span></span>
-<span><span class="co">#&gt; 6   39183        A        -        415        493</span></span>
-<span></span>
-<span><span class="co"># Get the cells in the tissue having epigenetic state "-" and,</span></span>
-<span><span class="co"># at the same time, belonging to rectangular sample bounded by</span></span>
-<span><span class="co"># [500,500] and [505,505] as lower and upper corners, respectively</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">505</span>, <span class="fl">505</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   47790        A        -        502        501</span></span>
-<span><span class="co">#&gt; 2   59175        A        -        504        502</span></span>
-<span><span class="co">#&gt; 3   77849        A        -        504        503</span></span>
-<span><span class="co">#&gt; 4   55475        A        -        504        504</span></span></code></pre></div>
-<p>We can also randomly select one of the cells in a genotype or one of
-the cells that belongs to a genotype and lays in a rectangular
-selection.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># randomly select one cell in the genotype "A"</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 38748</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "-"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 478</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 546</span></span>
-<span></span>
-<span><span class="co"># calling it again may result in a different cell</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 58706</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "+"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 427</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 510</span></span>
-<span></span>
-<span><span class="co"># randomly select one cell in the genotype "A"</span></span>
-<span><span class="co"># in the tissue rectangular selection [500,550]x[350,450]</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">350</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">550</span>, <span class="fl">450</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 41617</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "-"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 548</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 427</span></span></code></pre></div>
-<p>If, at this point in the simulation, we would like to generate a new
-genotype <code>C</code> from one of the cells having genotype
-<code>A</code> in the rectangle <span class="math inline">\([450,500]\times [550, 600]\)</span>, we need
-to:</p>
-<ol style="list-style-type: decimal">
-<li>randomly select one cell among those of <code>A</code> laying in
-<span class="math inline">\([450,500]\times [550, 600]\)</span> by
-calling <code>choose_cell_in</code>
-</li>
-<li>setup the new genotype <code>C</code>
-</li>
-<li>call the <code>mutate_progeny</code> method</li>
-</ol>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Identify one cell among those of `A` laying in the rectangle</span></span>
-<span><span class="co"># [450,500]x[550,600]</span></span>
-<span><span class="va">cell</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">450</span>, <span class="fl">550</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">600</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># se the selected cell</span></span>
-<span><span class="va">cell</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 72087</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "-"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 486</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 553</span></span>
-<span></span>
-<span><span class="co"># add the genotype "C" together with its species</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"C"</span>,</span>
-<span>                 epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.01</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>,</span>
-<span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.2</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span>
-<span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># simulate the duplication of the cell and switch the genotype of one</span></span>
-<span><span class="co"># of its progeny (the one laying in the original position) into "C"</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">cell</span>, <span class="st">"C"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># the new cell in the original position has genotype "C"</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cell</span><span class="op">(</span><span class="va">cell</span><span class="op">$</span><span class="va">position_x</span>, <span class="va">cell</span><span class="op">$</span><span class="va">position_y</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $cell_id</span></span>
-<span><span class="co">#&gt; [1] 78261</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $genotype</span></span>
-<span><span class="co">#&gt; [1] "C"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $epistate</span></span>
-<span><span class="co">#&gt; [1] "-"</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_x</span></span>
-<span><span class="co">#&gt; [1] 486</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $position_y</span></span>
-<span><span class="co">#&gt; [1] 553</span></span></code></pre></div>
-<p>We can retrieve the simulation initial condition by calling the
-<code>Simulation</code> method <code>get_added_cells()</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_added_cells</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   genotype epistate position_x position_y time</span></span>
-<span><span class="co">#&gt; 1        A        +        500        500    0</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="time-series-data-collection-and-presentation">Time series data collection and presentation<a class="anchor" aria-label="anchor" href="#time-series-data-collection-and-presentation"></a>
-</h3>
-<p>At the end of any <code>run_to_*</code> methods, RACES stores the
-data about the number of species cells and that of event firings. rRACES
-offers the time series of these data to users by means of two
-<code>Simulation</code> methods</p>
-<p>The firing evolution can be obtained by using the method
-<code>get_firing_history</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firing_history</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>For example, the total number of the deaths on <code>B+</code> at the
-end of the three previous calls of the <code>run_to_*</code> methods can
-be obtained by using the following code.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firing_history</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">event</span> <span class="op">==</span> <span class="st">"death"</span>, <span class="va">genotype</span> <span class="op">==</span> <span class="st">"B"</span>, <span class="va">epistate</span> <span class="op">==</span> <span class="st">"-"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   event genotype epistate fired     time</span></span>
-<span><span class="co">#&gt; 1 death        B        -     1 46.36753</span></span>
-<span><span class="co">#&gt; 2 death        B        -     1 66.58678</span></span>
-<span><span class="co">#&gt; 3 death        B        -     1 81.58736</span></span></code></pre></div>
-<p>If we are instead interested into the changes in the number of cells
-per species, we can use the method <code>get_count_history()</code>.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_count_history</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    genotype epistate count     time</span></span>
-<span><span class="co">#&gt; 1         A        -   114 46.36753</span></span>
-<span><span class="co">#&gt; 2         A        +   500 46.36753</span></span>
-<span><span class="co">#&gt; 3         B        -     0 46.36753</span></span>
-<span><span class="co">#&gt; 4         B        +     0 46.36753</span></span>
-<span><span class="co">#&gt; 5         C        -     0 46.36753</span></span>
-<span><span class="co">#&gt; 6         C        +     0 46.36753</span></span>
-<span><span class="co">#&gt; 7         A        -  1068 66.58678</span></span>
-<span><span class="co">#&gt; 8         A        +  3580 66.58678</span></span>
-<span><span class="co">#&gt; 9         B        -     0 66.58678</span></span>
-<span><span class="co">#&gt; 10        B        +     0 66.58678</span></span>
-<span><span class="co">#&gt; 11        C        -     0 66.58678</span></span>
-<span><span class="co">#&gt; 12        C        +     0 66.58678</span></span>
-<span><span class="co">#&gt; 13        A        -  5066 81.58736</span></span>
-<span><span class="co">#&gt; 14        A        + 17080 81.58736</span></span>
-<span><span class="co">#&gt; 15        B        -     0 81.58736</span></span>
-<span><span class="co">#&gt; 16        B        +     0 81.58736</span></span>
-<span><span class="co">#&gt; 17        C        -     0 81.58736</span></span>
-<span><span class="co">#&gt; 18        C        +     0 81.58736</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="collecting-statistics-during-the-simulation">Collecting statistics during the simulation<a class="anchor" aria-label="anchor" href="#collecting-statistics-during-the-simulation"></a>
-</h3>
-<p>If we are interested in collecting the number of cells per species or
-event firings also during the evaluation of a <code>run_to_*</code>
-method, we must set the <code>Simulation</code> property
-<code>history_delta</code>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">history_delta</span></span>
-<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
-<p>By default, <code>history_delta</code> is set to 0, but it can be set
-to any positive real value <span class="math inline">\(d\)</span> so to
-sample the simulation statistics every <span class="math inline">\(d\)</span> time units.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># set the history delta</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">history_delta</span> <span class="op">&lt;-</span> <span class="fl">20</span></span>
-<span></span>
-<span><span class="co"># get the new history delta</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">history_delta</span></span>
-<span><span class="co">#&gt; [1] 20</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="drift-and-the-death-activation-level">Drift and the death activation level<a class="anchor" aria-label="anchor" href="#drift-and-the-death-activation-level"></a>
-</h3>
-<p>Any species that has a death rate greater than 0 can become extinct
-as soon as it appears due to the premature death of the progenitor cell.
-This phenomenon is called <em>drift</em>.</p>
-<p>While drift occurs in Nature, it can make simulating by chance a
-specific (and possible long) sequence of mutations complicated.</p>
-<p>Users can avoid drift by setting the <em>death activation level</em>.
-This value is the minimum number of cells that enables cell death in a
-species. The cell of a species <span class="math inline">\(S\)</span>
-can die if and only if that <span class="math inline">\(S\)</span> has
-reached the death activation level at least once during the
-simulation.</p>
-<p>This threshold holds for all the species and it is set to 1 by
-default.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>However, it can be risen as much as we want to avoid species
-drift.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># set the death activation level</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span></span>
-<span><span class="co"># get the new death activation level</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span></span>
-<span><span class="co">#&gt; [1] 50</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="the-lineage-graph">The lineage graph<a class="anchor" aria-label="anchor" href="#the-lineage-graph"></a>
-</h3>
-<p>The <em>lineage graph</em> represents the species derivations. It is
-a graph (network) between species and it contains an edge from a species
-<span class="math inline">\(A\)</span> to a species <span class="math inline">\(P\)</span> if and only if one of the cells in
-<span class="math inline">\(P\)</span> is direct descentent of a cell in
-<span class="math inline">\(A\)</span>. In this case, <span class="math inline">\(A\)</span> and <span class="math inline">\(P\)</span> are called <em>ancestor</em> and
-<em>progeny</em>, respectively.</p>
-<p>The lineage graph maintains, for each edge, the time of the first
-mutation or switch from the ancestor to the progeny. While the lineage
-graph on genotypes is traditionally acyclic, dealing with epigenetic
-states frequently leads to cyclic lineage graphs.</p>
-<p>The lineage graph of the current simulation can be obtained as
-follow.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># get the lineage graph</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">get_lineage_graph</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    ancestor progeny first_cross</span></span>
-<span><span class="co">#&gt; 1 Wild-type      A+     0.00000</span></span>
-<span><span class="co">#&gt; 2        A+      A-    17.67530</span></span>
-<span><span class="co">#&gt; 3        A-      A+    29.88642</span></span>
-<span><span class="co">#&gt; 4        A-      B-    40.00000</span></span>
-<span><span class="co">#&gt; 5        A-      C-    81.58736</span></span></code></pre></div>
-<p>The lineage graph contains a special species: the
-<code>Wild-type</code> species. Whenever a cell is manually added to the
-simulation, an edge from the <code>Wild-type</code> to the cell species
-is added to the lineage graph.</p>
-</div>
-<div class="section level3">
-<h3 id="ploting-simulation-results">Ploting simulation results<a class="anchor" aria-label="anchor" href="#ploting-simulation-results"></a>
-</h3>
-<p>The state of simulation can be depicted by using three different
-plotting functions.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Growth_files/figure-html/unnamed-chunk-26-1.png" width="384"></p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Growth_files/figure-html/unnamed-chunk-26-2.png" width="384"></p>
-<p>Plot firings statistics</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_firings.html">plot_firings</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Growth_files/figure-html/unnamed-chunk-27-1.png" width="768"></p>
-<p>At the end of the computation, the directory <code>Test</code> will
-contain simulated data usable by RACES.</p>
-</div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
-    </nav></aside>
+<!-- The first step to use `rRACES` is to load it. -->
+<!-- ```{r setup} -->
+<!-- library(rRACES) -->
+<!-- ``` -->
+<!-- ### Tissue specification -->
+<!-- Simulations are represented by the class `Simulation`. In order to perform a simulation, a new  -->
+<!-- object of this class must be created. -->
+<!-- ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE} -->
+<!-- unlink("Test", recursive = TRUE) -->
+<!-- ``` -->
+<!-- ```{r, eval=FALSE} -->
+<!-- sim <- new(Simulation) -->
+<!-- ``` -->
+<!-- This step automatically builds a 1000x1000-cells tissue and sets the name of the simulation -->
+<!-- to be `races_<date>_<hour>`. The binary dump of the simulation will be saved in a directory having the same name  -->
+<!-- of the simulation. A custom name can be provided by using a further parameter during the  -->
+<!-- simulation creation. -->
+<!-- ```{r, eval} -->
+<!-- sim <- new(Simulation, "Test") -->
+<!-- ``` -->
+<!-- The `sim` object exposes methods to get information about the simulation and control it. -->
+<!-- ```{r} -->
+<!-- # Get the simulation directory, i.e., "Test" -->
+<!-- sim$get_name() -->
+<!-- # Get the tissue size, i.e., c(1000,1000) -->
+<!-- sim$get_tissue_size() -->
+<!-- ``` -->
+<!-- We can change the tissue size and label it with a name. -->
+<!-- ```{r} -->
+<!-- # Set the tissue name and size to different values -->
+<!-- sim$update_tissue("Liver", 1200, 900) -->
+<!-- # Get the tissue name, i.e., "Liver" -->
+<!-- sim$get_tissue_name() -->
+<!-- # Get the tissue size, i.e., c(1200,900) -->
+<!-- sim$get_tissue_size() -->
+<!-- ``` -->
+<!-- ### Species and their evolutionary relations -->
+<!-- In order to simulate the evolution of some species we need to add them to our object. This process defines the evolutionary parameters of the species.  -->
+<!-- For example, we may define two genotypes `A` and `B`, with their epigenetic states `+`/`-`, called epistates. By doing this, we define the 4 species distinct: -->
+<!-- - `A+` and `A-`, as a proxy for the genotype `A` with the reversible `+`/`-` marker; -->
+<!-- - `B+` and `B-`, as a proxy for the genotype `B` with the reversible `+`/`-` marker; -->
+<!-- For each species, we need to define: -->
+<!-- - growth rate $\lambda$: rate at which cells duplicate inheriting the epigenetic marker (e.g., one cell of type `A+` creates two cells of type `A+`); -->
+<!-- - death rate $\delta$: rate at which cells di (e.g., one cell of type `A+` is removed from the simulation); -->
+<!-- - epigenetic rate $\epsilon$: rate `+-` or `-+` at which cells duplicate and flip the epigenetic marker of one of the progeny (e.g., one cell of type `A+` determines one type `A+` and one of type `A-`, or vice versa); -->
+<!-- ```{r} -->
+<!-- # add two genotype, "A" and "B", together with their species -->
+<!-- sim$add_genotype(name = "A", -->
+<!--                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01), -->
+<!--                  growth_rates = c("+" = 0.2, "-" = 0.08), -->
+<!--                  death_rates = c("+" = 0.1, "-" = 0.01)) -->
+<!-- sim$add_genotype(name = "B", -->
+<!--                  epigenetic_rates = c("+-" = 0.05, "-+" = 0.05), -->
+<!--                  growth_rates = c("+" = 0.1, "-" = 0.3), -->
+<!--                  death_rates = c("+" = 0.05, "-" = 0.1)) -->
+<!-- ``` -->
+<!-- At this point no evolutionary relation between the genotypes `A` and `B` is  -->
+<!-- defined. We need to add a parent/child relation which will fire at a predefined  -->
+<!-- simulation time, in any of the cells in the `+`/`-` state.  -->
+<!-- For example, I can program a timed transition from species one cell of genotype  -->
+<!-- `A` to one of genotype `B`, at time `30`. In this case, a cell at random from  -->
+<!-- species `A+` or `A-` will be selected and will be assigned a new type `B+` or  -->
+<!-- `B-` depending on its epistate. -->
+<!-- ```{r} -->
+<!-- # Schedule a mutation at time 40 from one of the species of -->
+<!-- # genotype "A" to the species of "B" having the same -->
+<!-- # epigenetic state -->
+<!-- sim$schedule_genotype_mutation("A", "B", 40) -->
+<!-- # Get the simulation species and their rates -->
+<!-- sim$get_species() -->
+<!-- ``` -->
+<!-- ### Initial cell positioning -->
+<!-- To be able to simulate the model, an initial cell needs to be displaced in the  -->
+<!-- tissue. We add one cell of species `A+` (genotype `A` in epistate `+`) in position  -->
+<!-- `(500, 500)`. -->
+<!-- ```{r} -->
+<!-- sim$add_cell("A+", 500, 500) -->
+<!-- ``` -->
+<!-- We can query the current state of the simulation, and extract the cell position -->
+<!-- ```{r} -->
+<!-- # Counts per species -->
+<!-- sim$get_counts() -->
+<!-- # Cells position -->
+<!-- sim$get_cells() -->
+<!-- ``` -->
+<!-- ### Species evolution -->
+<!-- There are 3 ways to let the simulation evolve: -->
+<!-- - advancing until a new time `t` is reached; -->
+<!-- - advancing until the number of cells in a species reaches a given threshold; -->
+<!-- - advancing until a desired number of firings (of one particular event) has -->
+<!-- occurred. -->
+<!-- ```{r} -->
+<!-- # Run the simulation up until the there are less than 500 cells in -->
+<!-- # the species A+ -->
+<!-- sim$run_up_to_size("A+", 500) -->
+<!-- # Counts per species now reports 500 for A+ -->
+<!-- sim$get_counts() -->
+<!-- # Get the number of fired event per species -->
+<!-- sim$get_firings() -->
+<!-- ``` -->
+<!-- A small number of cell deaths have occurred in species "A-" up to this point. -->
+<!-- Let us simulate the system until there are 100 of them at least. -->
+<!-- ```{r} -->
+<!-- sim$run_up_to_event("death", "A-", 100) -->
+<!-- # Get the number of fired event per species. The row "death", "A", -->
+<!-- # "-" now reports 100. -->
+<!-- sim$get_firings() -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # Get the simulation clock -->
+<!-- sim$get_clock() -->
+<!-- # Run the simulation for other 15 time units -->
+<!-- sim$run_up_to_time(sim$get_clock() + 15) -->
+<!-- # Get again the simulation clock -->
+<!-- sim$get_clock() -->
+<!-- ``` -->
+<!-- At this point, we can query the simulation configuration in a number of ways. -->
+<!-- Let us use `dplyr` to filter the query results. -->
+<!-- ```{r, message=FALSE} -->
+<!-- # load dplyr to use %>% -->
+<!-- require(dplyr) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # Get the cells in the tissue at current simulation time -->
+<!-- sim$get_cells() %>% head() -->
+<!-- # Get the cells in the tissue rectangular sample having -->
+<!-- # [500,500] and [505,505] as lower and upper corners, respectively -->
+<!-- sim$get_cells(c(500, 500), c(505, 505))  %>% head() -->
+<!-- # Get the cells in the tissue having epigenetic state "-" -->
+<!-- sim$get_cells(c("A", "B"), c("-")) %>% head() -->
+<!-- # Get the cells in the tissue having epigenetic state "-" and, -->
+<!-- # at the same time, belonging to rectangular sample bounded by -->
+<!-- # [500,500] and [505,505] as lower and upper corners, respectively -->
+<!-- sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))  %>% head() -->
+<!-- ``` -->
+<!-- We can also randomly select one of the cells in a genotype or  -->
+<!-- one of the cells that belongs to a genotype and lays in a rectangular  -->
+<!-- selection. -->
+<!-- ```{r} -->
+<!-- # randomly select one cell in the genotype "A" -->
+<!-- sim$choose_cell_in("A") -->
+<!-- # calling it again may result in a different cell -->
+<!-- sim$choose_cell_in("A") -->
+<!-- # randomly select one cell in the genotype "A" -->
+<!-- # in the tissue rectangular selection [500,550]x[350,450] -->
+<!-- sim$choose_cell_in("A",  c(500, 350), c(550, 450)) -->
+<!-- ``` -->
+<!-- If, at this point in the simulation, we would like to generate a new genotype  -->
+<!-- `C` from one of the cells having genotype `A` in the rectangle  -->
+<!-- $[450,500]\times [550, 600]$, we need to: -->
+<!-- 1. randomly select one cell among those of `A` laying in $[450,500]\times [550, 600]$ by calling `choose_cell_in` -->
+<!-- 2. setup the new genotype `C` -->
+<!-- 3. call the `mutate_progeny` method -->
+<!-- ```{r} -->
+<!-- # Identify one cell among those of `A` laying in the rectangle -->
+<!-- # [450,500]x[550,600] -->
+<!-- cell <- sim$choose_cell_in("A",  c(450, 550), c(500, 600)) -->
+<!-- # se the selected cell -->
+<!-- cell -->
+<!-- # add the genotype "C" together with its species -->
+<!-- sim$add_genotype(name = "C", -->
+<!--                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01), -->
+<!--                  growth_rates = c("+" = 0.2, "-" = 0.3), -->
+<!--                  death_rates = c("+" = 0.1, "-" = 0.01)) -->
+<!-- # simulate the duplication of the cell and switch the genotype of one -->
+<!-- # of its progeny (the one laying in the original position) into "C" -->
+<!-- sim$mutate_progeny(cell, "C") -->
+<!-- # the new cell in the original position has genotype "C" -->
+<!-- sim$get_cell(cell$position_x, cell$position_y) -->
+<!-- ``` -->
+<!-- We can retrieve the simulation initial condition by calling  -->
+<!-- the `Simulation` method `get_added_cells()`. -->
+<!-- ```{r} -->
+<!-- sim$get_added_cells() -->
+<!-- ``` -->
+<!-- ### Time series data collection and presentation -->
+<!-- At the end of any `run_to_*`  -->
+<!-- methods, RACES stores the data about the number  -->
+<!-- of species cells and that of event firings. rRACES offers the  -->
+<!-- time series of these data to users by means of two `Simulation` methods -->
+<!-- The firing evolution can be obtained by using the method `get_firing_history`. -->
+<!-- ```{r, eval=FALSE} -->
+<!-- sim$get_firing_history() -->
+<!-- ``` -->
+<!-- For example, the total number of the deaths on `B+` at the end of the  -->
+<!-- three previous calls of the `run_to_*` methods can be obtained  -->
+<!-- by using the following code. -->
+<!-- ```{r} -->
+<!-- sim$get_firing_history() %>% -->
+<!--   filter(event == "death", genotype == "B", epistate == "-") -->
+<!-- ``` -->
+<!-- If we are instead interested into the changes in the number of cells  -->
+<!-- per species, we can use the method `get_count_history()`. -->
+<!-- ```{r} -->
+<!-- sim$get_count_history() -->
+<!-- ``` -->
+<!-- ### Collecting statistics during the simulation -->
+<!-- If we are interested in collecting the number of cells per species or  -->
+<!-- event firings also during the evaluation of a `run_to_*` method,  -->
+<!-- we must set the `Simulation` property `history_delta`.  -->
+<!-- ```{r} -->
+<!-- sim$history_delta -->
+<!-- ``` -->
+<!-- By default, `history_delta` is set to 0, but it  -->
+<!-- can be set to any positive real value $d$ so to sample the simulation -->
+<!-- statistics every $d$ time units. -->
+<!-- ```{r} -->
+<!-- # set the history delta -->
+<!-- sim$history_delta <- 20 -->
+<!-- # get the new history delta -->
+<!-- sim$history_delta -->
+<!-- ``` -->
+<!-- ### Drift and the death activation level -->
+<!-- Any species that has a death rate greater than 0 can become extinct as soon as -->
+<!-- it appears due to the premature death of the progenitor cell. This phenomenon  -->
+<!-- is called *drift*.  -->
+<!-- While drift occurs in Nature, it can make simulating by chance a specific  -->
+<!-- (and possible long) sequence of mutations complicated. -->
+<!-- Users can avoid drift by setting the *death activation level*.  -->
+<!-- This value is the minimum number of cells that -->
+<!-- enables cell death in a species. The cell of a species $S$ can die if and  -->
+<!-- only if that $S$ has reached the death activation level at least once  -->
+<!-- during the simulation.  -->
+<!-- This threshold holds for all the species and it is set to 1 by default. -->
+<!-- ```{r} -->
+<!-- sim$death_activation_level -->
+<!-- ``` -->
+<!-- However, it can be risen as much as we want to avoid species drift. -->
+<!-- ```{r} -->
+<!-- # set the death activation level -->
+<!-- sim$death_activation_level <- 50 -->
+<!-- # get the new death activation level -->
+<!-- sim$death_activation_level -->
+<!-- ``` -->
+<!-- ### The lineage graph -->
+<!-- The *lineage graph* represents the species derivations. It  -->
+<!-- is a graph (network) between species and it contains an edge -->
+<!-- from a species $A$ to a species $P$ if and only if  -->
+<!-- one of the cells in $P$ is direct descentent of a cell in  -->
+<!-- $A$. In this case, $A$ and $P$ are called *ancestor* and  -->
+<!-- *progeny*, respectively.  -->
+<!-- The lineage graph maintains, for each edge, the time of the  -->
+<!-- first mutation or switch from the ancestor to the progeny. -->
+<!-- While the lineage graph on genotypes is traditionally acyclic,  -->
+<!-- dealing with epigenetic states frequently leads to cyclic -->
+<!-- lineage graphs. -->
+<!-- The lineage graph of the current simulation can be obtained  -->
+<!-- as follow. -->
+<!-- ```{r} -->
+<!-- # get the lineage graph -->
+<!-- sim$get_lineage_graph() -->
+<!-- ``` -->
+<!-- The lineage graph contains a special species: the  -->
+<!-- `Wild-type` species. Whenever a cell is manually added  -->
+<!-- to the simulation, an edge from the `Wild-type` to the  -->
+<!-- cell species is added to the lineage graph. -->
+<!-- ### Ploting simulation results -->
+<!-- The state of simulation can be depicted by using three different plotting functions. -->
+<!-- ```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE} -->
+<!-- plot_state(sim) -->
+<!-- plot_tissue(sim) -->
+<!-- ``` -->
+<!-- Plot firings statistics -->
+<!-- ```{r,  fig.height=4, fig.width=8, message=FALSE, warning=FALSE} -->
+<!-- plot_firings(sim) -->
+<!-- ``` -->
+<!-- At the end of the computation, the directory `Test` will contain simulated data usable by RACES. -->
+<!-- ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE} -->
+<!-- unlink("Test", recursive = TRUE) -->
+<!-- ``` -->
+  </main>
 </div>
 
 

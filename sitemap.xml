@@ -118,6 +118,12 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_state.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_timeseries.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_tissue.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc>
   </url>
 </urlset>
