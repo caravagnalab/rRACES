@@ -18,7 +18,6 @@ reference:
 - title: "Simulation interface"
   desc:  "Spacial simulation classes and methods"
   contents:
-  - Simulation$add_cell
   - Simulation$add_genotype
   - Simulation$schedule_genotype_mutation
   - Simulation$choose_cell_in
@@ -40,6 +39,7 @@ reference:
   - Simulation$get_tissue_size
   - Simulation$mutate_progeny
   - Simulation$new
+  - Simulation$place_cell
   - Simulation$run_up_to_event
   - Simulation$run_up_to_size
   - Simulation$run_up_to_time
