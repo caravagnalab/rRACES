@@ -43,20 +43,18 @@ plot_tissue <- function(simulation) {
 
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
                                       y = .data$position_y,
-                                      fill = .data$genotype,
-                                      alpha = .data$epistate)) +
+                                      fill = .data$species)) +
     ggplot2::geom_hex(bins = 100) +
     my_theme() +
     ggplot2::labs(x = "Latitude", y = "Longitude",
-                  fill = "Genotype", alpha = "Epistate",
+                  fill = "Species",
                   caption = paste("Total number of cells",
                                   counts$counts %>% sum(), "(with 100 bins)"),
                   title = paste0(sim_title, " (t = ", time, ")"),
                   subtitle = paste("Tissue:", tissue_title, "[",
                                    tissue_size, "]")) +
     ggplot2::scale_fill_manual(values =
-                                 get_species_colors(cells$genotype %>%
-                                                      unique)) +
+                                 get_species_colors(simulation)) +
     ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::xlim(0, simulation$get_tissue_size()[1]) +

@@ -101,7 +101,7 @@ sim$get_tissue_name()
 sim$get_tissue_size()
 ```
 
-## Specie sand their evolutionary relations
+## Species evolution
 
 In order to simulate the evolution of some species we need to add them
 to `sim`. This process defines the evolutionary parameters of the
@@ -190,7 +190,7 @@ sim$get_species()
 
 <!-- ``` -->
 
-### Initial cell positioning
+#### Initial cell positioning
 
 To be able to simulate the model, an initial cell needs to be displaced
 in the tissue. We add one cell of species `A+` (genotype `A` in epistate
@@ -200,7 +200,7 @@ in the tissue. We add one cell of species `A+` (genotype `A` in epistate
 sim$add_cell("A+", 500, 500)
 ```
 
-### Visualisation of cell counts
+#### Visualisation of cell counts
 
 We can query the current state of the simulation, and extract the cell
 position using two getters
@@ -388,8 +388,7 @@ plot_state(sim)
 plot_tissue(sim)
 ```
 
-{r, fig.height=4, fig.width=6, message=FALSE,
-warning=FALSE}
+{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
 plot_state(sim) + plot_tissue(sim)
 
 ```{r,  fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
@@ -461,28 +460,26 @@ getters.
 
 ```{r}
 # The firings
-sim$get_firing_history() 
+sim$get_firing_history() %>% head()
 
 # For example, total number of the deaths on `B+` at the end of the previous calls of the `run_to_*` methods
 sim$get_firing_history() %>%
   filter(event == "death", genotype == "B", epistate == "-") 
 
 # The counts
-sim$get_count_history()
+sim$get_count_history() %>% head()
 ```
 
 rRACES offers the possibility of performing a coarse-grained storing of
-this history, independently of the
-
-actual data stored after the evaluation of a `run_to_*` method. To do
-this, we must set the `Simulation` property `history_delta` (default
-$1$). By default, `history_delta` is set to $0$, but it can be set to
-any positive real value $d$ so to sample the simulation statistics every
-$d$ time units.
+this history, independently of the actual data stored after the
+evaluation of a `run_to_*` method. To do this, we can set the
+`Simulation` property `history_delta` (default $1$). By default,
+`history_delta` is set to $0$, but it can be set to any real value $d$
+so to dump the simulation statistics every $d$ time units.
 
 ```{r}
-# default
-sim$history_delta 
+# every time-point
+sim$history_delta = 1
 
 # Example time-series on a new simulation
 sim_ts = new(Simulation)
@@ -494,15 +491,19 @@ sim_ts$add_genotype(name = "A",
 
 sim_ts$add_cell("A", 500, 500)
 
-sim_ts$history_delta <- 1
 sim_ts$run_up_to_size("A", 4000)
 
-sim_ts$get_count_history() %>% 
-  ggplot() +
-  geom_point(aes(x = time, y = count))
 ```
 
-\##### Avoiding drift
+The time-series can be plot using `plot_timeseries`
+
+```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE}
+
+# Time-series plot
+plot_timeseries(sim_ts)
+```
+
+##### Avoiding drift
 
 Any species that has a death rate greater than 0 can become extinct as
 soon as it appears due to the premature death of the progenitor cell.

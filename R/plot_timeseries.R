@@ -10,35 +10,45 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation, "plot_state_test")
+#' sim <- new(Simulation, "plot_timeseries_test")
 #' sim$add_genotype(genotype = "A",
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 #'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 #'                  death_rates = c("+" = 0.1, "-" = 0.01))
 #' sim$add_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
-#' plot_state(sim)
-plot_state <- function(simulation) {
+#'
+#' # Set the frequency of storing
+#' sim$history_delta <- 1 
+#' plot_timeseries(sim)
+plot_timeseries <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
-
-  counts <- simulation$get_counts() %>% dplyr::mutate(species = paste0(genotype, epistate))
+  
+  counts <- simulation$get_count_history() %>% mutate(species = paste0(genotype, epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
-
+  
+  ncells = simulation$get_counts() %>% dplyr::pull(counts) %>% sum()
+  
   sim_title <- simulation$get_name()
   tissue_title <- simulation$get_tissue_name()
   tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
-
+  
+  colors = get_species_colors(simulation)
+  
   ggplot2::ggplot(counts) +
-    ggplot2::geom_bar(stat = "identity",
-                      ggplot2::aes(x = "", y = counts,
-                                   fill = .data$species)) +
-    ggplot2::coord_polar(theta = "y") +
+    ggplot2::geom_line(ggplot2::aes(x = time, y = count,
+                                    color = .data$species)) +
+    ggplot2::geom_point(ggplot2::aes(x = time, y = count,
+                                     color = .data$species)) +
     ggplot2::labs(
+      color = "Species",
+      alpha = "Epistate", 
       title = paste0(sim_title, " (t = ", time, ")"),
       subtitle = paste("Tissue:", tissue_title, "[", tissue_size, "]"),
-      caption = paste("Total number of cells", counts$counts %>% sum())
+      caption = paste("Total number of cells", ncells)
     ) +
-    ggplot2::theme_void(base_size = 10) +
-    ggplot2::scale_fill_manual(values = get_species_colors(simulation)) +
+    my_theme() +
+    ggplot2::scale_color_manual(values = colors) +
     ggplot2::theme(legend.position = "bottom")
+  
 }
