@@ -164,32 +164,6 @@ sim
 sim$get_species()
 ```
 
-<!-- ### Time-triggered transitions -->
-
-<!-- To define an evolutionary relation between the genotypes `A` and `B`, we can set a parent/child relation that will fire at a predefined simulation time. This will mean that, a cell of genotype `A` will be randomly sampled and mutated to a cell of type `B`; the epistate is randomly chosen and maintained after mutation. -->
-
-<!-- For example, we program an `A`-to-`B` timed transition from at time `30`. -->
-
-<!-- ```{r} -->
-
-<!-- # Schedule a mutation at time 40 from one of the species of -->
-
-<!-- # genotype "A" to the species of "B" having the same -->
-
-<!-- # epigenetic state -->
-
-<!-- sim$schedule_genotype_mutation("A", "B", 40) -->
-
-<!-- # Print the object -->
-
-<!-- sim -->
-
-<!-- # Get the simulation species and their rates -->
-
-<!-- sim$get_species() -->
-
-<!-- ``` -->
-
 #### Initial cell positioning
 
 To be able to simulate the model, an initial cell needs to be displaced
@@ -360,15 +334,14 @@ We locate a random cell and add the genotype
 
 ```{r}
 # Sampled cell
-cell = sim$choose_cell_in("A") 
+cell <- sim$choose_cell_in("A")
 cell
 
 # Add genotype
 sim$add_genotype(name = "B",
                  epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
                  growth_rates = c("+" = 0.3, "-" = 0.3),
-                 death_rates = c("+" = 0.05, "-" = 0.1)
-             )
+                 death_rates = c("+" = 0.05, "-" = 0.1))
 ```
 
 Then we inject the cell, and simulate a little bit.
@@ -415,8 +388,7 @@ cell <- sim$choose_cell_in("A",  c(450, 550), c(500, 600))
 sim$add_genotype(name = "C",
                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
                  growth_rates = c("+" = 0.2, "-" = 0.4),
-                 death_rates = c("+" = 0.1, "-" = 0.01)
-                 )
+                 death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$mutate_progeny(cell, "C")
 
@@ -462,7 +434,8 @@ getters.
 # The firings
 sim$get_firing_history() %>% head()
 
-# For example, total number of the deaths on `B+` at the end of the previous calls of the `run_to_*` methods
+# For example, total number of the deaths on `B+` at the end of the 
+# previous calls of the `run_to_*` methods
 sim$get_firing_history() %>%
   filter(event == "death", genotype == "B", epistate == "-") 
 
@@ -482,12 +455,11 @@ so to dump the simulation statistics every $d$ time units.
 sim$history_delta = 1
 
 # Example time-series on a new simulation
-sim_ts = new(Simulation)
+sim_ts <- new(Simulation)
 
 sim_ts$add_genotype(name = "A",
-                 growth_rates = 0.08,
-                 death_rates = 0.01
-                 )
+                    growth_rates = 0.08,
+                    death_rates = 0.01)
 
 sim_ts$add_cell("A", 500, 500)
 
@@ -525,77 +497,6 @@ sim$death_activation_level
 However, it can be risen as much as we want to avoid drift
 
 ```{r}
-sim$death_activation_level <- 50 
+sim$death_activation_level <- 50
 ```
 
-<!-- ### The lineage graph -->
-
-<!-- The *lineage graph* represents the species derivations. It  -->
-
-<!-- is a graph (network) between species and it contains an edge -->
-
-<!-- from a species $A$ to a species $P$ if and only if  -->
-
-<!-- one of the cells in $P$ is direct descentent of a cell in  -->
-
-<!-- $A$. In this case, $A$ and $P$ are called *ancestor* and  -->
-
-<!-- *progeny*, respectively.  -->
-
-<!-- The lineage graph maintains, for each edge, the time of the  -->
-
-<!-- first mutation or switch from the ancestor to the progeny. -->
-
-<!-- While the lineage graph on genotypes is traditionally acyclic,  -->
-
-<!-- dealing with epigenetic states frequently leads to cyclic -->
-
-<!-- lineage graphs. -->
-
-<!-- The lineage graph of the current simulation can be obtained  -->
-
-<!-- as follow. -->
-
-<!-- ```{r} -->
-
-<!-- # get the lineage graph -->
-
-<!-- sim$get_lineage_graph() -->
-
-<!-- ``` -->
-
-<!-- The lineage graph contains a special species: the  -->
-
-<!-- `Wild-type` species. Whenever a cell is manually added  -->
-
-<!-- to the simulation, an edge from the `Wild-type` to the  -->
-
-<!-- cell species is added to the lineage graph. -->
-
-<!-- ### Ploting simulation results -->
-
-<!-- The state of simulation can be depicted by using three different plotting functions. -->
-
-<!-- ```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE} -->
-
-<!-- plot_state(sim) -->
-
-<!-- plot_tissue(sim) -->
-
-<!-- ``` -->
-
-<!-- Plot firings statistics -->
-
-<!-- ```{r,  fig.height=4, fig.width=8, message=FALSE, warning=FALSE} -->
-
-<!-- plot_firings(sim) -->
-
-<!-- ``` -->
-
-<!-- At the end of the computation, the directory `Test` will contain simulated data usable by RACES. -->
-
-<!-- ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE} -->
-
-<!-- unlink("Test", recursive = TRUE) -->
-
-<!-- ``` -->
