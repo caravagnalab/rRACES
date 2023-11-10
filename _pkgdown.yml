@@ -49,6 +49,7 @@ reference:
   - plot_firings
   - plot_state
   - plot_tissue
+  - plot_timeseries
   - recover_simulation
   
 
