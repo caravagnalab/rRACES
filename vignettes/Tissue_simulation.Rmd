@@ -42,13 +42,16 @@ in next vignettes).
 In order to perform a simulation, a new object of class `Simulation`
 must be created.
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink("Test", recursive = TRUE)
-```
 
 ```{r, eval=FALSE}
 # Default constructor
 sim <- new(Simulation)
+```
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+if (exists("sim")) {
+    unlink(sim$get_name(), recursive = TRUE)
+}
 ```
 
 This step automatically builds a 1000x1000-cells tissue - which can host
@@ -56,6 +59,10 @@ $10^6$ cells - and sets the name of the simulation to be
 `races_<date>_<hour>`. The binary dump of the simulation will be saved
 in a directory having the same name of the simulation. A custom name can
 be provided by using a further parameter during the simulation creation.
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+unlink("Test", recursive = TRUE)
+```
 
 ```{r, eval = TRUE}
 # Call your simulation Test will save everything in a 'Test' folder
@@ -361,9 +368,6 @@ plot_state(sim)
 plot_tissue(sim)
 ```
 
-{r, fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
-plot_state(sim) + plot_tissue(sim)
-
 ```{r,  fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 # Facet on species via ggplot
 library(ggplot2)
@@ -443,6 +447,15 @@ sim$get_firing_history() %>%
 sim$get_count_history() %>% head()
 ```
 
+
+The time-series can be plot using `plot_timeseries`
+
+```{r,  fig.height=4, fig.width=4}
+# Time-series plot
+plot_timeseries(sim)
+```
+
+
 rRACES offers the possibility of performing a coarse-grained storing of
 this history, independently of the actual data stored after the
 evaluation of a `run_to_*` method. To do this, we can set the
@@ -451,9 +464,6 @@ evaluation of a `run_to_*` method. To do this, we can set the
 so to dump the simulation statistics every $d$ time units.
 
 ```{r}
-# every time-point
-sim$history_delta = 1
-
 # Example time-series on a new simulation
 sim_ts <- new(Simulation)
 
@@ -463,16 +473,22 @@ sim_ts$add_genotype(name = "A",
 
 sim_ts$place_cell("A", 500, 500)
 
+# every time-point
+sim_ts$history_delta <- 1
+
 sim_ts$run_up_to_size("A", 4000)
 
 ```
 
-The time-series can be plot using `plot_timeseries`
+As above, the finer time-series can be depicted by using `plot_timeseries`.
 
-```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE}
-
+```{r,  fig.height=4, fig.width=4}
 # Time-series plot
 plot_timeseries(sim_ts)
+```
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+unlink(sim_ts$get_name(), recursive = TRUE)
 ```
 
 ##### Avoiding drift
@@ -500,3 +516,6 @@ However, it can be risen as much as we want to avoid drift
 sim$death_activation_level <- 50
 ```
 
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+unlink(sim$get_name(), recursive = TRUE)
+```
