@@ -23,7 +23,8 @@ Imports:
     crayon,
     RColorBrewer,
     knitr,
-    rlang
+    rlang,
+    ggmuller
 RoxygenNote: 7.2.3
 Suggests: 
     rmarkdown
