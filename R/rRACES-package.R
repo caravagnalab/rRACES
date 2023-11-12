@@ -10,6 +10,8 @@ loadModule("Drivers", TRUE)
 #' @importFrom dplyr mutate
 #' @importFrom dplyr n
 #' @importFrom dplyr summarise
+#' @importFrom ggmuller get_Muller_df
+#' @importFrom ggmuller Muller_pop_plot
 #' @importFrom ggplot2 geom_histogram
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 geom_tile
