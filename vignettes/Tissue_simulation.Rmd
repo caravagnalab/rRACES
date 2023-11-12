@@ -368,6 +368,10 @@ plot_state(sim)
 plot_tissue(sim)
 ```
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 ```{r,  fig.height=6, fig.width=6, message=FALSE, warning=FALSE}
 # Facet on species via ggplot
 library(ggplot2)
@@ -467,6 +471,9 @@ so to dump the simulation statistics every $d$ time units.
 # Example time-series on a new simulation
 sim_ts <- new(Simulation)
 
+# every time-point
+sim_ts$history_delta = 1
+
 sim_ts$add_genotype(name = "A",
                     growth_rates = 0.08,
                     death_rates = 0.01)
@@ -480,11 +487,20 @@ sim_ts$run_up_to_size("A", 4000)
 
 ```
 
+<<<<<<< Updated upstream
 As above, the finer time-series can be depicted by using `plot_timeseries`.
+=======
+The time-series can be plot using `plot_timeseries`, or similary we can plot a Muller plot using [ggmuller](https://cran.r-project.org/web/packages/ggmuller).
+
+```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE}
+>>>>>>> Stashed changes
 
 ```{r,  fig.height=4, fig.width=4}
 # Time-series plot
 plot_timeseries(sim_ts)
+
+# Muller plot
+plot_muller(sim_ts)
 ```
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
