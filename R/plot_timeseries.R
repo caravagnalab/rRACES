@@ -11,6 +11,7 @@
 #'
 #' @examples
 #' sim <- new(Simulation, "plot_timeseries_test")
+#' sim$history_delta <- 1 
 #' sim$add_genotype(genotype = "A",
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 #'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -19,7 +20,6 @@
 #' sim$run_up_to_time(60)
 #'
 #' # Set the frequency of storing
-#' sim$history_delta <- 1 
 #' plot_timeseries(sim)
 plot_timeseries <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
