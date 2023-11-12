@@ -620,23 +620,27 @@ statistics every <span class="math inline">\(d\)</span> time units.</p>
 <code class="sourceCode R"><span><span class="co"># Example time-series on a new simulation</span></span>
 <span><span class="va">sim_ts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># every time-point</span></span>
+<span><span class="va">sim_ts</span><span class="op">$</span><span class="va">history_delta</span> <span class="op">=</span> <span class="fl">1</span></span>
+<span></span>
 <span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"A"</span>,</span>
 <span>                    growth_rates <span class="op">=</span> <span class="fl">0.08</span>,</span>
 <span>                    death_rates <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># every time-point</span></span>
-<span><span class="va">sim_ts</span><span class="op">$</span><span class="va">history_delta</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span></span>
 <span><span class="va">sim_ts</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">4000</span><span class="op">)</span></span></code></pre></div>
-<p>As above, the finer time-series can be depicted by using
-<code>plot_timeseries</code>.</p>
+<p>The time-series can be plot using <code>plot_timeseries</code>, or
+similary we can plot a Muller plot using <a href="https://cran.r-project.org/web/packages/ggmuller" class="external-link">ggmuller</a>.</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-series plot</span></span>
-<span><span class="fu"><a href="../reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">sim_ts</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in RColorBrewer::brewer.pal(paired_species$species %&gt;% length(), : minimal value for n is 3, returning requested palette with 3 different levels</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">sim_ts</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Tissue_simulation_files/figure-html/unnamed-chunk-32-1.png" width="384"></p>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Muller plot</span></span>
+<span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim_ts</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Tissue_simulation_files/figure-html/unnamed-chunk-32-2.png" width="384"></p>
 </div>
 <div class="section level5">
 <h5 id="avoiding-drift">Avoiding drift<a class="anchor" aria-label="anchor" href="#avoiding-drift"></a>
@@ -653,11 +657,11 @@ can die if and only if that $S$ has reached the death activation level
 at least once during the simulation.</p>
 <p>This threshold holds for all the species and it is set to 1 by
 default.</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>However, it can be risen as much as we want to avoid drift</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">50</span></span></code></pre></div>
 </div>
 </div>
