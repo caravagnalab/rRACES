@@ -47,6 +47,7 @@ reference:
   - Simulation$update_rates
   - Simulation
   - plot_firings
+  - plot_muller
   - plot_state
   - plot_tissue
   - plot_timeseries
