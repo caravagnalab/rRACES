@@ -250,7 +250,8 @@ sim$get_firings()
 ```
 
 ```{r,  fig.height=4, fig.width=3}
-plot_tissue(sim)
+# Depict the tissue by using 200 bins
+plot_tissue(sim, num_of_bins = 200)
 ```
 
 #### Clock-based forward simulation
