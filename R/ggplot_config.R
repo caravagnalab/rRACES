@@ -5,45 +5,47 @@ my_theme <- function() {
     )
 }
 
-get_species_colors <- function(x) {
-  
-  paired_species = x$get_species() %>% 
-    dplyr::filter(!is.na(.data$epistate)) %>% 
-    dplyr::mutate(
-      species = paste0(.data$genotype, .data$epistate)
-    ) %>% 
-    dplyr::arrange(.data$genotype)
-  
-  unpaired_species = x$get_species() %>% 
-    dplyr::filter(is.na(.data$epistate)) %>% 
-    dplyr::mutate(
-      species = paste0(.data$genotype, .data$epistate)
-    ) %>% 
-    dplyr::arrange(.data$genotype)
-  
+get_colors_for <- function(df, column_name, pal_name) {
   # Unpaired
-  unp_colour = NULL
-  if(nrow(unpaired_species) > 0){
-    unp_colour = RColorBrewer::brewer.pal(unpaired_species$genotype %>% length(), "Dark2")
-    
-    if (nrow(unpaired_species) < length(unp_colour)) {
-      unp_colour <- unp_colour[1:nrow(unpaired_species)]
+  colors <- NULL
+  if (nrow(df) > 0) {
+    num_of_values <- df[, column_name] %>% length()
+
+    if (num_of_values < 3) {
+      colors <- RColorBrewer::brewer.pal(3, pal_name)
+
+      colors <- colors[seq_len(num_of_values)]
+    } else {
+      colors <- RColorBrewer::brewer.pal(num_of_values, pal_name)
     }
-    
-    names(unp_colour) <- unpaired_species$genotype
+
+    names(colors) <- df[, column_name]
   }
-  
+
+  return(colors)
+}
+
+get_species_colors <- function(x) {
+
+  paired_species <- x$get_species() %>%
+    dplyr::filter(!is.na(.data$epistate)) %>%
+    dplyr::mutate(
+      species = paste0(.data$genotype, .data$epistate)
+    ) %>%
+    dplyr::arrange(.data$genotype)
+
+  unpaired_species <- x$get_species() %>%
+    dplyr::filter(is.na(.data$epistate)) %>%
+    dplyr::mutate(
+      species = paste0(.data$genotype, .data$epistate)
+    ) %>%
+    dplyr::arrange(.data$genotype)
+
+  # Unpaired
+  unp_colour <- get_colors_for(unpaired_species, "genotype", "Dark2")
+
   # Paired
-  pai_colour = NULL
-  if(nrow(paired_species) > 0){
-    pai_colour = RColorBrewer::brewer.pal(paired_species$species %>% length(), "Paired")
-    
-    if (nrow(paired_species) < length(pai_colour)) {
-      pai_colour <- pai_colour[1:nrow(paired_species)]
-    }
-    
-    names(pai_colour) <- paired_species$species
-  }
+  pai_colour <- get_colors_for(paired_species, "species", "Paired")
 
   return(c(pai_colour, unp_colour))
 }

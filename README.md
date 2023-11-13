@@ -17,14 +17,14 @@ evolution simulator.
 
 ### Installation
 
-You can install the released version of `rRACES` with:
+You can install the released version of `rRACES` by using `devtools` package with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("caravagnalab/rRACES")
 ```
 
-of you can compile the package locally with:
+or clone the repository, build `rRACES` package, and install it:
 
 ``` shell
 git clone https://github.com/caravagnalab/rRACES.git

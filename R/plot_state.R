@@ -21,8 +21,8 @@
 plot_state <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
 
-  counts <- simulation$get_counts() %>% 
-            dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
+  counts <- simulation$get_counts() %>%
+    dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
 
   sim_title <- simulation$get_name()
