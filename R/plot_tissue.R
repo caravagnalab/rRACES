@@ -7,6 +7,7 @@
 #' hexagonal heatmap of 2D bins.
 #'
 #' @param simulation A simulation object.
+#' @param num_of_bins The number of bins (optional, default: 100).
 #'
 #' @return An editable ggplot plot.
 #' @export
@@ -20,7 +21,7 @@
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
 #' plot_tissue(sim)
-plot_tissue <- function(simulation) {
+plot_tissue <- function(simulation, num_of_bins = 100) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
 
   # Get the cells in the tissue at current simulation time
@@ -44,12 +45,13 @@ plot_tissue <- function(simulation) {
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
                                       y = .data$position_y,
                                       fill = .data$species)) +
-    ggplot2::geom_hex(bins = 100) +
+    ggplot2::geom_hex(bins = num_of_bins) +
     my_theme() +
     ggplot2::labs(x = "Latitude", y = "Longitude",
                   fill = "Species",
                   caption = paste("Total number of cells",
-                                  counts$counts %>% sum(), "(with 100 bins)"),
+                                  counts$counts %>% sum(),
+                                  "(with", num_of_bins, "bins)"),
                   title = paste0(sim_title, " (t = ", time, ")"),
                   subtitle = paste("Tissue:", tissue_title, "[",
                                    tissue_size, "]")) +
