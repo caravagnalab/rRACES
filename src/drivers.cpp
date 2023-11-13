@@ -71,7 +71,7 @@ size_t count_events(const Races::Drivers::Simulation::SpeciesStatistics& statist
     case Races::Drivers::CellEventType::EPIGENETIC_SWITCH:
       return statistics.num_of_epigenetic_events();
     default:
-      throw std::domain_error("get_counts: unsupported event");
+      ::Rf_error("get_counts: unsupported event");
   }
 }
 
@@ -105,7 +105,7 @@ void handle_unknown_event(const std::string& event)
 
   oss << ".";
 
-  throw std::domain_error(oss.str());
+  ::Rf_error(oss.str().c_str());
 }
 
 std::set<Races::Drivers::SpeciesId> 
@@ -130,7 +130,7 @@ get_position_in_tissue(const std::vector<Races::Drivers::Simulation::AxisPositio
     return {position[0], position[1]};
   }
 
-  throw std::domain_error("rRACES supports only 2 dimensional space so far");
+  ::Rf_error("rRACES supports only 2 dimensional space so far");
 }
 
 Races::Drivers::RectangleSet 
@@ -153,7 +153,7 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
   using namespace Races::Drivers::Simulation;
 
   if (lower_corner.size() != upper_corner.size()) {
-    throw std::runtime_error("lower_corner and upper_corner must have the same size");
+    ::Rf_error("lower_corner and upper_corner must have the same size");
   }
   
   auto lower_it = lower_corner.begin();
@@ -368,11 +368,11 @@ class Simulation
     using namespace Races::Drivers;
 
     if (lower_corner.size() != 2) {
-      throw std::domain_error("The lower corner must be a vector having size 2");
+      ::Rf_error("The lower corner must be a vector having size 2");
     }
 
     if (upper_corner.size() != 2) {
-      throw std::domain_error("The upper corner must be a vector having size 2");
+      ::Rf_error("The upper corner must be a vector having size 2");
     }
 
     size_t num_of_rows = count_driver_mutated_cells(sim_ptr->tissue(), lower_corner, upper_corner,
@@ -651,6 +651,10 @@ void Simulation::add_genotype(const std::string& genotype, const List& epigeneti
 {
   using namespace Races::Drivers;
 
+  if (genotype == "Wild-type") {
+    ::Rf_error("\"Wild-type\" is a reserved genotype name.");
+  }
+
   if (!has_names(epigenetic_rates, {"+-","-+"})) {
     ::Rf_error("The second parameter must be a list specifying "
                 "the epigenetic rate for \"+-\" and \"-+\"");
@@ -684,6 +688,10 @@ void Simulation::add_genotype(const std::string& genotype, const double& growth_
                               const double& death_rate)
 {
   using namespace Races::Drivers;
+  
+  if (genotype == "Wild-type") {
+    ::Rf_error("\"Wild-type\" is a reserved genotype name.");
+  }
 
   GenotypeProperties real_genotype(genotype, {});
 
@@ -731,7 +739,7 @@ List Simulation::get_species() const
         switch_rates[i] = species_switch_rates.begin()->second;
         break;
       default:
-        throw std::runtime_error("rRACES does not support multiple promoters");
+        ::Rf_error("rRACES does not support multiple promoters");
     }
   
     ++i;
@@ -1170,7 +1178,7 @@ List Simulation::get_lineage_graph() const
 inline void validate_non_empty_tissue(const Races::Drivers::Simulation::Tissue& tissue)
 {
   if (tissue.num_of_cells()==0) {
-    throw std::domain_error("The tissue does not contain any cell.");
+    ::Rf_error("The tissue does not contain any cell.");
   }
 }
 
@@ -1666,7 +1674,9 @@ void Simulation::mutate_progeny(const List& cell_position,
   for (const std::string axis : {"x", "y"}) {
     auto field = "position_"+axis;
     if (!cell_position.containsElementNamed(field.c_str())) {
-      throw std::domain_error("Missing \"" + field + "\" element from the list.");
+      std::string msg = "Missing \"" + field + "\" element from the list.";
+
+      ::Rf_error(msg.c_str());
     }
     vector_position.push_back(as<RS::AxisPosition>(cell_position[field]));
   }
