@@ -21,7 +21,7 @@ plot_VAFs <- function(x) {
   #                                       `indel` = "indianred3"))
 }
 
-plot_depth = function(x) {
+plot_depth <- function(x) {
   nchr <- x$chr %>% unique() %>% length()
   nmut <- x %>% nrow
 

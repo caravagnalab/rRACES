@@ -1,3 +1,22 @@
+collapse_loops <- function(df_edges) {
+  queue <- c("Wild-type")
+  Q <- collapsed_graph <- NULL
+  while (length(queue) > 0) {
+    parent <- queue[1]
+    Q <- c(Q, parent)
+
+    w_edg <- df_edges %>% dplyr::filter(.data$Parent == parent,
+                                        !(.data$Identity %in% Q))
+
+    collapsed_graph <- dplyr::bind_rows(collapsed_graph, w_edg)
+
+    queue <- queue[-1]
+    queue <- c(queue, w_edg$Identity)
+  }
+
+  collapsed_graph
+}
+
 #' Plot a muller plot
 #'
 #' @description
@@ -10,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation, "plot_tissue_test")
+#' sim <- new(Simulation, "plot_muller_test")
 #' sim$add_genotype(name = "A",
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 #'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -19,68 +38,53 @@
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
 #' plot_muller(sim)
-plot_muller = function(simulation)
-{
+plot_muller <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
-  
-  # Tumour DF
-  df_populations = simulation$get_count_history() %>% 
-    dplyr::as_tibble() %>% 
-    dplyr::mutate(Identity = paste0(genotype, epistate)) %>% 
-    dplyr::rename(Generation = time, Population = count) %>% 
-    dplyr::select(Generation, Identity, Population)
-  
-  # Tumour edges
-  df_edges = simulation$get_lineage_graph() %>% 
-    # dplyr::mutate(lblr = paste(ancestor, progeny), lbrl = paste(progeny, ancestor)) %>% 
-    dplyr::distinct(ancestor, progeny) %>% 
-    dplyr::rename(Parent = ancestor, Identity = progeny) %>% 
-    dplyr::select(Parent, Identity)
-  
-  # Remove loops with a visit
-  C = "Wild-type"
-  Q = X = NULL
-  repeat{
-   Cx = C[1] 
-   Q = c(Q, Cx)
-   
-   w_edg = df_edges %>% dplyr::filter(Parent == Cx, !(Identity %in% Q))
-   
-   X = dplyr::bind_rows(X, w_edg)
-   
-   C = C[-1]
-   C = c(C, w_edg$Identity)
 
-   if(length(C) == 0) break
-  }
-  
-  df_edges = X
-  
-  max_tumour_size = df_populations %>%  
-    dplyr::group_by(Generation) %>% 
-    dplyr::summarise(Population = sum(Population)) %>% 
-    dplyr::pull(Population) %>% 
+  # Tumour DF
+  df_populations <- simulation$get_count_history() %>%
+    dplyr::as_tibble() %>%
+    dplyr::mutate(Identity = paste0(.data$genotype, .data$epistate)) %>%
+    dplyr::rename(Generation = .data$time, Population = .data$count) %>%
+    dplyr::select(.data$Generation, .data$Identity, .data$Population)
+
+  # Tumour edges
+  df_edges <- simulation$get_lineage_graph() %>%
+    # dplyr::mutate(lblr = paste(ancestor, progeny),
+    # lbrl = paste(progeny, ancestor)) %>%
+    dplyr::distinct(.data$ancestor, .data$progeny) %>%
+    dplyr::rename(Parent = .data$ancestor, Identity = .data$progeny) %>%
+    dplyr::select(.data$Parent, .data$Identity)
+
+  # Remove loops
+  df_edges <- collapse_loops(df_edges)
+
+  max_tumour_size <- df_populations %>%
+    dplyr::group_by(.data$Generation) %>%
+    dplyr::summarise(Population = sum(.data$Population)) %>%
+    dplyr::pull(.data$Population) %>%
     max()
 
-  max_tumour_size = max_tumour_size * 1.05
+  max_tumour_size <- max_tumour_size * 1.05
 
   # Wild-type dynamics
-  WT_dynamics = df_populations %>% 
-    dplyr::group_by(Generation) %>% 
-    dplyr::summarise(Population = sum(Population)) %>% 
-    dplyr::mutate(Identity = "Wild-type", Population = max_tumour_size - Population)
+  wt_dynamics <- df_populations %>%
+    dplyr::group_by(.data$Generation) %>%
+    dplyr::summarise(Population = sum(.data$Population)) %>%
+    dplyr::mutate(Identity = "Wild-type",
+                  Population = max_tumour_size - .data$Population)
 
-  T_WT_dynamics = dplyr::bind_rows(
-    WT_dynamics,
+  t_wt_dynamics <- dplyr::bind_rows(
+    wt_dynamics,
     df_populations
   )
 
-  Muller_df = ggmuller::get_Muller_df(df_edges, T_WT_dynamics)
-  
-  ggmuller::Muller_pop_plot(Muller_df, add_legend = TRUE) + 
+  muller_df <- ggmuller::get_Muller_df(df_edges, t_wt_dynamics)
+
+  ggmuller::Muller_pop_plot(muller_df, add_legend = TRUE) +
     my_theme() +
-    ggplot2::guides(fill = ggplot2::guide_legend('Species')) +
-    ggplot2::scale_fill_manual(values =
-                                 c(`Wild-type` = 'gainsboro', get_species_colors(simulation))
+    ggplot2::guides(fill = ggplot2::guide_legend("Species")) +
+    ggplot2::scale_fill_manual(values = c(`Wild-type` = "gainsboro",
+                                          get_species_colors(simulation))
     )
 }

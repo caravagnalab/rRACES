@@ -23,19 +23,19 @@
 #' plot_timeseries(sim)
 plot_timeseries <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
-  
-  counts <- simulation$get_count_history() %>% 
-            mutate(species = paste0(.data$genotype, .data$epistate))
+
+  counts <- simulation$get_count_history() %>%
+    mutate(species = paste0(.data$genotype, .data$epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
-  
-  ncells = simulation$get_counts() %>% dplyr::pull(counts) %>% sum()
-  
+
+  ncells <- simulation$get_counts() %>% dplyr::pull(counts) %>% sum()
+
   sim_title <- simulation$get_name()
   tissue_title <- simulation$get_tissue_name()
   tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
-  
-  colors = get_species_colors(simulation)
-  
+
+  colors <- get_species_colors(simulation)
+
   ggplot2::ggplot(counts) +
     ggplot2::geom_line(ggplot2::aes(x = time, y = .data$count,
                                     color = .data$species)) +
@@ -51,5 +51,4 @@ plot_timeseries <- function(simulation) {
     my_theme() +
     ggplot2::scale_color_manual(values = colors) +
     ggplot2::theme(legend.position = "bottom")
-  
 }
