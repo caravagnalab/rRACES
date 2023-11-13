@@ -835,7 +835,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
     species_ids.insert(species.get_id());
   }
 
-  return get_cells(lower_corner, upper_corner, species_ids, {"+", "-"});
+  return get_cells(lower_corner, upper_corner, species_ids, {"+", "-", ""});
 }
 
 List Simulation::get_cells(const SEXP& first_param, const SEXP& second_param) const
