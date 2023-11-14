@@ -62,16 +62,16 @@ A sample is defined by a bounding box, which has these parameters:
 - a $(x,y)$ coordinate for the bottom left point;
 - a $(x,y)$ coordinate for the top right point.
 
-For this simulation, we define two samples as if we performed multi-region sequencing. 
+For this simulation, we define two samples with names `"A1"` and `"B1"`. 
 
 > When using multiple samples from the same tissue, the bounding boxes of the samples have to be non-overlapping.
 
 ```{r, eval=FALSE}
 # Bounding box from (400, 400) to (480, 480)
-sim$sample_cells(bottom_left = c(400, 400), top_right = c(480, 480))
+sim$sample_cells("A1", bottom_left = c(400, 400), top_right = c(480, 480))
 
 # Bounding box from (550, 550) to (630, 630)
-sim$sample_cells(bottom_left = c(550, 550), top_right = c(630, 630))
+sim$sample_cells("B1", bottom_left = c(550, 550), top_right = c(630, 630))
 ```
 
 It is possible to visualise the two boxes. 
@@ -111,12 +111,12 @@ current
 
 ### Second sampling
 
-Again, we sample twice on the same locations as before (which have been re-filled with cells).
+Again, we sample twice (`"A2"` and `"B2"`) on the same locations as before (which have been re-filled with cells).
 
 ```{r, eval=FALSE}
 # Bounding boxes as before
-sim$sample_cells(bottom_left = c(400, 400), top_right = c(480, 480))
-sim$sample_cells(bottom_left = c(550, 550), top_right = c(630, 630))
+sim$sample_cells("A2", bottom_left = c(400, 400), top_right = c(480, 480))
+sim$sample_cells("B2", bottom_left = c(550, 550), top_right = c(630, 630))
 ```
 
 It is possible to visualise the two boxes. 
@@ -133,7 +133,7 @@ We have the possibility of obtaining the tree of cell divisions for all the cell
 
 > Note that tree this contains ancestor cells that were present in the simulation prior to sampling.
 
-```{r,  fig.height=4, fig.width=4}
+```{r,eval=FALSE}
 # The tree is a complex object
 tree_divisions = sim$get_tree_sampled_cells()
 ```
