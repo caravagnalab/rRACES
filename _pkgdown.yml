@@ -34,6 +34,7 @@ reference:
   - Simulation$get_lineage_graph
   - Simulation$get_name
   - Simulation$get_rates
+  - Simulation$get_samples_info
   - Simulation$get_species
   - Simulation$get_tissue_name
   - Simulation$get_tissue_size
@@ -43,6 +44,7 @@ reference:
   - Simulation$run_up_to_event
   - Simulation$run_up_to_size
   - Simulation$run_up_to_time
+  - Simulation$sample_cells
   - Simulation$update_tissue
   - Simulation$update_rates
   - Simulation

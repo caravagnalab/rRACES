@@ -24,6 +24,8 @@
 #include "simulation.hpp"
 #include "ending_conditions.hpp"
 
+#include "phylogenetic_forest.hpp"
+
 using namespace Rcpp;
 
 template<typename SIMULATION_TEST>
@@ -188,6 +190,23 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
   return total;
 }
 
+class Simulation;
+
+/*
+class DescendantsForest
+{
+  Races::Drivers::DescendantsForest forest;
+
+public:
+
+  DescendantForest()
+
+
+
+  friend class Simulation;
+};
+*/
+
 //' @name Simulation
 //' @title Simulates the cell evolution on a tissue
 //' @description The objects of this class can simulate the evolution
@@ -271,6 +290,14 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' \item \emph{Parameter:} \code{species} - The species whose rates are aimed.
 //' \item \emph{Returns:} The list of the species names.
 //' }
+//' @field get_samples_info Retrieve information about the samples \itemize{
+//' \item \emph{Returns:} A data frame containing, for each sample collected 
+//'         during the simulation, the columns "name", "time", "bottom", 
+//'         "left", "top", "right", and  "tumoral cells". "bottom", 
+//'         "left", "top", "right" report the boundaries of the sampled 
+//'         rectangular region, while "tumoral cells" is the number of 
+//'         tumoral cells in the sample
+//' }
 //' @field get_species Gets the species \itemize{
 //' \item \emph{Returns:} A data frame describing the registered species.
 //' }
@@ -311,6 +338,11 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 //' }
 //' @field run_up_to_time Simulates cell evolution \itemize{
 //' \item \emph{Parameter:} \code{time} - The final simulation time.
+//' }
+//' @field sample_cells Sample a tissue rectangle region \itemize{
+//' \item \emph{Parameter:} \code{name} - The sample name.
+//' \item \emph{Parameter:} \code{lower_corner} - The bottom-left corner of the rectangle.
+//' \item \emph{Parameter:} \code{upper_corner} - The top-right corner of the rectangle.
 //' }
 //' @field update_rates Updates the rates of a species\itemize{
 //' \item \emph{Parameter:} \code{species} - The species whose rates must be updated.
@@ -492,6 +524,8 @@ public:
   
   List get_lineage_graph() const;
 
+  List get_samples_info() const;
+
   void schedule_genotype_mutation(const std::string& source, const std::string& destination,
                                   const Races::Time& time);
 
@@ -501,6 +535,10 @@ public:
 
   void run_up_to_event(const std::string& event, const std::string& species_name,
                        const size_t& num_of_events);
+  
+  void sample_cells(const std::string& sample_name,
+                    const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                    const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const;
 
   List get_firings() const;
 
@@ -775,7 +813,7 @@ void Simulation::place_cell(const std::string& species_name,
 
   const auto& species = sim_ptr->tissue().get_species(species_name);
 
-  sim_ptr->add_cell(species.get_id(), {x,y});
+  sim_ptr->place_cell(species.get_id(), {x,y});
 }
 
 List Simulation::get_cells() const
@@ -1444,8 +1482,6 @@ List Simulation::get_count_history(const Races::Time& minimum_time) const
 List Simulation::get_count_history(const Races::Time& minimum_time,
                                    const Races::Time& maximum_time) const
 {
-  //using namespace Races::Drivers;
-
   const size_t rows_per_sample = sim_ptr->tissue().num_of_species();
   const size_t num_of_rows = count_history_sample_in(minimum_time, maximum_time)*rows_per_sample;
 
@@ -1597,7 +1633,7 @@ void Simulation::update_rates(const std::string& species_name, const List& rates
 //'                  growth_rates = c("+" = 0.15, "-" = 0.3),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
-//' sim$death_activation_level = 100
+//' sim$death_activation_level <- 100
 //' sim$schedule_genotype_mutation("A","B",20)
 //' sim$run_up_to_size(species = "B-", num_of_cells = 50)
 //'
@@ -1682,6 +1718,93 @@ void Simulation::mutate_progeny(const List& cell_position,
   }
 
   return mutate_progeny(vector_position[0], vector_position[1], mutated_genotype);
+}
+
+//' @name Simulation$sample_cells
+//' @title Sample a tissue rectangle region.
+//' @description This method removes a rectangular region from the simulated
+//'       tissue and stores its cells in a sample that can subsequently 
+//        retrieved to build a descendants forest.
+//' @examples
+//' sim <- new(Simulation, "sample_cells_test")
+//' sim$add_genotype(genotype = "A",
+//'                  growth_rate = 0.2,
+//'                  death_rate = 0.01)
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
+void Simulation::sample_cells(const std::string& sample_name,
+                              const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                              const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const
+{
+  using namespace Races::Drivers;
+
+  auto rectangle = get_rectangle(lower_corner, upper_corner);
+
+  sim_ptr->sample_tissue(sample_name, rectangle);
+}
+
+//' @name Simulation$get_samples_info
+//' @title Retrieve information about the samples
+//' @description This method retrieve information about 
+//'           the samples collected along the simulation.
+//'           It returns a data frame reporting, for each
+//'           sample, the name, the sampling time, the 
+//'           position, and the number of tumoural cells. 
+//' @examples
+//' sim <- new(Simulation, "get_samples_info_test")
+//' sim$add_genotype(genotype = "A",
+//'                  growth_rate = 0.2,
+//'                  death_rate = 0.01)
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner=c(450,475),
+//'                  upper_corner=c(500,550))
+//'
+//' # simulate 1 time unit more
+//' sim$run_up_to_time(sim$get_clock()+1)
+//'
+//' # sample the region [500,520]x[525,550]
+//' sim$sample_cells("S2", lower_corner=c(500,525),
+//'                  upper_corner=c(520,550))
+//'
+//' # get information about all the collected 
+//' # samples, i.e, S1 and S2
+//' sim$get_samples_info()
+List Simulation::get_samples_info() const
+{
+  const auto& samples = sim_ptr->get_tissue_samples();
+
+  CharacterVector sample_name(samples.size());
+  NumericVector time(samples.size());
+  IntegerVector bottom(samples.size()), top(samples.size()),
+                left(samples.size()), right(samples.size()),
+                non_wild(samples.size());
+
+  size_t i{0};
+  for (const auto& sample : samples) {
+    sample_name[i] = sample.get_name();
+    time[i] = sample.get_time();
+    non_wild[i] = sample.get_cell_ids().size();
+
+    const auto& rectangle = sample.get_region();
+    left[i] = rectangle.lower_corner.x;
+    right[i] = rectangle.upper_corner.x;
+    bottom[i] = rectangle.lower_corner.y;
+    top[i] = rectangle.upper_corner.y;
+
+    ++i;
+  }
+
+  return DataFrame::create(_["name"]=sample_name, _["left"]=left, 
+                           _["bottom"]=bottom, _["right"]=right, 
+                           _["top"]=top, 
+                           _["tumoural cells"]=non_wild,
+                           _["time"]=time);
 }
 
 //' @name Simulation$death_activation_level
@@ -1843,6 +1966,15 @@ RCPP_MODULE(Drivers){
   // get_rates
   .method("get_rates", &Simulation::get_rates, 
           "Get the rates of a species")
+
+  // get_samples_info
+  .method("get_samples_info", &Simulation::get_samples_info, 
+          "Get some information about the collected samples")
+
+  // history_delta
+  .property("history_delta", &Simulation::get_history_delta, 
+                             &Simulation::set_history_delta, 
+            "The sampling delta for the get_*_history functions" )
   
   // mutate
   .method("mutate_progeny",  (void (Simulation::*)(const List&, const std::string&))
@@ -1865,10 +1997,9 @@ RCPP_MODULE(Drivers){
   .method("run_up_to_size", &Simulation::run_up_to_size, 
           "Simulate the system up to the specified number of cells in the species")
 
-  // history_delta
-  .property("history_delta", &Simulation::get_history_delta, 
-                             &Simulation::set_history_delta, 
-            "The sampling delta for the get_*_history functions" )
+  // sample_cells
+  .method("sample_cells", &Simulation::sample_cells, 
+          "Sample a rectangular region of the tissue")
 
   // update rates
   .method("update_rates", &Simulation::update_rates, 
