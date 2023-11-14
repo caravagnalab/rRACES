@@ -1730,6 +1730,8 @@ void Simulation::mutate_progeny(const List& cell_position,
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
 //' sim$death_activation_level <- 100
 //' sim$run_up_to_size(species = "A", num_of_cells = 50000)
 //'
@@ -1758,6 +1760,8 @@ void Simulation::sample_cells(const std::string& sample_name,
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
 //' sim$death_activation_level <- 100
 //' sim$run_up_to_size(species = "A", num_of_cells = 50000)
 //'
