@@ -29,12 +29,6 @@ If we now how to [simulate a tissue](../Tissue_simulation.html) then we can add 
 
 ## Example with one population
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-if (exists("sim")) {
-    unlink(sim$get_name(), recursive = TRUE)
-}
-```
-
 ### Tissue simulation
 
 We use a simple monoclonal model.
@@ -46,12 +40,11 @@ sim <- new(Simulation, "Monoclonal")
 sim$add_genotype(name = "A", growth_rates = 0.1, death_rates = 0.01)
 
 sim$place_cell("A", 500, 500)
-sim$history_delta = 1
 sim$run_up_to_size("A", 200000)
 ```
 
 ```{r,  fig.height=4, fig.width=3}
-current = plot_tissue(sim)
+current <- plot_tissue(sim)
 current
 ```
 
@@ -66,7 +59,7 @@ For this simulation, we define two samples with names `"A1"` and `"B1"`.
 
 > When using multiple samples from the same tissue, the bounding boxes of the samples have to be non-overlapping.
 
-```{r, eval=FALSE}
+```{r}
 # Bounding box from (400, 400) to (480, 480)
 sim$sample_cells("A1", bottom_left = c(400, 400), top_right = c(480, 480))
 
@@ -75,13 +68,15 @@ sim$sample_cells("B1", bottom_left = c(550, 550), top_right = c(630, 630))
 ```
 
 It is possible to visualise the two boxes. 
-```{r,  fig.height=4, fig.width=4}
+```{r,  fig.height=4, fig.width=3}
 library(ggplot2)
 
 # Add the contours of the bounding boxes
-current + 
-  geom_rect(xmin = 400, xmax = 480, ymin = 400, ymax = 480, fill = NA, color = 'black') +
-  geom_rect(xmin = 550, xmax = 630, ymin = 550, ymax = 630, fill = NA, color = 'black')
+current +
+  geom_rect(xmin = 400, xmax = 480, ymin = 400, ymax = 480,
+            fill = NA, color = "black") +
+  geom_rect(xmin = 550, xmax = 630, ymin = 550, ymax = 630,
+            fill = NA, color = "black")
 ```
 
 > Sampling removes cells from the tissue, as if the tissue was surgically resected.
@@ -105,7 +100,7 @@ Now we can move forward the simulation prior to sampling again the tissue
 # Move to 400K cells
 sim$run_up_to_size("A", 400000)
 
-current = plot_tissue(sim)
+current <- plot_tissue(sim)
 current
 ```
 
@@ -113,18 +108,26 @@ current
 
 Again, we sample twice (`"A2"` and `"B2"`) on the same locations as before (which have been re-filled with cells).
 
-```{r, eval=FALSE}
+```{r}
 # Bounding boxes as before
 sim$sample_cells("A2", bottom_left = c(400, 400), top_right = c(480, 480))
 sim$sample_cells("B2", bottom_left = c(550, 550), top_right = c(630, 630))
 ```
 
 It is possible to visualise the two boxes. 
-```{r,  fig.height=4, fig.width=4}
+```{r,  fig.height=4, fig.width=3}
 # Add the contours of the bounding boxes
-current + 
-  geom_rect(xmin = 400, xmax = 480, ymin = 400, ymax = 480, fill = NA, color = 'black') +
-  geom_rect(xmin = 550, xmax = 630, ymin = 550, ymax = 630, fill = NA, color = 'black')
+current +
+  geom_rect(xmin = 400, xmax = 480, ymin = 400, ymax = 480,
+            fill = NA, color = "black") +
+  geom_rect(xmin = 550, xmax = 630, ymin = 550, ymax = 630, 
+            fill = NA, color = "black")
+```
+
+The method `get_samples_info()` provides an overview of the collected samples.
+
+```{r}
+sim$get_samples_info()
 ```
 
 ### Cell division tree for samples cells
