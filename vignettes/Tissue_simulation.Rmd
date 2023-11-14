@@ -1,8 +1,8 @@
 ---
-title: "Tissue simulation"
+title: "1.Tissue simulation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tissue simulation}
+  %\VignetteIndexEntry{1.Tissue simulation}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
