@@ -101,8 +101,8 @@
 <span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span></code></pre></div>
 <p>This document demonstrates how extract samples from simulated tissues
 and build the forests of the sampled cell ancestors. (please, refer to
-<a href="https://caravagnalab.github.io/rRACES/docs/articles/a01_tissue_simulation.html">this</a>
-document for tissue simulation). Two types of simulations are
+<a href="https://caravagnalab.github.io/rRACES/articles/a01_tissue_simulation.html">this</a>
+document for tissue simulation examples). Two types of simulations are
 considered: one with a single population, and another with two.</p>
 <p>The presented samplings are of the most general type and include:</p>
 <ul>
@@ -220,11 +220,11 @@ simulation evolution.</p>
 the collected samples during the simulation up to this point.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_info</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   name left bottom right top tumoural.cells     time</span></span>
-<span><span class="co">#&gt; 1   A1  400    400   480 480           6559 144.0015</span></span>
-<span><span class="co">#&gt; 2   B1  550    550   630 630           6560 144.0015</span></span>
-<span><span class="co">#&gt; 3   A2  400    400   480 480           6559 152.4389</span></span>
-<span><span class="co">#&gt; 4   B2  550    550   630 630           6559 152.4389</span></span></code></pre></div>
+<span><span class="co">#&gt;   name xmin ymin xmax ymax tumoural.cells     time</span></span>
+<span><span class="co">#&gt; 1   A1  400  400  480  480           6559 144.0015</span></span>
+<span><span class="co">#&gt; 2   B1  550  550  630  630           6560 144.0015</span></span>
+<span><span class="co">#&gt; 3   A2  400  400  480  480           6559 152.4389</span></span>
+<span><span class="co">#&gt; 4   B2  550  550  630  630           6559 152.4389</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="cell-division-tree-for-samples-cells">Cell division tree for samples cells<a class="anchor" aria-label="anchor" href="#cell-division-tree-for-samples-cells"></a>
@@ -242,13 +242,13 @@ simulated and died before sampling.</p>
 <code>get_nodes()</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
-<span><span class="co">#&gt;   cell_id ancestor genotype epistate sample</span></span>
-<span><span class="co">#&gt; 1       0       NA        A            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2       1        0        A            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3       2        0        A            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 4       3        1        A            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 5       4        1        A            &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6       5        2        A            &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;   cell_id ancestor genotype epistate sample birth_time</span></span>
+<span><span class="co">#&gt; 1       0       NA        A            &lt;NA&gt;    0.00000</span></span>
+<span><span class="co">#&gt; 2       1        0        A            &lt;NA&gt;   18.33874</span></span>
+<span><span class="co">#&gt; 3       2        0        A            &lt;NA&gt;   18.33874</span></span>
+<span><span class="co">#&gt; 4       3        1        A            &lt;NA&gt;   20.91379</span></span>
+<span><span class="co">#&gt; 5       4        1        A            &lt;NA&gt;   20.91379</span></span>
+<span><span class="co">#&gt; 6       5        2        A            &lt;NA&gt;   23.77724</span></span></code></pre></div>
 <p>The leaves of the forest embody the cells sampled during the
 simulation, while the internal nodes represent ancestors of the sampled
 cells. Hence, the field <code>sample</code> is not available for
@@ -257,26 +257,26 @@ corresponding cell was sampled for any leaf.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get some of the leaves in the forest. They represent sampled cells</span></span>
 <span><span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">sample</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
-<span><span class="co">#&gt;   cell_id ancestor genotype epistate sample</span></span>
-<span><span class="co">#&gt; 1  244398   134326        A              A1</span></span>
-<span><span class="co">#&gt; 2  244423   134312        A              B1</span></span>
-<span><span class="co">#&gt; 3  244539   134399        A              A1</span></span>
-<span><span class="co">#&gt; 4  244547   134449        A              A1</span></span>
-<span><span class="co">#&gt; 5  244548   134449        A              A1</span></span>
-<span><span class="co">#&gt; 6  244553   134428        A              A1</span></span></code></pre></div>
+<span><span class="co">#&gt;   cell_id ancestor genotype epistate sample birth_time</span></span>
+<span><span class="co">#&gt; 1  244398   134326        A              A1   137.3855</span></span>
+<span><span class="co">#&gt; 2  244423   134312        A              B1   137.3864</span></span>
+<span><span class="co">#&gt; 3  244539   134399        A              A1   137.3913</span></span>
+<span><span class="co">#&gt; 4  244547   134449        A              A1   137.3915</span></span>
+<span><span class="co">#&gt; 5  244548   134449        A              A1   137.3915</span></span>
+<span><span class="co">#&gt; 6  244553   134428        A              A1   137.3917</span></span></code></pre></div>
 <p>The roots of the forest having no ancestors.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">ancestor</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id ancestor genotype epistate sample</span></span>
-<span><span class="co">#&gt; 1       0       NA        A            &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;   cell_id ancestor genotype epistate sample birth_time</span></span>
+<span><span class="co">#&gt; 1       0       NA        A            &lt;NA&gt;          0</span></span></code></pre></div>
 <p>We can also query the forest about the samples used to build it.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_samples_info</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   name left bottom right top tumoural.cells     time</span></span>
-<span><span class="co">#&gt; 1   A1  400    400   480 480           6559 144.0015</span></span>
-<span><span class="co">#&gt; 2   B1  550    550   630 630           6560 144.0015</span></span>
-<span><span class="co">#&gt; 3   A2  400    400   480 480           6559 152.4389</span></span>
-<span><span class="co">#&gt; 4   B2  550    550   630 630           6559 152.4389</span></span></code></pre></div>
+<span><span class="co">#&gt;   name xmin ymin xmax ymax tumoural.cells     time</span></span>
+<span><span class="co">#&gt; 1   A1  400  400  480  480           6559 144.0015</span></span>
+<span><span class="co">#&gt; 2   B1  550  550  630  630           6560 144.0015</span></span>
+<span><span class="co">#&gt; 3   A2  400  400  480  480           6559 152.4389</span></span>
+<span><span class="co">#&gt; 4   B2  550  550  630  630           6559 152.4389</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

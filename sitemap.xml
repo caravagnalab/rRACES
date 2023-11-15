@@ -25,10 +25,16 @@
     <loc>https://caravagnalab.github.io/rRACES/index.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_coalescent_cells.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_nodes.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_samples_info.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_subforest_for.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest.html</loc>
