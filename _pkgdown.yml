@@ -19,7 +19,7 @@ reference:
   desc:  "Spacial simulation classes and methods"
   contents:
   - SamplesForest$get_nodes
-  - SamplesForest$get_species_info
+  - SamplesForest$get_samples_info
   - SamplesForest
   - Simulation$add_genotype
   - Simulation$schedule_genotype_mutation
