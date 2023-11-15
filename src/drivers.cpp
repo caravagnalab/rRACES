@@ -190,22 +190,7 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
   return total;
 }
 
-class Simulation;
-
-/*
-class DescendantsForest
-{
-  Races::Drivers::DescendantsForest forest;
-
-public:
-
-  DescendantForest()
-
-
-
-  friend class Simulation;
-};
-*/
+class SamplesForest;
 
 //' @name Simulation
 //' @title Simulates the cell evolution on a tissue
@@ -290,13 +275,16 @@ public:
 //' \item \emph{Parameter:} \code{species} - The species whose rates are aimed.
 //' \item \emph{Returns:} The list of the species names.
 //' }
+//' @field get_samples_forest Get the samples forest\itemize{
+//' \item \emph{Returns:} The descendants forest having as leaves the sampled cells.
+//' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected 
 //'         during the simulation, the columns "name", "time", "bottom", 
 //'         "left", "top", "right", and  "tumoral cells". "bottom", 
 //'         "left", "top", "right" report the boundaries of the sampled 
 //'         rectangular region, while "tumoral cells" is the number of 
-//'         tumoral cells in the sample
+//'         tumoral cells in the sample.
 //' }
 //' @field get_species Gets the species \itemize{
 //' \item \emph{Returns:} A data frame describing the registered species.
@@ -411,10 +399,8 @@ class Simulation
                                                     species_filter, epigenetic_filter);
 
     IntegerVector ids(num_of_rows);
-    CharacterVector genotype_names(num_of_rows);
-    CharacterVector epi_states(num_of_rows);
-    IntegerVector x_pos(num_of_rows);
-    IntegerVector y_pos(num_of_rows);
+    CharacterVector genotype_names(num_of_rows), epi_states(num_of_rows);
+    IntegerVector x_pos(num_of_rows), y_pos(num_of_rows);
 
     size_t i{0};
     for (auto x=lower_corner[0]; x<=upper_corner[0]; ++x) {
@@ -609,6 +595,8 @@ public:
 
     return simulation;
   }
+
+  SamplesForest get_samples_forest() const;
 };
 
 Simulation::Simulation():
@@ -1724,7 +1712,7 @@ void Simulation::mutate_progeny(const List& cell_position,
 //' @title Sample a tissue rectangle region.
 //' @description This method removes a rectangular region from the simulated
 //'       tissue and stores its cells in a sample that can subsequently 
-//        retrieved to build a descendants forest.
+//        retrieved to build a samples forest.
 //' @examples
 //' sim <- new(Simulation, "sample_cells_test")
 //' sim$add_genotype(genotype = "A",
@@ -1746,6 +1734,37 @@ void Simulation::sample_cells(const std::string& sample_name,
   auto rectangle = get_rectangle(lower_corner, upper_corner);
 
   sim_ptr->sample_tissue(sample_name, rectangle);
+}
+
+template<typename SAMPLES>
+List get_samples_info(const SAMPLES& samples)
+{
+  CharacterVector sample_name(samples.size());
+  NumericVector time(samples.size());
+  IntegerVector bottom(samples.size()), top(samples.size()),
+                left(samples.size()), right(samples.size()),
+                non_wild(samples.size());
+
+  size_t i{0};
+  for (const auto& sample : samples) {
+    sample_name[i] = sample.get_name();
+    time[i] = sample.get_time();
+    non_wild[i] = sample.get_cell_ids().size();
+
+    const auto& rectangle = sample.get_region();
+    left[i] = rectangle.lower_corner.x;
+    right[i] = rectangle.upper_corner.x;
+    bottom[i] = rectangle.lower_corner.y;
+    top[i] = rectangle.upper_corner.y;
+
+    ++i;
+  }
+
+  return DataFrame::create(_["name"]=sample_name, _["left"]=left, 
+                           _["bottom"]=bottom, _["right"]=right, 
+                           _["top"]=top, 
+                           _["tumoural cells"]=non_wild,
+                           _["time"]=time);
 }
 
 //' @name Simulation$get_samples_info
@@ -1781,34 +1800,7 @@ void Simulation::sample_cells(const std::string& sample_name,
 //' sim$get_samples_info()
 List Simulation::get_samples_info() const
 {
-  const auto& samples = sim_ptr->get_tissue_samples();
-
-  CharacterVector sample_name(samples.size());
-  NumericVector time(samples.size());
-  IntegerVector bottom(samples.size()), top(samples.size()),
-                left(samples.size()), right(samples.size()),
-                non_wild(samples.size());
-
-  size_t i{0};
-  for (const auto& sample : samples) {
-    sample_name[i] = sample.get_name();
-    time[i] = sample.get_time();
-    non_wild[i] = sample.get_cell_ids().size();
-
-    const auto& rectangle = sample.get_region();
-    left[i] = rectangle.lower_corner.x;
-    right[i] = rectangle.upper_corner.x;
-    bottom[i] = rectangle.lower_corner.y;
-    top[i] = rectangle.upper_corner.y;
-
-    ++i;
-  }
-
-  return DataFrame::create(_["name"]=sample_name, _["left"]=left, 
-                           _["bottom"]=bottom, _["right"]=right, 
-                           _["top"]=top, 
-                           _["tumoural cells"]=non_wild,
-                           _["time"]=time);
+  return ::get_samples_info(sim_ptr->get_tissue_samples());
 }
 
 //' @name Simulation$death_activation_level
@@ -1874,10 +1866,181 @@ List Simulation::get_samples_info() const
 //'
 //' sim
 
+
+//' @name SamplesForest
+//' @title The forest of the sampled cell ancestors.
+//' @description Represents the forest of the ancestors of the 
+//'       cells sampled during the computation. The leaves of 
+//'       this forest are the sampled cells.
+//' @field get_nodes Get the forest nodes \itemize{
+//' \item \emph{Return:} A data frame representing, for each node
+//'              in the forest, the identified (column "id"), 
+//'              whenever the node is not a root, the ancestor 
+//'              identifier (column "ancestor"), whenever the node 
+//'              was sampled, i.e., it is one of the forest
+//'              leaves, the name of the sample containing the 
+//'              node, (column "sample"), the genotype (column 
+//'              "genotype"), and the epistate (column 
+//'              "epistate").
+//' }
+//' @field get_samples_info Retrieve information about the samples \itemize{
+//' \item \emph{Returns:} A data frame containing, for each sample collected 
+//'         during the simulation, the columns "name", "time", "bottom", 
+//'         "left", "top", "right", and  "tumoral cells". "bottom", 
+//'         "left", "top", "right" report the boundaries of the sampled 
+//'         rectangular region, while "tumoral cells" is the number of 
+//'         tumoral cells in the sample
+//' }
+class SamplesForest : private Races::Drivers::DescendantsForest
+{
+public:
+  //SamplesForest(const Simulation& simulation);
+
+  SamplesForest(const Races::Drivers::Simulation::Simulation& simulation);
+
+  List get_nodes() const;
+
+  List get_samples_info() const;
+};
+
+// This method produces a segmentation fault and I cannot understand why
+/*
+SamplesForest::SamplesForest(const Simulation& simulation):
+  Races::Drivers::DescendantsForest(*(simulation.sim_ptr))
+{}
+*/
+
+SamplesForest::SamplesForest(const Races::Drivers::Simulation::Simulation& simulation):
+  Races::Drivers::DescendantsForest(simulation)
+{}
+
+//' @name SamplesForest$get_nodes
+//' @title Get the nodes of the forest
+//' @return A data frame representing, for each node
+//'         in the forest, the identified (column "cell_id"), 
+//'         whenever the node is not a root, the ancestor 
+//'         identifier (column "ancestor"), whenever the 
+//'         node was sampled, i.e., it is one of the forest
+//'         leaves, the name of the sample containing the 
+//'         node, (column "sample"), the genotype (column 
+//'         "genotype"), and the epistate (column 
+//'          "epistate").
+//' @examples
+//' # create a simulation having name "get_nodes_test"
+//' sim <- new(Simulation, "get_nodes_test")
+//' sim$add_genotype(genotype = "A",
+//'                  growth_rate = 0.2,
+//'                  death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
+//'
+//' # build the samples forest
+//' forest <- sim$get_samples_forest()
+//'
+//' forest$get_nodes()
+List SamplesForest::get_nodes() const
+{
+  using namespace Races::Drivers;
+
+  IntegerVector ids(num_of_nodes()), ancestors(num_of_nodes());
+  CharacterVector genotypes(num_of_nodes()), epi_states(num_of_nodes()),
+                  sample_names(num_of_nodes());
+
+  size_t i{0};
+  for (const auto& [cell_id, cell]: get_cells()) {
+    ids[i] = cell_id;
+    if (cell_id==cell.get_parent_id()) {
+      ancestors[i] = NA_INTEGER;
+    } else {
+      ancestors[i] = cell.get_parent_id();
+    }
+
+    const auto& s_data = get_species_data(cell.get_species_id());
+    genotypes[i] = get_genotype_name(s_data.genotype_id);
+    epi_states[i] = GenotypeProperties::signature_to_string(s_data.signature);
+
+    const auto samples_it = get_coming_from().find(cell_id);
+
+    if (samples_it == get_coming_from().end()) {
+      sample_names[i] = NA_STRING;
+    } else {
+      const auto& samples = get_samples();
+      sample_names[i] = (samples[samples_it->second]).get_name();
+    }
+
+    ++i;
+  }
+
+  return DataFrame::create(_["cell_id"]=ids, _["ancestor"]=ancestors,
+                            _["genotype"]=genotypes, _["epistate"]=epi_states,
+                            _["sample"]=sample_names);
+}
+
+//' @name SamplesForest$get_samples_info
+//' @title Retrieve information about the samples
+//' @description This method retrieve information about 
+//'           the samples whose cells were used as leaves
+//'           of the samples forest.
+//' @return A data frame reporting, for each sample, the 
+//'           name, the sampling time, the position, and 
+//'           the number of tumoural cells.
+//' @examples
+//' sim <- new(Simulation, "get_samples_info_2_test")
+//' sim$add_genotype(genotype = "A",
+//'                  growth_rate = 0.2,
+//'                  death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
+//'
+//' # build the samples forest
+//' forest <- sim$get_samples_forest()
+//'
+//' # get information about the sampled whose cells  
+//' # are the forest leaves, i.e, S1 and S2
+//' forest$get_samples_info()
+List SamplesForest::get_samples_info() const
+{
+  return ::get_samples_info(get_samples());
+}
+
+//' @name Simulation$get_samples_forest
+//' @title Get the samples forest
+//' @return The samples forest having as leaves the sampled cells
+//' @examples
+//' sim <- new(Simulation, "get_samples_forest_test")
+//' sim$add_genotype(genotype = "A",
+//'                  growth_rate = 0.2,
+//'                  death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
+//'
+//' # build the samples forest
+//' forest <- sim$get_samples_forest()
+SamplesForest Simulation::get_samples_forest() const
+{
+  return SamplesForest(*sim_ptr);
+}
+
 namespace RS = Races::Drivers::Simulation;
 namespace RD = Races::Drivers;
 
 RCPP_EXPOSED_CLASS(Simulation)
+RCPP_EXPOSED_CLASS(SamplesForest)
 RCPP_MODULE(Drivers){
   class_<Simulation>("Simulation")
   .constructor("Create a simulation whose output file has the format \"races_<year>_<hour><minute><second>\"")
@@ -1910,6 +2073,10 @@ RCPP_MODULE(Drivers){
   // get_species
   .method("get_species", &Simulation::get_species,
           "Get the species added to the simulation")
+
+  // get_samples_forest
+  .method("get_samples_forest", &Simulation::get_samples_forest,
+          "Get the descendants forest having as leaves the sampled cells")
 
   // death_activation_level
   .property("death_activation_level", &Simulation::get_death_activation_level, 
@@ -1973,7 +2140,7 @@ RCPP_MODULE(Drivers){
 
   // get_samples_info
   .method("get_samples_info", &Simulation::get_samples_info, 
-          "Get some information about the collected samples")
+          "Get some pieces of information about the collected samples")
 
   // history_delta
   .property("history_delta", &Simulation::get_history_delta, 
@@ -2020,4 +2187,13 @@ RCPP_MODULE(Drivers){
   // recover_simulation
   function("recover_simulation", &Simulation::load, 
            "Recover a simulation");
+  
+  class_<SamplesForest>("SamplesForest")
+    // get_nodes
+    .method("get_nodes", &SamplesForest::get_nodes, 
+            "Get the nodes of the forest")
+
+    // get_samples_info
+    .method("get_samples_info", &SamplesForest::get_samples_info, 
+            "Get some pieces of information about the samples");
 }

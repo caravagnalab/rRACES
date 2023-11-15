@@ -136,9 +136,40 @@ We have the possibility of obtaining the tree of cell divisions for all the cell
 
 > Note that tree this contains ancestor cells that were present in the simulation prior to sampling.
 
-```{r,eval=FALSE}
-# The tree is a complex object
-tree_divisions = sim$get_tree_sampled_cells()
+```{r}
+# The forest is an object of the S4 class `SamplesForest`
+forest <- sim$get_samples_forest()
+```
+
+We can get the nodes in the forest by using the forest method `get_nodes()`.
+
+```{r}
+forest$get_nodes() %>% head
+```
+
+The leaves of the forest embody the cells sampled during the
+simulation, while the internal nodes represent ancestors of 
+the sampled cells.
+Hence, the field `sample` is not available for internal nodes, 
+while it reports the name of the sample in which the 
+corresponding cell was sampled for any leaves. 
+
+```{r}
+# get some of the leaves in the forest. They represent
+# sampled cells
+forest$get_nodes() %>% filter(!is.na(.data$sample)) %>% head
+```
+
+The roots of the forest having no ancestors.
+
+```{r}
+forest$get_nodes() %>% filter(is.na(.data$ancestor))
+```
+
+We can also query the forest about the samples used to build it.
+
+```{r}
+forest$get_samples_info()
 ```
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}

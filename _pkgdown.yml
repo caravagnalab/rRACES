@@ -18,6 +18,9 @@ reference:
 - title: "Simulation interface"
   desc:  "Spacial simulation classes and methods"
   contents:
+  - SamplesForest$get_nodes
+  - SamplesForest$get_species_info
+  - SamplesForest
   - Simulation$add_genotype
   - Simulation$schedule_genotype_mutation
   - Simulation$choose_cell_in
@@ -34,6 +37,7 @@ reference:
   - Simulation$get_lineage_graph
   - Simulation$get_name
   - Simulation$get_rates
+  - Simulation$get_samples_forest
   - Simulation$get_samples_info
   - Simulation$get_species
   - Simulation$get_tissue_name
