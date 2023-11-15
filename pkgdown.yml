@@ -2,10 +2,10 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  Sampling_simulation: Sampling_simulation.html
-  Tissue_simulation: Tissue_simulation.html
+  a01_tissue_simulation: a01_tissue_simulation.html
+  a02_sampling_simulation: a02_sampling_simulation.html
   rRACES: rRACES.html
-last_built: 2023-11-14T18:55Z
+last_built: 2023-11-15T08:29Z
 urls:
   reference: https://caravagnalab.github.io/rRACES/reference
   article: https://caravagnalab.github.io/rRACES/articles
