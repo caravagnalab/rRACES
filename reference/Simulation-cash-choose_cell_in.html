@@ -33,8 +33,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Sampling_simulation.html">2.Sampling from a tissue</a>
-    <a class="dropdown-item" href="../articles/Tissue_simulation.html">1.Tissue simulation</a>
+    <a class="dropdown-item" href="../articles/a01_tissue_simulation.html">Tissue Simulation</a>
+    <a class="dropdown-item" href="../articles/a02_sampling_simulation.html">Sampling a Simulated Tissue</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -100,14 +100,14 @@
 <span class="r-in"><span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.15</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">=</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">schedule_genotype_mutation</span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span>,<span class="fl">20</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"B-"</span>, num_of_cells <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Randomly choose one cell in "B" in the tissue</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span>genotype <span class="op">=</span> <span class="st">"B"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cell_id genotype epistate position_x position_y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     377        B        +        505        493</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     380        B        +        509        495</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

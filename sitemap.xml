@@ -7,10 +7,10 @@
     <loc>https://caravagnalab.github.io/rRACES/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/Sampling_simulation.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/articles/a01_tissue_simulation.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/Tissue_simulation.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/articles/a02_sampling_simulation.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/index.html</loc>
@@ -23,6 +23,15 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/index.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_nodes.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_samples_info.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-add_genotype.html</loc>
@@ -67,6 +76,12 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_rates.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_samples_forest.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_samples_info.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_species.html</loc>
   </url>
   <url>
@@ -95,6 +110,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_up_to_time.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-sample_cells.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-schedule_genotype_mutation.html</loc>

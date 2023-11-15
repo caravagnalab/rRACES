@@ -51,8 +51,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Sampling_simulation.html">2.Sampling from a tissue</a>
-    <a class="dropdown-item" href="../articles/Tissue_simulation.html">1.Tissue simulation</a>
+    <a class="dropdown-item" href="../articles/a01_tissue_simulation.html">Tissue Simulation</a>
+    <a class="dropdown-item" href="../articles/a02_sampling_simulation.html">Sampling a Simulated Tissue</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -191,6 +191,21 @@
 </ul></dd>
 
 
+<dt><code>get_samples_forest</code></dt>
+<dd><p>Get the samples forest</p><ul><li><p><em>Returns:</em> The descendants forest having as leaves the sampled cells.</p></li>
+</ul></dd>
+
+
+<dt><code>get_samples_info</code></dt>
+<dd><p>Retrieve information about the samples</p><ul><li><p><em>Returns:</em> A data frame containing, for each sample collected 
+        during the simulation, the columns "name", "time", "bottom", 
+        "left", "top", "right", and  "tumoral cells". "bottom", 
+        "left", "top", "right" report the boundaries of the sampled 
+        rectangular region, while "tumoral cells" is the number of 
+        tumoral cells in the sample.</p></li>
+</ul></dd>
+
+
 <dt><code>get_species</code></dt>
 <dd><p>Gets the species</p><ul><li><p><em>Returns:</em> A data frame describing the registered species.</p></li>
 </ul></dd>
@@ -244,6 +259,13 @@
 
 <dt><code>run_up_to_time</code></dt>
 <dd><p>Simulates cell evolution</p><ul><li><p><em>Parameter:</em> <code>time</code> - The final simulation time.</p></li>
+</ul></dd>
+
+
+<dt><code>sample_cells</code></dt>
+<dd><p>Sample a tissue rectangle region</p><ul><li><p><em>Parameter:</em> <code>name</code> - The sample name.</p></li>
+<li><p><em>Parameter:</em> <code>lower_corner</code> - The bottom-left corner of the rectangle.</p></li>
+<li><p><em>Parameter:</em> <code>upper_corner</code> - The top-right corner of the rectangle.</p></li>
 </ul></dd>
 
 
