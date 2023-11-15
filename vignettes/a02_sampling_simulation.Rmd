@@ -25,8 +25,8 @@ library(dplyr)
  
 This document demonstrates how extract samples from simulated tissues and 
 build the forests of the sampled cell ancestors.
-(please, refer to [this](https://caravagnalab.github.io/rRACES/docs/articles/a01_tissue_simulation.html)
-document for tissue simulation). 
+(please, refer to [this](https://caravagnalab.github.io/rRACES/articles/a01_tissue_simulation.html)
+document for tissue simulation examples). 
 Two types of simulations are considered: one with a single population, and another with two. 
 
 The presented samplings are of the most general type and include:
