@@ -18,8 +18,10 @@ reference:
 - title: "Simulation interface"
   desc:  "Spacial simulation classes and methods"
   contents:
+  - SamplesForest$get_coalescent_cells
   - SamplesForest$get_nodes
   - SamplesForest$get_samples_info
+  - SamplesForest$get_subforest_for
   - SamplesForest
   - Simulation$add_genotype
   - Simulation$schedule_genotype_mutation

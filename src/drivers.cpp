@@ -280,9 +280,9 @@ class SamplesForest;
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected 
-//'         during the simulation, the columns "name", "time", "bottom", 
-//'         "left", "top", "right", and  "tumoral cells". "bottom", 
-//'         "left", "top", "right" report the boundaries of the sampled 
+//'         during the simulation, the columns "name", "time", "ymin", 
+//'         "xmin", "ymax", "xmax", and  "tumoral cells". "ymin", 
+//'         "xmin", "ymax", "xmax" report the boundaries of the sampled 
 //'         rectangular region, while "tumoral cells" is the number of 
 //'         tumoral cells in the sample.
 //' }
@@ -1741,8 +1741,8 @@ List get_samples_info(const SAMPLES& samples)
 {
   CharacterVector sample_name(samples.size());
   NumericVector time(samples.size());
-  IntegerVector bottom(samples.size()), top(samples.size()),
-                left(samples.size()), right(samples.size()),
+  IntegerVector ymin(samples.size()), ymax(samples.size()),
+                xmin(samples.size()), xmax(samples.size()),
                 non_wild(samples.size());
 
   size_t i{0};
@@ -1752,24 +1752,24 @@ List get_samples_info(const SAMPLES& samples)
     non_wild[i] = sample.get_cell_ids().size();
 
     const auto& rectangle = sample.get_region();
-    left[i] = rectangle.lower_corner.x;
-    right[i] = rectangle.upper_corner.x;
-    bottom[i] = rectangle.lower_corner.y;
-    top[i] = rectangle.upper_corner.y;
+    xmin[i] = rectangle.lower_corner.x;
+    xmax[i] = rectangle.upper_corner.x;
+    ymin[i] = rectangle.lower_corner.y;
+    ymax[i] = rectangle.upper_corner.y;
 
     ++i;
   }
 
-  return DataFrame::create(_["name"]=sample_name, _["left"]=left, 
-                           _["bottom"]=bottom, _["right"]=right, 
-                           _["top"]=top, 
+  return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin, 
+                           _["ymin"]=ymin, _["xmax"]=xmax, 
+                           _["ymax"]=ymax, 
                            _["tumoural cells"]=non_wild,
                            _["time"]=time);
 }
 
 //' @name Simulation$get_samples_info
 //' @title Retrieve information about the samples
-//' @description This method retrieve information about 
+//' @description This method retrieves information about 
 //'           the samples collected along the simulation.
 //'           It returns a data frame reporting, for each
 //'           sample, the name, the sampling time, the 
@@ -1872,6 +1872,18 @@ List Simulation::get_samples_info() const
 //' @description Represents the forest of the ancestors of the 
 //'       cells sampled during the computation. The leaves of 
 //'       this forest are the sampled cells.
+//' @field get_coalescent_cells Retrieve most recent common ancestors\itemize{
+//' \item \emph{Parameter:} \code{cell_ids} The list of the identifiers of the 
+//'               cells whose most recent common ancestors are aimed (optional).
+//' \item \emph{Return:} A data frame representing, for each of the identified 
+//'         cells, the identified (column "cell_id"), whenever the
+//'         node is not a root, the ancestor identifier (column 
+//'         "ancestor"), whenever the node was sampled, i.e., it is
+//'         one of the forest leaves, the name of the sample
+//'         containing the node, (column "sample"), the genotype
+//'         (column "genotype"), the epistate (column "epistate"),
+//'         and the birth time (column "birth_time").
+//' }
 //' @field get_nodes Get the forest nodes \itemize{
 //' \item \emph{Return:} A data frame representing, for each node
 //'              in the forest, the identified (column "id"), 
@@ -1880,19 +1892,28 @@ List Simulation::get_samples_info() const
 //'              was sampled, i.e., it is one of the forest
 //'              leaves, the name of the sample containing the 
 //'              node, (column "sample"), the genotype (column 
-//'              "genotype"), and the epistate (column 
-//'              "epistate").
+//'              "genotype"), the epistate (column "epistate"),
+//'              and the birth time (column "birth_time").
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected 
-//'         during the simulation, the columns "name", "time", "bottom", 
-//'         "left", "top", "right", and  "tumoral cells". "bottom", 
-//'         "left", "top", "right" report the boundaries of the sampled 
+//'         during the simulation, the columns "name", "time", "ymin", 
+//'         "xmin", "ymax", "xmax", and  "tumoral cells". "ymin", 
+//'         "xmin", "ymax", "xmax" report the boundaries of the sampled 
 //'         rectangular region, while "tumoral cells" is the number of 
-//'         tumoral cells in the sample
+//'         tumoral cells in the sample.
+//' }
+//' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
+//' \item \emph{Parameter:} \code{sample_names} The names of the samples whose cells will be used
+//'         as leaves of the new forest.
+//' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
 //' }
 class SamplesForest : private Races::Drivers::DescendantsForest
 {
+  SamplesForest();
+  
+  List get_nodes(const std::vector<Races::Drivers::CellId>& cell_ids) const;
+
 public:
   //SamplesForest(const Simulation& simulation);
 
@@ -1901,7 +1922,19 @@ public:
   List get_nodes() const;
 
   List get_samples_info() const;
+
+  List get_coalescent_cells() const;
+
+  List get_coalescent_cells(const std::list<Races::Drivers::CellId>& cell_ids) const;
+
+  SamplesForest get_subforest_for(const std::vector<std::string>& sample_names) const;
+
+  void show() const;
 };
+
+SamplesForest::SamplesForest():
+  Races::Drivers::DescendantsForest()
+{}
 
 // This method produces a segmentation fault and I cannot understand why
 /*
@@ -1923,8 +1956,8 @@ SamplesForest::SamplesForest(const Races::Drivers::Simulation::Simulation& simul
 //'         node was sampled, i.e., it is one of the forest
 //'         leaves, the name of the sample containing the 
 //'         node, (column "sample"), the genotype (column 
-//'         "genotype"), and the epistate (column 
-//'          "epistate").
+//'         "genotype"), the epistate (column "epistate"),
+//'         and the birth time (column "birth_time").
 //' @examples
 //' # create a simulation having name "get_nodes_test"
 //' sim <- new(Simulation, "get_nodes_test")
@@ -1945,45 +1978,55 @@ SamplesForest::SamplesForest(const Races::Drivers::Simulation::Simulation& simul
 //' forest$get_nodes()
 List SamplesForest::get_nodes() const
 {
+  std::vector<Races::Drivers::CellId> cell_ids;
+  cell_ids.reserve(num_of_nodes());
+  for (const auto& [cell_id, cell]: get_cells()) {
+    cell_ids.push_back(cell_id);
+  }
+
+  return get_nodes(cell_ids);
+}
+
+List SamplesForest::get_nodes(const std::vector<Races::Drivers::CellId>& cell_ids) const
+{
   using namespace Races::Drivers;
 
-  IntegerVector ids(num_of_nodes()), ancestors(num_of_nodes());
-  CharacterVector genotypes(num_of_nodes()), epi_states(num_of_nodes()),
-                  sample_names(num_of_nodes());
+  IntegerVector ids(cell_ids.size()), ancestors(cell_ids.size());
+  CharacterVector genotypes(cell_ids.size()), epi_states(cell_ids.size()),
+                  sample_names(cell_ids.size());
+  NumericVector birth(cell_ids.size());
 
   size_t i{0};
-  for (const auto& [cell_id, cell]: get_cells()) {
+  for (const auto& cell_id: cell_ids) {
     ids[i] = cell_id;
-    if (cell_id==cell.get_parent_id()) {
+    auto cell_node = get_node(cell_id);
+    if (cell_node.is_root()) {
       ancestors[i] = NA_INTEGER;
     } else {
-      ancestors[i] = cell.get_parent_id();
+      ancestors[i] = cell_node.parent().get_id();
     }
 
-    const auto& s_data = get_species_data(cell.get_species_id());
-    genotypes[i] = get_genotype_name(s_data.genotype_id);
-    epi_states[i] = GenotypeProperties::signature_to_string(s_data.signature);
+    genotypes[i] = cell_node.get_genotype_name();
+    epi_states[i] = GenotypeProperties::signature_to_string(cell_node.get_methylation_signature());
 
-    const auto samples_it = get_coming_from().find(cell_id);
-
-    if (samples_it == get_coming_from().end()) {
-      sample_names[i] = NA_STRING;
+    if (cell_node.is_leaf()) {
+      sample_names[i] = cell_node.get_sample().get_name();
     } else {
-      const auto& samples = get_samples();
-      sample_names[i] = (samples[samples_it->second]).get_name();
+      sample_names[i] = NA_STRING;
     }
+    birth[i] = static_cast<const Cell&>(cell_node).get_birth_time();
 
     ++i;
   }
 
   return DataFrame::create(_["cell_id"]=ids, _["ancestor"]=ancestors,
-                            _["genotype"]=genotypes, _["epistate"]=epi_states,
-                            _["sample"]=sample_names);
+                           _["genotype"]=genotypes, _["epistate"]=epi_states,
+                           _["sample"]=sample_names, _["birth_time"]=birth);
 }
 
 //' @name SamplesForest$get_samples_info
 //' @title Retrieve information about the samples
-//' @description This method retrieve information about 
+//' @description This method retrieves information about 
 //'           the samples whose cells were used as leaves
 //'           of the samples forest.
 //' @return A data frame reporting, for each sample, the 
@@ -2011,6 +2054,113 @@ List SamplesForest::get_nodes() const
 List SamplesForest::get_samples_info() const
 {
   return ::get_samples_info(get_samples());
+}
+
+List SamplesForest::get_coalescent_cells() const
+{
+  auto coalencent_ids = Races::Drivers::DescendantsForest::get_coalescent_cells();
+
+  return get_nodes(coalencent_ids);
+}
+
+//' @name SamplesForest$get_coalescent_cells
+//' @title Retrieve most recent common ancestors
+//' @description This method retrieves the most recent common ancestors
+//'         of a set of cells. If the optional parameter `cell_ids` is 
+//'         used, this method find the most recent common ancestors of 
+//'         the cells having an identifier among those in `cell_ids`.
+//'         If, otherwise, the optional parameter is not used, this
+//'         method find the most recent common ancestors of the forest
+//'         leaves.
+//' @param cell_ids The list of the identifiers of the cells whose
+//'         most recent common ancestors are aimed (optional).
+//' @return A data frame representing, for each of the identified 
+//'         cells, the identified (column "cell_id"), whenever the
+//'         node is not a root, the ancestor identifier (column 
+//'         "ancestor"), whenever the node was sampled, i.e., it is
+//'         one of the forest leaves, the name of the sample
+//'         containing the node, (column "sample"), the genotype
+//'         (column "genotype"), the epistate (column "epistate"),
+//'         and the birth time (column "birth_time").
+//' @examples
+//' sim <- new(Simulation, "get_coalescent_cells_test")
+//' sim$add_genotype(genotype = "A",
+//'                  growth_rate = 0.2,
+//'                  death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
+//'
+//' # build the samples forest
+//' forest <- sim$get_samples_forest()
+//'
+//' forest$get_coalescent_cells()
+List SamplesForest::get_coalescent_cells(const std::list<Races::Drivers::CellId>& cell_ids) const
+{
+  auto coalencent_ids = Races::Drivers::DescendantsForest::get_coalescent_cells(cell_ids);
+
+  return get_nodes(coalencent_ids);
+}
+
+//' @name SamplesForest$get_subforest_for
+//' @title Build a subforest using as leaves some of the original samples
+//' @param sample_names The names of the samples whose cells will be used
+//'         as leaves of the new forest 
+//' @return A samples forest built on the samples mentioned in `sample_names` 
+//' @examples
+//' sim <- new(Simulation, "get_subforest_for_test")
+//' sim$add_genotype(genotype = "A",
+//'                  growth_rate = 0.2,
+//'                  death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
+//'
+//' sim$run_up_to_size(species = "A", num_of_cells = 60000)
+//'
+//' # sample again the same region
+//' sim$sample_cells("S2", lower_corner=c(450,475), upper_corner=c(500,550))
+//'
+//' # build the samples forest
+//' forest <- sim$get_samples_forest()
+//'
+//' forest$get_subforest_for("S2")
+SamplesForest SamplesForest::get_subforest_for(const std::vector<std::string>& sample_names) const
+{
+  SamplesForest forest;
+
+  static_cast< Races::Drivers::DescendantsForest&>(forest) = Races::Drivers::DescendantsForest::get_subforest_for(sample_names);
+
+  return forest;
+}
+
+void SamplesForest::show() const
+{
+  size_t num_of_leaves{0};
+  for (const auto& sample: get_samples()) {
+    num_of_leaves += sample.get_cell_ids().size();
+  }
+
+  Rcout << "SamplesForest(# of trees: " << get_roots().size() 
+        << ", # of nodes: " << num_of_nodes() 
+        << ", # of leaves: " << num_of_leaves
+        << ", samples: {";
+
+  std::string sep = "";
+  for (const auto& sample: get_samples()) {
+    Rcout << sep << "\"" << sample.get_name() << "\"";
+    sep = ", ";
+  }
+
+  Rcout << "})" << std::endl;
 }
 
 //' @name Simulation$get_samples_forest
@@ -2190,10 +2340,29 @@ RCPP_MODULE(Drivers){
   
   class_<SamplesForest>("SamplesForest")
     // get_nodes
-    .method("get_nodes", &SamplesForest::get_nodes, 
+    .method("get_nodes", (List (SamplesForest::*)() const)(&SamplesForest::get_nodes), 
             "Get the nodes of the forest")
+
+    // get_coalescent_cells
+    .method("get_coalescent_cells", 
+            (List (SamplesForest::*)(const std::list<Races::Drivers::CellId>&) const)
+                (&SamplesForest::get_coalescent_cells), 
+            "Get the most recent common ancestor of some cells")
+
+    // get_coalescent_cells
+    .method("get_coalescent_cells", 
+            (List (SamplesForest::*)() const)(&SamplesForest::get_coalescent_cells), 
+            "Get the most recent common ancestor of all the forest trees")
+
+    // get_subforest_for
+    .method("get_subforest_for", &SamplesForest::get_subforest_for, 
+            "Get the sub-forest for some of the original samples")
 
     // get_samples_info
     .method("get_samples_info", &SamplesForest::get_samples_info, 
-            "Get some pieces of information about the samples");
+            "Get some pieces of information about the samples")
+
+    // show
+    .method("show", &SamplesForest::show, 
+            "Describe the SampleForest");
 }
