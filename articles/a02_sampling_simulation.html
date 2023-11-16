@@ -306,6 +306,8 @@ corresponding cell was sampled for any leaf.</p>
 <p>We can visualise the tree of the cells</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_sampled_cells.html">plot_sampled_cells</a></span><span class="op">(</span><span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-16-1.png" width="864"></p>
 </div>
@@ -435,8 +437,129 @@ complicated</p>
 <span><span class="va">forest</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_sampled_cells.html">plot_sampled_cells</a></span><span class="op">(</span><span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-22-1.png" width="1632"></p>
+</div>
+<div class="section level2">
+<h2 id="more-complex-example">More complex example<a class="anchor" aria-label="anchor" href="#more-complex-example"></a>
+</h2>
+<p>Some functionalities allow for a smarter sampling and more advanced
+visualisation.</p>
+<p>We build a tumour with three populations, branching.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">update_tissue</span><span class="op">(</span><span class="fl">250</span>, <span class="fl">250</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"A"</span>, growth_rates <span class="op">=</span> <span class="fl">0.08</span>, death_rates <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">125</span>, <span class="fl">125</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">300</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
+<p>We use an automatic function <code>bbox_sampler</code> to determine
+bounding boxes so to collect a dedired number of cells of interest.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ncells</span> <span class="op">=</span> <span class="fl">20</span></span>
+<span><span class="va">n_w</span> <span class="op">=</span> <span class="va">n_h</span> <span class="op">=</span> <span class="fl">7</span></span>
+<span></span>
+<span><span class="co"># Sampling ncells with random box sampling of boxes of size n_w x n_h</span></span>
+<span><span class="va">bbox</span> <span class="op">=</span> <span class="fu"><a href="../reference/bbox_sampler.html">bbox_sampler</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"A"</span>, <span class="va">ncells</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">p</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">q</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bbox</span> <span class="op">=</span> <span class="fu"><a href="../reference/bbox_sampler.html">bbox_sampler</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"A"</span>, <span class="va">ncells</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">p</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">q</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-24-1.png" width="288"></p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in min(diff(all_gens_list)): no non-missing arguments to min; returning</span></span>
+<span><span class="co">#&gt; Inf</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span>
+<span><span class="co">#&gt; Warning in min(diff(unique_loc)): no non-missing arguments to min; returning</span></span>
+<span><span class="co">#&gt; Inf</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-24-2.png" width="288"></p>
+<p>Second clone starts.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># New subclone</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"B"</span>, growth_rates <span class="op">=</span> <span class="fl">0.13</span>, death_rates <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">200</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-25-1.png" width="288"></p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-25-2.png" width="288"></p>
+<p>Random sampling of cells from both clone <code>A</code> and
+<code>B</code>.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Sampling with random box sampling</span></span>
+<span><span class="va">bbox</span> <span class="op">=</span> <span class="fu"><a href="../reference/bbox_sampler.html">bbox_sampler</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"A"</span>, <span class="va">ncells</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">p</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">q</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bbox</span> <span class="op">=</span> <span class="fu"><a href="../reference/bbox_sampler.html">bbox_sampler</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"B"</span>, <span class="va">ncells</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">p</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">q</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-26-1.png" width="288">
+Finally, a third clone branching from <code>A</code>.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># New subclone</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"C"</span>, growth_rates <span class="op">=</span> <span class="fl">0.24</span>, death_rates <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"C"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 84 rows containing missing values (`geom_hex()`).</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-27-1.png" width="288"></p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-27-2.png" width="288">
+With sampling of clones <code>B</code> and <code>C</code>.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Sampling with random box sampling</span></span>
+<span><span class="va">bbox</span> <span class="op">=</span> <span class="fu"><a href="../reference/bbox_sampler.html">bbox_sampler</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"B"</span>, <span class="va">ncells</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A3"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">p</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">q</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">bbox</span> <span class="op">=</span> <span class="fu"><a href="../reference/bbox_sampler.html">bbox_sampler</a></span><span class="op">(</span><span class="va">sim</span>, <span class="st">"C"</span>, <span class="va">ncells</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B3"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">p</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">q</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 84 rows containing missing values (`geom_hex()`).</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-28-1.png" width="288"></p>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Scale for <span style="color: #00BB00;">fill</span> is already present.</span></span>
+<span><span class="co">#&gt; Adding another scale for <span style="color: #00BB00;">fill</span>, which will replace the existing scale.</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-28-2.png" width="288"></p>
+<p>Finally, the tree plot where we annotate samples and MRCAs of each
+sample.</p>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Tree data</span></span>
+<span><span class="va">forest</span> <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">forest_nodes</span> <span class="op">=</span> <span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_sampled_cells.html">plot_sampled_cells</a></span><span class="op">(</span>forest_nodes <span class="op">=</span> <span class="va">forest_nodes</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
+<span><span class="co">#&gt; Warning: The shape palette can deal with a maximum of 6 discrete values because</span></span>
+<span><span class="co">#&gt; more than 6 becomes difficult to discriminate; you have 7. Consider</span></span>
+<span><span class="co">#&gt; specifying shapes manually if you must have them.</span></span>
+<span><span class="co">#&gt; Warning: Removed 1339 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-29-1.png" width="1632"></p>
+<p>The horizontal line denotes sampling times, and circles the MRCAs of
+interest.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
