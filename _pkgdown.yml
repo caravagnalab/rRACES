@@ -21,6 +21,7 @@ reference:
   - SamplesForest$get_coalescent_cells
   - SamplesForest$get_nodes
   - SamplesForest$get_samples_info
+  - SamplesForest$get_species_info
   - SamplesForest$get_subforest_for
   - SamplesForest
   - Simulation$add_genotype
