@@ -60,6 +60,8 @@ reference:
   - plot_state
   - plot_tissue
   - plot_timeseries
+  - annotate_forest
+  - bbox_sampler
   - recover_simulation
   
 

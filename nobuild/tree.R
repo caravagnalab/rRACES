@@ -180,3 +180,69 @@ cells = forest$get_nodes() %>%
   pull(cell_id)
 
 forest$get_coalescent_cells(cells)
+
+
+set.seed(1234)
+
+sim <- new(Simulation)
+sim$update_tissue(250, 250)
+
+sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
+sim$place_cell("A", 125, 125)
+sim$run_up_to_size("A", 300)
+
+plot_tissue(sim)
+
+# Sampling with random box sampling
+ncells = 20
+n_w = n_h = 7
+
+bbox = bbox_sampler(sim, "A", ncells, n_w, n_h)
+sim$sample_cells("A1", bbox$p, bbox$q)
+
+bbox = bbox_sampler(sim, "A", ncells, n_w, n_h)
+sim$sample_cells("B1", bbox$p, bbox$q)
+
+plot_tissue(sim)
+
+# New subclone
+sim$add_genotype(name = "B", growth_rates = 0.13, death_rates = 0.01)
+sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+sim$run_up_to_size("B", 200)
+
+plot_tissue(sim)
+
+# Sampling with random box sampling
+bbox = bbox_sampler(sim, "A", ncells, n_w, n_h)
+sim$sample_cells("A2", bbox$p, bbox$q)
+
+bbox = bbox_sampler(sim, "B", ncells, n_w, n_h)
+sim$sample_cells("B2", bbox$p, bbox$q)
+
+plot_tissue(sim)
+
+# New subclone
+sim$add_genotype(name = "C", growth_rates = 0.24, death_rates = 0.01)
+sim$mutate_progeny(sim$choose_cell_in("A"), "C")
+
+sim$run_up_to_size("C", 500)
+plot_tissue(sim)
+
+# Sampling with random box sampling
+bbox = bbox_sampler(sim, "B", ncells, n_w, n_h)
+sim$sample_cells("A3", bbox$p, bbox$q)
+
+bbox = bbox_sampler(sim, "C", ncells, n_w, n_h)
+sim$sample_cells("B3", bbox$p, bbox$q)
+
+plot_tissue(sim, num_of_bins = 100)
+
+# Tree data
+forest = sim$get_samples_forest()
+forest_nodes = forest$get_nodes()
+
+tree_plot = plot_sampled_cells(forest_nodes = forest_nodes) %>% 
+  annotate_forest(forest)
+
+tree_plot
+

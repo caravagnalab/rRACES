@@ -1,10 +1,9 @@
-#' Plot a forest of cell divisions.
+#' Plotcell divisions.
 #' 
 #' @description
-#' Plot a forest of trees for cells passed in input, after a call to method
-#' `get_nodes` from class `SamplesForest`. This plot is carried out using
-#' `ggraph` and for simplicity of visualisation the forest is plot as a
-#' set of trees connected to a generic wildtype cell.
+#' Plot a forest of trees for cells passed in input, as those that can be 
+#' obtained with `get_nodes` from class `SamplesForest`. This plot is carried out using
+#' `ggraph`.
 #'
 #' @param forest_nodes Result from`get_nodes` from class `SamplesForest`.
 #'
@@ -28,7 +27,7 @@ plot_sampled_cells = function(forest_nodes)
       from = ancestor,
       to = cell_id
     ) %>% 
-    dplyr::select(from, to, genotype, epistate, sample) %>% 
+    dplyr::select(from, to, genotype, epistate, sample, birth_time) %>% 
     dplyr::mutate(
       from = ifelse(is.na(from), "WT", from),
       species = paste0(genotype, epistate),
@@ -53,6 +52,11 @@ plot_sampled_cells = function(forest_nodes)
   # Define the layout with the tree rooted and the root on top
   layout <- ggraph::create_layout(graph, layout = "tree", root = "WT")
   
+  max_Y = max(layout$birth_time, na.rm = TRUE)
+  layout$reversed_btime = max_Y - layout$birth_time
+  
+  layout$y = layout$reversed_btime
+
   species_colors = rRACES:::get_species_colors(sim)
   
   ncells = graph %>%
@@ -68,20 +72,12 @@ plot_sampled_cells = function(forest_nodes)
   
   nsamples = forest$get_samples_info() %>% nrow()
   
-  labels_every = (layout$y %>% max)/10
+  labels_every = max_Y/10
   
   point_size = c(.5, rep(1, nsamples))
   names(point_size) = c("N/A", forest$get_samples_info() %>% pull(name))
   
-  # sample_times = forest$get_samples_info() %>% 
-  #   pull(time) %>% 
-  #   unique
-  # 
-  # point_shape = c(.5, rep(1, nsamples))
-  # names(point_size) = c("N/A", forest$get_samples_info() %>% pull(name))
-  
   # Plot the graph with color-coded nodes
-  # figure = 
   ggraph::ggraph(layout, "tree") +
     ggraph::geom_edge_link(edge_width = .1) +
     ggraph::geom_node_point(
@@ -96,20 +92,22 @@ plot_sampled_cells = function(forest_nodes)
     ggplot2::theme_minimal() + 
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::labs(
-      title = "Cell divisons",
+      title = "Birth time",
       subtitle = paste0(ncells, " cells (", ncells_sampled, ' sampled from ', nsamples, " samples)"),
       shape = "Sample",
       x = NULL,
       y = "Cell division"
     ) +
-    ggplot2::guides(size = 'none', fill = "Species") +
+    ggplot2::guides(size = 'none', 
+                    shape = ggplot2::guide_legend("Sample"),
+                    fill = ggplot2::guide_legend("Species")) +
     ggplot2::scale_size_manual(
       values = point_size
     ) +
     ggplot2::scale_y_continuous(labels = 
-                         seq(0, layout$y %>% max, labels_every) %>% round %>% rev,
+                         seq(0, max_Y, labels_every) %>% round %>% rev,
                        breaks = 
-                         seq(0, layout$y %>% max, labels_every) %>% round
+                         seq(0, max_Y, labels_every) %>% round
     ) +
     ggplot2::theme(
       axis.line.x = ggplot2::element_blank(),
@@ -117,6 +115,101 @@ plot_sampled_cells = function(forest_nodes)
       axis.ticks.x = ggplot2::element_blank()
     )
   
+}
+
+#' Annotate a plot of cell divisions.
+#' 
+#' @description
+#' It annotates a plot of cell divisions with information from sampling
+#' times and MRCAs for all available samples
+#'
+#' @param tree_plot The output of `plot_sampled_cells`.
+#' @param forest The original forest object from which the input to `plot_sampled_cells`
+#' has been derived.
+#' @param samples If `TRUE` it annotates samples.
+#' @param MRCAs If `TRUE` it annotates MRCAs
+#' 
+#' @return A `ggraph` tree plot.
+#' @export
+#'
+#' @examples
+#' sim <- new(Simulation, "plot_sampled_cells_test")
+#' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
+#' sim$place_cell("A", 500, 500)
+#' sim$run_up_to_time(60)
+#' sim$sample_cells("MySample", c(500, 500), c(510, 510))
+#' forest = sim$get_samples_forest()
+#' forest$get_samples_info()
+#' tree_plot = plot_sampled_cells(forest$get_nodes())
+#' annotate_forest(tree_plot, forest)
+annotate_forest = function(tree_plot, forest, samples = TRUE, MRCAs = TRUE)
+{
+  # Sampling times
+  if(samples)
+  {
+    samples_table = forest$get_samples_info()
+    
+    max_Y = max(tree_plot$data$y, na.rm = TRUE)
+    
+    tree_plot = tree_plot +
+      ggplot2::geom_hline(
+        yintercept = max_Y - samples_table$time,
+        color = 'indianred3',
+        linetype = 'dashed',
+        linewidth = .3
+      )
+  }
+  
+  # MRCAs
+  if(MRCAs)
+  {
+    samples_list = forest$get_samples_info() %>% pull(name)
+    
+    MRCAs_cells = lapply(
+      samples_list, 
+      function(s){
+        forest$get_coalescent_cells(
+          forest_nodes %>% 
+            dplyr::filter(sample %in% s) %>% 
+            dplyr::pull(cell_id)
+        ) %>% 
+          dplyr::mutate(sample = s)
+      }) %>% 
+      Reduce(f = dplyr::bind_rows) %>% 
+      dplyr::group_by(cell_id) %>% 
+      dplyr::mutate(
+        cell_id = paste(cell_id)
+      ) %>% 
+      dplyr::summarise(
+        label = paste0("    ", sample, collapse = '\n')
+      )
+    
+    layout = tree_plot$data %>% 
+      dplyr::select(x, y, name) %>% 
+      dplyr::mutate(cell_id = paste(name)) %>%  
+      dplyr::filter(name %in% MRCAs_cells$cell_id) %>% 
+      dplyr::left_join(MRCAs_cells, by = 'cell_id')
+    
+    tree_plot = 
+      tree_plot +
+      ggplot2::geom_point(
+        data = layout,
+        ggplot2::aes(x = x, y = y),
+        color = 'purple3',
+        size = 3,
+        pch = 21
+      ) +
+      ggplot2::geom_text(
+        data = layout,
+        ggplot2::aes(x = x, y = y, label = label),
+        color = 'purple3',
+        size = 3,
+        hjust = 0,
+        vjust = 1
+      ) 
+  }
+  
+  tree_plot
 }
 
 # ggsave(
