@@ -305,7 +305,7 @@ corresponding cell was sampled for any leaf.</p>
 <span><span class="co">#&gt; 4   B2  500  500  509  509            100 151.7013</span></span></code></pre></div>
 <p>We can visualise the tree of the cells</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_sampled_cells.html">plot_sampled_cells</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_sampled_cells.html">plot_sampled_cells</a></span><span class="op">(</span><span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-16-1.png" width="864"></p>
 </div>
@@ -431,7 +431,10 @@ switches and subclonal expansions</p>
 <p>Now we show the cell division tree, which starts being rather
 complicated</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_sampled_cells.html">plot_sampled_cells</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Forest object</span></span>
+<span><span class="va">forest</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_sampled_cells.html">plot_sampled_cells</a></span><span class="op">(</span><span class="va">forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-22-1.png" width="1632"></p>
 </div>
