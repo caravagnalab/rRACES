@@ -289,6 +289,7 @@ sim$sample_cells("B2",
                  top_right = c(500 + bbox_width, 500 + bbox_width))
 
 plot_tissue(sim, num_of_bins = 500)
+plot_muller(sim)
 ```
 
 Now we show the cell division tree, which starts being rather complicated
