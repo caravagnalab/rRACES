@@ -119,11 +119,11 @@ sim <- new(Simulation, "Monoclonal")
 
 sim$add_genotype(name = "A",
                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                 growth_rates = c("+" = 0.2, "-" = 0.08),
+                 growth_rates = c("+" = 0.1, "-" = 0.08),
                  death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$place_cell("A+", 500, 500)
-sim$run_up_to_size("A+", 10000)
+sim$run_up_to_size("A+", 1000)
 
 plot_tissue(sim, num_of_bins = 500)
 
@@ -133,23 +133,50 @@ bbox_width = 10
 sim$sample_cells("A1", bottom_left = c(480, 480), top_right = c(480 + bbox_width, 480 + bbox_width))
 sim$sample_cells("B1", bottom_left = c(500, 500), top_right = c(500 + bbox_width, 500 + bbox_width))
 
-sim$run_up_to_size("A-", 20000)
+plot_tissue(sim, num_of_bins = 500)
+
 sim$run_up_to_time(sim$get_clock() + 15)
 
+plot_tissue(sim, num_of_bins = 500)
+
 cell <- sim$choose_cell_in("A")
+
 sim$add_genotype(name = "B",
-                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
-                 growth_rates = c("+" = 0.3, "-" = 0.3),
-                 death_rates = c("+" = 0.05, "-" = 0.1))
+                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+                 growth_rates = c("+" = 0.5, "-" = 0.3),
+                 death_rates = c("+" = 0.05, "-" = 0.05))
 
 sim$mutate_progeny(cell, "B")
+
+sim$run_up_to_time(sim$get_clock() + 30)
+
+plot_tissue(sim, num_of_bins = 500)
 
 sim$sample_cells("A2", bottom_left = c(480, 480), top_right = c(480 + bbox_width, 480 + bbox_width))
 sim$sample_cells("B2", bottom_left = c(500, 500), top_right = c(500 + bbox_width, 500 + bbox_width))
 
+plot_tissue(sim, num_of_bins = 500)
 
+# sim$add_genotype(name = "C",
+#                  epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+#                  growth_rates = c("+" = 0.7, "-" = 0.5),
+#                  death_rates = c("+" = 0.05, "-" = 0.05))
+# 
+# cell <- sim$choose_cell_in("B")
+# sim$mutate_progeny(cell, "C")
+# 
+# sim$update_rates("B-", death=1)
+# sim$update_rates("B+", death=1)
+# 
+# sim$run_up_to_size("C+", 100)
+# 
+# plot_tissue(sim, num_of_bins = 500)
 
-sim$get
+plot_sampled_cells(sim)
 
+forest = sim$get_samples_forest()
+cells = forest$get_nodes() %>% 
+  filter(sample == 'A1', epistate == '-') %>% 
+  pull(cell_id)
 
-
+forest$get_coalescent_cells(cells)
