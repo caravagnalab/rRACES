@@ -1873,7 +1873,7 @@ List Simulation::get_samples_info() const
 //'       cells sampled during the computation. The leaves of 
 //'       this forest are the sampled cells.
 //' @field get_coalescent_cells Retrieve most recent common ancestors\itemize{
-//' \item \emph{Parameter:} \code{cell_ids} The list of the identifiers of the 
+//' \item \emph{Parameter:} \code{cell_ids} - The list of the identifiers of the 
 //'               cells whose most recent common ancestors are aimed (optional).
 //' \item \emph{Return:} A data frame representing, for each of the identified 
 //'         cells, the identified (column "cell_id"), whenever the
@@ -1903,8 +1903,12 @@ List Simulation::get_samples_info() const
 //'         rectangular region, while "tumoral cells" is the number of 
 //'         tumoral cells in the sample.
 //' }
+//' @field get_species_info Gets the species data\itemize{
+//' \item \emph{Returns:} A data frame reporting "genotype" and "epistate" 
+//'            for each registered species.
+//' }
 //' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
-//' \item \emph{Parameter:} \code{sample_names} The names of the samples whose cells will be used
+//' \item \emph{Parameter:} \code{sample_names} - The names of the samples whose cells will be used
 //'         as leaves of the new forest.
 //' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
 //' }
@@ -1922,6 +1926,8 @@ public:
   List get_nodes() const;
 
   List get_samples_info() const;
+
+  List get_species_info() const;
 
   List get_coalescent_cells() const;
 
@@ -2140,6 +2146,29 @@ SamplesForest SamplesForest::get_subforest_for(const std::vector<std::string>& s
   static_cast< Races::Drivers::DescendantsForest&>(forest) = Races::Drivers::DescendantsForest::get_subforest_for(sample_names);
 
   return forest;
+}
+
+//' @name SamplesForest$get_species_info
+//' @title Gets the species
+//' @return A data frame reporting "genotype" and "epistate" 
+//'            for each registered species.
+List SamplesForest::get_species_info() const
+{
+  size_t num_of_rows = get_species_data().size();
+
+  CharacterVector genotype_names(num_of_rows), epi_states(num_of_rows);
+
+  using namespace Races::Drivers;
+
+  size_t i{0};
+  for (const auto& [species_id, species_data]: get_species_data()) {
+    genotype_names[i] = get_genotype_name(species_data.genotype_id);
+    epi_states[i] = GenotypeProperties::signature_to_string(species_data.signature);
+  
+    ++i;
+  }
+
+  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states);
 }
 
 void SamplesForest::show() const
@@ -2361,6 +2390,10 @@ RCPP_MODULE(Drivers){
     // get_samples_info
     .method("get_samples_info", &SamplesForest::get_samples_info, 
             "Get some pieces of information about the samples")
+
+    // get_species
+    .method("get_species_info", &SamplesForest::get_species_info,
+            "Get the recorded species")
 
     // show
     .method("show", &SamplesForest::show, 
