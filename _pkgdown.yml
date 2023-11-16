@@ -56,6 +56,7 @@ reference:
   - Simulation
   - plot_firings
   - plot_muller
+  - plot_sampled_cells
   - plot_state
   - plot_tissue
   - plot_timeseries
