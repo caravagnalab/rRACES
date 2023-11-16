@@ -1,16 +1,28 @@
-#' Title
+#' Plot a forest of cell divisions.
+#' 
+#' @description
+#' Plot a forest of trees for cells passed in input, after a call to method
+#' `get_nodes` from class `SamplesForest`. This plot is carried out using
+#' `ggraph` and for simplicity of visualisation the forest is plot as a
+#' set of trees connected to a generic wildtype cell.
 #'
-#' @param simulation 
+#' @param forest_nodes Result from`get_nodes` from class `SamplesForest`.
 #'
-#' @return
+#' @return A `ggraph` tree plot.
 #' @export
 #'
 #' @examples
-plot_sampled_cells = function(simulation)
+#' sim <- new(Simulation, "plot_sampled_cells_test")
+#' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
+#' sim$place_cell("A", 500, 500)
+#' sim$run_up_to_time(60)
+#' sim$sample_cells("MySample", c(500, 500), c(510, 510))
+#' forest = sim$get_samples_forest()
+#' forest$get_samples_info()
+#' plot_sampled_cells(forest$get_nodes())
+plot_sampled_cells = function(forest_nodes)
 {
-  forest <- simulation$get_samples_forest()
-  
-  forest_data = forest$get_nodes() %>% 
+  forest_data = forest_nodes %>% 
     dplyr::as_tibble() %>% 
     dplyr::rename(
       from = ancestor,
