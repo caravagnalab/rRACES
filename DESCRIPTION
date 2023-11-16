@@ -24,7 +24,9 @@ Imports:
     RColorBrewer,
     knitr,
     rlang,
-    ggmuller
+    ggmuller,
+    ggraph,
+    tidygraph
 RoxygenNote: 7.2.3
 Suggests: 
     rmarkdown

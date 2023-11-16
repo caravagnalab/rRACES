@@ -65,11 +65,22 @@ A sample is defined by a name and a bounding box, which has these parameters:
 For this simulation, we define two samples with names `"A1"` and `"B1"`. 
 
 ```{r}
-# Bounding box from (400, 400) to (480, 480)
-sim$sample_cells("A1", bottom_left = c(400, 400), top_right = c(480, 480))
+# We collect a box of 100 cells (10 x 10)
+bbox_width = 9
 
-# Bounding box from (550, 550) to (630, 630)
-sim$sample_cells("B1", bottom_left = c(550, 550), top_right = c(630, 630))
+sim$sample_cells("A1", 
+                 bottom_left = 
+                   c(400, 400),
+                 top_right = 
+                   c(400 + bbox_width, 400 + bbox_width)
+                 )
+
+sim$sample_cells("B1", 
+                 bottom_left = 
+                   c(500, 500),
+                 top_right = 
+                   c(500 + bbox_width, 500 + bbox_width)
+                 )
 ```
 
 Let us visualise the two boxes.
@@ -79,10 +90,22 @@ library(ggplot2)
 
 # Add the contours of the bounding boxes
 current +
-  geom_rect(xmin = 400, xmax = 480, ymin = 400, ymax = 480,
-            fill = NA, color = "black") +
-  geom_rect(xmin = 550, xmax = 630, ymin = 550, ymax = 630,
-            fill = NA, color = "black")
+  geom_rect(
+    xmin = 400, 
+    xmax = 400 + bbox_width,
+    ymin = 400, 
+    ymax = 400 + bbox_width,
+    fill = NA, 
+    color = "black"
+    ) + 
+  geom_rect(
+    xmin = 500, 
+    xmax = 500 + bbox_width,
+    ymin = 500, 
+    ymax = 500 + bbox_width,
+    fill = NA, 
+    color = "black"
+    ) 
 ```
 
 > Sampling removes cells from the tissue, as if the tissue was surgically resected.
@@ -99,7 +122,7 @@ This is also reflected by `get_cells`, which now will not find any tumour cell i
 the sampled region.
 ```{r}
 # This should be empty
-sim$get_cells(c(550, 550), c(630, 630)) %>% head
+sim$get_cells(c(400, 400), c(400 + bbox_width, 400 + bbox_width)) %>% head
 ```
 
 ### Tissue simulation
@@ -123,18 +146,19 @@ simulation evolution.
 
 ```{r}
 # Bounding boxes as before
-sim$sample_cells("A2", bottom_left = c(400, 400), top_right = c(480, 480))
-sim$sample_cells("B2", bottom_left = c(550, 550), top_right = c(630, 630))
-```
+sim$sample_cells("A2", 
+                 bottom_left = 
+                   c(400, 400),
+                 top_right = 
+                   c(400 + bbox_width, 400 + bbox_width)
+                 )
 
-It is possible to visualise the two boxes. 
-```{r,  fig.height=4, fig.width=3}
-# Add the contours of the bounding boxes
-current +
-  geom_rect(xmin = 400, xmax = 480, ymin = 400, ymax = 480,
-            fill = NA, color = "black") +
-  geom_rect(xmin = 550, xmax = 630, ymin = 550, ymax = 630, 
-            fill = NA, color = "black")
+sim$sample_cells("B2", 
+                 bottom_left = 
+                   c(500, 500),
+                 top_right = 
+                   c(500 + bbox_width, 500 + bbox_width)
+                 )
 ```
 
 The method `get_samples_info()` provides an overview of the collected samples 
@@ -165,6 +189,7 @@ forest$get_nodes() %>% head
 The leaves of the forest embody the cells sampled during the
 simulation, while the internal nodes represent ancestors of 
 the sampled cells.
+
 Hence, the field `sample` is not available for internal nodes, 
 while it reports the name of the sample in which the 
 corresponding cell was sampled for any leaf. 
@@ -186,8 +211,88 @@ We can also query the forest about the samples used to build it.
 forest$get_samples_info()
 ```
 
+We can visualise the tree of the cells
+
+```{r,  fig.height=6, fig.width=9}
+plot_sampled_cells(sim)
+```
+
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 unlink(sim$get_name(), recursive = TRUE)
 ```
 
 ## Example with two populations
+
+We can now simulate a rather more complex model, with epigenetic switches and subclonal expansions
+
+```{r,  fig.height=4, fig.width=3}
+sim <- new(Simulation, "TwoClones")
+
+# First clone
+sim$add_genotype(name = "A",
+                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                 growth_rates = c("+" = 0.1, "-" = 0.08),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$place_cell("A+", 500, 500)
+sim$run_up_to_size("A+", 1000)
+plot_tissue(sim, num_of_bins = 500)
+```
+
+We sample before introducing a new clone.
+
+```{r,  fig.height=4, fig.width=3}
+bbox_width = 10
+
+sim$sample_cells("A1", 
+                 bottom_left = c(480, 480), 
+                 top_right = c(480 + bbox_width, 480 + bbox_width))
+
+sim$sample_cells("B1", 
+                 bottom_left = c(500, 500), 
+                 top_right = c(500 + bbox_width, 500 + bbox_width))
+
+plot_tissue(sim, num_of_bins = 500)
+
+# Let it grow a bit more
+sim$run_up_to_time(sim$get_clock() + 15)
+
+plot_tissue(sim, num_of_bins = 500)
+```
+
+Add a new subclone.
+```{r,  fig.height=4, fig.width=3}
+cell <- sim$choose_cell_in("A")
+
+sim$add_genotype(name = "B",
+                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+                 growth_rates = c("+" = 0.5, "-" = 0.3),
+                 death_rates = c("+" = 0.05, "-" = 0.05))
+
+sim$mutate_progeny(cell, "B")
+
+# let it grow more time units
+sim$run_up_to_time(sim$get_clock() + 25)
+
+plot_tissue(sim, num_of_bins = 500)
+```
+
+Sample again and plot the tissue
+```{r,  fig.height=4, fig.width=3}
+
+sim$sample_cells("A2", 
+                 bottom_left = c(480, 480), 
+                 top_right = c(480 + bbox_width, 480 + bbox_width))
+
+sim$sample_cells("B2", 
+                 bottom_left = c(500, 500), 
+                 top_right = c(500 + bbox_width, 500 + bbox_width))
+
+plot_tissue(sim, num_of_bins = 500)
+```
+
+Now we show the cell division tree, which starts being rather complicated
+
+```{r,  fig.height=12, fig.width=17}
+plot_sampled_cells(sim)
+```

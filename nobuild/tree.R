@@ -113,3 +113,43 @@ ggraph(layout, "tree") +
 
 
 
+library(rRACES)
+library(dplyr)
+sim <- new(Simulation, "Monoclonal")
+
+sim$add_genotype(name = "A",
+                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                 growth_rates = c("+" = 0.2, "-" = 0.08),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$place_cell("A+", 500, 500)
+sim$run_up_to_size("A+", 10000)
+
+plot_tissue(sim, num_of_bins = 500)
+
+# a 5x5 box gives 25 cells
+bbox_width = 10
+
+sim$sample_cells("A1", bottom_left = c(480, 480), top_right = c(480 + bbox_width, 480 + bbox_width))
+sim$sample_cells("B1", bottom_left = c(500, 500), top_right = c(500 + bbox_width, 500 + bbox_width))
+
+sim$run_up_to_size("A-", 20000)
+sim$run_up_to_time(sim$get_clock() + 15)
+
+cell <- sim$choose_cell_in("A")
+sim$add_genotype(name = "B",
+                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
+                 growth_rates = c("+" = 0.3, "-" = 0.3),
+                 death_rates = c("+" = 0.05, "-" = 0.1))
+
+sim$mutate_progeny(cell, "B")
+
+sim$sample_cells("A2", bottom_left = c(480, 480), top_right = c(480 + bbox_width, 480 + bbox_width))
+sim$sample_cells("B2", bottom_left = c(500, 500), top_right = c(500 + bbox_width, 500 + bbox_width))
+
+
+
+sim$get
+
+
+
