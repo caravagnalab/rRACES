@@ -1,5 +1,5 @@
 ---
-title: "Tissue Simulation"
+title: "Tissue simulation"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Tissue Simulation}
@@ -114,7 +114,7 @@ For example, if we define two genotypes `A` and `B` with their epistates
 Hybrid models can be obtained, e.g., a genotype `A` (with no epistates),
 together with `B+` and `B-`.
 
-### **Evolutionary parameters** 
+### **Evolutionary parameters**
 
 We use a notation common in linear birth-death processes. If a species
 `A` has no epistates then its stochastic behaviour is defined by the

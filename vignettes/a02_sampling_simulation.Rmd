@@ -20,34 +20,36 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(rRACES)
 library(dplyr)
+library(ggplot2)
 ```
 
- 
-This document demonstrates how extract samples from simulated tissues and 
-build the forests of the sampled cell ancestors.
-(please, refer to [this](https://caravagnalab.github.io/rRACES/articles/a01_tissue_simulation.html)
-document for tissue simulation examples). 
-Two types of simulations are considered: one with a single population, and another with two. 
+Once one has familiarised on how a tumour evolution simulation can be
+programmed using rRACES, the next step is to augment the simulation with
+sampling of tumour cells. This mimics a realistic experimental design
+where we gather tumour sequencing data.
 
-The presented samplings are of the most general type and include:
+This vignette introduces sampling using different type of models;
+starting from simpler up to more complex simulation scenarios we
+consider:
 
-- *multi-region*: at every time point multiple spatially-separated samples are collected;
-- *longitudinal*: the sampling is repeated at multiple time-points.
+-   *multi-region sampling*: where at every time point multiple
+    spatially-separated samples are collected;
 
-## Example with one population
+-   *longitudinal sampling*: where the sampling is repeated at multiple
+    time-points.
 
-### Tissue simulation
+## Custom multi-region sampling
 
-First of all, let us build and simulate a simple monoclonal model.
+We consider a simple monoclonal model, without epigenotypes.
 
 ```{r, eval=TRUE}
-# Monoclonal model, no epigenetic rates
+# Monoclonal model, no epigenotypes 
 sim <- new(Simulation, "Monoclonal")
 
 sim$add_genotype(name = "A", growth_rates = 0.1, death_rates = 0.01)
 
 sim$place_cell("A", 500, 500)
-sim$run_up_to_size("A", 200000)
+sim$run_up_to_size("A", 60000)
 ```
 
 ```{r,  fig.height=4, fig.width=3}
@@ -55,154 +57,103 @@ current <- plot_tissue(sim)
 current
 ```
 
-### First sampling
+A sample is defined by a name and a bounding box, which has a $(x,y)$
+coordinate for the bottom left point, and for the top right point.
 
-A sample is defined by a name and a bounding box, which has these parameters:
-
-- a $(x,y)$ coordinate for the bottom left point;
-- a $(x,y)$ coordinate for the top right point.
-
-For this simulation, we define two samples with names `"A1"` and `"B1"`. 
-
-```{r}
-# We collect a box of 100 cells (10 x 10)
-bbox_width = 9
-
-sim$sample_cells("A1", 
-                 bottom_left = 
-                   c(400, 400),
-                 top_right = 
-                   c(400 + bbox_width, 400 + bbox_width)
-                 )
-
-sim$sample_cells("B1", 
-                 bottom_left = 
-                   c(500, 500),
-                 top_right = 
-                   c(500 + bbox_width, 500 + bbox_width)
-                 )
-```
-
-Let us visualise the two boxes.
+For this simulation, we define two samples with names `"S_1_2"` and
+`"S_1_2"`.
 
 ```{r,  fig.height=4, fig.width=3}
-library(ggplot2)
+# We collect a squared box of (bbox_width x bbox_width) cells
+bbox_width = 50
 
-# Add the contours of the bounding boxes
+# Box A1
+bbox1_p = c(400, 400)
+bbox1_q = bbox1_p + bbox_width
+
+# Box B1
+bbox2_p = c(500, 500)
+bbox2_q = bbox2_p + bbox_width
+
+# View the boxes
 current +
   geom_rect(
-    xmin = 400, 
-    xmax = 400 + bbox_width,
-    ymin = 400, 
-    ymax = 400 + bbox_width,
+    xmin = bbox1_p[1], 
+    xmax = bbox1_q[2],
+    ymin = bbox1_p[1], 
+    ymax = bbox1_q[2],
     fill = NA, 
     color = "black"
     ) + 
   geom_rect(
-    xmin = 500, 
-    xmax = 500 + bbox_width,
-    ymin = 500, 
-    ymax = 500 + bbox_width,
+    xmin = bbox2_p[1], 
+    xmax = bbox2_q[2],
+    ymin = bbox2_p[1], 
+    ymax = bbox2_q[2],
     fill = NA, 
     color = "black"
     ) 
+
+# Sampling
+sim$sample_cells("S_1_1", bottom_left = bbox1_p, top_right = bbox1_q)
+sim$sample_cells("S_1_2", bottom_left = bbox2_p, top_right = bbox2_q)
 ```
 
-> Sampling removes cells from the tissue, as if the tissue was surgically resected.
+> *Note:* Sampling removes cells from the tissue, as if the tissue was
+> surgically resected. Therefore, cells that are mapped to the bounding
+> box after application of `sample_cells` are no longer part of the
+> simulation.
 
-The method `sample_cells` removes the cells from the simulation and, because of this 
-reason, a new call to `plot_tissue` will show the box where the cells have been 
+A new call to `plot_tissue` will show the box where the cells have been
 removed to be white.
 
 ```{r,  fig.height=4, fig.width=3, message=FALSE, warning=FALSE}
 plot_tissue(sim)
 ```
 
-This is also reflected by `get_cells`, which now will not find any tumour cell in 
-the sampled region.
+This is also reflected by `get_cells`, which now will not find any
+tumour cell in the sampled region.
+
 ```{r}
 # This should be empty
 sim$get_cells(c(400, 400), c(400 + bbox_width, 400 + bbox_width)) %>% head
 ```
 
-### Tissue simulation
+### Cell division tree for sampled cells
 
-Let us move forward the simulation again.
-
-```{r,  fig.height=4, fig.width=3}
-# Move to 400K cells
-sim$run_up_to_size("A", 400000)
-
-current <- plot_tissue(sim)
-current
-```
-
-### Second sampling
-
-We sample twice (`"A2"` and `"B2"`) on the same locations as 
-before. Those two regions, which were emptied by our previous sampling,
-may now contain again some tumour cells as an effect of the last  
-simulation evolution.
+Every sampled cell is linked, at the evolutionary level,
+to the other cells that originate from
+the same initial cell. It helps to visualise the evolutionary information on the cells that we have sampled as a forest of trees (if one seeded
+multiple initial cells). The forest is an object of the S4 class
+`SamplesForest`.
 
 ```{r}
-# Bounding boxes as before
-sim$sample_cells("A2", 
-                 bottom_left = 
-                   c(400, 400),
-                 top_right = 
-                   c(400 + bbox_width, 400 + bbox_width)
-                 )
-
-sim$sample_cells("B2", 
-                 bottom_left = 
-                   c(500, 500),
-                 top_right = 
-                   c(500 + bbox_width, 500 + bbox_width)
-                 )
-```
-
-The method `get_samples_info()` provides an overview of the collected samples 
-during the simulation up to this point.
-
-```{r}
-sim$get_samples_info()
-```
-
-### Cell division tree for samples cells
-
-We can now build the forest of cell divisions for all the cells 
-that we have sampled (at every time point).
-
-> The internal nodes of the built forest represent cells that were simulated and died before sampling.
-
-```{r}
-# The forest is an object of the S4 class `SamplesForest`
 forest <- sim$get_samples_forest()
+
+forest
 ```
 
-We can get the nodes in the forest by using the forest method `get_nodes()`.
+The forest has methods to obtain the nodes of the sampled cells.
 
 ```{r}
 forest$get_nodes() %>% head
 ```
 
-The leaves of the forest embody the cells sampled during the
-simulation, while the internal nodes represent ancestors of 
-the sampled cells.
-
-Hence, the field `sample` is not available for internal nodes, 
-while it reports the name of the sample in which the 
-corresponding cell was sampled for any leaf. 
+The leaves of the forest are  sampled cells, while the internal nodes are their ancestors. The field `sample` is not available for internal nodes, and reports the sample name otherwise.
 
 ```{r}
-# get some of the leaves in the forest. They represent sampled cells
-forest$get_nodes() %>% filter(!is.na(.data$sample)) %>% head
+# The leaves in the forest represent sampled cells
+forest$get_nodes() %>% 
+  filter(!is.na(.data$sample)) %>% 
+  head
 ```
 
 The roots of the forest having no ancestors.
 
 ```{r}
-forest$get_nodes() %>% filter(is.na(.data$ancestor))
+# If it is one cell, than the forest is a tree
+forest$get_nodes() %>% 
+  filter(is.na(.data$ancestor))
 ```
 
 We can also query the forest about the samples used to build it.
@@ -211,19 +162,138 @@ We can also query the forest about the samples used to build it.
 forest$get_samples_info()
 ```
 
-We can visualise the tree of the cells
+We can visualise the tree of cells. This plot reports the cells and, on the y-axis, their time of birth. 
+```{r,  fig.height=6, fig.width=11}
+nodes = forest$get_nodes()
 
-```{r,  fig.height=6, fig.width=9}
-plot_sampled_cells(forest$get_nodes())
+plot_sampled_cells(nodes)
 ```
+The plot shows also samples annotations and species but, for a large number of cells, it might be complicated to view the full tree, unless a very large canvas is used. For this reaason, it is possible to subset the tree.
+
+```{r,  fig.height=6, fig.width=11}
+# Extract the subforest linked to sample 
+nodes_S_1_1 = forest$get_subforest_for("S_1_1")
+
+plot_sampled_cells(nodes_S_1_1$get_nodes())
+```
+
+In general, these plots can be annotated with extra information, such as the sampling times, and the MRCAs of each sample in the tree.
+
+```{r,  fig.height=6, fig.width=11}
+# Full plot
+plot_sampled_cells(nodes) %>% 
+  annotate_forest(forest)
+
+# S_1_1 plot
+plot_sampled_cells(nodes_S_1_1$get_nodes()) %>% 
+    annotate_forest(nodes_S_1_1)
+```
+
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 unlink(sim$get_name(), recursive = TRUE)
 ```
 
+
+## Randomised multi-region samples
+
+
+```{r}
+# Monoclonal model, no epigenotypes 
+sim <- new(Simulation, "Monoclonal")
+
+sim$add_genotype(name = "A", growth_rates = 0.1, death_rates = 0.01)
+
+sim$place_cell("A", 500, 500)
+sim$run_up_to_size("A", 60000)
+```
+
+We include a new clone and let it grow. This new clone has much higher
+growth rates than its ancestor.
+
+```{r,  fig.height=4, fig.width=3}
+# Add a new clone
+sim$add_genotype(name = "B", growth_rates = 1, death_rates = 0.01)
+sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+
+sim$run_up_to_size("B", 10000)
+
+current <- plot_tissue(sim)
+current
+```
+
+Since clone start has been randomised by `choose_cell_in`, we have no exact idea of where to sample to obtain for example, $100$ of its cells. We can look visually at the simulation, but this is slow.
+
+rRACES provides a `bbox_sampler` function to sample bounding boxes that
+contain a desired number of cells. The function takes in input:
+
+- a bounding box size;
+- the number $n$ of cells to sample for a species of interest.
+
+`bbox_sampler` will attempt a fixed number of times to sample the box,  starting from positions occupied by the species of interest. If  a box that contains at least $n$ cells is not found within a number of attempts, then the one with the largest number of samples is returned. 
+
+This allows to program sampling without having a clear idea of the tissue conformation.
+
+```{r,  fig.height=4, fig.width=3}
+# A bounding box 50x50 with at least 100 cells of species B
+ncells = 100
+n_w = n_h = 50
+
+# Sampling ncells with random box sampling of boxes of size n_w x n_h
+bbox = bbox_sampler(sim, "B", ncells, n_w, n_h)
+
+current +
+  geom_rect(
+    xmin = bbox$p[1], 
+    xmax = bbox$q[1],
+    ymin = bbox$p[2], 
+    ymax = bbox$q[2],
+    fill = NA, 
+    color = "black"
+    ) 
+
+sim$sample_cells("S_2_1", bbox$p, bbox$q)
+```
+
+Something similar with species `A`.
+
+```{r,  fig.height=4, fig.width=3}
+bbox = bbox_sampler(sim, "A", ncells, n_w, n_h)
+
+current +
+  geom_rect(
+    xmin = bbox$p[1], 
+    xmax = bbox$q[1],
+    ymin = bbox$p[2], 
+    ymax = bbox$q[2],
+    fill = NA, 
+    color = "black"
+    ) 
+
+sim$sample_cells("S_2_2", bbox$p, bbox$q)
+```
+
+The two samples have been extracted.
+
+```{r,  fig.height=4, fig.width=3}
+plot_tissue(sim)
+```
+
+Cell division tree.
+
+```{r,  fig.height=6, fig.width=11}
+forest <- sim$get_samples_forest()
+nodes <- forest$get_nodes()
+
+plot_sampled_cells(nodes) %>% 
+  annotate_forest(forest)
+```
+
+
 ## Example with two populations
 
-We can now simulate a rather more complex model, with epigenetic switches and subclonal expansions
+We can now simulate a rather more complex model, with epigenetic
+switches and subclonal expansions
 
 ```{r,  fig.height=4, fig.width=3}
 sim <- new(Simulation, "TwoClones")
@@ -261,6 +331,7 @@ plot_tissue(sim, num_of_bins = 500)
 ```
 
 Add a new subclone.
+
 ```{r,  fig.height=4, fig.width=3}
 cell <- sim$choose_cell_in("A")
 
@@ -278,6 +349,7 @@ plot_tissue(sim, num_of_bins = 500)
 ```
 
 Sample again and plot the tissue
+
 ```{r,  fig.height=4, fig.width=3}
 
 sim$sample_cells("A2", 
@@ -292,7 +364,8 @@ plot_tissue(sim, num_of_bins = 500)
 plot_muller(sim)
 ```
 
-Now we show the cell division tree, which starts being rather complicated
+Now we show the cell division tree, which starts being rather
+complicated
 
 ```{r,  fig.height=12, fig.width=17}
 # Forest object
@@ -303,9 +376,10 @@ plot_sampled_cells(forest$get_nodes())
 
 ## More complex example
 
-Some functionalities allow for a smarter sampling and more advanced visualisation.
+Some functionalities allow for a smarter sampling and more advanced
+visualisation.
 
-We build a tumour with three populations, branching. 
+We build a tumour with three populations, branching.
 
 ```{r}
 set.seed(1234)
@@ -320,7 +394,9 @@ sim$run_up_to_size("A", 300)
 plot_tissue(sim)
 ```
 
-We use an automatic function `bbox_sampler` to determine bounding boxes so to collect a dedired number of cells of interest.
+We use an automatic function `bbox_sampler` to determine bounding boxes
+so to collect a dedired number of cells of interest.
+
 ```{r,  fig.height=4, fig.width=3}
 ncells = 20
 n_w = n_h = 7
@@ -349,6 +425,7 @@ plot_muller(sim)
 ```
 
 Random sampling of cells from both clone `A` and `B`.
+
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
 bbox = bbox_sampler(sim, "A", ncells, n_w, n_h)
@@ -359,7 +436,9 @@ sim$sample_cells("B2", bbox$p, bbox$q)
 
 plot_tissue(sim)
 ```
+
 Finally, a third clone branching from `A`.
+
 ```{r,  fig.height=4, fig.width=3}
 # New subclone
 sim$add_genotype(name = "C", growth_rates = 0.24, death_rates = 0.01)
@@ -369,7 +448,9 @@ sim$run_up_to_size("C", 500)
 plot_tissue(sim)
 plot_muller(sim)
 ```
+
 With sampling of clones `B` and `C`.
+
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
 bbox = bbox_sampler(sim, "B", ncells, n_w, n_h)
@@ -382,7 +463,9 @@ plot_tissue(sim, num_of_bins = 100)
 plot_muller(sim)
 ```
 
-Finally, the tree plot where we annotate samples and MRCAs of each sample.
+Finally, the tree plot where we annotate samples and MRCAs of each
+sample.
+
 ```{r,  fig.height=12, fig.width=17}
 # Tree data
 forest = sim$get_samples_forest()
@@ -392,5 +475,5 @@ plot_sampled_cells(forest_nodes = forest_nodes) %>%
   annotate_forest(forest)
 ```
 
-The horizontal line denotes sampling times, and circles the MRCAs of interest.
-
+The horizontal line denotes sampling times, and circles the MRCAs of
+interest.

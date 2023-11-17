@@ -57,7 +57,7 @@ plot_sampled_cells = function(forest_nodes)
   
   layout$y = layout$reversed_btime
 
-  species_colors = rRACES:::get_species_colors(sim)
+  species_colors = get_species_colors(sim)
   
   ncells = graph %>%
     tidygraph::activate(nodes) %>% 
@@ -144,6 +144,7 @@ plot_sampled_cells = function(forest_nodes)
 #' annotate_forest(tree_plot, forest)
 annotate_forest = function(tree_plot, forest, samples = TRUE, MRCAs = TRUE)
 {
+  forest_nodes = forest$get_nodes()
   # Sampling times
   if(samples)
   {
