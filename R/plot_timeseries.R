@@ -25,7 +25,7 @@ plot_timeseries <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
 
   counts <- simulation$get_count_history() %>%
-    mutate(species = paste0(.data$genotype, .data$epistate))
+    dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
 
   ncells <- simulation$get_counts() %>% dplyr::pull(counts) %>% sum()

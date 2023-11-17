@@ -24,18 +24,24 @@ plot_sampled_cells = function(forest_nodes)
   forest_data = forest_nodes %>% 
     dplyr::as_tibble() %>% 
     dplyr::rename(
-      from = ancestor,
-      to = cell_id
+      from = .data$ancestor,
+      to = .data$cell_id
     ) %>% 
-    dplyr::select(from, to, genotype, epistate, sample, birth_time) %>% 
+    dplyr::select(
+      .data$from, 
+      .data$to, 
+      .data$genotype, 
+      .data$epistate, 
+      .data$sample, 
+      .data$birth_time) %>% 
     dplyr::mutate(
-      from = ifelse(is.na(from), "WT", from),
-      species = paste0(genotype, epistate),
-      sample = ifelse(is.na(sample), "N/A", sample)
+      from = ifelse(is.na(.data$from), "WT", .data$from),
+      species = paste0(.data$genotype, .data$epistate),
+      sample = ifelse(is.na(.data$sample), "N/A", .data$sample)
     )
   
   edges = forest_data %>% 
-    dplyr::select(from, to)
+    dplyr::select(.data$from, .data$to)
   
   # Create a tidygraph object
   graph <- tidygraph::as_tbl_graph(edges, directed = TRUE)
@@ -44,8 +50,8 @@ plot_sampled_cells = function(forest_nodes)
     tidygraph::activate(nodes) %>% 
     dplyr::left_join(
       forest_data %>% 
-        dplyr::rename(name = to) %>% 
-        dplyr::mutate(name = as.character(name)),
+        dplyr::rename(name = .data$to) %>% 
+        dplyr::mutate(name = as.character(.data$name)),
       by = 'name'
     )
   
@@ -61,30 +67,30 @@ plot_sampled_cells = function(forest_nodes)
   
   ncells = graph %>%
     tidygraph::activate(nodes) %>% 
-    dplyr::pull(name) %>% 
-    length
+    dplyr::pull(.data$name) %>% 
+    length()
   
   ncells_sampled = graph %>%
     tidygraph::activate(nodes) %>% 
     dplyr::filter(sample != "N/A") %>% 
-    dplyr::pull(name) %>% 
-    length
+    dplyr::pull(.data$name) %>% 
+    length()
   
   nsamples = forest$get_samples_info() %>% nrow()
   
   labels_every = max_Y/10
   
   point_size = c(.5, rep(1, nsamples))
-  names(point_size) = c("N/A", forest$get_samples_info() %>% pull(name))
+  names(point_size) = c("N/A", forest$get_samples_info() %>% pull(.data$name))
   
   # Plot the graph with color-coded nodes
   ggraph::ggraph(layout, "tree") +
     ggraph::geom_edge_link(edge_width = .1) +
     ggraph::geom_node_point(
       ggplot2::aes(
-        color = species, 
-        shape = ifelse(is.na(sample), "N/A", sample),
-        size = sample
+        color = .data$species, 
+        shape = ifelse(is.na(.data$sample), "N/A", .data$sample),
+        size = .data$sample
       )) +
     ggplot2::scale_color_manual(values = species_colors) +
     # scale_shape_manual(values = c("+" = 16, "-" = 17)) +
@@ -145,6 +151,7 @@ plot_sampled_cells = function(forest_nodes)
 annotate_forest = function(tree_plot, forest, samples = TRUE, MRCAs = TRUE)
 {
   forest_nodes = forest$get_nodes()
+  
   # Sampling times
   if(samples)
   {
@@ -171,38 +178,38 @@ annotate_forest = function(tree_plot, forest, samples = TRUE, MRCAs = TRUE)
       function(s){
         forest$get_coalescent_cells(
           forest_nodes %>% 
-            dplyr::filter(sample %in% s) %>% 
-            dplyr::pull(cell_id)
+            dplyr::filter(.data$sample %in% s) %>% 
+            dplyr::pull(.data$cell_id)
         ) %>% 
           dplyr::mutate(sample = s)
       }) %>% 
       Reduce(f = dplyr::bind_rows) %>% 
-      dplyr::group_by(cell_id) %>% 
+      dplyr::group_by(.data$cell_id) %>% 
       dplyr::mutate(
-        cell_id = paste(cell_id)
+        cell_id = paste(.data$cell_id)
       ) %>% 
       dplyr::summarise(
-        label = paste0("    ", sample, collapse = '\n')
+        label = paste0("    ", .data$sample, collapse = '\n')
       )
     
     layout = tree_plot$data %>% 
-      dplyr::select(x, y, name) %>% 
-      dplyr::mutate(cell_id = paste(name)) %>%  
-      dplyr::filter(name %in% MRCAs_cells$cell_id) %>% 
+      dplyr::select(.data$x, .data$y, .data$name) %>% 
+      dplyr::mutate(cell_id = paste(.data$name)) %>%  
+      dplyr::filter(.data$name %in% MRCAs_cells$cell_id) %>% 
       dplyr::left_join(MRCAs_cells, by = 'cell_id')
     
     tree_plot = 
       tree_plot +
       ggplot2::geom_point(
         data = layout,
-        ggplot2::aes(x = x, y = y),
+        ggplot2::aes(x = .data$x, y = .data$y),
         color = 'purple3',
         size = 3,
         pch = 21
       ) +
       ggplot2::geom_text(
         data = layout,
-        ggplot2::aes(x = x, y = y, label = label),
+        ggplot2::aes(x = .data$x, y = .data$y, label = .data$label),
         color = 'purple3',
         size = 3,
         hjust = 0,

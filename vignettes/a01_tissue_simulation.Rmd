@@ -2,7 +2,7 @@
 title: "Tissue simulation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Tissue Simulation}
+  %\VignetteIndexEntry{Tissue simulation}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
