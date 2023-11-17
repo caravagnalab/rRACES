@@ -20,7 +20,7 @@
 #' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
-#' bbox = bbox_sampler(sim, "A", ncells = 15, n_w = 5, n_h = 5)
+#' bbox = bbox_sampler(sim, "A", n = 15, n_w = 5, n_h = 5)
 #' sim$sample_cells("A", bbox$p, bbox$q)
 #' plot_tissue(sim)
 bbox_sampler = function(simulation, which, n, n_w, n_h, nattempts = 100)
