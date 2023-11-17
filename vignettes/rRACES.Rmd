@@ -14,13 +14,22 @@ knitr::opts_chunk$set(
 )
 ```
 
-rRACES wraps the [RACES](https://github.com/albertocasagrande/RACES) simulation and data-generation engine by using the 
-[R/C++ Rcpp interface](https://www.rcpp.org/)
+rRACES wraps the [RACES](https://github.com/albertocasagrande/RACES) simulation and data-generation engine by using the [R/C++ Rcpp interface](https://www.rcpp.org/). In practice, rRACES allows to "program" stochastic tumour evolution.
 
-It can:
+The engine has a number of features, the most relevant are:
 
-- simulate a spatio-temporal stochastic process of tumour evolution;
-- define a tumour sampling strategy;
-- generating realistic sequencing data based on sampling and simulation.
+1.  cells are associated with *species*, proliferate in a stochastic fashion on a spatial 2D lattice;
+2.  every species is defined by *(i)* a _custom genotype_ and *(ii)* a _binary epistate_. Following a no-back mutations model, at every cell division the genotype heritable, while the epigenotype is instead reversible;
+3.  the evolutionary parameters of each species can change over time, mimicking treatment-related evolutionary pressures;
+4.  at the molecular level, the genome of tumour cells are moulded by realistic mutational processes, both at the level of simple mutations and more complex copy number alterations;
+5.  arbitrary tissue sampling schema can be simulated, including multi-region and longitudinal datasets with any number of samples and time-points;
+6.  realistic read-counts based bulk sequencing data can be generated, both at the level of whole-genome, whole-exome and targeted panels;
+7.  full access to the evolutionary process and its phylogeny information (cell coalescence) is available.
 
-In the articles section of this website we present all the functionalities of this tool.
+The best way to learn to use rRACES is to go thorough three  vignettes that define the standard workflow:
+
+-   [*tissue simulation:*](a01_tissue_simulation.html) simulate the spatio-temporal stochastic process of tumour evolution to define a tissue;
+-   [*sampling specification:*](a02_sampling_simulation.html) determine the sampling strategy for the simulated tissue;
+-   *molecular data genereation*: generating realistic sequencing data based on sampling and simulation.
+
+

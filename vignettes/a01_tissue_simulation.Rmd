@@ -21,38 +21,34 @@ knitr::opts_chunk$set(
 library(rRACES)
 ```
 
-To simulate a tissue the following steps are required:
+**Synopsis.** To simulate a tissue the following steps are required:
 
--   creation of an object of the S4 class `Simulation`, which describes
-    a tissue;
--   introduction of cells in the tissue;
--   actual simulation.
+1.  creation of a tissue;
 
-The simulation can be programmed thanks to the possibility of advancing
-the simulation clock in various ways, and adding new cell types as far
-as the simulation progresses. Moreover, the state of the simulation and
-tissue can be visualised.
+2.  introduction of cells in the tissue;
 
-This vignette shows how to simulate a tissue, the operation required
-before defininig samples and generating tumour molecular data (described
-in next vignettes).
+3.  actual simulation.
+
+The simulation is managed by an object of the S4 class `Simulation`,
+wich allows to program the tissue evolution over time, adding new cells
+as far as the simulation progresses. The state of the simulation and
+tissue can be visualised using `ggplot`-powered plots.
 
 ## Tissue specification
 
-In order to perform a simulation, a new object of class `Simulation`
-must be created.
-
+To perform a simulation a new object of class `Simulation` must be
+created.
 
 ```{r, eval=FALSE}
 # Default constructor
 sim <- new(Simulation)
 ```
 
-This step automatically builds a 1000x1000-cells tissue - which can host
-$10^6$ cells - and sets the name of the simulation to be
+This automatically builds a 1000x1000-cells tissue - which can host $1$
+milion cells - and sets the name of the simulation to be
 `races_<date>_<hour>`. The binary dump of the simulation will be saved
-in a directory having the same name of the simulation. A custom name can
-be provided by using a further parameter during the simulation creation.
+in a directory with the same name of the simulation; a custom name can
+be specified.
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 unlink("Test", recursive = TRUE)
@@ -63,21 +59,15 @@ unlink("Test", recursive = TRUE)
 sim <- new(Simulation, "Test")
 ```
 
-Class `Simulation` exports a `print` method that can be used to get
-information on the current object
+Class `Simulation` exports a `show` method to get information on the
+current object.
 
 ```{r, eval}
 sim
 ```
 
-The `print` method informs of:
-
--   the simulation name;
--   the tissue size and the current simulation clock;
--   a table of cell types (species) simulated, which is empty initially.
-
-The `sim` object exposes methods to get information about the simulation
-and control it.
+The `sim` object exposes also methods to get information about the
+simulation and control it.
 
 ```{r}
 # Get the simulation directory, i.e., "Test"
@@ -87,9 +77,8 @@ sim$get_name()
 sim$get_tissue_size()
 ```
 
-### Custom tissue
-
-We can change the tissue size and label it with a name.
+**Custom tissue.** We can change the tissue size and label it with a
+name that might appear in some plots.
 
 ```{r}
 # Set the tissue name and size to different values
@@ -102,57 +91,67 @@ sim$get_tissue_name()
 sim$get_tissue_size()
 ```
 
-## Species evolution
+## Species specification
 
 In order to simulate the evolution of some species we need to add them
 to `sim`. This process defines the evolutionary parameters of the
 species.
 
-### Genotypes and epistates
+A species is a *clone* with a compulsory genotype (e.g., a driver
+mutation), and an optional epigenome. At this point in the simulation
+the genotype is just a name (`A`, `B`, ..) that at later stage could be
+linked to mutations of interest. The epigenome is a binary feature of a
+species that is represented by epistates `+`/`-` (positive and negative
+status). This is an abstraction, and could represent an active/inactive
+state linked to a promoter methylation or, more broadly, a phenotype.
+The evolution of genotypes is non-reversible (no-back mutations model),
+while the evolution among epistates is potentially reversible.
 
-A species in RACES is a combination of a genotype and an epigenotype.
-The genotype - at this point in the simulation - is just a name (`A`,
-`B` etc); at later stage, this could be linked to specific mutations of
-interest. The epigenotype is a simple binary approximation for two
-epistates `+`/`-`, representing a positive or negative status. This is
-an abstraction, and could represent an active/inactive state linked to a
-promoter methylation, for instance, or a phenotype. The main important
-thing is that while the evolution across genotypes is non-reversible,
-the evolution among epistates is potentially reversible.
+For example, if we define two genotypes `A` and `B` with their epistates
+`+`/`-`, we have 4 distinct species: `A+` and `A-`, as well as `B+` and
+`B-`.
 
-For example, we may define two genotypes `A` and `B` with their
-epistates `+`/`-`, obtaining 4 distinct species :
+Hybrid models can be obtained, e.g., a genotype `A` (with no epistates),
+together with `B+` and `B-`.
 
--   `A+` and `A-`, as a proxy for the genotype `A` with the reversible
-    `+`/`-` marker;
--   `B+` and `B-`, as a proxy for the genotype `B` with the reversible
-    `+`/`-` marker;
+### **Evolutionary parameters** 
 
-For each species and epistate, we need to define:
+We use a notation common in linear birth-death processes. If a species
+`A` has no epistates then its stochastic behaviour is defined by the
+state-change rates
 
--   growth rate $\lambda$: the rate at which cells duplicate inheriting
-    the epigenetic marker;
--   death rate $\delta$: the rate at which cells die;
--   epigenetic rate $\epsilon$: the rate `+-` or `-+` at which cells of
-    a certain epistate duplicate and flip the epigenetic marker of one
-    of the progeny.
+$$
+\begin{align}
+\text{(growth)}\quad A & \rightarrow_{\lambda} 2 A \\
+\text{(death)}\quad A & \rightarrow_{\delta} \emptyset
+\end{align}
+$$
 
-As an example, considering genotype `A`:
+where:
 
--   growth events define:
-    -   when one cell of type `A+` creates two cells of type `A+`;
-    -   when one cell of type `A-` creates two cells of type `A-`;
--   death events define:
-    -   when one cell of type `A+` is removed from the simulation;
-    -   when one cell of type `A-` is removed from the simulation;
--   switch events define:
-    -   when one cell of type `A+` divides into one type `A+` and one of
-        type `A-`;
-    -   when one cell of type `A-` divides into one type `A-` and one of
-        type `A+`.
+-   $\lambda>0$ is a growth rate for cells that duplicate;
+-   $\delta>0$ is a death rate for cells that duplicate.
 
-```{r}
-# we begin by adding one genotype, "A" 
+Instead, if the species has epistate `+` (denoted $A_\oplus$) and `-`
+(denoted $A_\ominus$), then its stochastic behaviour is defined by the
+state-change rates
+
+$$
+\begin{align}
+\text{(growth +)}\quad A_\oplus & \rightarrow_{\lambda_\oplus} 2 A_\oplus \\
+\text{(death +)}\quad A_\oplus & \rightarrow_{\delta_\oplus} \emptyset \\
+\text{(growth -)}\quad A_\ominus & \rightarrow_{\lambda_\ominus} 2 A_\ominus \\
+\text{(death -)}\quad A_\ominus & \rightarrow_{\delta_\ominus} \emptyset \\
+\text{(switch +-)}\quad A_\oplus & \rightarrow_{\epsilon_{+-}} A_\oplus + A_\ominus \\
+\text{(switch -+)}\quad A_\ominus & \rightarrow_{\epsilon_{-+}} A_\ominus + A_\oplus
+\end{align}
+$$
+
+where the rates $\lambda$ and $\delta$ are as above, and $\epsilon_{+-}$
+or $\epsilon_{-+}$ are the ratesat which cells of a certain epistate
+duplicate and flip the epigenetic marker of one of the progeny.
+
+```{r, eval=TRUE}
 sim$add_genotype(name = "A",
                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -165,76 +164,82 @@ sim
 sim$get_species()
 ```
 
-#### Initial cell positioning
+A genotype without epistates could be added as
+
+```{r, eval=FALSE}
+# Not run
+sim$add_genotype(name = "A", growth_rates = 0.2, death_rates =  0.1)
+```
 
 To be able to simulate the model, an initial cell needs to be displaced
-in the tissue. We add one cell of species `A+` (genotype `A` in epistate
-`+`) in position `(500, 500)`.
+in the tissue.
 
 ```{r}
+# We add one cell of species A+ (genotype A in epistate +) in position (500, 500).
 sim$place_cell("A+", 500, 500)
 ```
 
-#### Visualisation of cell counts
+### Visualisations
 
-We can query the current state of the simulation, and extract the cell
-position using two getters
+We can query the current state of the simulation, and extract the
+position of each cell in the tissue
 
 ```{r}
 # Counts per species
 sim$get_counts()
 
-# Cells position
+# Cells position (one so far)
 sim$get_cells()
 ```
 
-These information can be plot, either as piechar for counts, or as a
-spatial distribution for the whole tissue
+These information can be plot. Note that the tissue visualisation uses
+hexagonal bins to avoid rastering delays when the simulation uses
+thousands of cells.
 
 ```{r,  fig.height=4, fig.width=3}
+# Piechar for counts
 plot_state(sim) 
+
+# Spatial distribution for the whole tissue (hexagonal bins)
 plot_tissue(sim)
 ```
 
-> Note: since the plots are done with `ggplot` they can be assembled and
-> customised.
+> **Note:** since the plots are done with `ggplot` they can be assembled
+> and customised.
 
-### Species evolution
+## Species evolution
 
 There are 3 ways to let the simulation evolve:
 
 -   advancing until the number of cells in a species reaches a given
-    threshold;
--   advancing until a new time `t` is reached;
+    threshold $\theta > 0$;
+-   advancing until a new time $t>0$ is reached;
 -   advancing until a desired number of firings (of one particular
     event) has occurred.
 
-#### Size-based forward simulation
+### Size-based simulation
 
-We can run the simulation up to when we have 500 cells of species `A+`
+We can run the simulation up to when we have $\theta > 0$; cells of
+species `A+`
 
-```{r}
+```{r,  fig.height=4, fig.width=3}
 # Counts per species is now 0
 sim$get_counts()
 
 sim$run_up_to_size("A+", 500)
-```
 
-Counts per species now reports 500 for `A+`.
-
-```{r}
+# Counts per species now reports 500 for A+
 sim$get_counts()
-```
 
-```{r,  fig.height=4, fig.width=3}
 plot_tissue(sim)
 ```
 
-#### Firing-based forward simulation
+### Firing-based simulation
 
-The number of times each event has fired is accessible as a dataframe
+The number of times each event has fired is accessible
 
 ```{r}
+# Get the number of fired event per species
 sim$get_firings()
 ```
 
@@ -244,20 +249,19 @@ point, so we can simulate the system until there are 100 of them.
 ```{r}
 sim$run_up_to_event("death", "A-", 100)
 
-# Get the number of fired event per species. The row "death", "A",
-# "-" now reports 100.
+# The row "death", for "A" "-" now reports 100
 sim$get_firings()
 ```
 
 ```{r,  fig.height=4, fig.width=3}
-# Depict the tissue by using 200 bins
+# Plot the tissue by using 200 bins
 plot_tissue(sim, num_of_bins = 200)
 ```
 
-#### Clock-based forward simulation
+### Clock-based simulation
 
-It is also possible to take the current simulation clock, and simulate
-an extra number
+It is also possible to take the current simulation clock as reference,
+and simulate further.
 
 ```{r}
 # Get the simulation clock
@@ -274,10 +278,11 @@ sim$get_clock()
 plot_tissue(sim)
 ```
 
-At this point, if we query the simulation configuration we will find
-more structured information (we use `dplyr` to filter the query
-results). For convenience, the getters accept parameters to subset the
-tissue.
+##### **Getting cells (advanced)**
+
+At this point, if we query the simulation we will find more cells (we
+use `dplyr` to process query results). For convenience, the getters
+accept parameters to subset the tissue.
 
 ```{r, message=FALSE}
 # load dplyr to use %>%
@@ -299,11 +304,13 @@ sim$get_cells(c("A", "B"), c("-")) %>% head()
 sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))  %>% head()
 ```
 
-Note that rRACES has method to select specific cells from the tissue.
-For example, we can randomly select one cell in the genotype `A`
+### Evolving new species
+
+rRACES can select cells from the tissue, randomly for every genotype, or
+in a constrained tissue area.
 
 ```{r}
-# Stochastic sampling from the whole tissue
+# Stochastic sampling from the whole tissue: it can return A+ or A-
 sim$choose_cell_in("A")
 
 # Calling it again may result in a different cell
@@ -313,29 +320,23 @@ sim$choose_cell_in("A")
 sim$choose_cell_in("A",  c(500, 350), c(550, 450))
 ```
 
-#### Evolving species by driver events
+This feature can be used to program the generation of new species,
+mimicking new clones that generate subclonal expansions.
 
-So far, the simulation contains a single genotype `A`. In general, we
-might want to consider the case of multiple *clones* with different
-genotypes.
-
-At any time-point in the simulation rRACES allows to insert a new
-genotype. To add a new genotype `B` -- and therefore new species `B+`
-and `B-` - as descending from `A,`we need to:
+Imagine we want to add a new genotype `B` with epistates -- and
+therefore new species `B+` and `B-` - as descending from `A,`we need to:
 
 -   locate one cell of genotype `A` in the tissue, which is where we
     will inject the new clone;
 
 -   add the specifics of genotype `B` (via `add_genotype`, as we did for
-    `A`)
+    `A`);
 
 -   implement the change of the cell of genotype `A` to a cell of
-    genotype `B`;
-
-We locate a random cell and add the genotype
+    genotype `B`.
 
 ```{r}
-# Sampled cell
+# We locate a random cell 
 cell <- sim$choose_cell_in("A")
 cell
 
@@ -349,20 +350,24 @@ sim$add_genotype(name = "B",
 Then we inject the cell, and simulate a little bit.
 
 ```{r}
+# Clone injection
 sim$mutate_progeny(cell, "B")
 
-# Generated event A -> B either in + or - species
+# Generated event A -> B either in + or - epistates is now recorded 
 sim$get_counts()
 
-# Simulation
+# New evolution
 sim$run_up_to_size("B+", 1000)
 ```
 
+At this point, we can inspect in more details the tissue. It can help to
+facet on the species to clearly appreciate the spatial diffusion of the
+populations.
+
 ```{r,  fig.height=4, fig.width=3}
 plot_state(sim)
-plot_tissue(sim)
+plot_tissue(sim, num_of_bins = 250)
 ```
-
 
 ```{r,  fig.height=6, fig.width=6}
 # Facet on species via ggplot
@@ -371,29 +376,21 @@ library(ggplot2)
 plot_tissue(sim) + facet_wrap(~species)
 ```
 
-If, at this point in the simulation, we would like to generate a new
-genotype `C` from one of the cells having genotype `A` in the rectangle
-$[450,500]\times [550, 600]$, we need to:
-
-1.  randomly select one cell among those of `A` laying in
-    $[450,500]\times [550, 600]$ by calling `choose_cell_in`
-
-2.  setup the new genotype `C`
-
-3.  call the `mutate_progeny` method
+If, at this point in the simulation, we generate a new genotype `C` from
+`A` in the rectangle $[450,500]\times [550, 600]$.
 
 ```{r}
-cell <- sim$choose_cell_in("A",  c(450, 550), c(500, 600))
-
+# Define evolutionary parameters
 sim$add_genotype(name = "C",
                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
                  growth_rates = c("+" = 0.2, "-" = 0.4),
                  death_rates = c("+" = 0.1, "-" = 0.01))
 
-sim$mutate_progeny(cell, "C")
-
-# Everything should be correct
-sim$get_cell(cell$position_x, cell$position_y)
+# Choose and mutate
+sim$mutate_progeny(
+  sim$choose_cell_in("A",  c(450, 550), c(500, 600)), 
+  "C"
+  )
 
 sim$run_up_to_time(sim$get_clock() + 10)
 ```
@@ -407,28 +404,47 @@ plot_tissue(sim)
 
 ##### Injection of cells over a tissue
 
-We can retrieve the simulation initial condition by calling the
-`Simulation` method `get_added_cells()`
+On the tissue, we can inject multiple cells manually; all injected cells
+can be retrieved.
 
 ```{r}
+# Now it will return just the initial cell
 sim$get_added_cells()
 ```
 
-This operation is generic because, technically, multiple cells could be
-manually added. Was that the case, this dataframe would report all of
-them.
+##### Avoiding drift
 
-##### Time series data
+Any species that has a non-zero death rate can become extinct
+stochastically by *drift*.
+
+Drift makes it difficult to simulate an be confident of what species are
+in the model. To facilitate the user, RACES can avoid drift by setting a
+*death activation level.* This value is the minimum number of cells that
+enables cell death in a species: a cell of species $S$ can die if and
+only if $S$ has reached the death activation level at least once during
+the simulation.
+
+This threshold holds for all the species and it is set to 1 by default.
+
+```{r}
+sim$death_activation_level
+
+# Change death activation level
+sim$death_activation_level <- 50
+```
+
+## Time series data
 
 It is convenient sometimes to plot a time series of a simulation,
 reporting species or firing counts over time. Since rRACES is
 programmable, it is immediate to make a for-loop algorithm and collect
 the simulation data over time.
 
+### Default history-based data
+
 However, this is not required because at the end of any `run_to_*`
-methods, RACES stores the data about the number of species cells and
-that of event firings. rRACES makes these data accessible via specific
-getters.
+methods, RACES stores the data about the number of species cells, and
+that of event firings. These data can be extracted.
 
 ```{r}
 # The firings
@@ -443,7 +459,6 @@ sim$get_firing_history() %>%
 sim$get_count_history() %>% head()
 ```
 
-
 The time-series can be plot using `plot_timeseries`
 
 ```{r,  fig.height=4, fig.width=4}
@@ -451,74 +466,138 @@ The time-series can be plot using `plot_timeseries`
 plot_timeseries(sim)
 ```
 
+### Custom time-series
 
-rRACES offers the possibility of performing a coarse-grained storing of
-this history, independently of the actual data stored after the
-evaluation of a `run_to_*` method. To do this, we can set the
-`Simulation` property `history_delta` (default $1$). By default,
-`history_delta` is set to $0$, but it can be set to any real value $d$
-so to dump the simulation statistics every $d$ time units.
+If the default time-series is not enough coarse-grained, one can set the
+`Simulation` property `history_delta` to increase the sampling rate of
+the state (by default, `history_delta` is set to $0$).
+
+We show this by re-simulating a tumour with two subclones.
 
 ```{r}
-# Example time-series on a new simulation
-sim_ts <- new(Simulation)
+# Cancel old data
+unlink(sim$get_name(), recursive = TRUE)
 
-# every time-point
-sim_ts$history_delta <- 1
+# Example time-series on a new simulation, with coarse-grained time-series
+sim <- new(Simulation)
 
-sim_ts$add_genotype(name = "A",
-                    growth_rates = 0.08,
-                    death_rates = 0.01)
+sim$history_delta <- 1
+sim$death_activation_level <- 100
 
-sim_ts$place_cell("A", 500, 500)
+# A
+sim$add_genotype(name = "A",
+                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                 growth_rates = c("+" = 0.2, "-" = 0.08),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
 
-sim_ts$run_up_to_size("A", 4000)
+sim$place_cell("A+", 500, 500)
+sim$run_up_to_size("A+", 400)
+
+# B (linear inside A)
+sim$add_genotype(name = "B",
+                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
+                 growth_rates = c("+" = 0.3, "-" = 0.3),
+                 death_rates = c("+" = 0.05, "-" = 0.1))
+
+sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+
+sim$run_up_to_size("B-", 400)
+
+# C (linear inside B)
+sim$add_genotype(name = "C",
+                 epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+                 growth_rates = c("+" = 0.2, "-" = 0.4),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$mutate_progeny(sim$choose_cell_in("B"), "C")
+
+# D (linear inside A, so branching with C) - same parameters of C
+sim$add_genotype(name = "D",
+                 epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+                 growth_rates = c("+" = 0.2, "-" = 0.4),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$mutate_progeny(sim$choose_cell_in("A"), "D")
+
+sim$run_up_to_size("D+", 4000)
 ```
 
 The time-series can be plot using `plot_timeseries`.
 
 ```{r,  fig.height=4, fig.width=4}
 # Time-series plot
-plot_timeseries(sim_ts)
+plot_timeseries(sim)
+
+# Logscale helps seeing the different effective growth rates
+plot_timeseries(sim) + ggplot2::scale_y_log10()
 ```
 
-We can also get a Muller plot of the genotope evolution using 
+### Muller plot
+
+We can also get a Muller plot of the evolution using
 [ggmuller](https://CRAN.R-project.org/package=ggmuller).
 
-```{r,  fig.height=4, fig.width=4, message=FALSE, warning=FALSE}
-# Muller plot
-plot_muller(sim_ts)
+```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
+# default Muller plot
+plot_muller(sim)
 ```
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink(sim_ts$get_name(), recursive = TRUE)
+In this case every population is annotated as a descendant of the
+ancestor genotype. Note however that reversible espistates do not fit a
+traditional Muller plot because they violate the no-back mutation model.
+
+In this case, rRACES will show first the epistate that was randomly
+injected in the simulation, and the second will result by linear. This
+is not a completely correct perspective of the simulation time-series;
+still, it help understand trends.
+
+```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
+# Custom Mullers
+clock = sim$get_clock()
+
+plot_muller(sim) + ggplot2::xlim(clock * 3/4, clock)
+
+plot_muller(sim) + 
+  ggplot2::xlim(clock * 3/4, clock) + 
+  ggplot2::scale_y_log10()
 ```
 
-##### Avoiding drift
+## Time-varying evolutionary rates
 
-Any species that has a death rate greater than 0 can become extinct as
-soon as it appears due to the premature death of the progenitor cell.
-This phenomenon is called *drift*, and occurs spontaneously in nature.
-It makes it difficult to simulate an be confident of what species are in
-the model.
+You can model the fact that the rates of one species. For instance, this
+happens when a population is subject to a targeted treatment.
 
-Users can avoid drift by setting the *death activation level.* This
-value is the minimum number of cells that enables cell death in a
-species. The cell of a species $S$ can die if and only if that \$S\$ has
-reached the death activation level at least once during the simulation.
+Considering the example above, where `C` and `D` have the same rates, we
+increase the death rate of both `C+` and `C-` species, as well as `B+`
+and `B-`.
 
-This threshold holds for all the species and it is set to 1 by default.
+```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
+# Current rates
+sim
 
-```{r}
-sim$death_activation_level
-```
+# Raise the death rate to very high levels
+sim$update_rates("B+", c(death = 3))
+sim$update_rates("B-", c(death = 3))
+sim$update_rates("C+", c(death = 3))
+sim$update_rates("C-", c(death = 3))
 
-However, it can be risen as much as we want to avoid drift
+# Now D will become larger
+sim$run_up_to_size("D+", 60000)
 
-```{r}
-sim$death_activation_level <- 50
+# Current state
+sim
+
+# This now show the change in rates
+clock = sim$get_clock()
+plot_muller(sim) + ggplot2::xlim(clock * 3/4, clock)
+
+plot_muller(sim) + 
+  ggplot2::xlim(clock * 3/4, clock) + 
+  ggplot2::scale_y_log10()
 ```
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 unlink(sim$get_name(), recursive = TRUE)
 ```
+
+##### 
