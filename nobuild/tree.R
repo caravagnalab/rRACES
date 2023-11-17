@@ -247,13 +247,7 @@ tree_plot = plot_sampled_cells(forest_nodes = forest_nodes) %>%
 tree_plot
 
 
+# GIF
 
 
-plot_timeseries(sim)
-
-plot_timeseries(sim) + ggplot2::scale_y_log10()
-
-plot_muller(sim)
-
-plot_muller(sim) + ggplot2::xlim(50, sim$get_clock()) + ggplot2::scale_y_log10()
 
