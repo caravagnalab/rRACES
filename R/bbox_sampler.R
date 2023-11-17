@@ -9,6 +9,8 @@
 #' @param simulation A simulation object.
 #' @param which The species name.
 #' @param n The desired number of cells from species `which`.
+#' @param n_w Width of the box.
+#' @param n_h Height of the box
 #'
 #' @return coordinates for a bounding box.
 #' @export
