@@ -190,7 +190,6 @@ plot_forest(S_1_1_forest) %>%
 unlink(sim$get_name(), recursive = TRUE)
 ```
 
-
 ## Randomised multi-region samples
 
 
@@ -274,6 +273,9 @@ plot_forest(forest) %>%
   annotate_forest(forest)
 ```
 
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+unlink(sim$get_name(), recursive = TRUE)
+```
 
 ## Example with two populations
 
