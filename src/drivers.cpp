@@ -1,6 +1,6 @@
 /* 
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande.
+ * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
  * 
  * This program is free software: you can redistribute it and/or modify  
  * it under the terms of the GNU General Public License as published by  
@@ -1712,7 +1712,7 @@ void Simulation::mutate_progeny(const List& cell_position,
 //' @title Sample a tissue rectangle region.
 //' @description This method removes a rectangular region from the simulated
 //'       tissue and stores its cells in a sample that can subsequently 
-//        retrieved to build a samples forest.
+//'       retrieved to build a samples forest.
 //' @examples
 //' sim <- new(Simulation, "sample_cells_test")
 //' sim$add_genotype(genotype = "A",

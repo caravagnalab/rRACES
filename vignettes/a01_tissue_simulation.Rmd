@@ -175,7 +175,8 @@ To be able to simulate the model, an initial cell needs to be displaced
 in the tissue.
 
 ```{r}
-# We add one cell of species A+ (genotype A in epistate +) in position (500, 500).
+# We add one cell of species A+ (genotype A in epistate +) in
+# position (500, 500).
 sim$place_cell("A+", 500, 500)
 ```
 
@@ -387,10 +388,7 @@ sim$add_genotype(name = "C",
                  death_rates = c("+" = 0.1, "-" = 0.01))
 
 # Choose and mutate
-sim$mutate_progeny(
-  sim$choose_cell_in("A",  c(450, 550), c(500, 600)), 
-  "C"
-  )
+sim$mutate_progeny(sim$choose_cell_in("A",  c(450, 550), c(500, 600)), "C")
 
 sim$run_up_to_time(sim$get_clock() + 10)
 ```

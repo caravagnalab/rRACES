@@ -34,7 +34,7 @@ plot_timeseries <- function(simulation) {
   tissue_title <- simulation$get_tissue_name()
   tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
 
-  colors <- get_species_colors(simulation)
+  color_map <- get_species_colors(simulation$get_species())
 
   ggplot2::ggplot(counts) +
     ggplot2::geom_line(ggplot2::aes(x = time, y = .data$count,
@@ -49,6 +49,6 @@ plot_timeseries <- function(simulation) {
       caption = paste("Total number of cells", ncells)
     ) +
     my_theme() +
-    ggplot2::scale_color_manual(values = colors) +
+    ggplot2::scale_color_manual(values = color_map) +
     ggplot2::theme(legend.position = "bottom")
 }

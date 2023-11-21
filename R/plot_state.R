@@ -29,6 +29,8 @@ plot_state <- function(simulation) {
   tissue_title <- simulation$get_tissue_name()
   tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
 
+  color_map <- get_species_colors(simulation$get_species())
+
   ggplot2::ggplot(counts) +
     ggplot2::geom_bar(stat = "identity",
                       ggplot2::aes(x = "", 
@@ -41,6 +43,6 @@ plot_state <- function(simulation) {
       caption = paste("Total number of cells", counts$counts %>% sum())
     ) +
     ggplot2::theme_void(base_size = 10) +
-    ggplot2::scale_fill_manual(values = get_species_colors(simulation)) +
+    ggplot2::scale_fill_manual(values = color_map) +
     ggplot2::theme(legend.position = "bottom")
 }
