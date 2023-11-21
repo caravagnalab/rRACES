@@ -172,9 +172,10 @@ plot_tissue(sim, num_of_bins = 500)
 # 
 # plot_tissue(sim, num_of_bins = 500)
 
-plot_sampled_cells(sim)
-
 forest = sim$get_samples_forest()
+
+plot_forest(forest)
+
 cells = forest$get_nodes() %>% 
   filter(sample == 'A1', epistate == '-') %>% 
   pull(cell_id)
@@ -241,7 +242,7 @@ plot_tissue(sim, num_of_bins = 100)
 forest = sim$get_samples_forest()
 forest_nodes = forest$get_nodes()
 
-tree_plot = plot_sampled_cells(forest_nodes = forest_nodes) %>% 
+tree_plot = plot_forest(forest_nodes = forest_nodes) %>% 
   annotate_forest(forest)
 
 tree_plot

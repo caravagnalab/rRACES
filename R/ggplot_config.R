@@ -25,16 +25,16 @@ get_colors_for <- function(df, column_name, pal_name) {
   return(colors)
 }
 
-get_species_colors <- function(x) {
+get_species_colors <- function(species) {
 
-  paired_species <- x$get_species() %>%
+  paired_species <- species %>%
     dplyr::filter(!is.na(.data$epistate)) %>%
     dplyr::mutate(
       species = paste0(.data$genotype, .data$epistate)
     ) %>%
     dplyr::arrange(.data$genotype)
 
-  unpaired_species <- x$get_species() %>%
+  unpaired_species <- species %>%
     dplyr::filter(is.na(.data$epistate)) %>%
     dplyr::mutate(
       species = paste0(.data$genotype, .data$epistate)

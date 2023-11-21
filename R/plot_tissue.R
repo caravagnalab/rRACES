@@ -42,6 +42,8 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
   #   group_by(genotype, epistate) %>%
   #   summarise(n())
 
+  color_map <- get_species_colors(simulation$get_species())
+
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
                                       y = .data$position_y,
                                       fill = .data$species)) +
@@ -55,8 +57,7 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
                   title = paste0(sim_title, " (t = ", time, ")"),
                   subtitle = paste("Tissue:", tissue_title, "[",
                                    tissue_size, "]")) +
-    ggplot2::scale_fill_manual(values =
-                                 get_species_colors(simulation)) +
+    ggplot2::scale_fill_manual(values = color_map) +
     ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::xlim(0, simulation$get_tissue_size()[1]) +
