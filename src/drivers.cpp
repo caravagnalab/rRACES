@@ -1,17 +1,17 @@
-/* 
+/*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
  * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
- * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3.
  *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
+ * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -36,7 +36,7 @@ struct RTest : public SIMULATION_TEST
   template<typename ...Args>
   explicit RTest(Args...args):
       SIMULATION_TEST(args...), counter{0}
-  {} 
+  {}
 
   bool operator()(const Races::Drivers::Simulation::Simulation& simulation)
   {
@@ -96,10 +96,11 @@ void handle_unknown_event(const std::string& event)
       if (event_names.size()!=2) {
         oss << ",";
       }
+      oss << " ";
     }
 
-    if ((++i)+1==event_names.size()) {
-      oss << " and ";
+    if ((++i)==event_names.size()) {
+      oss << "and ";
     }
 
     oss << "\"" << name << "\"";
@@ -107,10 +108,10 @@ void handle_unknown_event(const std::string& event)
 
   oss << ".";
 
-  ::Rf_error(oss.str().c_str());
+  throw std::domain_error(oss.str());
 }
 
-std::set<Races::Drivers::SpeciesId> 
+std::set<Races::Drivers::SpeciesId>
 get_species_ids_from_genotype_name(const Races::Drivers::Simulation::Tissue& tissue,
                                    const std::set<std::string>& genotype_name)
 {
@@ -125,7 +126,7 @@ get_species_ids_from_genotype_name(const Races::Drivers::Simulation::Tissue& tis
   return species_ids;
 }
 
-Races::Drivers::Simulation::PositionInTissue 
+Races::Drivers::Simulation::PositionInTissue
 get_position_in_tissue(const std::vector<Races::Drivers::Simulation::AxisPosition>& position)
 {
   if (position.size()==2) {
@@ -135,7 +136,7 @@ get_position_in_tissue(const std::vector<Races::Drivers::Simulation::AxisPositio
   ::Rf_error("rRACES supports only 2 dimensional space so far");
 }
 
-Races::Drivers::RectangleSet 
+Races::Drivers::RectangleSet
 get_rectangle(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
               const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner)
 {
@@ -146,7 +147,7 @@ get_rectangle(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower
 }
 
 size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tissue,
-                                  const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                                  const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                                   const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
                                   const std::set<Races::Drivers::SpeciesId>& species_filter,
                                   const std::set<std::string>& epigenetic_filter)
@@ -157,10 +158,10 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
   if (lower_corner.size() != upper_corner.size()) {
     ::Rf_error("lower_corner and upper_corner must have the same size");
   }
-  
+
   auto lower_it = lower_corner.begin();
   auto upper_it = upper_corner.begin();
-  for (;lower_it!=lower_corner.end();++lower_it,++upper_it) 
+  for (;lower_it!=lower_corner.end();++lower_it,++upper_it)
   {
     if (*lower_it>*upper_it) {
       return 0;
@@ -195,20 +196,20 @@ class SamplesForest;
 //' @name Simulation
 //' @title Simulates the cell evolution on a tissue
 //' @description The objects of this class can simulate the evolution
-//'   of many cells belonging to different *species* on a tissue. Each 
-//'   cell can duplicate or die according to the rates that delineate 
-//'   the cell species.  
+//'   of many cells belonging to different *species* on a tissue. Each
+//'   cell can duplicate or die according to the rates that delineate
+//'   the cell species.
 //'
 //'   `Simulation` supports epigenetic evolutions, and it lets users
-//'   define species pairs that have the same genotype (even though, 
+//'   define species pairs that have the same genotype (even though,
 //'   its genomic characterization is unknown) and differ because
-//'   of their epigenetic state (i.e., either "+" or "-"). 
+//'   of their epigenetic state (i.e., either "+" or "-").
 //'
 //'   `Simulation` models epigenetic mutations and allows a cell in
 //'   one of a genotype species to generate a new cell belonging to
 //'   the other species of the same genotype at a specified rate.
 //'
-//'   `Simulation` also allows users to schedule mutations from one 
+//'   `Simulation` also allows users to schedule mutations from one
 //'   genotype to a different genotype.
 //' @field add_genotype Adds a genotype and its species \itemize{
 //' \item \emph{Parameter:} \code{genotype} - The genotype name.
@@ -226,7 +227,7 @@ class SamplesForest;
 //' @field death_activation_level The number of cells that activates cell death in a species
 //' @field get_added_cells Gets the cells manually added to the simulation \itemize{
 //' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "position_x",
-//'         "position_y", and "time" for each cells manually added to 
+//'         "position_y", and "time" for each cells manually added to
 //'         the simulation.
 //' }
 //' @field get_cell Gets one the tissue cells \itemize{
@@ -241,7 +242,7 @@ class SamplesForest;
 //' \item \emph{Parameter:} \code{genotype_filter} - The vector of the to-be-selected genotype names (optional).
 //' \item \emph{Parameter:} \code{epigenetic_filter} - The vector of the to-be-selected epigenetic states (optional).
 //' \item \emph{Returns:} A data frame reporting "cell_id", "genotype", "epistate", "position_x",
-//'    and "position_y" for each cells satisfying the provided filters and laying 
+//'    and "position_y" for each cells satisfying the provided filters and laying
 //'    in the input frame.
 //' }
 //' @field get_clock Gets the simulated time \itemize{
@@ -256,7 +257,7 @@ class SamplesForest;
 //'      species in the simulation.
 //' }
 //' @field get_firing_history Gets the history of the number of fired events \itemize{
-//' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", "fired", 
+//' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", "fired",
 //'      and "time" for each event type, for each species, and for each sampled time.
 //' }
 //' @field get_firings Gets the number of fired events \itemize{
@@ -264,11 +265,11 @@ class SamplesForest;
 //'     for each event type and for each species.
 //' }
 //' @field get_name Gets the simulation name \itemize{
-//' \item \emph{Returns:} The simulation name, which corresponds to the name of the directory 
+//' \item \emph{Returns:} The simulation name, which corresponds to the name of the directory
 //'         in which the simulation is saving its progresses.
 //' }
 //' @field get_lineage_graph Gets the simulation lineage graph\itemize{
-//' \item \emph{Returns:} A data frame reporting "ancestor", "progeny", and "first_occurrence" 
+//' \item \emph{Returns:} A data frame reporting "ancestor", "progeny", and "first_occurrence"
 //'         of each species-to-species transition.
 //' }
 //' @field get_rates Gets the rates of a species\itemize{
@@ -279,11 +280,11 @@ class SamplesForest;
 //' \item \emph{Returns:} The descendants forest having as leaves the sampled cells.
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
-//' \item \emph{Returns:} A data frame containing, for each sample collected 
-//'         during the simulation, the columns "name", "time", "ymin", 
-//'         "xmin", "ymax", "xmax", and  "tumoral cells". "ymin", 
-//'         "xmin", "ymax", "xmax" report the boundaries of the sampled 
-//'         rectangular region, while "tumoral cells" is the number of 
+//' \item \emph{Returns:} A data frame containing, for each sample collected
+//'         during the simulation, the columns "name", "time", "ymin",
+//'         "xmin", "ymax", "xmax", and  "tumoral cells". "ymin",
+//'         "xmin", "ymax", "xmax" report the boundaries of the sampled
+//'         rectangular region, while "tumoral cells" is the number of
 //'         tumoral cells in the sample.
 //' }
 //' @field get_species Gets the species \itemize{
@@ -378,7 +379,7 @@ class Simulation
     return true;
   }
 
-  List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+  List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
                  const std::set<Races::Drivers::SpeciesId> &species_filter,
                  const std::set<std::string> &epigenetic_filter) const
@@ -412,9 +413,9 @@ class Simulation
 
           const auto& species = sim_ptr->tissue().get_species(cell.get_species_id());
           const auto sign_string = get_signature_string(species);
-          
+
           if (species_filter.count(cell.get_species_id())>0
-               && epigenetic_filter.count(sign_string)>0) { 
+               && epigenetic_filter.count(sign_string)>0) {
 
             ids[i] = cell.get_id();
             genotype_names[i] = species.get_genotype_name();
@@ -463,7 +464,7 @@ public:
 
   void update_tissue(const uint16_t& width, const uint16_t& height);
 
-  void add_genotype(const std::string& genotype, const List& epigenetic_rates, 
+  void add_genotype(const std::string& genotype, const List& epigenetic_rates,
                     const List& growth_rates, const List& death_rates);
 
   void add_genotype(const std::string& genotype, const double& growth_rate, const double& death_rate);
@@ -495,7 +496,7 @@ public:
   List get_cell(const Races::Drivers::Simulation::AxisPosition& x,
                 const Races::Drivers::Simulation::AxisPosition& y) const;
 
-  List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+  List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const;
 
   List get_cells(const SEXP& first_param, const SEXP& second_param) const;
@@ -503,11 +504,11 @@ public:
   List get_cells(const std::vector<std::string>& species_filter,
                  const std::vector<std::string>& epigenetic_filter) const;
 
-  List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+  List get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                  const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
                  const std::vector<std::string>& genotype_filter,
                  const std::vector<std::string>& epigenetic_filter) const;
-  
+
   List get_lineage_graph() const;
 
   List get_samples_info() const;
@@ -521,9 +522,9 @@ public:
 
   void run_up_to_event(const std::string& event, const std::string& species_name,
                        const size_t& num_of_events);
-  
+
   void sample_cells(const std::string& sample_name,
-                    const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                    const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                     const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const;
 
   List get_firings() const;
@@ -532,7 +533,7 @@ public:
 
   List get_firing_history(const Races::Time& minimum_time) const;
 
-  List get_firing_history(const Races::Time& minimum_time, 
+  List get_firing_history(const Races::Time& minimum_time,
                           const Races::Time& maximum_time) const;
 
   List get_species() const;
@@ -552,7 +553,7 @@ public:
   List choose_cell_in(const std::string& genotype_name);
 
   List choose_cell_in(const std::string& genotype_name,
-                      const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                      const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                       const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner);
 
   void mutate_progeny(const Races::Drivers::Simulation::AxisPosition& x,
@@ -586,9 +587,9 @@ public:
     using namespace Races::Drivers::Simulation;
 
     Simulation simulation;
-  
+
     auto snapshot_path = BinaryLogger::find_last_snapshot_in(directory_name);
-    
+
     Races::Archive::Binary::In archive(snapshot_path);
 
     archive & *(simulation.sim_ptr);
@@ -623,7 +624,7 @@ Simulation::Simulation(const std::string& output_dir, const int& seed):
   sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(output_dir, seed))
 {}
 
-//' @name Simulation$update_tissue 
+//' @name Simulation$update_tissue
 //' @title Update tissue name and size
 //' @param name The new name of the tissue (optional).
 //' @param width The width of the new tissue.
@@ -637,23 +638,23 @@ Simulation::Simulation(const std::string& output_dir, const int& seed):
 //' # set the tissue size and its name
 //' sim$update_tissue("Liver", 1200, 900)
 void Simulation::update_tissue(const std::string& name,
-                               const Races::Drivers::Simulation::AxisSize& width, 
+                               const Races::Drivers::Simulation::AxisSize& width,
                                const Races::Drivers::Simulation::AxisSize& height)
 {
   sim_ptr->set_tissue(name, {width, height});
 }
 
-void Simulation::update_tissue(const Races::Drivers::Simulation::AxisSize& width, 
+void Simulation::update_tissue(const Races::Drivers::Simulation::AxisSize& width,
                                const Races::Drivers::Simulation::AxisSize& height)
 {
   sim_ptr->set_tissue("A tissue", {width, height});
 }
 
-//' @name Simulation$add_genotype 
+//' @name Simulation$add_genotype
 //' @title Adds a genotype and its species
 //' @description This method adds a genotype and its species to the
-//'      simulation. If the optional parameter `epigenetic_rate` is 
-//'      provided, then two new species having the same genotype and 
+//'      simulation. If the optional parameter `epigenetic_rate` is
+//'      provided, then two new species having the same genotype and
 //'      opposite epigenetic states are created. When, instead, the
 //'      optional parameter `epigenetic_rate` is missing, this
 //'      method creates only one species with no epigenetic states.
@@ -672,7 +673,7 @@ void Simulation::update_tissue(const Races::Drivers::Simulation::AxisSize& width
 //'
 //' # create the species "C" its genotype is "C".
 //' sim$add_genotype(genotype = "C", growth_rate = 0.2, death_rate = 0.1)
-void Simulation::add_genotype(const std::string& genotype, const List& epigenetic_rates, 
+void Simulation::add_genotype(const std::string& genotype, const List& epigenetic_rates,
                               const List& growth_rates, const List& death_rates)
 {
   using namespace Races::Drivers;
@@ -714,7 +715,7 @@ void Simulation::add_genotype(const std::string& genotype, const double& growth_
                               const double& death_rate)
 {
   using namespace Races::Drivers;
-  
+
   if (genotype == "Wild-type") {
     ::Rf_error("\"Wild-type\" is a reserved genotype name.");
   }
@@ -729,14 +730,14 @@ void Simulation::add_genotype(const std::string& genotype, const double& growth_
 
 //' @name Simulation$get_species
 //' @title Gets the species
-//' @return A data frame reporting "genotype", "epistate", "growth_rate", 
+//' @return A data frame reporting "genotype", "epistate", "growth_rate",
 //'    "death_rate", and "switch_rate" for each registered species.
 //' @examples
 //' sim <- new(Simulation, "get_species_test")
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //'
-//' # get the added species and their rates. In this case, "A" 
+//' # get the added species and their rates. In this case, "A"
 //' # and "B"
 //' sim$get_species()
 List Simulation::get_species() const
@@ -758,7 +759,7 @@ List Simulation::get_species() const
 
     const auto& species_switch_rates = species.get_epigenetic_switch_rates();
     switch(species_switch_rates.size()) {
-      case 0: 
+      case 0:
         switch_rates[i] = NA_REAL;
         break;
       case 1:
@@ -767,18 +768,18 @@ List Simulation::get_species() const
       default:
         ::Rf_error("rRACES does not support multiple promoters");
     }
-  
+
     ++i;
   }
 
   return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states,
-                            _["growth_rate"]=duplication_rates, 
+                            _["growth_rate"]=duplication_rates,
                             _["death_rate"]=death_rates,
                             _["switch_rate"]=switch_rates);
 }
 
-//' @name Simulation$place_cell 
-//' @title Place one cell in the tissue 
+//' @name Simulation$place_cell
+//' @title Place one cell in the tissue
 //' @param species The name of the new cell species.
 //' @param x The position on the x axis of the cell.
 //' @param y The position on the y axis of the cell.
@@ -820,11 +821,11 @@ List Simulation::get_cells() const
 
 //' @name Simulation$get_cell
 //' @title Gets one of the tissue cells
-//' @description This method collects some data of the aimed cell without altering 
+//' @description This method collects some data of the aimed cell without altering
 //'      the tissue.
 //' @param x The position of the aimed cell on the x axis.
 //' @param y The position of the aimed cell on the y axis.
-//' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x", 
+//' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the aimed cell.
 //' @examples
 //' sim <- new(Simulation, "get_cell_test")
@@ -839,7 +840,7 @@ List Simulation::get_cells() const
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
-//' 
+//'
 //' # collect all the cells in the tissue
 //' sim$get_cell(501, 502)
 List Simulation::get_cell(const Races::Drivers::Simulation::AxisPosition& x,
@@ -852,7 +853,7 @@ List Simulation::get_cell(const Races::Drivers::Simulation::AxisPosition& x,
   return wrap_a_cell(cell);
 }
 
-List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                            const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const
 {
   std::set<Races::Drivers::SpeciesId> species_ids;
@@ -871,8 +872,8 @@ List Simulation::get_cells(const SEXP& first_param, const SEXP& second_param) co
   if (TYPEOF(first_param)!=TYPEOF(second_param)) {
     warning(
         "The two parameters have different types: %d (%s) != %d (%s)\n",
-        TYPEOF(first_param), type2name(first_param), 
-        TYPEOF(second_param), type2name(second_param) 
+        TYPEOF(first_param), type2name(first_param),
+        TYPEOF(second_param), type2name(second_param)
     );
     return R_NilValue;
   }
@@ -925,8 +926,8 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //' @param upper_corner The upper-right corner of the selection frame (optional).
 //' @param genotype_filter The vector of the to-be-selected genotype names (optional).
 //' @param epigenetic_filter The vector of the to-be-selected epigenetic states (optional).
-//' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x", 
-//'    and "position_y" for each cells satisfying the provided filters and laying 
+//' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x",
+//'    and "position_y" for each cells satisfying the provided filters and laying
 //'    in the input frame.
 //' @examples
 //' sim <- new(Simulation, "get_cells_test")
@@ -941,7 +942,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
-//' 
+//'
 //' # collect all the cells in the tissue
 //' sim$get_cells()
 //'
@@ -957,7 +958,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //' # cells can be filtered by frame, genotype, and epigenetic states
 //' sim$get_cells(lower_corner=c(495,495), upper_corner=c(505,505),
 //'               genotype_filter=c("A"),epigenetic_filter=c("+","-"))
-List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                            const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner,
                            const std::vector<std::string>& genotype_filter,
                            const std::vector<std::string>& epigenetic_filter) const
@@ -972,7 +973,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
 
 //' @name Simulation$get_counts
 //' @title Counts the number of cells
-//' @return A data frame reporting "genotype", "epistate", "counts" for each 
+//' @return A data frame reporting "genotype", "epistate", "counts" for each
 //'      species in the simulation.
 //' @examples
 //' sim <- new(Simulation, "get_counts_test")
@@ -1006,7 +1007,7 @@ List Simulation::get_counts() const
                             _["counts"]=counts);
 }
 
-std::map<Races::Drivers::SpeciesId, std::string> 
+std::map<Races::Drivers::SpeciesId, std::string>
 get_species_id2name(const Races::Drivers::Simulation::Tissue& tissue)
 {
   std::map<Races::Drivers::SpeciesId, std::string> id2name;
@@ -1020,7 +1021,7 @@ get_species_id2name(const Races::Drivers::Simulation::Tissue& tissue)
 //' @name Simulation$get_added_cells
 //' @title Gets the cells manually added to the simulation
 //' @return A data frame reporting "genotype", "epistate", "position_x",
-//'         "position_y", and "time" for each cells manually added to 
+//'         "position_y", and "time" for each cells manually added to
 //'         the simulation.
 //' @examples
 //' sim <- new(Simulation, "get_added_cells")
@@ -1068,16 +1069,16 @@ List Simulation::get_added_cells() const
 
 //' @name Simulation$schedule_genotype_mutation
 //' @title Schedules a genotype mutation
-//' @description This method schedules a genotype mutation that can occur 
-//'      from any of the species of the source genotype to the species of 
-//'      the destination genotype with a consistent epigenetic state. 
-//'      For the sake of example, if the mutation from "A" to "B" is 
+//' @description This method schedules a genotype mutation that can occur
+//'      from any of the species of the source genotype to the species of
+//'      the destination genotype with a consistent epigenetic state.
+//'      For the sake of example, if the mutation from "A" to "B" is
 //'      scheduled, then we have three possible situations:
 //'      1. The genotype "A" consists of the only species "A". Then,
 //'         during one duplication of a cell of "A", one cell of "B"
 //'         will arise.
 //'      2. The genotype "A" consists of the species "A+" and "A-" and
-//'         during one duplication of a cell of "A+", one cell of "B+" 
+//'         during one duplication of a cell of "A+", one cell of "B+"
 //'         will arise.
 //'      3. The genotype "A" consists of the species "A+" and "A-" and
 //'         during one duplication of a cell of "A-", one cell of "B-"
@@ -1123,9 +1124,9 @@ struct TimedLineageEdgeCmp
 {
   bool operator()(const TimedLineageEdge& a, const TimedLineageEdge& b)
   {
-    return (a.time<b.time 
+    return (a.time<b.time
             || (a.time==b.time && (a.get_ancestor()<b.get_ancestor()))
-            || (a.time==b.time && (a.get_ancestor()==b.get_ancestor()) 
+            || (a.time==b.time && (a.get_ancestor()==b.get_ancestor())
                 && (a.get_progeny()<b.get_progeny())));
   }
 };
@@ -1136,13 +1137,13 @@ std::vector<TimedLineageEdge> sorted_timed_edges(const Races::Drivers::Simulatio
   const size_t num_of_edges = lineage_graph.num_of_edges();
 
   std::vector<TimedLineageEdge> timed_edges;
-  
+
   timed_edges.reserve(num_of_edges);
 
   for (const auto& [edge, edge_time] : lineage_graph) {
     timed_edges.push_back({edge, edge_time});
   }
-  
+
   TimedLineageEdgeCmp cmp;
   sort(timed_edges.begin(), timed_edges.end(), cmp);
 
@@ -1152,9 +1153,9 @@ std::vector<TimedLineageEdge> sorted_timed_edges(const Races::Drivers::Simulatio
 //' @name Simulation$get_lineage_graph
 //' @title Gets the simulation lineage graph
 //' @description At the beginning of the computation only the species of the added
-//'         cells are present in the tissue. As the simulation proceeds new species 
-//'         arise as a consequence of either genotype mutations or epigenetic 
-//'         switches. The *lineage graph* stores these species evolutions and it 
+//'         cells are present in the tissue. As the simulation proceeds new species
+//'         arise as a consequence of either genotype mutations or epigenetic
+//'         switches. The *lineage graph* stores these species evolutions and it
 //'         reports the first occurrence time of any species-to-species transition.
 //'
 //'         This method returns the lineage graph of the simulation.
@@ -1185,12 +1186,12 @@ List Simulation::get_lineage_graph() const
 
   size_t i{0};
   for (const auto& timed_edge : timed_edges) {
-    ancestors[i] = (timed_edge.get_ancestor() != WILD_TYPE_SPECIES ? 
-                    species_id2name.at(timed_edge.get_ancestor()): 
+    ancestors[i] = (timed_edge.get_ancestor() != WILD_TYPE_SPECIES ?
+                    species_id2name.at(timed_edge.get_ancestor()):
                     "Wild-type");
-    
-    progeny[i] = (timed_edge.get_progeny() != WILD_TYPE_SPECIES ? 
-                  species_id2name.at(timed_edge.get_progeny()): 
+
+    progeny[i] = (timed_edge.get_progeny() != WILD_TYPE_SPECIES ?
+                  species_id2name.at(timed_edge.get_progeny()):
                   "Wild-type");
     first_cross[i] = timed_edge.time;
 
@@ -1230,8 +1231,8 @@ void Simulation::run_up_to_time(const Races::Time& time)
 }
 
 //' @name Simulation$run_up_to_size
-//' @title Simulates cell evolution 
-//' @description This method simulates cell evolution until the number of cells in 
+//' @title Simulates cell evolution
+//' @description This method simulates cell evolution until the number of cells in
 //'       a species reaches a specified threshold.
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
@@ -1243,7 +1244,7 @@ void Simulation::run_up_to_time(const Races::Time& time)
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
 //'
-//' # simulate the tissue until the species "A+" account for 100 
+//' # simulate the tissue until the species "A+" account for 100
 //' # contemporary cells
 //' sim$run_up_to_size(species = "A+", num_of_cells = 100)
 void Simulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
@@ -1261,7 +1262,7 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 
 //' @name Simulation$run_up_to_event
 //' @title Simulates cell evolution
-//' @description This method simulates cell evolution until the number of events that 
+//' @description This method simulates cell evolution until the number of events that
 //'         have occurred to cells of a species reaches a specified threshold.
 //' @param event The considered event, i.e., "growth", "death", or "switch".
 //' @param species The species whose event number is considered.
@@ -1274,7 +1275,7 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
 //'
-//' # simulate the cell evolution until the number of epigenetic events from 
+//' # simulate the cell evolution until the number of epigenetic events from
 //' # the species "A+" is less than 100.
 //' sim$run_up_to_event(event = "switch", species = "A+", num_of_events = 100)
 void Simulation::run_up_to_event(const std::string& event, const std::string& species_name,
@@ -1297,7 +1298,7 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
   sim_ptr->run(ending_test, bar);
 }
 
-//' @name Simulation$get_clock 
+//' @name Simulation$get_clock
 //' @title Gets the simulated time
 //' @return The time simulated by the simulation.
 //' @examples
@@ -1316,8 +1317,8 @@ Races::Time Simulation::get_clock() const
   return sim_ptr->get_time();
 }
 
-//' @name Simulation$get_firings 
-//' @title Gets the number of fired events 
+//' @name Simulation$get_firings
+//' @title Gets the number of fired events
 //' @return A data frame reporting "event", "genotype", "epistate", and "fired"
 //'     for each event type, genotype, and epigenetic states.
 //' @examples
@@ -1341,12 +1342,12 @@ List Simulation::get_firings() const
                            _["epistate"]=df["epistate"], _["fired"]=df["fired"]);
 }
 
-//' @name Simulation$get_firing_history 
-//' @title Gets the history of the number of fired events 
-//' @description This method returns a data frame reporting the number of 
+//' @name Simulation$get_firing_history
+//' @title Gets the history of the number of fired events
+//' @description This method returns a data frame reporting the number of
 //'           events fired up to each sampled simulation time.
 //' @return A data frame reporting "event", "genotype", "epistate", "fired",
-//'     and "time" for each event type, for each species, and for each 
+//'     and "time" for each event type, for each species, and for each
 //'     sampled time.
 //' @examples
 //' sim <- new(Simulation, "get_firing_history_test")
@@ -1355,7 +1356,7 @@ List Simulation::get_firings() const
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
-//' sim$history_delta <- 20 
+//' sim$history_delta <- 20
 //' sim$run_up_to_time(70)
 //'
 //' # get the number of event fired per event and species
@@ -1376,7 +1377,7 @@ List Simulation::get_firing_history(const Races::Time& minimum_time) const
   return get_firing_history(minimum_time, last_time_sample);
 }
 
-size_t Simulation::count_history_sample_in(const Races::Time& minimum_time, 
+size_t Simulation::count_history_sample_in(const Races::Time& minimum_time,
                                            const Races::Time& maximum_time) const
 {
   size_t num_of_samples{0};
@@ -1436,7 +1437,7 @@ List Simulation::get_firing_history(const Races::Time& minimum_time,
 
 //' @name Simulation$get_count_history
 //' @title Gets the history of the number of cells per species
-//' @description This method returns a data frame reporting the number of 
+//' @description This method returns a data frame reporting the number of
 //'           species cells in each sampled simulation time.
 //' @return A data frame reporting "genotype", "epistate", "counts",
 //'     and "time" for each species, and for each sampled time.
@@ -1446,9 +1447,9 @@ List Simulation::get_firing_history(const Races::Time& minimum_time,
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A", 500, 500)
-//' sim$history_delta <- 20 
+//' sim$history_delta <- 20
 //' sim$run_up_to_time(70)
-//' 
+//'
 //' # get the history of species counts
 //' sim$get_count_history()
 List Simulation::get_count_history() const
@@ -1499,13 +1500,13 @@ List Simulation::get_count_history(const Races::Time& minimum_time,
     ++series_it;
   }
 
-  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states, 
+  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states,
                            _["count"]=counts, _["time"]=times);
 }
 
-//' @name Simulation$get_name 
+//' @name Simulation$get_name
 //' @title Gets the simulation name
-//' @return The simulation name, which corresponds to the name of the directory 
+//' @return The simulation name, which corresponds to the name of the directory
 //'         in which the simulation is saving its progresses.
 //' @examples
 //' sim <- new(Simulation, "test")
@@ -1513,11 +1514,11 @@ List Simulation::get_count_history(const Races::Time& minimum_time,
 //' # Expecting "test"
 //' sim$get_name()
 std::string Simulation::get_name() const
-{ 
+{
   return std::string(sim_ptr->get_logger().get_directory());
 }
 
-//' @name Simulation$get_tissue_name 
+//' @name Simulation$get_tissue_name
 //' @title Gets the tissue name
 //' @return The name of the simulated tissue.
 //' @examples
@@ -1531,7 +1532,7 @@ const std::string& Simulation::get_tissue_name() const
   return sim_ptr->tissue().get_name();
 }
 
-//' @name Simulation$get_tissue_size 
+//' @name Simulation$get_tissue_size
 //' @title Gets the size of the simulated tissue
 //' @return The vector `c(x_size, y_size)` of the simulated tissue.
 //' @examples
@@ -1592,17 +1593,26 @@ void Simulation::update_rates(const std::string& species_name, const List& rates
   using namespace Races::Drivers;
   auto& species = sim_ptr->tissue().get_species(species_name);
 
-  for (const auto& [event_name, event_code]: event_names) {
-    if (rates.containsElementNamed(event_name.c_str())) {
-      species.set_rate(event_code, as<double>(rates[event_name]));
+  if (!rates.hasAttribute("names")) {
+    throw std::domain_error("update_rates: The second parameter must be a list "
+                            "with the names attribute");
+  }
+
+  Rcpp::CharacterVector nv = rates.names();
+  for (int i=0; i<nv.size(); i++) {
+    auto event_name = as<std::string>(nv[i]);
+    auto event_it = event_names.find(event_name);
+    if (event_it == event_names.end()) {
+      handle_unknown_event(event_name);
     }
+    species.set_rate(event_it->second, as<double>(rates[i]));
   }
 }
 
 //' @name Simulation$choose_cell_in
 //' @title Chooses one cell in a genotype
 //' @description This method chooses one of the cells whose genotype
-//'         is `genotype`. Optionally, the lower and upper corners 
+//'         is `genotype`. Optionally, the lower and upper corners
 //'         of a tissue rectangular selection can be provided
 //'         to obtain one cell in the rectangle.
 //' @param genotype The genotype of the cell to choose.
@@ -1627,8 +1637,8 @@ void Simulation::update_rates(const std::string& species_name, const List& rates
 //'
 //' # Randomly choose one cell in "B" in the tissue
 //' sim$choose_cell_in(genotype = "B")
-List Simulation::choose_cell_in(const std::string& genotype_name, 
-                                const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+List Simulation::choose_cell_in(const std::string& genotype_name,
+                                const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                                 const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner)
 {
   namespace RS = Races::Drivers::Simulation;
@@ -1661,8 +1671,8 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 
 //' @name Simulation$mutate_progeny
 //' @title Generate a mutated progeny
-//' @description This method simulates both the duplication of the cell in the 
-//'       specified position and the birth of one cells of a given 
+//' @description This method simulates both the duplication of the cell in the
+//'       specified position and the birth of one cells of a given
 //'       genotype that preserves the epigenetic status of the original cell.
 //'       The mutated cell will be located in the position of its parent.
 //' @param cell_position The position of the cell whose offspring will mutate.
@@ -1681,14 +1691,14 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 //'                  growth_rates = c("+" = 0.15, "-" = 0.3),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
-//' # duplicate the cell in position (503, 492). One of 
+//' # duplicate the cell in position (503, 492). One of
 //' # its direct descendents will have genotype "B"
 //' sim$mutate_progeny(503, 492, "B")
 //'
 //' # the output of `choose_cell_in` and `get_cell` can also be used
 //' # as input for `mutate_progeny`
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-void Simulation::mutate_progeny(const List& cell_position, 
+void Simulation::mutate_progeny(const List& cell_position,
                                 const std::string& mutated_genotype)
 {
   namespace RS = Races::Drivers::Simulation;
@@ -1711,7 +1721,7 @@ void Simulation::mutate_progeny(const List& cell_position,
 //' @name Simulation$sample_cells
 //' @title Sample a tissue rectangle region.
 //' @description This method removes a rectangular region from the simulated
-//'       tissue and stores its cells in a sample that can subsequently 
+//'       tissue and stores its cells in a sample that can subsequently
 //'       retrieved to build a samples forest.
 //' @examples
 //' sim <- new(Simulation, "sample_cells_test")
@@ -1726,7 +1736,7 @@ void Simulation::mutate_progeny(const List& cell_position,
 //' # sample the region [450,500]x[475,550]
 //' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
 void Simulation::sample_cells(const std::string& sample_name,
-                              const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner, 
+                              const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
                               const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner) const
 {
   using namespace Races::Drivers;
@@ -1760,20 +1770,20 @@ List get_samples_info(const SAMPLES& samples)
     ++i;
   }
 
-  return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin, 
-                           _["ymin"]=ymin, _["xmax"]=xmax, 
-                           _["ymax"]=ymax, 
+  return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin,
+                           _["ymin"]=ymin, _["xmax"]=xmax,
+                           _["ymax"]=ymax,
                            _["tumoural cells"]=non_wild,
                            _["time"]=time);
 }
 
 //' @name Simulation$get_samples_info
 //' @title Retrieve information about the samples
-//' @description This method retrieves information about 
+//' @description This method retrieves information about
 //'           the samples collected along the simulation.
 //'           It returns a data frame reporting, for each
-//'           sample, the name, the sampling time, the 
-//'           position, and the number of tumoural cells. 
+//'           sample, the name, the sampling time, the
+//'           position, and the number of tumoural cells.
 //' @examples
 //' sim <- new(Simulation, "get_samples_info_test")
 //' sim$add_genotype(genotype = "A",
@@ -1795,7 +1805,7 @@ List get_samples_info(const SAMPLES& samples)
 //' sim$sample_cells("S2", lower_corner=c(500,525),
 //'                  upper_corner=c(520,550))
 //'
-//' # get information about all the collected 
+//' # get information about all the collected
 //' # samples, i.e, S1 and S2
 //' sim$get_samples_info()
 List Simulation::get_samples_info() const
@@ -1821,8 +1831,8 @@ List Simulation::get_samples_info() const
 
 //' @name Simulation$history_delta
 //' @title The delta time between time series samples
-//' @description This value is the maximum time between two successive 
-//'          time series data samples. 
+//' @description This value is the maximum time between two successive
+//'          time series data samples.
 //' @examples
 //' sim <- new(Simulation, "death_activation_level_test")
 //'
@@ -1860,7 +1870,7 @@ List Simulation::get_samples_info() const
 //'
 //' # the object pointed by sim does not exist any more
 //' exists("sim")
-//' 
+//'
 //' # recover the simulation from the directory "recover_simulation_test"
 //' sim <- recover_simulation("recover_simulation_test")
 //'
@@ -1869,15 +1879,15 @@ List Simulation::get_samples_info() const
 
 //' @name SamplesForest
 //' @title The forest of the sampled cell ancestors.
-//' @description Represents the forest of the ancestors of the 
-//'       cells sampled during the computation. The leaves of 
+//' @description Represents the forest of the ancestors of the
+//'       cells sampled during the computation. The leaves of
 //'       this forest are the sampled cells.
 //' @field get_coalescent_cells Retrieve most recent common ancestors\itemize{
-//' \item \emph{Parameter:} \code{cell_ids} - The list of the identifiers of the 
+//' \item \emph{Parameter:} \code{cell_ids} - The list of the identifiers of the
 //'               cells whose most recent common ancestors are aimed (optional).
-//' \item \emph{Return:} A data frame representing, for each of the identified 
+//' \item \emph{Return:} A data frame representing, for each of the identified
 //'         cells, the identified (column "cell_id"), whenever the
-//'         node is not a root, the ancestor identifier (column 
+//'         node is not a root, the ancestor identifier (column
 //'         "ancestor"), whenever the node was sampled, i.e., it is
 //'         one of the forest leaves, the name of the sample
 //'         containing the node, (column "sample"), the genotype
@@ -1886,25 +1896,25 @@ List Simulation::get_samples_info() const
 //' }
 //' @field get_nodes Get the forest nodes \itemize{
 //' \item \emph{Return:} A data frame representing, for each node
-//'              in the forest, the identified (column "id"), 
-//'              whenever the node is not a root, the ancestor 
-//'              identifier (column "ancestor"), whenever the node 
+//'              in the forest, the identified (column "id"),
+//'              whenever the node is not a root, the ancestor
+//'              identifier (column "ancestor"), whenever the node
 //'              was sampled, i.e., it is one of the forest
-//'              leaves, the name of the sample containing the 
-//'              node, (column "sample"), the genotype (column 
+//'              leaves, the name of the sample containing the
+//'              node, (column "sample"), the genotype (column
 //'              "genotype"), the epistate (column "epistate"),
 //'              and the birth time (column "birth_time").
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
-//' \item \emph{Returns:} A data frame containing, for each sample collected 
-//'         during the simulation, the columns "name", "time", "ymin", 
-//'         "xmin", "ymax", "xmax", and  "tumoral cells". "ymin", 
-//'         "xmin", "ymax", "xmax" report the boundaries of the sampled 
-//'         rectangular region, while "tumoral cells" is the number of 
+//' \item \emph{Returns:} A data frame containing, for each sample collected
+//'         during the simulation, the columns "name", "time", "ymin",
+//'         "xmin", "ymax", "xmax", and  "tumoral cells". "ymin",
+//'         "xmin", "ymax", "xmax" report the boundaries of the sampled
+//'         rectangular region, while "tumoral cells" is the number of
 //'         tumoral cells in the sample.
 //' }
 //' @field get_species_info Gets the species data\itemize{
-//' \item \emph{Returns:} A data frame reporting "genotype" and "epistate" 
+//' \item \emph{Returns:} A data frame reporting "genotype" and "epistate"
 //'            for each registered species.
 //' }
 //' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
@@ -1915,7 +1925,7 @@ List Simulation::get_samples_info() const
 class SamplesForest : private Races::Drivers::DescendantsForest
 {
   SamplesForest();
-  
+
   List get_nodes(const std::vector<Races::Drivers::CellId>& cell_ids) const;
 
 public:
@@ -1956,12 +1966,12 @@ SamplesForest::SamplesForest(const Races::Drivers::Simulation::Simulation& simul
 //' @name SamplesForest$get_nodes
 //' @title Get the nodes of the forest
 //' @return A data frame representing, for each node
-//'         in the forest, the identified (column "cell_id"), 
-//'         whenever the node is not a root, the ancestor 
-//'         identifier (column "ancestor"), whenever the 
+//'         in the forest, the identified (column "cell_id"),
+//'         whenever the node is not a root, the ancestor
+//'         identifier (column "ancestor"), whenever the
 //'         node was sampled, i.e., it is one of the forest
-//'         leaves, the name of the sample containing the 
-//'         node, (column "sample"), the genotype (column 
+//'         leaves, the name of the sample containing the
+//'         node, (column "sample"), the genotype (column
 //'         "genotype"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
 //' @examples
@@ -2032,11 +2042,11 @@ List SamplesForest::get_nodes(const std::vector<Races::Drivers::CellId>& cell_id
 
 //' @name SamplesForest$get_samples_info
 //' @title Retrieve information about the samples
-//' @description This method retrieves information about 
+//' @description This method retrieves information about
 //'           the samples whose cells were used as leaves
 //'           of the samples forest.
-//' @return A data frame reporting, for each sample, the 
-//'           name, the sampling time, the position, and 
+//' @return A data frame reporting, for each sample, the
+//'           name, the sampling time, the position, and
 //'           the number of tumoural cells.
 //' @examples
 //' sim <- new(Simulation, "get_samples_info_2_test")
@@ -2054,7 +2064,7 @@ List SamplesForest::get_nodes(const std::vector<Races::Drivers::CellId>& cell_id
 //' # build the samples forest
 //' forest <- sim$get_samples_forest()
 //'
-//' # get information about the sampled whose cells  
+//' # get information about the sampled whose cells
 //' # are the forest leaves, i.e, S1 and S2
 //' forest$get_samples_info()
 List SamplesForest::get_samples_info() const
@@ -2072,17 +2082,17 @@ List SamplesForest::get_coalescent_cells() const
 //' @name SamplesForest$get_coalescent_cells
 //' @title Retrieve most recent common ancestors
 //' @description This method retrieves the most recent common ancestors
-//'         of a set of cells. If the optional parameter `cell_ids` is 
-//'         used, this method find the most recent common ancestors of 
+//'         of a set of cells. If the optional parameter `cell_ids` is
+//'         used, this method find the most recent common ancestors of
 //'         the cells having an identifier among those in `cell_ids`.
 //'         If, otherwise, the optional parameter is not used, this
 //'         method find the most recent common ancestors of the forest
 //'         leaves.
 //' @param cell_ids The list of the identifiers of the cells whose
 //'         most recent common ancestors are aimed (optional).
-//' @return A data frame representing, for each of the identified 
+//' @return A data frame representing, for each of the identified
 //'         cells, the identified (column "cell_id"), whenever the
-//'         node is not a root, the ancestor identifier (column 
+//'         node is not a root, the ancestor identifier (column
 //'         "ancestor"), whenever the node was sampled, i.e., it is
 //'         one of the forest leaves, the name of the sample
 //'         containing the node, (column "sample"), the genotype
@@ -2115,8 +2125,8 @@ List SamplesForest::get_coalescent_cells(const std::list<Races::Drivers::CellId>
 //' @name SamplesForest$get_subforest_for
 //' @title Build a subforest using as leaves some of the original samples
 //' @param sample_names The names of the samples whose cells will be used
-//'         as leaves of the new forest 
-//' @return A samples forest built on the samples mentioned in `sample_names` 
+//'         as leaves of the new forest
+//' @return A samples forest built on the samples mentioned in `sample_names`
 //' @examples
 //' sim <- new(Simulation, "get_subforest_for_test")
 //' sim$add_genotype(genotype = "A",
@@ -2150,7 +2160,7 @@ SamplesForest SamplesForest::get_subforest_for(const std::vector<std::string>& s
 
 //' @name SamplesForest$get_species_info
 //' @title Gets the species
-//' @return A data frame reporting "genotype" and "epistate" 
+//' @return A data frame reporting "genotype" and "epistate"
 //'            for each registered species.
 List SamplesForest::get_species_info() const
 {
@@ -2164,7 +2174,7 @@ List SamplesForest::get_species_info() const
   for (const auto& [species_id, species_data]: get_species_data()) {
     genotype_names[i] = get_genotype_name(species_data.genotype_id);
     epi_states[i] = GenotypeProperties::signature_to_string(species_data.signature);
-  
+
     ++i;
   }
 
@@ -2178,8 +2188,8 @@ void SamplesForest::show() const
     num_of_leaves += sample.get_cell_ids().size();
   }
 
-  Rcout << "SamplesForest(# of trees: " << get_roots().size() 
-        << ", # of nodes: " << num_of_nodes() 
+  Rcout << "SamplesForest(# of trees: " << get_roots().size()
+        << ", # of nodes: " << num_of_nodes()
         << ", # of leaves: " << num_of_leaves
         << ", samples: {";
 
@@ -2237,12 +2247,12 @@ RCPP_MODULE(Drivers){
                                                 const double&))(&Simulation::add_genotype),
           "Add a new species")
 
-  .method("choose_cell_in", (List (Simulation::*)(const std::string&))(&Simulation::choose_cell_in), 
+  .method("choose_cell_in", (List (Simulation::*)(const std::string&))(&Simulation::choose_cell_in),
           "Randomly choose one cell in a genotype")
 
   .method("choose_cell_in", (List (Simulation::*)(const std::string&,
-                                                  const std::vector<RS::AxisPosition>&, 
-                                                  const std::vector<RS::AxisPosition>&))(&Simulation::choose_cell_in), 
+                                                  const std::vector<RS::AxisPosition>&,
+                                                  const std::vector<RS::AxisPosition>&))(&Simulation::choose_cell_in),
           "Randomly choose one cell having a specified genotype in a rectangular selection")
 
   // schedule_genotype_mutation
@@ -2258,8 +2268,8 @@ RCPP_MODULE(Drivers){
           "Get the descendants forest having as leaves the sampled cells")
 
   // death_activation_level
-  .property("death_activation_level", &Simulation::get_death_activation_level, 
-                                      &Simulation::set_death_activation_level, 
+  .property("death_activation_level", &Simulation::get_death_activation_level,
+                                      &Simulation::set_death_activation_level,
             "The number of cells in a species that activates cell death" )
 
   // get_clock
@@ -2271,7 +2281,7 @@ RCPP_MODULE(Drivers){
           "Get one cell from the simulated tissue")
 
   // get_cells
-  .method("get_cells", (List (Simulation::*)(const std::vector<RS::AxisPosition>&, 
+  .method("get_cells", (List (Simulation::*)(const std::vector<RS::AxisPosition>&,
                                              const std::vector<RS::AxisPosition>&,
                                              const std::vector<std::string>&,
                                              const std::vector<std::string>&) const)(&Simulation::get_cells),
@@ -2295,12 +2305,12 @@ RCPP_MODULE(Drivers){
   .method("get_tissue_size", &Simulation::get_tissue_size, "Get the simulation tissue size")
 
   // get_added_cells
-  .method("get_added_cells", &Simulation::get_added_cells, 
+  .method("get_added_cells", &Simulation::get_added_cells,
           "Get the cells manually added to the simulation")
 
   // get_counts
   .method("get_counts", &Simulation::get_counts, "Get the current number of cells per species")
-  
+
   // get_count_history
   .method("get_count_history", (List (Simulation::*)() const)&Simulation::get_count_history,
           "Get the number of simulated events per species along the computation")
@@ -2314,49 +2324,49 @@ RCPP_MODULE(Drivers){
           "Get the number of simulated events per species along the computation")
 
   // get_rates
-  .method("get_rates", &Simulation::get_rates, 
+  .method("get_rates", &Simulation::get_rates,
           "Get the rates of a species")
 
   // get_samples_info
-  .method("get_samples_info", &Simulation::get_samples_info, 
+  .method("get_samples_info", &Simulation::get_samples_info,
           "Get some pieces of information about the collected samples")
 
   // history_delta
-  .property("history_delta", &Simulation::get_history_delta, 
-                             &Simulation::set_history_delta, 
+  .property("history_delta", &Simulation::get_history_delta,
+                             &Simulation::set_history_delta,
             "The sampling delta for the get_*_history functions" )
-  
+
   // mutate
   .method("mutate_progeny",  (void (Simulation::*)(const List&, const std::string&))
-                                                  (&Simulation::mutate_progeny), 
+                                                  (&Simulation::mutate_progeny),
           "Duplicate a cell and mutate one of its children")
   .method("mutate_progeny",  (void (Simulation::*)(const RS::AxisPosition&,
                                                    const RS::AxisPosition&, const std::string&))
-                                                  (&Simulation::mutate_progeny), 
+                                                  (&Simulation::mutate_progeny),
           "Duplicate a cell and mutate one of its children")
 
   // run_up_to_time
-  .method("run_up_to_time", &Simulation::run_up_to_time, 
+  .method("run_up_to_time", &Simulation::run_up_to_time,
           "Simulate the system up to the specified simulation time")
 
   // run_up_to_event
-  .method("run_up_to_event", &Simulation::run_up_to_event, 
+  .method("run_up_to_event", &Simulation::run_up_to_event,
           "Simulate the system up to the specified number of events")
 
   // run_up_to_size
-  .method("run_up_to_size", &Simulation::run_up_to_size, 
+  .method("run_up_to_size", &Simulation::run_up_to_size,
           "Simulate the system up to the specified number of cells in the species")
 
   // sample_cells
-  .method("sample_cells", &Simulation::sample_cells, 
+  .method("sample_cells", &Simulation::sample_cells,
           "Sample a rectangular region of the tissue")
 
   // update rates
-  .method("update_rates", &Simulation::update_rates, 
+  .method("update_rates", &Simulation::update_rates,
           "Update the rates of a species")
 
   // update_tissue
-  .method("update_tissue", (void (Simulation::*)(const std::string&, const RS::AxisSize&, 
+  .method("update_tissue", (void (Simulation::*)(const std::string&, const RS::AxisSize&,
                                                  const RS::AxisSize&))(&Simulation::update_tissue),
           "Update tissue name and size")
   .method("update_tissue", (void (Simulation::*)(const RS::AxisSize&,
@@ -2364,31 +2374,31 @@ RCPP_MODULE(Drivers){
           "Update tissue size");
 
   // recover_simulation
-  function("recover_simulation", &Simulation::load, 
+  function("recover_simulation", &Simulation::load,
            "Recover a simulation");
-  
+
   class_<SamplesForest>("SamplesForest")
     // get_nodes
-    .method("get_nodes", (List (SamplesForest::*)() const)(&SamplesForest::get_nodes), 
+    .method("get_nodes", (List (SamplesForest::*)() const)(&SamplesForest::get_nodes),
             "Get the nodes of the forest")
 
     // get_coalescent_cells
-    .method("get_coalescent_cells", 
+    .method("get_coalescent_cells",
             (List (SamplesForest::*)(const std::list<Races::Drivers::CellId>&) const)
-                (&SamplesForest::get_coalescent_cells), 
+                (&SamplesForest::get_coalescent_cells),
             "Get the most recent common ancestor of some cells")
 
     // get_coalescent_cells
-    .method("get_coalescent_cells", 
-            (List (SamplesForest::*)() const)(&SamplesForest::get_coalescent_cells), 
+    .method("get_coalescent_cells",
+            (List (SamplesForest::*)() const)(&SamplesForest::get_coalescent_cells),
             "Get the most recent common ancestor of all the forest trees")
 
     // get_subforest_for
-    .method("get_subforest_for", &SamplesForest::get_subforest_for, 
+    .method("get_subforest_for", &SamplesForest::get_subforest_for,
             "Get the sub-forest for some of the original samples")
 
     // get_samples_info
-    .method("get_samples_info", &SamplesForest::get_samples_info, 
+    .method("get_samples_info", &SamplesForest::get_samples_info,
             "Get some pieces of information about the samples")
 
     // get_species
@@ -2396,6 +2406,6 @@ RCPP_MODULE(Drivers){
             "Get the recorded species")
 
     // show
-    .method("show", &SamplesForest::show, 
+    .method("show", &SamplesForest::show,
             "Describe the SampleForest");
 }
