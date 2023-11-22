@@ -179,7 +179,6 @@ In general, these plots can be annotated with extra information, such as the sam
 # Full plot
 plot_forest(forest) %>%
   annotate_forest(forest)
-
 # S_1_1 plot
 plot_forest(S_1_1_forest) %>%
   annotate_forest(S_1_1_forest)
@@ -194,8 +193,7 @@ unlink(sim$get_name(), recursive = TRUE)
 
 
 ```{r}
-# Monoclonal model, no epigenotypes
-sim <- new(Simulation, "Monoclonal")
+sim <- new(Simulation, "Randomised")
 
 sim$add_genotype(name = "A", growth_rates = 0.1, death_rates = 0.01)
 
@@ -241,7 +239,9 @@ current +
   geom_rect(xmin = bbox$p[1], xmax = bbox$q[1],
             ymin = bbox$p[2], ymax = bbox$q[2],
             fill = NA, color = "black")
+```
 
+```{r}
 sim$sample_cells("S_2_1", bbox$p, bbox$q)
 ```
 
@@ -254,7 +254,9 @@ current +
   geom_rect(xmin = bbox$p[1], xmax = bbox$q[1],
             ymin = bbox$p[2], ymax = bbox$q[2],
             fill = NA, color = "black")
+```
 
+```{r}
 sim$sample_cells("S_2_2", bbox$p, bbox$q)
 ```
 
@@ -277,13 +279,19 @@ plot_forest(forest) %>%
 unlink(sim$get_name(), recursive = TRUE)
 ```
 
-## Example with two populations
+## Two populations with epigenetic state
 
-We can now simulate a rather more complex model, with epigenetic
-switches and subclonal expansions
+We are now ready to simulate a model with epigenetic
+switches and subclonal expansions.
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+unlink("Two Populations", recursive = TRUE)
+```
 
 ```{r,  fig.height=4, fig.width=3}
-sim <- new(Simulation, "TwoClones")
+sim <- new(Simulation, "Two Populations")
+
+sim$death_activation_level <- 20
 
 # First clone
 sim$add_genotype(name = "A",
@@ -310,7 +318,9 @@ sim$sample_cells("B1",
                  top_right = c(500 + bbox_width, 500 + bbox_width))
 
 plot_tissue(sim, num_of_bins = 500)
+```
 
+```{r,  fig.height=4, fig.width=3}
 # Let it grow a bit more
 sim$run_up_to_time(sim$get_clock() + 15)
 
@@ -368,11 +378,14 @@ visualisation.
 We build a tumour with three populations, branching.
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink("bbox_sampler_test", recursive = TRUE)
+unlink("Three Populations", recursive = TRUE)
 ```
 
-```{r}
-sim <- new(Simulation, "bbox_sampler_test", 1234)
+```{r, fig.height=4, fig.width=3}
+sim <- new(Simulation, "Three Populations")
+
+sim$death_activation_level <- 20
+
 sim$update_tissue(250, 250)
 
 sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
@@ -393,10 +406,13 @@ n_w <- n_h <- 7
 bbox <- bbox_sampler(sim, "A", ncells, n_w, n_h)
 sim$sample_cells("A1", bbox$p, bbox$q)
 
-bbox <- bbox_sampler(sim, "A", ncells, n_w, n_h)
-sim$sample_cells("B1", bbox$p, bbox$q)
+bbox2 <- bbox_sampler(sim, "A", ncells, n_w, n_h)
+sim$sample_cells("B1", bbox2$p, bbox2$q)
 
 plot_tissue(sim)
+```
+
+```{r,  fig.height=4, fig.width=3, eval=FALSE}
 plot_muller(sim)
 ```
 
@@ -429,7 +445,7 @@ Finally, a third clone branching from `A`.
 
 ```{r,  fig.height=4, fig.width=3}
 # New subclone
-sim$add_genotype(name = "C", growth_rates = 0.24, death_rates = 0.01)
+sim$add_genotype(name = "C", growth_rates = 0.6, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "C")
 
 sim$run_up_to_size("C", 500)
