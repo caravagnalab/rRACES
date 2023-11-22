@@ -831,11 +831,11 @@ List Simulation::get_cells() const
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//'                  death_rates = c("+" = 0.02, "-" = 0.01))
 //' sim$add_genotype(genotype = "B",
 //'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
-//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//'                  death_rates = c("+" = 0.02, "-" = 0.01))
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
@@ -1672,7 +1672,7 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
-//'                  death_rates = c("+" = 0.1, "-" = 0.01))
+//'                  death_rates = c("+" = 0.01, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(70)
 //'

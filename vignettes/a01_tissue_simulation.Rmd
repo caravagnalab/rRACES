@@ -59,6 +59,10 @@ unlink("Test", recursive = TRUE)
 sim <- new(Simulation, "Test")
 ```
 
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+sim$death_activation_level <- 50
+```
+
 Class `Simulation` exports a `show` method to get information on the
 current object.
 
@@ -199,7 +203,7 @@ thousands of cells.
 
 ```{r,  fig.height=4, fig.width=3}
 # Piechar for counts
-plot_state(sim) 
+plot_state(sim)
 
 # Spatial distribution for the whole tissue (hexagonal bins)
 plot_tissue(sim)
@@ -279,7 +283,7 @@ sim$get_clock()
 plot_tissue(sim)
 ```
 
-##### **Getting cells (advanced)**
+##### **Getting cells (Advanced)**
 
 At this point, if we query the simulation we will find more cells (we
 use `dplyr` to process query results). For convenience, the getters
@@ -337,7 +341,7 @@ therefore new species `B+` and `B-` - as descending from `A,`we need to:
     genotype `B`.
 
 ```{r}
-# We locate a random cell 
+# We locate a random cell
 cell <- sim$choose_cell_in("A")
 cell
 
@@ -374,7 +378,7 @@ plot_tissue(sim, num_of_bins = 250)
 # Facet on species via ggplot
 library(ggplot2)
 
-plot_tissue(sim) + facet_wrap(~species)
+plot_tissue(sim, num_of_bins = 250) + facet_wrap(~species)
 ```
 
 If, at this point in the simulation, we generate a new genotype `C` from
@@ -395,7 +399,7 @@ sim$run_up_to_time(sim$get_clock() + 10)
 
 ```{r,  fig.height=4, fig.width=3}
 plot_state(sim)
-plot_tissue(sim)
+plot_tissue(sim, num_of_bins = 250)
 ```
 
 ### Other operations
@@ -472,12 +476,14 @@ the state (by default, `history_delta` is set to $0$).
 
 We show this by re-simulating a tumour with two subclones.
 
-```{r}
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 # Cancel old data
 unlink(sim$get_name(), recursive = TRUE)
+```
 
+```{r}
 # Example time-series on a new simulation, with coarse-grained time-series
-sim <- new(Simulation)
+sim <- new(Simulation, "Finer Time Series")
 
 sim$history_delta <- 1
 sim$death_activation_level <- 100
@@ -517,7 +523,7 @@ sim$add_genotype(name = "D",
 
 sim$mutate_progeny(sim$choose_cell_in("A"), "D")
 
-sim$run_up_to_size("D+", 4000)
+sim$run_up_to_size("D+", 400)
 ```
 
 The time-series can be plot using `plot_timeseries`.
@@ -551,12 +557,12 @@ still, it help understand trends.
 
 ```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
 # Custom Mullers
-clock = sim$get_clock()
+clock <- sim$get_clock()
 
 plot_muller(sim) + ggplot2::xlim(clock * 3/4, clock)
 
-plot_muller(sim) + 
-  ggplot2::xlim(clock * 3/4, clock) + 
+plot_muller(sim) +
+  ggplot2::xlim(clock * 3/4, clock) +
   ggplot2::scale_y_log10()
 ```
 
@@ -573,24 +579,24 @@ and `B-`.
 # Current rates
 sim
 
-# Raise the death rate to very high levels
+# Raise the death rate levels
 sim$update_rates("B+", c(death = 3))
 sim$update_rates("B-", c(death = 3))
 sim$update_rates("C+", c(death = 3))
 sim$update_rates("C-", c(death = 3))
 
 # Now D will become larger
-sim$run_up_to_size("D+", 60000)
+sim$run_up_to_size("D+", 6000)
 
 # Current state
 sim
 
 # This now show the change in rates
-clock = sim$get_clock()
+clock <- sim$get_clock()
 plot_muller(sim) + ggplot2::xlim(clock * 3/4, clock)
 
-plot_muller(sim) + 
-  ggplot2::xlim(clock * 3/4, clock) + 
+plot_muller(sim) +
+  ggplot2::xlim(clock * 3/4, clock) +
   ggplot2::scale_y_log10()
 ```
 

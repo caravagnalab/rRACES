@@ -49,7 +49,7 @@ collapse_loops <- function(df_edges) {
 #' sim$add_genotype(name = "A",
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 #'                  growth_rates = c("+" = 0.2, "-" = 0.08),
-#'                  death_rates = c("+" = 0.1, "-" = 0.01))
+#'                  death_rates = c("+" = 0.02, "-" = 0.01))
 #' sim$history_delta = 1
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
