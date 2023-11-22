@@ -51,8 +51,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/a01_tissue_simulation.html">Tissue Simulation</a>
-    <a class="dropdown-item" href="../articles/a02_sampling_simulation.html">Sampling a Simulated Tissue</a>
+    <a class="dropdown-item" href="../articles/a01_tissue_simulation.html">Tissue simulation</a>
+    <a class="dropdown-item" href="../articles/a02_sampling_simulation.html">Tissue sampling</a>
   </div>
 </li>
       </ul>
@@ -89,18 +89,44 @@
     
     
 <p>rRACES wraps the <a href="https://github.com/albertocasagrande/RACES" class="external-link">RACES</a> simulation
-and data-generation engine by using the <a href="https://www.rcpp.org/" class="external-link">R/C++ Rcpp interface</a></p>
-<p>It can:</p>
+and data-generation engine by using the <a href="https://www.rcpp.org/" class="external-link">R/C++ Rcpp interface</a>. In practice,
+rRACES allows to “program” stochastic tumour evolution.</p>
+<p>The engine has a number of features, the most relevant are:</p>
+<ol style="list-style-type: decimal">
+<li>cells are associated with <em>species</em>, proliferate in a
+stochastic fashion on a spatial 2D lattice;</li>
+<li>every species is defined by <em>(i)</em> a <em>custom genotype</em>
+and <em>(ii)</em> a <em>binary epistate</em>. Following a no-back
+mutations model, at every cell division the genotype heritable, while
+the epigenotype is instead reversible;</li>
+<li>the evolutionary parameters of each species can change over time,
+mimicking treatment-related evolutionary pressures;</li>
+<li>at the molecular level, the genome of tumour cells are moulded by
+realistic mutational processes, both at the level of simple mutations
+and more complex copy number alterations;</li>
+<li>arbitrary tissue sampling schema can be simulated, including
+multi-region and longitudinal datasets with any number of samples and
+time-points;</li>
+<li>realistic read-counts based bulk sequencing data can be generated,
+both at the level of whole-genome, whole-exome and targeted panels;</li>
+<li>full access to the evolutionary process and its phylogeny
+information (cell coalescence) is available.</li>
+</ol>
+<p>The best way to learn to use rRACES is to go thorough three vignettes
+that define the standard workflow:</p>
 <ul>
-<li>simulate a spatio-temporal stochastic process of tumour
-evolution;</li>
-<li>define a tumour sampling strategy;</li>
-<li>generating realistic sequencing data based on sampling and
-simulation.</li>
-</ul>
-<p>In the articles section of this website we present all the
-functionalities of this tool.</p>
-  </main>
+<li>
+<a href="a01_tissue_simulation.html"><em>tissue simulation:</em></a>
+simulate the spatio-temporal stochastic process of tumour evolution to
+define a tissue;</li>
+<li>
+<a href="a02_sampling_simulation.html"><em>sampling
+specification:</em></a> determine the sampling strategy for the
+simulated tissue;</li>
+<li>
+<em>molecular data genereation</em>: generating realistic sequencing
+data based on sampling and simulation.</li>
+</ul></main>
 </div>
 
 
