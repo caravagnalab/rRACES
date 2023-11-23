@@ -59,20 +59,79 @@
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>output_dir</dt>
-<dd><p>The output directory (optional).</p></dd>
+    <dl><dt>simulation_name</dt>
+<dd><p>The name of the simulation (optional).</p></dd>
 
 
 <dt>seed</dt>
 <dd><p>The seed for the pseudo-random generator (optional).</p></dd>
 
+
+<dt>delete_saved_on_destroy</dt>
+<dd><p>A flag to remove saved data on object 
+destroy (optional, default `FALSE`).</p></dd>
+
 </dl></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># create a Simulation object storing binary dump in the directory "test". The </span></span></span>
+<span class="r-in"><span><span class="co"># data on the disk will *not* be delete because of the object destructon.</span></span></span>
 <span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"test"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"test"</span>, <span class="fl">13</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add a new species, place a cell in the tissue, and let the simulation evolve.</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>genotype <span class="op">=</span> <span class="st">"A"</span>, growth_rate <span class="op">=</span> <span class="fl">0.3</span>, death_rate <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># here, the directory "test" contains a binary dump of the simulation.</span></span></span>
+<span class="r-in"><span><span class="st">"test"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># re-assigning `sim` and calling the garbage collector destroys the </span></span></span>
+<span class="r-in"><span><span class="co"># Simulation object, but *not* the directory "test".</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           used (Mb) gc trigger  (Mb) max used  (Mb)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ncells 1075631 57.5    2166494 115.8  2166494 115.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Vcells 2040121 15.6    8388608  64.0  8387913  64.0</span>
+<span class="r-in"><span><span class="st">"test"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># (let us delete the directory "test" manually)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="st">"test"</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># By using the optional parameter `delete_saved_on_destroy` we can create a </span></span></span>
+<span class="r-in"><span><span class="co"># new simulation named "test" whose stored data will be deleted during</span></span></span>
+<span class="r-in"><span><span class="co"># object destruction.</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"test"</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># as done above, we add a new species, place a cell in the tissue, and let the </span></span></span>
+<span class="r-in"><span><span class="co"># simulation evolve.</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>genotype <span class="op">=</span> <span class="st">"A"</span>, growth_rate <span class="op">=</span> <span class="fl">0.3</span>, death_rate <span class="op">=</span> <span class="fl">0.02</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="fl">30</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the directory "test" contains a binary dump of the simulation.</span></span></span>
+<span class="r-in"><span><span class="st">"test"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># re-assigning `sim` and calling the garbage collector destroys the </span></span></span>
+<span class="r-in"><span><span class="co"># Simulation object and deletes the simulation dump directory too.</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/gc.html" class="external-link">gc</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           used (Mb) gc trigger  (Mb) max used  (Mb)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ncells 1075473 57.5    2166494 115.8  2166494 115.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Vcells 2039844 15.6    8388608  64.0  8387913  64.0</span>
+<span class="r-in"><span><span class="st">"test"</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># we can also provide a random seed to the simulation...</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"test"</span>, <span class="fl">13</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># ...or creating a simulation without providing any name. By default, the </span></span></span>
+<span class="r-in"><span><span class="co"># simulation name will have the following format `races_&lt;date&gt;_&lt;hour&gt;`.</span></span></span>
+<span class="r-in"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">new</span><span class="op">(</span><span class="va">Simulation</span>, <span class="fl">13</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
