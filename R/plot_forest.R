@@ -27,7 +27,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation, "plot_forest_test")
+#' sim <- new(Simulation, "plot_forest_test", TRUE)
 #' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
@@ -156,7 +156,7 @@ plot_forest <- function(forest) {
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation, "annotate_forest_test")
+#' sim <- new(Simulation, "annotate_forest_test", TRUE)
 #' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)

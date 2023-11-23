@@ -26,7 +26,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation, "plot_timeseries_test")
+#' sim <- new(Simulation, "plot_timeseries_test" , TRUE)
 #' sim$history_delta <- 1 
 #' sim$add_genotype(genotype = "A",
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
