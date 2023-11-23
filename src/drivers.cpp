@@ -346,6 +346,7 @@ class SamplesForest;
 class Simulation
 {
   std::shared_ptr<Races::Drivers::Simulation::Simulation> sim_ptr;  //!< The pointer to a RACES simulation object
+  bool delete_saved_on_destroy;     //!< A flag to remove the save data from disk on destroy
 
   static bool has_names(const List& list, std::vector<std::string> aimed_names)
   {
@@ -454,11 +455,13 @@ class Simulation
 public:
   Simulation();
 
-  Simulation(const int& seed);
+  Simulation(const SEXP& sexp);
 
-  Simulation(const std::string& output_dir);
+  Simulation(const SEXP& first_param, const SEXP& second_param);
 
-  Simulation(const std::string& output_dir, const int& seed);
+  Simulation(const std::string& simulation_name, const int& seed, const bool& delete_saved_on_destroy);
+
+  ~Simulation();
 
   void update_tissue(const std::string& name, const uint16_t& width, const uint16_t& height);
 
@@ -600,29 +603,189 @@ public:
   SamplesForest get_samples_forest() const;
 };
 
+std::shared_ptr<Races::Drivers::Simulation::Simulation>
+build_simulation(const SEXP& sexp)
+{
+  namespace RS = Races::Drivers::Simulation;
+
+  std::shared_ptr<Races::Drivers::Simulation::Simulation> sim_ptr;
+
+  switch (TYPEOF(sexp)) {
+    case INTSXP:
+    case REALSXP:
+    {
+      int seed = as<int>(sexp);
+
+      sim_ptr = std::make_shared<RS::Simulation>(seed);
+      break;
+    }
+    case STRSXP: {
+      std::string simulation_name = as<std::string>(sexp);
+
+      sim_ptr = std::make_shared<RS::Simulation>(as<std::string>(sexp));
+      break;
+    }
+    default: {
+      std::ostringstream oss;
+
+      oss << "Invalid type for the first parameter: " 
+          << type2name(sexp);
+
+      throw std::domain_error(oss.str());
+    }
+  }
+
+  return sim_ptr;
+}
+
+
 Simulation::Simulation():
-  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>())
+  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>()),
+  delete_saved_on_destroy(false)
 {}
 
-Simulation::Simulation(const int& seed):
-  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(seed))
-{}
+Simulation::Simulation(const SEXP& sexp):
+  delete_saved_on_destroy(false)
+{
+  if (TYPEOF(sexp) == LGLSXP) {
+    delete_saved_on_destroy = as<bool>(sexp);
 
-Simulation::Simulation(const std::string& output_dir):
-  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(output_dir))
-{}
+    sim_ptr = std::make_shared<Races::Drivers::Simulation::Simulation>();
+
+    return;
+  }
+
+  if (TYPEOF(sexp) == STRSXP) {
+    std::string simulation_name = as<std::string>(sexp);
+
+    sim_ptr = std::make_shared<Races::Drivers::Simulation::Simulation>(simulation_name);
+
+    return;
+  }
+
+  if (TYPEOF(sexp) == INTSXP || TYPEOF(sexp) == REALSXP) {
+    int seed = as<int>(sexp);
+
+    sim_ptr = std::make_shared<Races::Drivers::Simulation::Simulation>(seed);
+
+    return;
+  }
+
+  std::ostringstream oss;
+
+  oss << "Invalid type: " 
+      << type2name(sexp) << ".";
+
+  throw std::domain_error(oss.str());
+}
+
+Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
+  delete_saved_on_destroy(false)
+{
+  if (TYPEOF(second_param) == LGLSXP) {
+    delete_saved_on_destroy = as<bool>(second_param);
+
+    sim_ptr = build_simulation(first_param);
+
+    return;
+  }
+
+  if (TYPEOF(first_param) != STRSXP) {
+    std::ostringstream oss;
+
+    oss << "Invalid type for the parameter 1: " 
+        << type2name(first_param)
+        << ". If the last parameter is not a Boolean value (save on disk"
+        << " parameter), it must be a string (the name of the simulation).";
+
+    throw std::domain_error(oss.str());
+  }
+
+  if (TYPEOF(second_param) != INTSXP && TYPEOF(second_param) != REALSXP) {
+    std::ostringstream oss;
+
+    oss << "Invalid type for the parameter 2: " 
+        << type2name(second_param)
+        << ". If the last parameter is not a Boolean value (save on disk"
+        << " parameter), it must be an integer value (the random seed).";
+
+    throw std::domain_error(oss.str());
+  }
+
+  std::string simulation_name = as<std::string>(first_param);
+  int seed = as<int>(second_param);
+
+  sim_ptr = std::make_shared<Races::Drivers::Simulation::Simulation>(simulation_name, seed);
+}
 
 //' @name Simulation$new
 //' @title Constructs a new Simulation
-//' @param output_dir The output directory (optional).
+//' @param simulation_name The name of the simulation (optional).
 //' @param seed The seed for the pseudo-random generator (optional).
+//' @param delete_saved_on_destroy A flag to remove saved data on object 
+//'        destroy (optional, default `FALSE`).
 //' @examples
-//' sim <- new(Simulation)
+//' # create a Simulation object storing binary dump in the directory "test". The 
+//' # data on the disk will *not* be delete because of the object destructon.
 //' sim <- new(Simulation, "test")
-//' sim <- new(Simulation, "test", 13)
-Simulation::Simulation(const std::string& output_dir, const int& seed):
-  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(output_dir, seed))
+//'
+//' # add a new species, place a cell in the tissue, and let the simulation evolve.
+//' sim$add_genotype(genotype = "A", growth_rate = 0.3, death_rate = 0.02)
+//' sim$place_cell("A", 500, 500)
+//' sim$run_up_to_time(30)
+//'
+//' # here, the directory "test" contains a binary dump of the simulation.
+//' "test" %in% list.files(".")
+//'
+//' # re-assigning `sim` and calling the garbage collector destroys the 
+//' # Simulation object, but *not* the directory "test".
+//' sim <- 5
+//' gc()
+//' "test" %in% list.files(".")
+//'
+//' # (let us delete the directory "test" manually)
+//' unlink("test", recursive = TRUE)
+//' 
+//' # By using the optional parameter `delete_saved_on_destroy` we can create a 
+//' # new simulation named "test" whose stored data will be deleted during
+//' # object destruction.
+//' sim <- new(Simulation, "test", TRUE)
+//'
+//' # as done above, we add a new species, place a cell in the tissue, and let the 
+//' # simulation evolve.
+//' sim$add_genotype(genotype = "A", growth_rate = 0.3, death_rate = 0.02)
+//' sim$place_cell("A", 500, 500)
+//' sim$run_up_to_time(30)
+//'
+//' # the directory "test" contains a binary dump of the simulation.
+//' "test" %in% list.files(".")
+//'
+//' # re-assigning `sim` and calling the garbage collector destroys the 
+//' # Simulation object and deletes the simulation dump directory too.
+//' sim <- 5
+//' gc()
+//' "test" %in% list.files(".")
+//'
+//' # we can also provide a random seed to the simulation...
+//' sim <- new(Simulation, "test", 13, TRUE)
+//'
+//' # ...or creating a simulation without providing any name. By default, the 
+//' # simulation name will have the following format `races_<date>_<hour>`.
+//' sim <- new(Simulation, 13, TRUE)
+Simulation::Simulation(const std::string& simulation_name, const int& seed, const bool& delete_saved_on_destroy):
+  sim_ptr(std::make_shared<Races::Drivers::Simulation::Simulation>(simulation_name, seed))
 {}
+
+Simulation::~Simulation()
+{
+  if (sim_ptr.use_count()==1 && delete_saved_on_destroy) {
+    auto dir = sim_ptr->get_logger().get_directory();
+
+    sim_ptr = std::shared_ptr<Races::Drivers::Simulation::Simulation>();
+
+    std::filesystem::remove_all(dir);
+  }
+}
 
 //' @name Simulation$update_tissue
 //' @title Update tissue name and size
@@ -630,7 +793,7 @@ Simulation::Simulation(const std::string& output_dir, const int& seed):
 //' @param width The width of the new tissue.
 //' @param height The height of the new tissue.
 //' @examples
-//' sim <- new(Simulation, "update_tissue_test")
+//' sim <- new(Simulation, "update_tissue_test", TRUE)
 //'
 //' # set the tissue size, but not the name
 //' sim$update_tissue(1200, 900)
@@ -663,7 +826,7 @@ void Simulation::update_tissue(const Races::Drivers::Simulation::AxisSize& width
 //' @param growth_rates The duplication rates of the genotype species.
 //' @param death_rates The death rates of the genotype species.
 //' @examples
-//' sim <- new(Simulation, "add_genotype_test")
+//' sim <- new(Simulation, "add_genotype_test", TRUE)
 //'
 //' # create the two species "A+" and "A-". They both have genotype "A".
 //' sim$add_genotype(genotype = "A",
@@ -733,7 +896,7 @@ void Simulation::add_genotype(const std::string& genotype, const double& growth_
 //' @return A data frame reporting "genotype", "epistate", "growth_rate",
 //'    "death_rate", and "switch_rate" for each registered species.
 //' @examples
-//' sim <- new(Simulation, "get_species_test")
+//' sim <- new(Simulation, "get_species_test", TRUE)
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //'
@@ -784,7 +947,7 @@ List Simulation::get_species() const
 //' @param x The position on the x axis of the cell.
 //' @param y The position on the y axis of the cell.
 //' @examples
-//' sim <- new(Simulation, "place_cell_test")
+//' sim <- new(Simulation, "place_cell_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -828,7 +991,7 @@ List Simulation::get_cells() const
 //' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the aimed cell.
 //' @examples
-//' sim <- new(Simulation, "get_cell_test")
+//' sim <- new(Simulation, "get_cell_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -870,12 +1033,12 @@ List Simulation::get_cells(const SEXP& first_param, const SEXP& second_param) co
   using namespace Races::Drivers::Simulation;
 
   if (TYPEOF(first_param)!=TYPEOF(second_param)) {
-    warning(
-        "The two parameters have different types: %d (%s) != %d (%s)\n",
-        TYPEOF(first_param), type2name(first_param),
-        TYPEOF(second_param), type2name(second_param)
-    );
-    return R_NilValue;
+    std::ostringstream oss;
+
+    oss << "The two parameters have different types: " << type2name(first_param)
+        << " != " << type2name(second_param);
+
+    throw std::domain_error(oss.str());
   }
 
   switch (TYPEOF(first_param)) {
@@ -890,11 +1053,11 @@ List Simulation::get_cells(const SEXP& first_param, const SEXP& second_param) co
                             as<std::vector<std::string>>(second_param));
       }
       default: {
-          warning(
-              "Invalid SEXPTYPE %d (%s).\n",
-              TYPEOF(first_param), type2name(first_param)
-          );
-          return R_NilValue;
+        std::ostringstream oss;
+
+        oss << "Invalid parameter type " << type2name(first_param);
+
+        throw std::domain_error(oss.str());
       }
   }
 }
@@ -930,7 +1093,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //'    and "position_y" for each cells satisfying the provided filters and laying
 //'    in the input frame.
 //' @examples
-//' sim <- new(Simulation, "get_cells_test")
+//' sim <- new(Simulation, "get_cells_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -976,7 +1139,7 @@ List Simulation::get_cells(const std::vector<Races::Drivers::Simulation::AxisPos
 //' @return A data frame reporting "genotype", "epistate", "counts" for each
 //'      species in the simulation.
 //' @examples
-//' sim <- new(Simulation, "get_counts_test")
+//' sim <- new(Simulation, "get_counts_test", TRUE)
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
@@ -1024,7 +1187,7 @@ get_species_id2name(const Races::Drivers::Simulation::Tissue& tissue)
 //'         "position_y", and "time" for each cells manually added to
 //'         the simulation.
 //' @examples
-//' sim <- new(Simulation, "get_added_cells")
+//' sim <- new(Simulation, delete_saved_on_destroy=TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1088,7 +1251,7 @@ List Simulation::get_added_cells() const
 //' @param dest The name of the genotype to which the mutation leads.
 //' @param time The simulated time at which the mutation will occurs.
 //' @examples
-//' sim <- new(Simulation, "schedule_genotype_mutation_test")
+//' sim <- new(Simulation, "schedule_genotype_mutation_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1162,7 +1325,7 @@ std::vector<TimedLineageEdge> sorted_timed_edges(const Races::Drivers::Simulatio
 //' @return A data frame reporting "ancestor", "progeny", and "first_occurrence" of
 //'         each species-to-species transition.
 //' @examples
-//' sim <- new(Simulation, "get_lineage_graph_test")
+//' sim <- new(Simulation, "get_lineage_graph_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1213,7 +1376,7 @@ inline void validate_non_empty_tissue(const Races::Drivers::Simulation::Tissue& 
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
 //' @examples
-//' sim <- new(Simulation, "run_up_to_time_test")
+//' sim <- new(Simulation, "run_up_to_time_test", TRUE)
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$place_cell("A", 500, 500)
 //'
@@ -1237,7 +1400,7 @@ void Simulation::run_up_to_time(const Races::Time& time)
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
 //' @examples
-//' sim <- new(Simulation, "run_up_to_size_test")
+//' sim <- new(Simulation, "run_up_to_size_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1268,7 +1431,7 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
 //' @examples
-//' sim <- new(Simulation, "run_up_to_event_test")
+//' sim <- new(Simulation, "run_up_to_event_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1302,7 +1465,7 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
 //' @title Gets the simulated time
 //' @return The time simulated by the simulation.
 //' @examples
-//' sim <- new(Simulation, "get_clock_test")
+//' sim <- new(Simulation, "get_clock_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1322,7 +1485,7 @@ Races::Time Simulation::get_clock() const
 //' @return A data frame reporting "event", "genotype", "epistate", and "fired"
 //'     for each event type, genotype, and epigenetic states.
 //' @examples
-//' sim <- new(Simulation, "get_firings_test")
+//' sim <- new(Simulation, "get_firings_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1350,7 +1513,7 @@ List Simulation::get_firings() const
 //'     and "time" for each event type, for each species, and for each
 //'     sampled time.
 //' @examples
-//' sim <- new(Simulation, "get_firing_history_test")
+//' sim <- new(Simulation, "get_firing_history_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1442,7 +1605,7 @@ List Simulation::get_firing_history(const Races::Time& minimum_time,
 //' @return A data frame reporting "genotype", "epistate", "counts",
 //'     and "time" for each species, and for each sampled time.
 //' @examples
-//' sim <- new(Simulation, "get_count_history")
+//' sim <- new(Simulation, "get_count_history_test", TRUE)
 //' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
@@ -1509,7 +1672,7 @@ List Simulation::get_count_history(const Races::Time& minimum_time,
 //' @return The simulation name, which corresponds to the name of the directory
 //'         in which the simulation is saving its progresses.
 //' @examples
-//' sim <- new(Simulation, "test")
+//' sim <- new(Simulation, "get_name_test" , TRUE)
 //'
 //' # Expecting "test"
 //' sim$get_name()
@@ -1522,7 +1685,7 @@ std::string Simulation::get_name() const
 //' @title Gets the tissue name
 //' @return The name of the simulated tissue.
 //' @examples
-//' sim <- new(Simulation, "test")
+//' sim <- new(Simulation, delete_saved_on_destroy=TRUE)
 //' sim$update_tissue("Liver", 1200, 900)
 //'
 //' # get the tissue name, i.e., expecting "Liver"
@@ -1536,7 +1699,7 @@ const std::string& Simulation::get_tissue_name() const
 //' @title Gets the size of the simulated tissue
 //' @return The vector `c(x_size, y_size)` of the simulated tissue.
 //' @examples
-//' sim <- new(Simulation, "get_tissue_size_test")
+//' sim <- new(Simulation, delete_saved_on_destroy=TRUE)
 //' sim$update_tissue("Liver", 1200, 900)
 //'
 //' # get the tissue size, i.e., expecting c(1200,900)
@@ -1553,7 +1716,7 @@ IntegerVector Simulation::get_tissue_size() const
 //' @param species The species whose rates are aimed.
 //' @return The list of the species rates.
 //' @examples
-//' sim <- new(Simulation, "get_rates_test")
+//' sim <- new(Simulation, "get_rates_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1580,7 +1743,7 @@ List Simulation::get_rates(const std::string& species_name) const
 //' @param species The species whose rates must be updated.
 //' @param rates The list of rates to be updated.
 //' @examples
-//' sim <- new(Simulation, "update_rates_test")
+//' sim <- new(Simulation, delete_saved_on_destroy=TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1621,7 +1784,7 @@ void Simulation::update_rates(const std::string& species_name, const List& rates
 //' @return A list reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
 //' @examples
-//' sim <- new(Simulation, "choose_cell_in_test")
+//' sim <- new(Simulation, "choose_cell_in_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1678,7 +1841,7 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 //' @param cell_position The position of the cell whose offspring will mutate.
 //' @param mutated_genotype The genotype of the mutated cell.
 //' @examples
-//' sim <- new(Simulation, "mutate_progeny_test")
+//' sim <- new(Simulation, "mutate_progeny_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1724,7 +1887,7 @@ void Simulation::mutate_progeny(const List& cell_position,
 //'       tissue and stores its cells in a sample that can subsequently
 //'       retrieved to build a samples forest.
 //' @examples
-//' sim <- new(Simulation, "sample_cells_test")
+//' sim <- new(Simulation, "sample_cells_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -1785,7 +1948,7 @@ List get_samples_info(const SAMPLES& samples)
 //'           sample, the name, the sampling time, the
 //'           position, and the number of tumoural cells.
 //' @examples
-//' sim <- new(Simulation, "get_samples_info_test")
+//' sim <- new(Simulation, "get_samples_info_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -1820,7 +1983,7 @@ List Simulation::get_samples_info() const
 //'       if and only if that $S$ has reached the death activation level at
 //'       least once during the simulation.
 //' @examples
-//' sim <- new(Simulation, "death_activation_level_test")
+//' sim <- new(Simulation, "death_activation_level_test", TRUE)
 //'
 //' # get the simulation death activation level
 //' sim$death_activation_level
@@ -1834,7 +1997,7 @@ List Simulation::get_samples_info() const
 //' @description This value is the maximum time between two successive
 //'          time series data samples.
 //' @examples
-//' sim <- new(Simulation, "death_activation_level_test")
+//' sim <- new(Simulation, "death_activation_level_test", TRUE)
 //'
 //' # get the delta time between two time series samples (0 by default)
 //' sim$history_delta
@@ -1848,7 +2011,7 @@ List Simulation::get_samples_info() const
 //' @param name The name of the simulation to be recovered
 //' @examples
 //' # create a simulation having name "recover_simulation_test"
-//' sim <- new(Simulation, "recover_simulation_test")
+//' sim <- new(Simulation, "recover_simulation_test", TRUE)
 //'
 //' # add the species of "A"
 //' sim$add_genotype("A",
@@ -1872,7 +2035,7 @@ List Simulation::get_samples_info() const
 //' exists("sim")
 //'
 //' # recover the simulation from the directory "recover_simulation_test"
-//' sim <- recover_simulation("recover_simulation_test")
+//' sim <- recover_simulation("recover_simulation_test", TRUE)
 //'
 //' sim
 
@@ -1976,7 +2139,7 @@ SamplesForest::SamplesForest(const Races::Drivers::Simulation::Simulation& simul
 //'         and the birth time (column "birth_time").
 //' @examples
 //' # create a simulation having name "get_nodes_test"
-//' sim <- new(Simulation, "get_nodes_test")
+//' sim <- new(Simulation, "get_nodes_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -2049,7 +2212,7 @@ List SamplesForest::get_nodes(const std::vector<Races::Drivers::CellId>& cell_id
 //'           name, the sampling time, the position, and
 //'           the number of tumoural cells.
 //' @examples
-//' sim <- new(Simulation, "get_samples_info_2_test")
+//' sim <- new(Simulation, "get_samples_info_2_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -2099,7 +2262,7 @@ List SamplesForest::get_coalescent_cells() const
 //'         (column "genotype"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
 //' @examples
-//' sim <- new(Simulation, "get_coalescent_cells_test")
+//' sim <- new(Simulation, "get_coalescent_cells_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -2128,7 +2291,7 @@ List SamplesForest::get_coalescent_cells(const std::list<Races::Drivers::CellId>
 //'         as leaves of the new forest
 //' @return A samples forest built on the samples mentioned in `sample_names`
 //' @examples
-//' sim <- new(Simulation, "get_subforest_for_test")
+//' sim <- new(Simulation, "get_subforest_for_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -2206,7 +2369,7 @@ void SamplesForest::show() const
 //' @title Get the samples forest
 //' @return The samples forest having as leaves the sampled cells
 //' @examples
-//' sim <- new(Simulation, "get_samples_forest_test")
+//' sim <- new(Simulation, "get_samples_forest_test", TRUE)
 //' sim$add_genotype(genotype = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -2232,9 +2395,12 @@ RCPP_EXPOSED_CLASS(Simulation)
 RCPP_EXPOSED_CLASS(SamplesForest)
 RCPP_MODULE(Drivers){
   class_<Simulation>("Simulation")
-  .constructor("Create a simulation whose output file has the format \"races_<year>_<hour><minute><second>\"")
-  .constructor<std::string>("Crete a simulation whose parameter is the output directory")
-  .constructor<std::string, int>("Crete a simulation: the first parameter is the output directory; the second one is the random seed")
+  .constructor("Create a simulation whose name is \"races_<year>_<hour><minute><second>\"")
+  .constructor<SEXP>("Create a simulation")
+  .constructor<SEXP, SEXP>("Crete a simulation")
+  .constructor<std::string, int, bool>("Crete a simulation: the first parameter is the simulation name; "
+                                       "the second one is the random seed; the third one is a Boolean flag "
+                                       "to enable/disable storage")
 
   // place_cell
   .method("place_cell", &Simulation::place_cell, "Place a cell in the tissue")
