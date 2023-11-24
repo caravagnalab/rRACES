@@ -1706,7 +1706,7 @@ List Simulation::get_count_history(const Races::Time& minimum_time,
 //' sim$get_name()
 std::string Simulation::get_name() const
 {
-  return std::string(sim_ptr->get_logger().get_directory());
+  return name;
 }
 
 //' @name Simulation$get_tissue_name
