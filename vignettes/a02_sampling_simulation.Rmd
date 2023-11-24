@@ -42,10 +42,6 @@ consider:
 
 We consider a simple monoclonal model, without epigenotypes.
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink("Monoclonal", recursive = TRUE)
-```
-
 ```{r, eval=TRUE}
 # Monoclonal model, no epigenotypes
 sim <- new(Simulation, "Monoclonal")
@@ -184,11 +180,6 @@ plot_forest(S_1_1_forest) %>%
   annotate_forest(S_1_1_forest)
 ```
 
-
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink(sim$get_name(), recursive = TRUE)
-```
-
 ## Randomised multi-region samples
 
 
@@ -275,18 +266,10 @@ plot_forest(forest) %>%
   annotate_forest(forest)
 ```
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink(sim$get_name(), recursive = TRUE)
-```
-
 ## Two populations with epigenetic state
 
 We are now ready to simulate a model with epigenetic
 switches and subclonal expansions.
-
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink("Two Populations", recursive = TRUE)
-```
 
 ```{r,  fig.height=4, fig.width=3}
 sim <- new(Simulation, "Two Populations")
@@ -366,20 +349,12 @@ complicated
 plot_forest(sim$get_samples_forest())
 ```
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink(sim$get_name(), recursive = TRUE)
-```
-
 ## More complex example
 
 Some functionalities allow for a smarter sampling and more advanced
 visualisation.
 
 We build a tumour with three populations, branching.
-
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink("Three Populations", recursive = TRUE)
-```
 
 ```{r, fig.height=4, fig.width=3}
 sim <- new(Simulation, "Three Populations")
@@ -480,6 +455,3 @@ plot_forest(forest) %>%
 
 The horizontal line denotes sampling times, and circles the MRCAs of interest.
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink(sim$get_name(), recursive = TRUE)
-```

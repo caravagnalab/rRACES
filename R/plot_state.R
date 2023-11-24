@@ -26,7 +26,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation, "plot_state_test" , TRUE)
+#' sim <- new(Simulation)
 #' sim$add_genotype(genotype = "A",
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 #'                  growth_rates = c("+" = 0.2, "-" = 0.08),
