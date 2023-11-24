@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation, "plot_tissue_test")
+#' sim <- new(Simulation)
 #' sim$add_genotype(name = "A",
 #'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 #'                  growth_rates = c("+" = 0.2, "-" = 0.08),

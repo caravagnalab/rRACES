@@ -46,17 +46,25 @@ sim <- new(Simulation)
 
 This automatically builds a 1000x1000-cells tissue - which can host $1$
 milion cells - and sets the name of the simulation to be
-`races_<date>_<hour>`. The binary dump of the simulation will be saved
-in a directory with the same name of the simulation; a custom name can
-be specified.
+`races_<date>_<hour>`. 
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink("Test", recursive = TRUE)
-```
+A simulation custom name can be specified as it follows.
 
 ```{r, eval = TRUE}
-# Call your simulation Test will save everything in a 'Test' folder
-sim <- new(Simulation, "Test")
+# Call your simulation "Test"
+sim <- new(Simulation)
+```
+
+In order to save the simulation progresses in the disk and recover 
+it in the future, use the optional Boolean parameter
+`save_snapshots`. By setting `save_snapshots` to `TRUE`, the 
+simulation progresses will be saved in a directory whose name is 
+the name of the simulation.
+
+```{r, eval = FALSE}
+# The progresses of the simulation will saved in the "Test" folder.
+# If the directory "Test" already exists an exception is raised.
+sim <- new(Simulation, save_snapshots = TRUE)
 ```
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
@@ -476,11 +484,6 @@ the state (by default, `history_delta` is set to $0$).
 
 We show this by re-simulating a tumour with two subclones.
 
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-# Cancel old data
-unlink(sim$get_name(), recursive = TRUE)
-```
-
 ```{r}
 # Example time-series on a new simulation, with coarse-grained time-series
 sim <- new(Simulation, "Finer Time Series")
@@ -598,10 +601,6 @@ plot_muller(sim) + ggplot2::xlim(clock * 3/4, clock)
 plot_muller(sim) +
   ggplot2::xlim(clock * 3/4, clock) +
   ggplot2::scale_y_log10()
-```
-
-```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
-unlink(sim$get_name(), recursive = TRUE)
 ```
 
 ##### 
