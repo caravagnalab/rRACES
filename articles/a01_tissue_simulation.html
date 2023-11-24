@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Tissue simulation">
 <meta property="og:description" content="rRACES">
@@ -112,17 +112,26 @@ must be created.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span></code></pre></div>
 <p>This automatically builds a 1000x1000-cells tissue - which can host
 <span class="math inline">\(1\)</span> milion cells - and sets the name
-of the simulation to be <code>races_&lt;date&gt;_&lt;hour&gt;</code>.
-The binary dump of the simulation will be saved in a directory with the
-same name of the simulation; a custom name can be specified.</p>
+of the simulation to be
+<code>races_&lt;date&gt;_&lt;hour&gt;</code>.</p>
+<p>A simulation custom name can be specified as it follows.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Call your simulation Test will save everything in a 'Test' folder</span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"Test"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Call your simulation "Test"</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span></code></pre></div>
+<p>In order to save the simulation progresses in the disk and recover it
+in the future, use the optional Boolean parameter
+<code>save_snapshots</code>. By setting <code>save_snapshots</code> to
+<code>TRUE</code>, the simulation progresses will be saved in a
+directory whose name is the name of the simulation.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># The progresses of the simulation will saved in the "Test" folder.</span></span>
+<span><span class="co"># If the directory "Test" already exists an exception is raised.</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span>, save_snapshots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Class <code>Simulation</code> exports a <code>show</code> method to
 get information on the current object.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span></span>
-<span><span class="co">#&gt; ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #BB0000;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> Test ──────────────────── <span style="color: #BB0000;">▣ </span>A tissue [1000x1000]<span style="color: #BB0000;">  ⏱ </span>0 ──</span></span>
+<span><span class="co">#&gt; ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #BB0000;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> races_20231124-211532 ─── <span style="color: #BB0000;">▣ </span>A tissue [1000x1000]<span style="color: #BB0000;">  ⏱ </span>0 ──</span></span>
 <span><span class="co">#&gt;    </span></span>
 <span><span class="co">#&gt;    =======  ===  ===  ===  ======</span></span>
 <span><span class="co">#&gt;    species   λ    δ    ε   counts</span></span>
@@ -130,17 +139,17 @@ get information on the current object.</p>
 <span><span class="co">#&gt;    =======  ===  ===  ===  ======</span></span></code></pre></div>
 <p>The <code>sim</code> object exposes also methods to get information
 about the simulation and control it.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the simulation directory, i.e., "Test"</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_name</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Test"</span></span>
+<span><span class="co">#&gt; [1] "races_20231124-211532"</span></span>
 <span></span>
 <span><span class="co"># Get the tissue size, i.e., c(1000,1000)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_tissue_size</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1000 1000</span></span></code></pre></div>
 <p><strong>Custom tissue.</strong> We can change the tissue size and
 label it with a name that might appear in some plots.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set the tissue name and size to different values</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">update_tissue</span><span class="op">(</span><span class="st">"Liver"</span>, <span class="fl">1200</span>, <span class="fl">900</span><span class="op">)</span></span>
 <span></span>
@@ -219,7 +228,7 @@ A_\ominus + A_\oplus
 <span class="math inline">\(\delta\)</span> are as above, and <span class="math inline">\(\epsilon_{+-}\)</span> or <span class="math inline">\(\epsilon_{-+}\)</span> are the ratesat which cells
 of a certain epistate duplicate and flip the epigenetic marker of one of
 the progeny.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"A"</span>,</span>
 <span>                 epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.01</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span>,</span>
 <span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.2</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span>,</span>
@@ -227,7 +236,7 @@ the progeny.</p>
 <span></span>
 <span><span class="co"># updated object (counts refer to number of cells of each species)</span></span>
 <span><span class="va">sim</span></span>
-<span><span class="co">#&gt; ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #BB0000;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> Test ──────────────────────── <span style="color: #BB0000;">▣ </span>Liver [1200x900]<span style="color: #BB0000;">  ⏱ </span>0 ──</span></span>
+<span><span class="co">#&gt; ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #BB0000;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> races_20231124-211532 ─────── <span style="color: #BB0000;">▣ </span>Liver [1200x900]<span style="color: #BB0000;">  ⏱ </span>0 ──</span></span>
 <span><span class="co">#&gt;    </span></span>
 <span><span class="co">#&gt;    =======  ====  ====  ====  ======</span></span>
 <span><span class="co">#&gt;    species   λ      δ    ε    counts</span></span>
@@ -242,12 +251,12 @@ the progeny.</p>
 <span><span class="co">#&gt; 1        A        -        0.08       0.01        0.01</span></span>
 <span><span class="co">#&gt; 2        A        +        0.20       0.10        0.01</span></span></code></pre></div>
 <p>A genotype without epistates could be added as</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Not run</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"A"</span>, growth_rates <span class="op">=</span> <span class="fl">0.2</span>, death_rates <span class="op">=</span>  <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 <p>To be able to simulate the model, an initial cell needs to be
 displaced in the tissue.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We add one cell of species A+ (genotype A in epistate +) in</span></span>
 <span><span class="co"># position (500, 500).</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
@@ -257,7 +266,7 @@ displaced in the tissue.</p>
 </h3>
 <p>We can query the current state of the simulation, and extract the
 position of each cell in the tissue</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Counts per species</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   genotype epistate counts</span></span>
@@ -271,11 +280,11 @@ position of each cell in the tissue</p>
 <p>These information can be plot. Note that the tissue visualisation
 uses hexagonal bins to avoid rastering delays when the simulation uses
 thousands of cells.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Piechar for counts</span></span>
 <span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-12-1.png" width="288"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Spatial distribution for the whole tissue (hexagonal bins)</span></span>
 <span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
@@ -302,7 +311,7 @@ event) has occurred.</li>
 </h3>
 <p>We can run the simulation up to when we have <span class="math inline">\(\theta &gt; 0\)</span>; cells of species
 <code>A+</code></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Counts per species is now 0</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   genotype epistate counts</span></span>
@@ -324,7 +333,7 @@ event) has occurred.</li>
 <h3 id="firing-based-simulation">Firing-based simulation<a class="anchor" aria-label="anchor" href="#firing-based-simulation"></a>
 </h3>
 <p>The number of times each event has fired is accessible</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the number of fired event per species</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firings</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    event genotype epistate fired</span></span>
@@ -337,7 +346,7 @@ event) has occurred.</li>
 <p>A small number of cell deaths have occurred in species
 <code>A-</code> up to this point, so we can simulate the system until
 there are 100 of them.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_event</span><span class="op">(</span><span class="st">"death"</span>, <span class="st">"A-"</span>, <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># The row "death", for "A" "-" now reports 100</span></span>
@@ -349,7 +358,7 @@ there are 100 of them.</p>
 <span><span class="co">#&gt; 4  death        A        +  3456</span></span>
 <span><span class="co">#&gt; 5 growth        A        +  7354</span></span>
 <span><span class="co">#&gt; 6 switch        A        +   387</span></span></code></pre></div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the tissue by using 200 bins</span></span>
 <span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-16-1.png" width="288"></p>
@@ -359,7 +368,7 @@ there are 100 of them.</p>
 </h3>
 <p>It is also possible to take the current simulation clock as
 reference, and simulate further.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the simulation clock</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 64.19203</span></span>
@@ -370,7 +379,7 @@ reference, and simulate further.</p>
 <span><span class="co"># Get again the simulation clock</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 79.19229</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-18-1.png" width="288"></p>
 <div class="section level5">
@@ -380,7 +389,7 @@ reference, and simulate further.</p>
 <p>At this point, if we query the simulation we will find more cells (we
 use <code>dplyr</code> to process query results). For convenience, the
 getters accept parameters to subset the tissue.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load dplyr to use %&gt;%</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
@@ -433,7 +442,7 @@ getters accept parameters to subset the tissue.</p>
 </h3>
 <p>rRACES can select cells from the tissue, randomly for every genotype,
 or in a constrained tissue area.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Stochastic sampling from the whole tissue: it can return A+ or A-</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id genotype epistate position_x position_y</span></span>
@@ -461,7 +470,7 @@ is where we will inject the new clone;</p></li>
 <li><p>implement the change of the cell of genotype <code>A</code> to a
 cell of genotype <code>B</code>.</p></li>
 </ul>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We locate a random cell</span></span>
 <span><span class="va">cell</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
 <span><span class="va">cell</span></span>
@@ -474,7 +483,7 @@ cell of genotype <code>B</code>.</p></li>
 <span>                 growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.3</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span>
 <span>                 death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then we inject the cell, and simulate a little bit.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Clone injection</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">cell</span>, <span class="st">"B"</span><span class="op">)</span></span>
 <span></span>
@@ -491,13 +500,13 @@ cell of genotype <code>B</code>.</p></li>
 <p>At this point, we can inspect in more details the tissue. It can help
 to facet on the species to clearly appreciate the spatial diffusion of
 the populations.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-23-1.png" width="288"></p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-23-2.png" width="288"></p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Facet on species via ggplot</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
@@ -505,7 +514,7 @@ the populations.</p>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-24-1.png" width="576"></p>
 <p>If, at this point in the simulation, we generate a new genotype
 <code>C</code> from <code>A</code> in the rectangle <span class="math inline">\([450,500]\times [550, 600]\)</span>.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define evolutionary parameters</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"C"</span>,</span>
 <span>                 epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.1</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span>
@@ -516,10 +525,10 @@ the populations.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">450</span>, <span class="fl">550</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">600</span><span class="op">)</span><span class="op">)</span>, <span class="st">"C"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-26-1.png" width="288"></p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 198 rows containing missing values (`geom_hex()`).</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-26-2.png" width="288"></p>
@@ -532,7 +541,7 @@ the populations.</p>
 </h5>
 <p>On the tissue, we can inject multiple cells manually; all injected
 cells can be retrieved.</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Now it will return just the initial cell</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_added_cells</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   genotype epistate position_x position_y time</span></span>
@@ -551,7 +560,7 @@ number of cells that enables cell death in a species: a cell of species
 at least once during the simulation.</p>
 <p>This threshold holds for all the species and it is set to 1 by
 default.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span></span>
 <span><span class="co">#&gt; [1] 50</span></span>
 <span></span>
@@ -574,7 +583,7 @@ the simulation data over time.</p>
 <code>run_to_*</code> methods, RACES stores the data about the number of
 species cells, and that of event firings. These data can be
 extracted.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The firings</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firing_history</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    event genotype epistate fired     time</span></span>
@@ -606,7 +615,7 @@ extracted.</p>
 <span><span class="co">#&gt; 5        C        -     0 44.46369</span></span>
 <span><span class="co">#&gt; 6        C        +     0 44.46369</span></span></code></pre></div>
 <p>The time-series can be plot using <code>plot_timeseries</code></p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-series plot</span></span>
 <span><span class="fu"><a href="../reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-30-1.png" width="384"></p>
@@ -619,7 +628,7 @@ the <code>Simulation</code> property <code>history_delta</code> to
 increase the sampling rate of the state (by default,
 <code>history_delta</code> is set to <span class="math inline">\(0\)</span>).</p>
 <p>We show this by re-simulating a tumour with two subclones.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Example time-series on a new simulation, with coarse-grained time-series</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"Finer Time Series"</span><span class="op">)</span></span>
 <span></span>
@@ -663,26 +672,26 @@ increase the sampling rate of the state (by default,
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"D+"</span>, <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
 <p>The time-series can be plot using <code>plot_timeseries</code>.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-series plot</span></span>
 <span><span class="fu"><a href="../reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-33-1.png" width="384"></p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-32-1.png" width="384"></p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Logscale helps seeing the different effective growth rates</span></span>
 <span><span class="fu"><a href="../reference/plot_timeseries.html">plot_timeseries</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Transformation introduced infinite values in continuous y-axis</span></span>
 <span><span class="co">#&gt; Transformation introduced infinite values in continuous y-axis</span></span></code></pre></div>
-<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-33-2.png" width="384"></p>
+<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-32-2.png" width="384"></p>
 </div>
 <div class="section level3">
 <h3 id="muller-plot">Muller plot<a class="anchor" aria-label="anchor" href="#muller-plot"></a>
 </h3>
 <p>We can also get a Muller plot of the evolution using <a href="https://CRAN.R-project.org/package=ggmuller" class="external-link">ggmuller</a>.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># default Muller plot</span></span>
 <span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-34-1.png" width="576"></p>
+<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-33-1.png" width="576"></p>
 <p>In this case every population is annotated as a descendant of the
 ancestor genotype. Note however that reversible espistates do not fit a
 traditional Muller plot because they violate the no-back mutation
@@ -691,18 +700,18 @@ model.</p>
 injected in the simulation, and the second will result by linear. This
 is not a completely correct perspective of the simulation time-series;
 still, it help understand trends.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Custom Mullers</span></span>
 <span><span class="va">clock</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="va">clock</span> <span class="op">*</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>, <span class="va">clock</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-35-1.png" width="576"></p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-34-1.png" width="576"></p>
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="va">clock</span> <span class="op">*</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>, <span class="va">clock</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-35-2.png" width="576"></p>
+<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-34-2.png" width="576"></p>
 </div>
 </div>
 <div class="section level2">
@@ -714,7 +723,7 @@ this happens when a population is subject to a targeted treatment.</p>
 <code>D</code> have the same rates, we increase the death rate of both
 <code>C+</code> and <code>C-</code> species, as well as <code>B+</code>
 and <code>B-</code>.</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Current rates</span></span>
 <span><span class="va">sim</span></span>
 <span><span class="co">#&gt;    </span></span>
@@ -759,13 +768,13 @@ and <code>B-</code>.</p>
 <span><span class="co"># This now show the change in rates</span></span>
 <span><span class="va">clock</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="va">clock</span> <span class="op">*</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>, <span class="va">clock</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-36-1.png" width="576"></p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-35-1.png" width="576"></p>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">xlim</a></span><span class="op">(</span><span class="va">clock</span> <span class="op">*</span> <span class="fl">3</span><span class="op">/</span><span class="fl">4</span>, <span class="va">clock</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_log10</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-36-2.png" width="576"></p>
+<p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-35-2.png" width="576"></p>
 <div class="section level5">
 <h5 id="section"></h5>
 </div>
