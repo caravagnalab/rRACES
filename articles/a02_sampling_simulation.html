@@ -408,11 +408,11 @@ subclonal expansions.</p>
 <p>Sample again and plot the tissue</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A2"</span>, bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">480</span>, <span class="fl">480</span><span class="op">)</span>,</span>
-<span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">480</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">480</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A2"</span>, bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">500</span><span class="op">)</span>,</span>
+<span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">250</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B2"</span>, bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>,</span>
-<span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B2"</span>, bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">165</span><span class="op">)</span>,</span>
+<span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">165</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-27-1.png" width="288"></p>
@@ -469,7 +469,10 @@ subclonal expansions.</p>
 <p>Now we show the cell division tree, which starts being rather
 complicated</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">forest</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
@@ -478,7 +481,7 @@ complicated</p>
 <div class="section level2">
 <h2 id="more-complex-example">More complex example<a class="anchor" aria-label="anchor" href="#more-complex-example"></a>
 </h2>
-<p>Some functionalities allow for a smarter sampling and more advanced
+<p>Some features allow for a smarter sampling and more advanced
 visualisation.</p>
 <p>We build a tumour with three populations, branching.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
@@ -580,7 +583,7 @@ sample.</p>
 <span><span class="co">#&gt; Warning: The shape palette can deal with a maximum of 6 discrete values because</span></span>
 <span><span class="co">#&gt; more than 6 becomes difficult to discriminate; you have 7. Consider</span></span>
 <span><span class="co">#&gt; specifying shapes manually if you must have them.</span></span>
-<span><span class="co">#&gt; Warning: Removed 787 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1041 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="a02_sampling_simulation_files/figure-html/unnamed-chunk-36-1.png" width="1632"></p>
 <p>The horizontal line denotes sampling times, and circles the MRCAs of
 interest.</p>
