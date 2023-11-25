@@ -332,11 +332,11 @@ Sample again and plot the tissue
 
 ```{r,  fig.height=4, fig.width=3}
 
-sim$sample_cells("A2", bottom_left = c(480, 480),
-                 top_right = c(480 + bbox_width, 480 + bbox_width))
+sim$sample_cells("A2", bottom_left = c(250, 500),
+                 top_right = c(250 + bbox_width, 500 + bbox_width))
 
-sim$sample_cells("B2", bottom_left = c(500, 500),
-                 top_right = c(500 + bbox_width, 500 + bbox_width))
+sim$sample_cells("B2", bottom_left = c(500, 165),
+                 top_right = c(500 + bbox_width, 165 + bbox_width))
 
 plot_tissue(sim, num_of_bins = 500)
 plot_muller(sim)
@@ -346,12 +346,15 @@ Now we show the cell division tree, which starts being rather
 complicated
 
 ```{r,  fig.height=12, fig.width=17}
-plot_forest(sim$get_samples_forest())
+forest <- sim$get_samples_forest()
+
+plot_forest(forest) %>%
+  annotate_forest(forest)
 ```
 
 ## More complex example
 
-Some functionalities allow for a smarter sampling and more advanced
+Some features allow for a smarter sampling and more advanced
 visualisation.
 
 We build a tumour with three populations, branching.
