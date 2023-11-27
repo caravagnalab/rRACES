@@ -52,7 +52,7 @@ A simulation custom name can be specified as it follows.
 
 ```{r, eval = TRUE}
 # Call your simulation "Test"
-sim <- new(Simulation)
+sim <- new(Simulation, "Test")
 ```
 
 In order to save the simulation progresses in the disk and recover 
@@ -64,7 +64,7 @@ the name of the simulation.
 ```{r, eval = FALSE}
 # The progresses of the simulation will saved in the "Test" folder.
 # If the directory "Test" already exists an exception is raised.
-sim <- new(Simulation, save_snapshots = TRUE)
+sim <- new(Simulation, "Test", save_snapshots = TRUE)
 ```
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
