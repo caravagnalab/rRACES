@@ -219,35 +219,35 @@ This allows to program sampling without having a clear idea of the tissue confor
 
 ```{r,  fig.height=4, fig.width=3}
 # A bounding box 50x50 with at least 100 cells of species B
-ncells <- 100
 n_w <- n_h <- 50
+ncells <- 0.8*n_w*n_h
 
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
-bbox <- bbox_sampler(sim, "B", ncells, n_w, n_h)
+bbox <- sim$search_sample("B", ncells, n_w, n_h)
 
 current +
-  geom_rect(xmin = bbox$p[1], xmax = bbox$q[1],
-            ymin = bbox$p[2], ymax = bbox$q[2],
+  geom_rect(xmin = bbox$lower_corner[1], xmax = bbox$upper_corner[1],
+            ymin = bbox$lower_corner[2], ymax = bbox$upper_corner[2],
             fill = NA, color = "black")
 ```
 
 ```{r}
-sim$sample_cells("S_2_1", bbox$p, bbox$q)
+sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 ```
 
 Something similar with species `A`.
 
 ```{r,  fig.height=4, fig.width=3}
-bbox <- bbox_sampler(sim, "A", ncells, n_w, n_h)
+bbox <- sim$search_sample("A", ncells, n_w, n_h)
 
 current +
-  geom_rect(xmin = bbox$p[1], xmax = bbox$q[1],
-            ymin = bbox$p[2], ymax = bbox$q[2],
+  geom_rect(xmin = bbox$lower_corner[1], xmax = bbox$upper_corner[1],
+            ymin = bbox$lower_corner[2], ymax = bbox$upper_corner[2],
             fill = NA, color = "black")
 ```
 
 ```{r}
-sim$sample_cells("S_2_2", bbox$p, bbox$q)
+sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 ```
 
 The two samples have been extracted.
@@ -330,12 +330,14 @@ plot_tissue(sim, num_of_bins = 500)
 Sample again and plot the tissue
 
 ```{r,  fig.height=4, fig.width=3}
+n_w <- n_h <- 50
+ncells <- 0.8*n_w*n_h
 
-sim$sample_cells("A2", bottom_left = c(250, 500),
-                 top_right = c(250 + bbox_width, 500 + bbox_width))
+bbox <- sim$search_sample("A", ncells, n_w, n_h)
+sim$sample_cells("A2", bbox$lower_corner, bbox$upper_corner)
 
-sim$sample_cells("B2", bottom_left = c(500, 165),
-                 top_right = c(500 + bbox_width, 165 + bbox_width))
+bbox <- sim$search_sample("B", ncells, n_w, n_h)
+sim$sample_cells("B2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim, num_of_bins = 500)
 plot_muller(sim)
@@ -376,15 +378,15 @@ We use an automatic function `bbox_sampler` to determine bounding boxes
 so to collect a dedired number of cells of interest.
 
 ```{r,  fig.height=4, fig.width=3}
-ncells <- 20
 n_w <- n_h <- 7
+ncells <- 0.3*n_w*n_h
 
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
-bbox <- bbox_sampler(sim, "A", ncells, n_w, n_h)
-sim$sample_cells("A1", bbox$p, bbox$q)
+bbox <- sim$search_sample("A", ncells, n_w, n_h)
+sim$sample_cells("A1", bbox$lower_corner, bbox$upper_corner)
 
-bbox2 <- bbox_sampler(sim, "A", ncells, n_w, n_h)
-sim$sample_cells("B1", bbox2$p, bbox2$q)
+bbox <- sim$search_sample("A", ncells, n_w, n_h)
+sim$sample_cells("B1", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim)
 ```
@@ -399,7 +401,7 @@ Second clone starts.
 # New subclone
 sim$add_genotype(name = "B", growth_rates = 0.13, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-sim$run_up_to_size("B", 200)
+sim$run_up_to_size("B", 600)
 
 plot_tissue(sim)
 plot_muller(sim)
@@ -409,11 +411,11 @@ Random sampling of cells from both clone `A` and `B`.
 
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
-bbox <- bbox_sampler(sim, "A", ncells, n_w, n_h)
-sim$sample_cells("A2", bbox$p, bbox$q)
+bbox <- sim$search_sample("A", ncells, n_w, n_h)
+sim$sample_cells("A2", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- bbox_sampler(sim, "B", ncells, n_w, n_h)
-sim$sample_cells("B2", bbox$p, bbox$q)
+bbox <- sim$search_sample("B", ncells, n_w, n_h)
+sim$sample_cells("B2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim)
 ```
@@ -434,11 +436,11 @@ With sampling of clones `B` and `C`.
 
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
-bbox <- bbox_sampler(sim, "B", ncells, n_w, n_h)
-sim$sample_cells("A3", bbox$p, bbox$q)
+bbox <- sim$search_sample("B", ncells, n_w, n_h)
+sim$sample_cells("A3", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- bbox_sampler(sim, "C", ncells, n_w, n_h)
-sim$sample_cells("B3", bbox$p, bbox$q)
+bbox <- sim$search_sample("C", ncells, n_w, n_h)
+sim$sample_cells("B3", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim, num_of_bins = 100)
 plot_muller(sim)

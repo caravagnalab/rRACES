@@ -194,6 +194,108 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
 
 class SamplesForest;
 
+//' @name TissueRectangle
+//' @title A rectangle in the tissue
+//' @field get_lower_corner Get the rectangle lower corner
+//' @field get_upper_corner Get the rectangle upper corner
+class TissueRectangle : public Races::Drivers::RectangleSet
+{
+public:
+  TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
+                  const Races::Drivers::Simulation::PositionInTissue& upper_corner);
+
+  TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
+                  const Races::Drivers::Simulation::AxisSize& x_size, 
+                  const Races::Drivers::Simulation::AxisSize& y_size);
+
+  TissueRectangle(const std::vector<uint16_t>& lower_corner, 
+                  const std::vector<uint16_t>& upper_corner);
+
+  TissueRectangle(const std::vector<uint16_t>& lower_corner, 
+                  const Races::Drivers::Simulation::AxisSize& x_size, 
+                  const Races::Drivers::Simulation::AxisSize& y_size);
+
+  IntegerVector get_lower_corner() const
+  {
+    IntegerVector lcorner(2);
+
+    lcorner[0] = lower_corner.x;
+    lcorner[1] = lower_corner.y;
+
+    return lcorner;
+  }
+
+  IntegerVector get_upper_corner() const
+  {
+    IntegerVector ucorner(2);
+
+    ucorner[0] = upper_corner.x;
+    ucorner[1] = upper_corner.y;
+
+    return ucorner;
+  }
+
+  void show() const
+  {
+    Rcout << "TissueRectangle("
+          << "(" << lower_corner.x <<"," << lower_corner.y << "),"
+          << "(" << upper_corner.x <<"," << upper_corner.y << "))" << std::endl;
+  }
+};
+
+//' @name TissueRectangle$new
+//' @title Build a new rectangle of tissue.
+//' @examples
+//' # build the rectangle [500,550]x[450,475]
+//' rect <- new(TissueRectangle, c(500, 450), c(550, 475))
+//'
+//' rect
+//'
+//' # build the rectangle [500,550]x[450,475]
+//' rect <- new(TissueRectangle, c(500, 450), 50, 25)
+//'
+//' rect
+TissueRectangle::TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
+                                 const Races::Drivers::Simulation::PositionInTissue& upper_corner):
+  RectangleSet(lower_corner, upper_corner)
+{}
+
+TissueRectangle::TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
+                                 const Races::Drivers::Simulation::AxisSize& x_size, 
+                                 const Races::Drivers::Simulation::AxisSize& y_size):
+  RectangleSet(lower_corner, x_size, y_size)
+{}
+
+TissueRectangle::TissueRectangle(const std::vector<uint16_t>& lower_corner, const std::vector<uint16_t>& upper_corner):
+  TissueRectangle(Races::Drivers::Simulation::PositionInTissue{lower_corner[0],lower_corner[1]},
+                  Races::Drivers::Simulation::PositionInTissue{upper_corner[0], upper_corner[1]})
+{}
+
+TissueRectangle::TissueRectangle(const std::vector<uint16_t>& lower_corner, 
+                                 const Races::Drivers::Simulation::AxisSize& x_size, 
+                                 const Races::Drivers::Simulation::AxisSize& y_size):
+  TissueRectangle(Races::Drivers::Simulation::PositionInTissue{lower_corner[0],lower_corner[1]},
+                  x_size, y_size)
+{}
+
+//' @name TissueRectangle$lower_corner
+//' @title The lower corner of the tissue rectangle.
+//' @examples
+//' rect <- new(TissueRectangle, c(500, 500), c(550, 550))
+//'
+//' # get the simulation death activation level
+//' rect$lower_corner
+
+//' @name TissueRectangle$upper_corner
+//' @title The lower corner of the tissue rectangle.
+//' @examples
+//' rect <- new(TissueRectangle, c(500, 500), c(550, 550))
+//'
+//' # get the simulation death activation level
+//' rect$upper_corner
+
+
+
 //' @name Simulation
 //' @title Simulates the cell evolution on a tissue
 //' @description The objects of this class can simulate the evolution
@@ -230,6 +332,14 @@ class SamplesForest;
 //' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "position_x",
 //'         "position_y", and "time" for each cells manually added to
 //'         the simulation.
+//' }
+//' @field search_sample Seach a rectangular sample having a minimum number of cells\itemize{
+//' \item \emph{Parameter:} \code{genotype_name} - The genotype of the searched cells.
+//' \item \emph{Parameter:} \code{num_of_cells} - The number of cells in the searched sample.
+//' \item \emph{Parameter:} \code{width} - The width of the searched sample.
+//' \item \emph{Parameter:} \code{height} - The height of the searched sample.
+//' \item \emph{Returns:} If a rectangular sample satisfying the provided constraints can 
+//'               be found, the corresponding rectangle.
 //' }
 //' @field get_cell Gets one the tissue cells \itemize{
 //' \item \emph{Parameter:} \code{x} - The position of the aimed cell on the x axis.
@@ -608,6 +718,9 @@ public:
   }
 
   SamplesForest get_samples_forest() const;
+
+  TissueRectangle search_sample(const std::string& genotype_name, const size_t& num_of_cells,
+                                const uint16_t& width, const uint16_t& height);
 };
 
 std::string get_time_string()
@@ -1409,7 +1522,7 @@ inline void validate_non_empty_tissue(const Races::Drivers::Simulation::Tissue& 
 //' sim$place_cell("A", 500, 500)
 //'
 //' # simulate the tissue up to simulate timed 100
-//' sim$run_up_to_time(100)
+//' sim$run_up_to_time(40)
 void Simulation::run_up_to_time(const Races::Time& time)
 {
   validate_non_empty_tissue(sim_ptr->tissue());
@@ -1875,7 +1988,7 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.01, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
-//' sim$run_up_to_time(70)
+//' sim$run_up_to_time(40)
 //'
 //' sim$add_genotype(genotype = "B",
 //'                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
@@ -2419,12 +2532,118 @@ SamplesForest Simulation::get_samples_forest() const
   return SamplesForest(*sim_ptr);
 }
 
+size_t count_in(const std::set<Races::Drivers::SpeciesId>& species_ids,
+                const Races::Drivers::Simulation::Tissue& tissue,
+                const uint16_t init_x, const uint16_t init_y,
+                const uint16_t& width, const uint16_t& height)
+{
+  size_t counter{0};
+  auto sizes = tissue.size();
+
+  uint16_t x_max = std::min(static_cast<uint16_t>(init_x+width), sizes[0]);
+  uint16_t y_max = std::min(static_cast<uint16_t>(init_y+height), sizes[1]);
+
+  for (uint16_t x=init_x; x<x_max; ++x) {
+    for (uint16_t y=init_y; y<y_max; ++y) {
+      auto cell_proxy = tissue({x,y});
+      if (!cell_proxy.is_wild_type()) {
+        const Races::Drivers::Simulation::CellInTissue& cell = cell_proxy;
+
+        if (species_ids.count(cell.get_species_id())>0) {
+          ++counter;
+        }
+      }
+    }
+  }
+
+  return counter;
+}
+
+std::set<Races::Drivers::SpeciesId> 
+collect_species_of(const Races::Drivers::Simulation::Simulation& simulation,
+                   const std::string& genotype_name)
+{
+  const auto& tissue = simulation.tissue();
+  auto genotype_id = simulation.find_genotype_id(genotype_name);
+
+  std::set<Races::Drivers::SpeciesId> species_ids;
+
+  for (const auto& species: tissue) {
+    if (species.get_genotype_id()==genotype_id) {
+      species_ids.insert(species.get_id());
+    }
+  }
+
+  return species_ids;
+}
+
+//' @name Simulation$search_sample
+//' @title Search a rectangular sample containing a minimum number of cells
+//' @description This method searches a rectangular tissue sample containing 
+//'        the provided number of cells. The sizes of the sample are also
+//'        provided a parameter of the method. 
+//'        The complexity of this method is O(|tissue rows|*|tissue cols|).
+//' @param genotype_name The genotype of the searched cells.
+//' @param num_of_cells The number of cells in the searched sample.
+//' @param width The width of the searched sample.
+//' @param height The height of the searched sample.
+//' @return If a rectangular sample satisfying the provided constraints can 
+//'               be found, the corresponding rectangle.
+//' @examples
+//' sim <- new(Simulation)
+//' sim$death_activation_level <- 50
+//' sim$add_genotype(genotype = "A", growth_rate = 0.2, death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//' sim$run_up_to_size(species = "A", num_of_cells = 500)
+//'
+//' sim$add_genotype(genotype = "B", growth_rate = 0.3, death_rate = 0.01)
+//' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+//' sim$run_up_to_size(species = "B", num_of_cells = 1000)
+//'
+//' # find a 10x10 sample containing 80 "B" cells
+//' sim$search_sample("B",80,50,50)
+TissueRectangle Simulation::search_sample(const std::string& genotype_name, const size_t& num_of_cells,
+                                          const uint16_t& width, const uint16_t& height)
+{
+  auto species_ids = collect_species_of(*sim_ptr, genotype_name);
+
+  const auto& tissue = sim_ptr->tissue();
+  const auto tissue_sizes = tissue.size();
+
+  uint16_t grid_width = tissue_sizes[0]/width+((tissue_sizes[0]%width>0?1:0));
+  uint16_t grid_height = tissue_sizes[1]/height+((tissue_sizes[1]%height>0?1:0));
+
+  std::vector<size_t> grid_column(grid_height);
+  std::vector<std::vector<size_t>> grid(grid_width, grid_column);
+
+  for (uint16_t grid_x=0; grid_x<grid_width; ++grid_x) {
+    for (uint16_t grid_y=0; grid_y<grid_height; ++grid_y) {
+      const uint16_t x = grid_x*width, y = grid_y*height;
+      grid[grid_x][grid_y] = count_in(species_ids, tissue, x, y, 
+                                      width, height);
+      if (grid[grid_x][grid_y]>num_of_cells) {
+        return TissueRectangle(Races::Drivers::Simulation::PositionInTissue{x,y}, width, height);
+      }
+    }
+  }
+
+  throw std::runtime_error("No bounding box found!");
+}
+
 namespace RS = Races::Drivers::Simulation;
 namespace RD = Races::Drivers;
 
+RCPP_EXPOSED_CLASS(TissueRectangle)
 RCPP_EXPOSED_CLASS(Simulation)
 RCPP_EXPOSED_CLASS(SamplesForest)
 RCPP_MODULE(Drivers){
+  class_<TissueRectangle>("TissueRectangle")
+  .constructor<std::vector<uint16_t>, std::vector<uint16_t>>("Create a new rectangle")
+  .constructor<std::vector<uint16_t>, RS::AxisSize, RS::AxisSize>("Create a new rectangle")
+  .property("lower_corner",&TissueRectangle::get_lower_corner, "The rectangle lower corner")
+  .property("upper_corner",&TissueRectangle::get_upper_corner, "The rectangle upper corner")
+  .method("show",&TissueRectangle::show);
+
   class_<Simulation>("Simulation")
   .constructor("Create a simulation whose name is \"races_<year>_<hour><minute><second>\"")
   .constructor<SEXP>("Create a simulation")
@@ -2568,7 +2787,9 @@ RCPP_MODULE(Drivers){
           "Update tissue name and size")
   .method("update_tissue", (void (Simulation::*)(const RS::AxisSize&,
                                                  const RS::AxisSize&))(&Simulation::update_tissue),
-          "Update tissue size");
+          "Update tissue size")
+  .method("search_sample", &Simulation::search_sample, 
+          "Search a rectangular sample containing a given number of cells");
 
   // recover_simulation
   function("recover_simulation", &Simulation::load,
