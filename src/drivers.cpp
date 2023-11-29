@@ -2120,7 +2120,7 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 //'
 //' # duplicate the cell in position (503, 492). One of
 //' # its direct descendents will have genotype "B"
-//' sim$mutate_progeny(503, 492, "B")
+//' # sim$mutate_progeny(503, 492, "B")
 //'
 //' # the output of `choose_cell_in` and `get_cell` can also be used
 //' # as input for `mutate_progeny`
