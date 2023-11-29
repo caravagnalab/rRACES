@@ -32,6 +32,7 @@ reference:
   - Simulation$schedule_genotype_mutation
   - Simulation$choose_cell_in
   - Simulation$death_activation_level
+  - Simulation$duplicate_internal_cells
   - Simulation$history_delta
   - Simulation$get_added_cells
   - Simulation$get_cell
