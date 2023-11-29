@@ -53,6 +53,7 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/a01_tissue_simulation.html">Tissue simulation</a>
     <a class="dropdown-item" href="../articles/a02_sampling_simulation.html">Tissue sampling</a>
+    <a class="dropdown-item" href="../articles/a03_growth_models.html">Growth Models</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -115,13 +116,27 @@
 
 
 <dt><code>death_activation_level</code></dt>
-<dd><p>The number of cells that activates cell death in a species</p></dd>
+<dd><p>The number of cells that activates cell death in a species.</p></dd>
+
+
+<dt><code>duplicate_internal_cells</code></dt>
+<dd><p>Enable/disable duplication for internal cells.</p></dd>
 
 
 <dt><code>get_added_cells</code></dt>
 <dd><p>Gets the cells manually added to the simulation</p><ul><li><p><em>Returns:</em> A data frame reporting "genotype", "epistate", "position_x",
         "position_y", and "time" for each cells manually added to
         the simulation.</p></li>
+</ul></dd>
+
+
+<dt><code>search_sample</code></dt>
+<dd><p>Seach a rectangular sample having a minimum number of cells</p><ul><li><p><em>Parameter:</em> <code>genotype_name</code> - The genotype of the searched cells.</p></li>
+<li><p><em>Parameter:</em> <code>num_of_cells</code> - The number of cells in the searched sample.</p></li>
+<li><p><em>Parameter:</em> <code>width</code> - The width of the searched sample.</p></li>
+<li><p><em>Parameter:</em> <code>height</code> - The height of the searched sample.</p></li>
+<li><p><em>Returns:</em> If a rectangular sample satisfying the provided constraints can 
+              be found, the corresponding rectangle.</p></li>
 </ul></dd>
 
 

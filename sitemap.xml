@@ -13,6 +13,9 @@
     <loc>https://caravagnalab.github.io/rRACES/articles/a02_sampling_simulation.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/a03_growth_models.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/index.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-death_activation_level.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-duplicate_internal_cells.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_added_cells.html</loc>
@@ -127,6 +133,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-schedule_genotype_mutation.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-search_sample.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-update_rates.html</loc>
   </url>
   <url>
@@ -134,6 +143,18 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-lower_corner.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-new.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-upper_corner.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/annotate_forest.html</loc>

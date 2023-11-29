@@ -31,6 +31,7 @@ times and MRCAs for all available samples"><meta property="og:image" content="ht
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/a01_tissue_simulation.html">Tissue simulation</a>
     <a class="dropdown-item" href="../articles/a02_sampling_simulation.html">Tissue sampling</a>
+    <a class="dropdown-item" href="../articles/a03_growth_models.html">Growth Models</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -101,7 +102,7 @@ has been derived.</p></dd>
 <span class="r-in"><span><span class="va">forest</span> <span class="op">=</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_samples_info</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       name xmin ymin xmax ymax tumoural.cells     time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 MySample  500  500  510  510             15 60.37325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 MySample  500  500  510  510             17 60.37325</span>
 <span class="r-in"><span><span class="va">tree_plot</span> <span class="op">=</span> <span class="fu"><a href="plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">annotate_forest</span><span class="op">(</span><span class="va">tree_plot</span>, <span class="va">forest</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing non-finite values (`stat_edge_link()`).</span>
