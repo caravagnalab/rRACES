@@ -17,7 +17,7 @@
 #' @importFrom rlang .data
 setMethod("show", "Rcpp_Simulation", function(object) {
   # If it can be simulated
-  sim_status <- (length(object$get_species())
+  sim_status <- (nrow(object$get_species())
                  & nrow(object$get_cells()))
   
   # If it has samples assigned
@@ -93,29 +93,32 @@ setMethod("show", "Rcpp_Simulation", function(object) {
     
     cli::cli_h3(text = paste("Firings:", sum(f_table$fired), 'total'))
     
-    nch = f_table$fired %>% nchar %>% max
-    
-    for(s in my_tab$species)
+    if(nrow(f_table) > 0)
     {
-      s_ftab = f_table %>% dplyr::filter(species == s) %>% dplyr::arrange(event)
+      nch = f_table$fired %>% nchar %>% max
       
-      if(with_epigenetics)
-        sprintf(
-          paste0('\n\tSpecies [%s]: %', nch, 's (death), %', nch, 's (growth) and %', nch, 's (switches)'),
-          s,
-          s_ftab$fired[1],
-          s_ftab$fired[2],
-          s_ftab$fired[3]
-        ) %>% cat()
-      else
+      for(s in my_tab$species)
+      {
+        s_ftab = f_table %>% dplyr::filter(species == s) %>% dplyr::arrange(event)
+        
+        if(with_epigenetics)
           sprintf(
-            paste0('\n\tSpecies [%s]: %', nch, 's (death) and %', nch, 's (growth)'),
+            paste0('\n\tSpecies [%s]: %', nch, 's (death), %', nch, 's (growth) and %', nch, 's (switches)'),
             s,
             s_ftab$fired[1],
-            s_ftab$fired[2]
+            s_ftab$fired[2],
+            s_ftab$fired[3]
           ) %>% cat()
-      
-    }
+        else
+            sprintf(
+              paste0('\n\tSpecies [%s]: %', nch, 's (death) and %', nch, 's (growth)'),
+              s,
+              s_ftab$fired[1],
+              s_ftab$fired[2]
+            ) %>% cat()
+        
+      }
+      }
     
     # cat("   ",
     #     knitr::kable(object$get_firings(), format = "rst", align = "rcrccc"),
