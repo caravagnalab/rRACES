@@ -46,7 +46,7 @@ sim <- new(Simulation)
 
 This automatically builds a 1000x1000-cells tissue - which can host $1$
 milion cells - and sets the name of the simulation to be
-`races_<date>_<hour>`. 
+`races_<date>_<hour>`.
 
 A simulation custom name can be specified as it follows.
 
@@ -55,11 +55,10 @@ A simulation custom name can be specified as it follows.
 sim <- new(Simulation)
 ```
 
-In order to save the simulation progresses in the disk and recover 
-it in the future, use the optional Boolean parameter
-`save_snapshots`. By setting `save_snapshots` to `TRUE`, the 
-simulation progresses will be saved in a directory whose name is 
-the name of the simulation.
+In order to save the simulation progresses in the disk and recover it in
+the future, use the optional Boolean parameter `save_snapshots`. By
+setting `save_snapshots` to `TRUE`, the simulation progresses will be
+saved in a directory whose name is the name of the simulation.
 
 ```{r, eval = FALSE}
 # The progresses of the simulation will saved in the "Test" folder.

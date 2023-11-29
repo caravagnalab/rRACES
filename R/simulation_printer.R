@@ -61,7 +61,7 @@ setMethod("show", "Rcpp_Simulation", function(object) {
   )
 
   species <- object$get_species()
-  if (length(species) == 0) {
+  if (nrow(species) == 0) {
     cat('\n')
     cli::cli_alert_danger("The simulation has no species yet!")
   } else {
