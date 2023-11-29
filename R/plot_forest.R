@@ -41,6 +41,7 @@ plot_forest <- function(forest) {
 
   if (nrow(nodes) == 0) {
     warning("The forest does not contain any node")
+    return(ggplot())
   } else {
     forest_data <- forest$get_nodes() %>%
       dplyr::as_tibble() %>%

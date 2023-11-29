@@ -111,11 +111,11 @@ sim$get_cells(c(400, 400), c(400 + bbox_width, 400 + bbox_width)) %>% head
 
 ### Cell division tree for sampled cells
 
-Every sampled cell is linked, at the evolutionary level,
-to the other cells that originate from
-the same initial cell. It helps to visualise the evolutionary information on the cells that we have sampled as a forest of trees (if one seeded
-multiple initial cells). The forest is an object of the S4 class
-`SamplesForest`.
+Every sampled cell is linked, at the evolutionary level, to the other
+cells that originate from the same initial cell. It helps to visualise
+the evolutionary information on the cells that we have sampled as a
+forest of trees (if one seeded multiple initial cells). The forest is an
+object of the S4 class `SamplesForest`.
 
 ```{r}
 forest <- sim$get_samples_forest()
@@ -129,10 +129,9 @@ The forest has methods to obtain the nodes of the sampled cells.
 forest$get_nodes() %>% head
 ```
 
-The leaves of the forest are  sampled cells, while the
-internal nodes are their ancestors. The field `sample`
-is not available for internal nodes, and reports the
-sample name otherwise.
+The leaves of the forest are sampled cells, while the internal nodes are
+their ancestors. The field `sample` is not available for internal nodes,
+and reports the sample name otherwise.
 
 ```{r}
 # The leaves in the forest represent sampled cells
@@ -155,12 +154,17 @@ We can also query the forest about the samples used to build it.
 forest$get_samples_info()
 ```
 
-We can visualise the forest.
-This plot reports the cells and, on the y-axis, their time of birth.
+We can visualise the forest. This plot reports the cells and, on the
+y-axis, their time of birth.
+
 ```{r,  fig.height=6, fig.width=11}
 plot_forest(forest)
 ```
-The plot shows also samples annotations and species but, for a large number of cells, it might be complicated to view the full tree, unless a very large canvas is used. For this reaason, it is possible to subset the tree.
+
+The plot shows also samples annotations and species but, for a large
+number of cells, it might be complicated to view the full tree, unless a
+very large canvas is used. For this reaason, it is possible to subset
+the tree.
 
 ```{r,  fig.height=6, fig.width=11}
 # Extract the subforest linked to sample
@@ -169,7 +173,8 @@ S_1_1_forest <- forest$get_subforest_for("S_1_1")
 plot_forest(S_1_1_forest)
 ```
 
-In general, these plots can be annotated with extra information, such as the sampling times, and the MRCAs of each sample in the tree.
+In general, these plots can be annotated with extra information, such as
+the sampling times, and the MRCAs of each sample in the tree.
 
 ```{r,  fig.height=6, fig.width=11}
 # Full plot
@@ -182,7 +187,6 @@ plot_forest(S_1_1_forest) %>%
 
 ## Randomised multi-region samples
 
-
 ```{r}
 sim <- new(Simulation, "Randomised")
 
@@ -192,7 +196,8 @@ sim$place_cell("A", 500, 500)
 sim$run_up_to_size("A", 60000)
 ```
 
-We include a new clone and let it grow. This new clone has much higher growth rates than its ancestor.
+We include a new clone and let it grow. This new clone has much higher
+growth rates than its ancestor.
 
 ```{r,  fig.height=4, fig.width=3}
 # Add a new clone
@@ -205,17 +210,23 @@ current <- plot_tissue(sim)
 current
 ```
 
-Since clone start has been randomised by `choose_cell_in`, we have no exact idea of where to sample to obtain for example, $100$ of its cells. We can look visually at the simulation, but this is slow.
+Since clone start has been randomised by `choose_cell_in`, we have no
+exact idea of where to sample to obtain for example, $100$ of its cells.
+We can look visually at the simulation, but this is slow.
 
 rRACES provides a `bbox_sampler` function to sample bounding boxes that
 contain a desired number of cells. The function takes in input:
 
-- a bounding box size;
-- the number $n$ of cells to sample for a species of interest.
+-   a bounding box size;
+-   the number $n$ of cells to sample for a species of interest.
 
-`bbox_sampler` will attempt a fixed number of times to sample the box,  starting from positions occupied by the species of interest. If  a box that contains at least $n$ cells is not found within a number of attempts, then the one with the largest number of samples is returned.
+`bbox_sampler` will attempt a fixed number of times to sample the box,
+starting from positions occupied by the species of interest. If a box
+that contains at least $n$ cells is not found within a number of
+attempts, then the one with the largest number of samples is returned.
 
-This allows to program sampling without having a clear idea of the tissue conformation.
+This allows to program sampling without having a clear idea of the
+tissue conformation.
 
 ```{r,  fig.height=4, fig.width=3}
 # A bounding box 50x50 with at least 100 cells of species B
@@ -267,8 +278,8 @@ plot_forest(forest) %>%
 
 ## Two populations with epigenetic state
 
-We are now ready to simulate a model with epigenetic
-switches and subclonal expansions.
+We are now ready to simulate a model with epigenetic switches and
+subclonal expansions.
 
 ```{r,  fig.height=4, fig.width=3}
 sim <- new(Simulation, "Two Populations")
@@ -291,11 +302,11 @@ We sample before introducing a new clone.
 ```{r,  fig.height=4, fig.width=3}
 bbox_width <- 10
 
-sim$sample_cells("A1",
+sim$sample_cells("S_1_1",
                  bottom_left = c(480, 480),
                  top_right = c(480 + bbox_width, 480 + bbox_width))
 
-sim$sample_cells("B1",
+sim$sample_cells("S_1_2",
                  bottom_left = c(500, 500),
                  top_right = c(500 + bbox_width, 500 + bbox_width))
 
@@ -334,10 +345,10 @@ n_w <- n_h <- 50
 ncells <- 0.8*n_w*n_h
 
 bbox <- sim$search_sample("A", ncells, n_w, n_h)
-sim$sample_cells("A2", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 
 bbox <- sim$search_sample("B", ncells, n_w, n_h)
-sim$sample_cells("B2", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim, num_of_bins = 500)
 plot_muller(sim)
@@ -374,8 +385,7 @@ sim$run_up_to_size("A", 300)
 plot_tissue(sim)
 ```
 
-We use an automatic function `bbox_sampler` to determine bounding boxes
-so to collect a dedired number of cells of interest.
+We sample
 
 ```{r,  fig.height=4, fig.width=3}
 n_w <- n_h <- 7
@@ -383,10 +393,10 @@ ncells <- 0.3*n_w*n_h
 
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
 bbox <- sim$search_sample("A", ncells, n_w, n_h)
-sim$sample_cells("A1", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_1_1", bbox$lower_corner, bbox$upper_corner)
 
 bbox <- sim$search_sample("A", ncells, n_w, n_h)
-sim$sample_cells("B1", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_1_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim)
 ```
@@ -412,10 +422,10 @@ Random sampling of cells from both clone `A` and `B`.
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
 bbox <- sim$search_sample("A", ncells, n_w, n_h)
-sim$sample_cells("A2", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 
 bbox <- sim$search_sample("B", ncells, n_w, n_h)
-sim$sample_cells("B2", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim)
 ```
@@ -437,10 +447,10 @@ With sampling of clones `B` and `C`.
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
 bbox <- sim$search_sample("B", ncells, n_w, n_h)
-sim$sample_cells("A3", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_3_1", bbox$lower_corner, bbox$upper_corner)
 
 bbox <- sim$search_sample("C", ncells, n_w, n_h)
-sim$sample_cells("B3", bbox$lower_corner, bbox$upper_corner)
+sim$sample_cells("S_3_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim, num_of_bins = 100)
 plot_muller(sim)
@@ -456,6 +466,3 @@ forest <- sim$get_samples_forest()
 plot_forest(forest) %>%
   annotate_forest(forest)
 ```
-
-The horizontal line denotes sampling times, and circles the MRCAs of interest.
-
