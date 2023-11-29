@@ -401,7 +401,7 @@ Second clone starts.
 # New subclone
 sim$add_genotype(name = "B", growth_rates = 0.13, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-sim$run_up_to_size("B", 600)
+sim$run_up_to_size("B", 400)
 
 plot_tissue(sim)
 plot_muller(sim)
@@ -427,7 +427,7 @@ Finally, a third clone branching from `A`.
 sim$add_genotype(name = "C", growth_rates = 0.6, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "C")
 
-sim$run_up_to_size("C", 500)
+sim$run_up_to_size("C", 1000)
 plot_tissue(sim)
 plot_muller(sim)
 ```

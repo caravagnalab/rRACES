@@ -192,6 +192,58 @@ size_t count_driver_mutated_cells(const Races::Drivers::Simulation::Tissue& tiss
   return total;
 }
 
+std::vector<Races::Drivers::Simulation::Direction> get_possible_directions()
+{
+  namespace RS = Races::Drivers::Simulation;
+
+  std::vector<RS::Direction> directions;
+  for (const auto &x_move : {RS::Direction::X_UP, RS::Direction::X_DOWN, RS::Direction::X_NULL}) {
+      for (const auto &y_move : {RS::Direction::Y_UP, RS::Direction::Y_DOWN, RS::Direction::Y_NULL}) {
+          directions.push_back(x_move|y_move);
+      }
+  }
+
+  // remove null move
+  directions.pop_back();
+
+  return directions;
+}
+
+struct PlainChooser
+{
+  std::shared_ptr<Races::Drivers::Simulation::Simulation> sim_ptr;
+  std::string genotype_name;
+
+  PlainChooser(const std::shared_ptr<Races::Drivers::Simulation::Simulation>& sim_ptr,
+               const std::string& genotype_name):
+    sim_ptr(sim_ptr), genotype_name(genotype_name)
+  {}
+
+  inline const Races::Drivers::Simulation::CellInTissue& operator()()
+  {
+    return sim_ptr->choose_cell_in(genotype_name,
+                                   Races::Drivers::CellEventType::DUPLICATION);
+  }
+};
+
+struct RectangularChooser : public PlainChooser
+{
+  Races::Drivers::RectangleSet rectangle;
+
+  RectangularChooser(const std::shared_ptr<Races::Drivers::Simulation::Simulation>& sim_ptr,
+                     const std::string& genotype_name,
+                     const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
+                     const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner):
+    PlainChooser(sim_ptr, genotype_name), rectangle(get_rectangle(lower_corner, upper_corner))
+  {}
+
+  inline const Races::Drivers::Simulation::CellInTissue& operator()()
+  {
+    return sim_ptr->choose_cell_in(genotype_name, rectangle,
+                                   Races::Drivers::CellEventType::DUPLICATION);
+  }
+};
+
 class SamplesForest;
 
 //' @name TissueRectangle
@@ -327,7 +379,8 @@ TissueRectangle::TissueRectangle(const std::vector<uint16_t>& lower_corner,
 //' \item \emph{Returns:} A list reporting "cell_id", "genotype", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
 //' }
-//' @field death_activation_level The number of cells that activates cell death in a species
+//' @field death_activation_level The number of cells that activates cell death in a species.
+//' @field duplicate_internal_cells Enable/disable duplication for internal cells.
 //' @field get_added_cells Gets the cells manually added to the simulation \itemize{
 //' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "position_x",
 //'         "position_y", and "time" for each cells manually added to
@@ -667,6 +720,41 @@ public:
 
   void update_rates(const std::string& species_name, const List& list);
 
+  template<typename CHOOSER, std::enable_if_t<std::is_base_of_v<PlainChooser, CHOOSER>, bool> = true>
+  List choose_border_cell_in(CHOOSER& chooser)
+  {
+    namespace RS = Races::Drivers::Simulation;
+
+    const auto directions = get_possible_directions();
+
+    const RS::Tissue& tissue = sim_ptr->tissue();
+
+    size_t i{0};
+    while (++i<1000) {
+      const auto& cell = chooser();
+
+      for (const auto& dir: directions) {
+        RS::PositionInTissue pos = cell;
+
+        do {
+          pos = pos + RS::PositionDelta(dir);
+        } while (tissue.is_valid(pos) && tissue(pos).is_wild_type());
+
+        if (!tissue.is_valid(pos)) {
+          return wrap_a_cell(cell);
+        }
+      }
+    }
+
+    throw std::domain_error("Missed to find a border cell");
+  }
+
+  List choose_border_cell_in(const std::string& genotype_name);
+
+  List choose_border_cell_in(const std::string& genotype_name,
+                             const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
+                             const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner);
+
   List choose_cell_in(const std::string& genotype_name);
 
   List choose_cell_in(const std::string& genotype_name,
@@ -687,6 +775,16 @@ public:
   void set_death_activation_level(const size_t death_activation_level)
   {
     sim_ptr->death_activation_level = death_activation_level;
+  }
+
+  bool get_duplicate_internal_cells() const
+  {
+    return sim_ptr->duplicate_internal_cells;
+  }
+
+  void set_duplicate_internal_cells(const bool duplicate_internal_cells)
+  {
+    sim_ptr->duplicate_internal_cells = duplicate_internal_cells;
   }
 
   Races::Time get_history_delta() const
@@ -1143,7 +1241,7 @@ List Simulation::get_cells() const
 //'                  death_rates = c("+" = 0.02, "-" = 0.01))
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A+", 500, 500)
-//' sim$run_up_to_time(70)
+//' sim$run_up_to_time(40)
 //'
 //' # collect all the cells in the tissue
 //' sim$get_cell(501, 502)
@@ -1245,7 +1343,7 @@ List Simulation::get_cells(const std::vector<std::string>& species_filter,
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A+", 500, 500)
-//' sim$run_up_to_time(70)
+//' sim$run_up_to_time(30)
 //'
 //' # collect all the cells in the tissue
 //' sim$get_cells()
@@ -1947,19 +2045,44 @@ List Simulation::choose_cell_in(const std::string& genotype_name,
 {
   namespace RS = Races::Drivers::Simulation;
 
-  auto rectangle = get_rectangle(lower_corner, upper_corner);
-  const auto& cell = sim_ptr->choose_cell_in(genotype_name, rectangle);
+  if (sim_ptr->duplicate_internal_cells) {
+    auto rectangle = get_rectangle(lower_corner, upper_corner);
+    const auto& cell = sim_ptr->choose_cell_in(genotype_name, rectangle,
+                                               Races::Drivers::CellEventType::DUPLICATION);
 
-  return wrap_a_cell(cell);
+    return wrap_a_cell(cell);
+  }
+
+  return choose_border_cell_in(genotype_name, lower_corner, upper_corner);
 }
 
 List Simulation::choose_cell_in(const std::string& genotype_name)
 {
   namespace RS = Races::Drivers::Simulation;
 
-  const auto& cell = sim_ptr->choose_cell_in(genotype_name);
+  if (sim_ptr->duplicate_internal_cells) {
+    const auto& cell = sim_ptr->choose_cell_in(genotype_name,
+                                                Races::Drivers::CellEventType::DUPLICATION);
+    return wrap_a_cell(cell);
+  }
 
-  return wrap_a_cell(cell);
+  return choose_border_cell_in(genotype_name);
+}
+
+List Simulation::choose_border_cell_in(const std::string& genotype_name)
+{
+  PlainChooser chooser(sim_ptr, genotype_name);
+
+  return choose_border_cell_in(chooser);
+}
+
+List Simulation::choose_border_cell_in(const std::string& genotype_name,
+                                       const std::vector<Races::Drivers::Simulation::AxisPosition>& lower_corner,
+                                       const std::vector<Races::Drivers::Simulation::AxisPosition>& upper_corner)
+{
+  RectangularChooser chooser(sim_ptr, genotype_name, lower_corner, upper_corner);
+
+  return choose_border_cell_in(chooser);
 }
 
 void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& x,
@@ -1988,7 +2111,7 @@ void Simulation::mutate_progeny(const Races::Drivers::Simulation::AxisPosition& 
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.01, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
-//' sim$run_up_to_time(40)
+//' sim$run_up_to_time(30)
 //'
 //' sim$add_genotype(genotype = "B",
 //'                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
@@ -2132,6 +2255,27 @@ List Simulation::get_samples_info() const
 //' # set the death activation level to 50
 //' sim$death_activation_level <- 50
 
+
+//' @name Simulation$duplicate_internal_cells
+//' @title Enable/disable duplication for internal cells.
+//' @description This Boolean flag enable/disable duplication of internal
+//'            cells. When it is set to `FALSE`, the border-growth model
+//'            is used. Otherwise, the homogeneous-growth model is applied.
+//'            It is set to `FALSE` by default.
+//' @examples
+//' sim <- new(Simulation)
+//'
+//' # is the duplication of internal cells enabled? (by default, no)
+//' sim$duplicate_internal_cells
+//'
+//' # enable homogeneous-growth model
+//' sim$duplicate_internal_cells <- TRUE
+//'
+//' # now it should be set to `TRUE`
+//' sim$duplicate_internal_cells
+//'
+//' # enable boder-growth model
+//' sim$duplicate_internal_cells <- FALSE
 
 //' @name Simulation$history_delta
 //' @title The delta time between time series samples
@@ -2687,6 +2831,11 @@ RCPP_MODULE(Drivers){
   .property("death_activation_level", &Simulation::get_death_activation_level,
                                       &Simulation::set_death_activation_level,
             "The number of cells in a species that activates cell death" )
+
+  // duplicate_internal_cells
+  .property("duplicate_internal_cells", &Simulation::get_duplicate_internal_cells,
+                                        &Simulation::set_duplicate_internal_cells,
+            "Enable/disable duplication for internal cells" )
 
   // get_clock
   .method("get_clock", &Simulation::get_clock, "Get the current simulation time")
