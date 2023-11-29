@@ -91,8 +91,8 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rRACES</span><span class="op">)</span></span></code></pre></div>
-<p>rRACES supports two growth models: the “border”-growth model and the
-homogeneous-growth model.</p>
+<p>rRACES/RACS supports two growth models: the “border”-growth model and
+the homogeneous-growth model.</p>
 <p>The former exclusively admits duplication of cells that have space to
 duplicate (i.e., cells on the cancer border or near by death cells). The
 latter allows cell duplications everywhere in the tumor.</p>
@@ -137,11 +137,11 @@ units.</p>
 <span><span class="va">bbox_width</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
 <span></span>
 <span><span class="co"># Takes two samples</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A1"</span>,</span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_1_1"</span>,</span>
 <span>                 bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">480</span>, <span class="fl">480</span><span class="op">)</span>,</span>
 <span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">480</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">480</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B1"</span>,</span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_1_2"</span>,</span>
 <span>                 bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>,</span>
 <span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -163,10 +163,10 @@ and take again two samples.</p>
 <span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.8</span><span class="op">*</span><span class="va">bbox_width</span><span class="op">*</span><span class="va">bbox_width</span></span>
 <span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="st">"B"</span>, <span class="va">ncells</span>, <span class="va">bbox_width</span>, <span class="va">bbox_width</span><span class="op">)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="st">"A"</span>, <span class="va">ncells</span>, <span class="va">bbox_width</span>, <span class="va">bbox_width</span><span class="op">)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
 <p>Let us have a look at the simulated tissue and plot the simulation
 Muller plot.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -274,11 +274,11 @@ example.</p>
 <span><span class="va">bbox_width</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
 <span></span>
 <span><span class="co"># Takes two samples</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A1"</span>,</span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_1_1"</span>,</span>
 <span>                 bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">480</span>, <span class="fl">480</span><span class="op">)</span>,</span>
 <span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">480</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">480</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B1"</span>,</span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_1_2"</span>,</span>
 <span>                 bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>,</span>
 <span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -301,10 +301,10 @@ example.</p>
 <span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.8</span><span class="op">*</span><span class="va">bbox_width</span><span class="op">*</span><span class="va">bbox_width</span></span>
 <span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="st">"B"</span>, <span class="va">ncells</span>, <span class="va">bbox_width</span>, <span class="va">bbox_width</span><span class="op">)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"A2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="st">"A"</span>, <span class="va">ncells</span>, <span class="va">bbox_width</span>, <span class="va">bbox_width</span><span class="op">)</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"B2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
 <p>Let us have a look at the simulated tissue and plot the simulation
 Muller plot.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
