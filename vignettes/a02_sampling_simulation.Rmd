@@ -192,8 +192,7 @@ sim$place_cell("A", 500, 500)
 sim$run_up_to_size("A", 60000)
 ```
 
-We include a new clone and let it grow. This new clone has much higher
-growth rates than its ancestor.
+We include a new clone and let it grow. This new clone has much higher growth rates than its ancestor.
 
 ```{r,  fig.height=4, fig.width=3}
 # Add a new clone
