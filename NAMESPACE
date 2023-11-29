@@ -4,6 +4,7 @@ importFrom("stats", "time")
 importFrom("rlang", ".data")
 import(methods, Rcpp)
 
+export(TissueRectangle)
 export(SamplesForest)
 export(Simulation)
 export(plot_state)
