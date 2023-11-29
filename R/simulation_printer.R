@@ -60,6 +60,10 @@ setMethod("show", "Rcpp_Simulation", function(object) {
     )
   )
 
+  # please, clean up what is comming next *before* removing the 
+  # return and commit it!!!
+  return() 
+
   species <- object$get_species()
   if (length(species) == 0) {
     cat('\n')
