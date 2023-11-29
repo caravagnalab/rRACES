@@ -1,0 +1,223 @@
+---
+title: "Growth Models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Growth Models}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(rRACES)
+```
+
+rRACES supports two growth models: the "border"-growth model and the homogeneous-growth
+model. 
+
+The former exclusively admits duplication of cells that have space to duplicate 
+(i.e., cells on the cancer border or near by death cells). The latter allows cell
+duplications everywhere in the tumor.
+
+
+The homogeneous-growth model is the default one. However, users can switch the 
+growth model by assigning the `Simulation`'s `duplicate_internal_cells` Boolean field.
+By setting it to `TRUE`, the homogeneous-growth model is used. If, instead, it is 
+set to `FALSE`, the simulation evolves according with the "border"-growth model.
+
+In the remaining part of this article we clarify the differences between the 
+supported growth models by showing that they produce different evolutions 
+of the very same cancer model.
+
+### Homogeneous Growth
+
+First of all we need to create a new `Simulation` object and 
+enable duplication of internal cells.
+
+```{r}
+sim <- new(Simulation, "Homogeneous Growth")
+
+# Set the homogeneous growth model
+sim$duplicate_internal_cells <- TRUE
+
+# Set the death activation level to avoid drift
+sim$death_activation_level <- 50
+```
+
+Add a genotype `A` with epigenetic state, let the 
+simulation evolve until there are 1000 cells of species `A+`, 
+take two samples, and let the simulation evolve again for 15 time units.
+
+```{r}
+# Add a clone
+sim$add_genotype(name = "A",
+                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                 growth_rates = c("+" = 0.1, "-" = 0.08),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$place_cell("A+", 500, 500)
+
+# Let the simulation evolve until "A+" consists of 1000 cells
+sim$run_up_to_size("A+", 1000)
+
+bbox_width <- 15
+
+# Takes two samples
+sim$sample_cells("A1",
+                 bottom_left = c(480, 480),
+                 top_right = c(480 + bbox_width, 480 + bbox_width))
+
+sim$sample_cells("B1",
+                 bottom_left = c(500, 500),
+                 top_right = c(500 + bbox_width, 500 + bbox_width))
+
+# Let the simulation evolve again for 15 time units
+sim$run_up_to_time(sim$get_clock() + 15)
+```
+
+Add a new genotype "B", let one of the cells in "A" 
+generate a cell in "B", let the simulation evolve until there 
+are 5000 cells in "B+", and take again two samples.
+
+```{r}
+sim$add_genotype(name = "B",
+                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+                 growth_rates = c("+" = 0.8, "-" = 0.3),
+                 death_rates = c("+" = 0.05, "-" = 0.05))
+
+sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+
+sim$run_up_to_size("B+", 5000)
+
+ncells <- 0.8*bbox_width*bbox_width
+
+bbox <- sim$search_sample("B", ncells, bbox_width, bbox_width)
+sim$sample_cells("A2", bbox$lower_corner, bbox$upper_corner)
+
+bbox <- sim$search_sample("A", ncells, bbox_width, bbox_width)
+sim$sample_cells("B2", bbox$lower_corner, bbox$upper_corner)
+```
+
+Let us have a look at the simulated tissue and plot the simulation Muller plot.
+
+```{r,  fig.height=4, fig.width=3}
+plot_tissue(sim, num_of_bins = 500)
+plot_muller(sim)
+```
+
+Finally, let us build the ancestor forest of the samples.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+forest <- sim$get_samples_forest()
+
+plot_forest(forest) %>%
+  annotate_forest(forest)
+```
+
+### "Border" Growth
+
+We now build a simulation and switch to the "border" growth model.
+
+```{r}
+sim <- new(Simulation, "Border Growth")
+
+# Set the "border" growth model
+sim$duplicate_internal_cells <- FALSE
+
+# Set the death activation level to avoid drift
+sim$death_activation_level <- 50
+```
+
+Let us repeat what we did in the homogeneous growth model example.
+
+```{r}
+# Add a clone
+sim$add_genotype(name = "A",
+                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                 growth_rates = c("+" = 0.1, "-" = 0.08),
+                 death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$place_cell("A+", 500, 500)
+
+# Let the simulation evolve until "A+" consists of 1000 cells
+sim$run_up_to_size("A+", 1000)
+
+bbox_width <- 15
+
+# Takes two samples
+sim$sample_cells("A1",
+                 bottom_left = c(480, 480),
+                 top_right = c(480 + bbox_width, 480 + bbox_width))
+
+sim$sample_cells("B1",
+                 bottom_left = c(500, 500),
+                 top_right = c(500 + bbox_width, 500 + bbox_width))
+
+# Let the simulation evolve again for 15 time units
+sim$run_up_to_time(sim$get_clock() + 15)
+
+# Add a new clone
+sim$add_genotype(name = "B",
+                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+                 growth_rates = c("+" = 0.8, "-" = 0.3),
+                 death_rates = c("+" = 0.05, "-" = 0.05))
+
+
+# Let one of the "A" cells generate a cell in "B"
+sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+
+# Let the simulation evolve until "B+" consists of 5000 cells
+sim$run_up_to_size("B+", 5000)
+
+ncells <- 0.8*bbox_width*bbox_width
+
+bbox <- sim$search_sample("B", ncells, bbox_width, bbox_width)
+sim$sample_cells("A2", bbox$lower_corner, bbox$upper_corner)
+
+bbox <- sim$search_sample("A", ncells, bbox_width, bbox_width)
+sim$sample_cells("B2", bbox$lower_corner, bbox$upper_corner)
+```
+
+Let us have a look at the simulated tissue and plot the simulation Muller plot.
+
+```{r,  fig.height=4, fig.width=3}
+plot_tissue(sim, num_of_bins = 500)
+plot_muller(sim)
+```
+
+Once more, let us build the ancestor forest of the samples.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+forest <- sim$get_samples_forest()
+
+plot_forest(forest) %>%
+  annotate_forest(forest)
+```
+
+It is easy to see the differences in the analoguous plots of the above examples.
+
+First of all, the cancer growth is slower when subject to the "border"-growth model 
+than when the homogeneous-growth model is used. This is due to the fact that 
+the internal cells cannot duplicate in the former growth model, thus, the number of 
+cells active for duplication is always greater in it, than in the homogeneous-growth 
+model.
+
+Moreover, spacial closeness and closeness in the samples ancestor forest 
+are strictly related in the "border" growth model, whereas they appear to be loosely 
+related in the homogeneous growth model. 
+This features can be easily spotted in the forest plots. 
