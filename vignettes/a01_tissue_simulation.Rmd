@@ -369,7 +369,7 @@ sim$mutate_progeny(cell, "B")
 sim$get_counts()
 
 # New evolution
-sim$run_up_to_size("B+", 1000)
+sim$run_up_to_size("B+", 600)
 ```
 
 At this point, we can inspect in more details the tissue. It can help to
@@ -401,7 +401,7 @@ sim$add_genotype(name = "C",
 # Choose and mutate
 sim$mutate_progeny(sim$choose_cell_in("A",  c(450, 550), c(500, 600)), "C")
 
-sim$run_up_to_time(sim$get_clock() + 10)
+sim$run_up_to_time(sim$get_clock() + 7)
 ```
 
 ```{r,  fig.height=4, fig.width=3}
@@ -507,7 +507,7 @@ sim$add_genotype(name = "B",
 
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 
-sim$run_up_to_size("B-", 400)
+sim$run_up_to_size("B-", 300)
 
 # C (linear inside B)
 sim$add_genotype(name = "C",
@@ -525,7 +525,7 @@ sim$add_genotype(name = "D",
 
 sim$mutate_progeny(sim$choose_cell_in("A"), "D")
 
-sim$run_up_to_size("D+", 400)
+sim$run_up_to_size("D+", 1000)
 ```
 
 The time-series can be plot using `plot_timeseries`.

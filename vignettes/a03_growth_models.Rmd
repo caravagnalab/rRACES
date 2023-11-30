@@ -17,10 +17,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rRACES)
-```
-
 rRACES/RACES supports two growth models: the "border"-growth model and the homogeneous-growth
 model. 
 
@@ -44,6 +40,8 @@ First of all we need to create a new `Simulation` object and
 enable duplication of internal cells.
 
 ```{r}
+library(rRACES)
+
 sim <- new(Simulation, "Homogeneous Growth")
 
 # Set the homogeneous growth model
@@ -98,7 +96,7 @@ sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 
 sim$run_up_to_size("B+", 5000)
 
-ncells <- 0.8*bbox_width*bbox_width
+ncells <- 0.9 * bbox_width * bbox_width
 
 bbox <- sim$search_sample("B", ncells, bbox_width, bbox_width)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
@@ -199,7 +197,7 @@ sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 # Let the simulation evolve until "B+" consists of 5000 cells
 sim$run_up_to_size("B+", 5000)
 
-ncells <- 0.8*bbox_width*bbox_width
+ncells <- 0.8 * bbox_width * bbox_width
 
 bbox <- sim$search_sample("B", ncells, bbox_width, bbox_width)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
