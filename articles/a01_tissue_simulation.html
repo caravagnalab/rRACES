@@ -499,7 +499,7 @@ cell of genotype <code>B</code>.</p></li>
 <span><span class="co">#&gt; 4        B        +      1</span></span>
 <span></span>
 <span><span class="co"># New evolution</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B+"</span>, <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B+"</span>, <span class="fl">600</span><span class="op">)</span></span></code></pre></div>
 <p>At this point, we can inspect in more details the tissue. It can help
 to facet on the species to clearly appreciate the spatial diffusion of
 the populations.</p>
@@ -527,13 +527,12 @@ the populations.</p>
 <span><span class="co"># Choose and mutate</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">450</span>, <span class="fl">550</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">600</span><span class="op">)</span><span class="op">)</span>, <span class="st">"C"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">7</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-26-1.png" width="288"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 229 rows containing missing values (`geom_hex()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span></code></pre></div>
 <p><img src="a01_tissue_simulation_files/figure-html/unnamed-chunk-26-2.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -605,8 +604,8 @@ extracted.</p>
 <span><span class="co">#&gt; 1 death        B        -     0  44.46369</span></span>
 <span><span class="co">#&gt; 2 death        B        -     0  64.19203</span></span>
 <span><span class="co">#&gt; 3 death        B        -     0  79.19229</span></span>
-<span><span class="co">#&gt; 4 death        B        -   245 103.77055</span></span>
-<span><span class="co">#&gt; 5 death        B        -  3920 113.77055</span></span>
+<span><span class="co">#&gt; 4 death        B        -   147 102.07830</span></span>
+<span><span class="co">#&gt; 5 death        B        -  1106 109.07831</span></span>
 <span></span>
 <span><span class="co"># The counts</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_count_history</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -655,7 +654,7 @@ increase the sampling rate of the state (by default,
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B-"</span>, <span class="fl">400</span><span class="op">)</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B-"</span>, <span class="fl">300</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># C (linear inside B)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">add_genotype</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"C"</span>,</span>
@@ -673,7 +672,7 @@ increase the sampling rate of the state (by default,
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"D"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"D+"</span>, <span class="fl">400</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"D+"</span>, <span class="fl">1000</span><span class="op">)</span></span></code></pre></div>
 <p>The time-series can be plot using <code>plot_timeseries</code>.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-series plot</span></span>
@@ -733,24 +732,24 @@ and <code>B-</code>.</p>
 <span><span class="co">#&gt;    =======  ====  ====  ====  ======  ==========</span></span>
 <span><span class="co">#&gt;    species   λ      δ    ε    counts      %     </span></span>
 <span><span class="co">#&gt;    =======  ====  ====  ====  ======  ==========</span></span>
-<span><span class="co">#&gt;         A-  0.08  0.01  0.01  11062   4.6847869 </span></span>
-<span><span class="co">#&gt;         A+  0.20  0.10  0.01  39015   16.5229581</span></span>
-<span><span class="co">#&gt;         B-  0.30  0.10  0.05  71156   30.1347586</span></span>
-<span><span class="co">#&gt;         B+  0.30  0.05  0.05  108027  45.7497268</span></span>
-<span><span class="co">#&gt;         C-  0.40  0.01  0.10   4205   1.7808289 </span></span>
-<span><span class="co">#&gt;         C+  0.20  0.10  0.10   1302   0.5514005 </span></span>
-<span><span class="co">#&gt;         D-  0.40  0.01  0.10   959    0.4061391 </span></span>
-<span><span class="co">#&gt;         D+  0.20  0.10  0.10   400    0.1694011 </span></span>
+<span><span class="co">#&gt;         A-  0.08  0.01  0.01  11080   4.2024137 </span></span>
+<span><span class="co">#&gt;         A+  0.20  0.10  0.01  40769   15.4628344</span></span>
+<span><span class="co">#&gt;         B-  0.30  0.10  0.05  76202   28.9018350</span></span>
+<span><span class="co">#&gt;         B+  0.30  0.05  0.05  111001  42.1003725</span></span>
+<span><span class="co">#&gt;         C-  0.40  0.01  0.10  15864   6.0168855 </span></span>
+<span><span class="co">#&gt;         C+  0.20  0.10  0.10   4804   1.8220574 </span></span>
+<span><span class="co">#&gt;         D-  0.40  0.01  0.10   2938   1.1143223 </span></span>
+<span><span class="co">#&gt;         D+  0.20  0.10  0.10   1000   0.3792792 </span></span>
 <span><span class="co">#&gt;    =======  ====  ====  ====  ======  ==========</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Species [A-]:    997 (death),   9303 (growth) and   1036 (switches)</span></span>
-<span><span class="co">#&gt;  Species [A+]:  37485 (death),  79257 (growth) and   3793 (switches)</span></span>
-<span><span class="co">#&gt;  Species [B-]:  25901 (death),  91208 (growth) and  13043 (switches)</span></span>
-<span><span class="co">#&gt;  Species [B+]:  19016 (death), 132892 (growth) and  18891 (switches)</span></span>
-<span><span class="co">#&gt;  Species [C-]:    103 (death),   4936 (growth) and    959 (switches)</span></span>
-<span><span class="co">#&gt;  Species [C+]:    294 (death),    967 (growth) and    331 (switches)</span></span>
-<span><span class="co">#&gt;  Species [D-]:     21 (death),   1111 (growth) and    235 (switches)</span></span>
-<span><span class="co">#&gt;  Species [D+]:     61 (death),    329 (growth) and    104 (switches)</span></span>
+<span><span class="co">#&gt;  Species [A-]:    988 (death),   9221 (growth) and   1057 (switches)</span></span>
+<span><span class="co">#&gt;  Species [A+]:  37970 (death),  81587 (growth) and   3905 (switches)</span></span>
+<span><span class="co">#&gt;  Species [B-]:  28050 (death),  99213 (growth) and  14037 (switches)</span></span>
+<span><span class="co">#&gt;  Species [B+]:  19325 (death), 135365 (growth) and  19076 (switches)</span></span>
+<span><span class="co">#&gt;  Species [C-]:    391 (death),  18711 (growth) and   3624 (switches)</span></span>
+<span><span class="co">#&gt;  Species [C+]:   1155 (death),   3502 (growth) and   1167 (switches)</span></span>
+<span><span class="co">#&gt;  Species [D-]:     73 (death),   3465 (growth) and    721 (switches)</span></span>
+<span><span class="co">#&gt;  Species [D+]:    240 (death),    785 (growth) and    267 (switches)</span></span>
 <span></span>
 <span><span class="co"># Raise the death rate levels</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">update_rates</span><span class="op">(</span><span class="st">"B+"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>death <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
@@ -764,27 +763,27 @@ and <code>B-</code>.</p>
 <span><span class="co"># Current state</span></span>
 <span><span class="va">sim</span></span>
 <span><span class="co">#&gt;    </span></span>
-<span><span class="co">#&gt;    =======  ====  ====  ====  ======  =========</span></span>
-<span><span class="co">#&gt;    species   λ      δ    ε    counts      %    </span></span>
-<span><span class="co">#&gt;    =======  ====  ====  ====  ======  =========</span></span>
-<span><span class="co">#&gt;         A-  0.08  0.01  0.01  23311   18.119986</span></span>
-<span><span class="co">#&gt;         A+  0.20  0.10  0.01  80597   62.649244</span></span>
-<span><span class="co">#&gt;         B-  0.30  3.00  0.05    0     0.000000 </span></span>
-<span><span class="co">#&gt;         B+  0.30  3.00  0.05    0     0.000000 </span></span>
-<span><span class="co">#&gt;         C-  0.40  3.00  0.10    0     0.000000 </span></span>
-<span><span class="co">#&gt;         C+  0.20  3.00  0.10    0     0.000000 </span></span>
-<span><span class="co">#&gt;         D-  0.40  0.01  0.10  18740   14.566880</span></span>
-<span><span class="co">#&gt;         D+  0.20  0.10  0.10   6000   4.663889 </span></span>
-<span><span class="co">#&gt;    =======  ====  ====  ====  ======  =========</span></span>
+<span><span class="co">#&gt;    =======  ====  ====  ====  ======  ==========</span></span>
+<span><span class="co">#&gt;    species   λ      δ    ε    counts      %     </span></span>
+<span><span class="co">#&gt;    =======  ====  ====  ====  ======  ==========</span></span>
+<span><span class="co">#&gt;         A-  0.08  0.01  0.01  17887   16.7276094</span></span>
+<span><span class="co">#&gt;         A+  0.20  0.10  0.01  64399   60.2248179</span></span>
+<span><span class="co">#&gt;         B-  0.30  3.00  0.05    0     0.0000000 </span></span>
+<span><span class="co">#&gt;         B+  0.30  3.00  0.05    2     0.0018704 </span></span>
+<span><span class="co">#&gt;         C-  0.40  3.00  0.10    0     0.0000000 </span></span>
+<span><span class="co">#&gt;         C+  0.20  3.00  0.10    0     0.0000000 </span></span>
+<span><span class="co">#&gt;         D-  0.40  0.01  0.10  18643   17.4346074</span></span>
+<span><span class="co">#&gt;         D+  0.20  0.10  0.10   6000   5.6110950 </span></span>
+<span><span class="co">#&gt;    =======  ====  ====  ====  ======  ==========</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Species [A-]:   2174 (death),  19858 (growth) and   2224 (switches)</span></span>
-<span><span class="co">#&gt;  Species [A+]:  78374 (death), 164599 (growth) and   7852 (switches)</span></span>
-<span><span class="co">#&gt;  Species [B-]: 107275 (death), 100735 (growth) and  14436 (switches)</span></span>
-<span><span class="co">#&gt;  Species [B+]: 140746 (death), 147286 (growth) and  20975 (switches)</span></span>
-<span><span class="co">#&gt;  Species [C-]:   5047 (death),   5826 (growth) and   1158 (switches)</span></span>
-<span><span class="co">#&gt;  Species [C+]:   1902 (death),   1122 (growth) and    379 (switches)</span></span>
-<span><span class="co">#&gt;  Species [D-]:    447 (death),  22143 (growth) and   4474 (switches)</span></span>
-<span><span class="co">#&gt;  Species [D+]:   1422 (death),   4465 (growth) and   1518 (switches)</span></span>
+<span><span class="co">#&gt;  Species [A-]:   1637 (death),  14950 (growth) and   1689 (switches)</span></span>
+<span><span class="co">#&gt;  Species [A+]:  60868 (death), 129842 (growth) and   6264 (switches)</span></span>
+<span><span class="co">#&gt;  Species [B-]: 115199 (death), 109497 (growth) and  15511 (switches)</span></span>
+<span><span class="co">#&gt;  Species [B+]: 144561 (death), 150265 (growth) and  21213 (switches)</span></span>
+<span><span class="co">#&gt;  Species [C-]:  18976 (death),  21845 (growth) and   4250 (switches)</span></span>
+<span><span class="co">#&gt;  Species [C+]:   6962 (death),   4092 (growth) and   1380 (switches)</span></span>
+<span><span class="co">#&gt;  Species [D-]:    442 (death),  22070 (growth) and   4477 (switches)</span></span>
+<span><span class="co">#&gt;  Species [D+]:   1452 (death),   4466 (growth) and   1492 (switches)</span></span>
 <span></span>
 <span><span class="co"># This now show the change in rates</span></span>
 <span><span class="va">clock</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
