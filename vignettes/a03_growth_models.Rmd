@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 library(rRACES)
 ```
 
-rRACES/RACS supports two growth models: the "border"-growth model and the homogeneous-growth
+rRACES/RACES supports two growth models: the "border"-growth model and the homogeneous-growth
 model. 
 
 The former exclusively admits duplication of cells that have space to duplicate 
@@ -116,7 +116,7 @@ plot_muller(sim)
 
 Finally, let us build the ancestor forest of the samples.
 
-```{r}
+```{r, fig.width=14}
 library(dplyr)
 library(ggplot2)
 
@@ -125,6 +125,24 @@ forest <- sim$get_samples_forest()
 plot_forest(forest) %>%
   annotate_forest(forest)
 ```
+
+We use a special `highlight` parameter to add the edges connecting cells in each sample.
+```{r, fig.width=14}
+plot_forest(forest, highlight ='S_1_1') %>%
+  annotate_forest(forest)
+
+plot_forest(forest, highlight ='S_1_2') %>%
+  annotate_forest(forest)
+
+plot_forest(forest, highlight ='S_2_1') %>%
+  annotate_forest(forest)
+
+plot_forest(forest, highlight ='S_2_2') %>%
+  annotate_forest(forest)
+```
+
+
+
 
 ### "Border" Growth
 
@@ -199,13 +217,25 @@ plot_muller(sim)
 
 Once more, let us build the ancestor forest of the samples.
 
-```{r}
-library(dplyr)
-library(ggplot2)
-
+```{r, fig.width=14}
 forest <- sim$get_samples_forest()
 
 plot_forest(forest) %>%
+  annotate_forest(forest)
+```
+
+We use a special `highlight` parameter to add the edges connecting cells in each sample.
+```{r, fig.width=14}
+plot_forest(forest, highlight ='S_1_1') %>%
+  annotate_forest(forest)
+
+plot_forest(forest, highlight ='S_1_2') %>%
+  annotate_forest(forest)
+
+plot_forest(forest, highlight ='S_2_1') %>%
+  annotate_forest(forest)
+
+plot_forest(forest, highlight ='S_2_2') %>%
   annotate_forest(forest)
 ```
 
