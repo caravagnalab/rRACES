@@ -65,13 +65,18 @@ set of trees connected to a generic wildtype cell.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_forest</span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_forest</span><span class="op">(</span><span class="va">forest</span>, highlight_sample <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>forest</dt>
 <dd><p>The samples forest to be plot.</p></dd>
+
+
+<dt>highlight_sample</dt>
+<dd><p>If a sample name, the path from root to the sampled
+cells in the sample is highlighted. If `NULL` (default), nothing is highlighted.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -90,9 +95,7 @@ set of trees connected to a generic wildtype cell.</p>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"MySample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">510</span>, <span class="fl">510</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">forest</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">plot_forest</span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing non-finite values (`stat_edge_link()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (`geom_point()`).</span>
-<span class="r-plt img"><img src="plot_forest-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in aes(edge_color = ifelse(highlight, "indianred3", "black")):</span> could not find function "aes"</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
