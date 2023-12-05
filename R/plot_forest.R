@@ -43,7 +43,7 @@ plot_forest <- function(forest, highlight_sample = NULL) {
 
   if (nrow(nodes) == 0) {
     warning("The forest does not contain any node")
-    return(ggplot())
+    return(ggplot2::ggplot())
   } else {
     forest_data <- forest$get_nodes() %>%
       dplyr::as_tibble() %>%
@@ -118,26 +118,17 @@ plot_forest <- function(forest, highlight_sample = NULL) {
     # Plot the graph
     graph_plot = ggraph::ggraph(layout, "tree") +
       ggraph::geom_edge_link(edge_width = .1, 
-                             aes(edge_color = ifelse(highlight, 'indianred3', 'black'))
-                             )
+                             ggplot2::aes(edge_color = ifelse(highlight, 
+                                                              "indianred3", 
+                                                              "black")))
 
     graph_plot +
       ggraph::geom_node_point(ggplot2::aes(color = .data$species,
                                            shape = ifelse(is.na(.data$sample),
                                                           "N/A",
                                                           .data$sample),
-                                           size = .data$sample)
-                              ) +
-      # ggraph::geom_edge_link(edge_width = .1, ggplot2::aes(color = birth_time < 46)) +
-      # ggraph::geom_edge_link(data = highlight_edges, color = 'red') +
-      # ggraph::geom_node_point(ggplot2::aes(color = .data$species,
-      #                                      shape = ifelse(is.na(.data$sample),
-      #                                                     "N/A",
-      #                                                     .data$sample),
-      #                                      size = .data$sample)) 
+                                           size = .data$sample)) +
       ggplot2::scale_color_manual(values = species_colors) +
-      # scale_shape_manual(values = c("+" = 16, "-" = 17)) +
-      # theme_void() +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "bottom") +
       ggplot2::labs(title = "Birth time",
@@ -184,7 +175,7 @@ paths_to_sample = function(forest_data, sample){
     Q = dplyr::bind_rows(Q, to_add) %>% dplyr::distinct()
     
     # Recursion
-    to = c(to, to_add %>% dplyr::pull(from)) %>% unique()
+    to = c(to, to_add %>% dplyr::pull(.data$from)) %>% unique()
   }
   
   Q

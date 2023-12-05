@@ -67,7 +67,7 @@ setMethod("show", "Rcpp_Simulation", function(object) {
   } else {
     counts_tab <- object$get_counts() %>% 
       dplyr::mutate(
-        `%` = 100 * counts/sum(counts)
+        `%` = 100 * .data$counts/sum(.data$counts)
       )
 
     my_tab <- species %>%
@@ -99,7 +99,7 @@ setMethod("show", "Rcpp_Simulation", function(object) {
       
       for(s in my_tab$species)
       {
-        s_ftab = f_table %>% dplyr::filter(species == s) %>% dplyr::arrange(event)
+        s_ftab = f_table %>% dplyr::filter(species == s) %>% dplyr::arrange(.data$event)
         
         if(with_epigenetics)
           sprintf(
