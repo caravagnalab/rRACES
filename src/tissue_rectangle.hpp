@@ -26,10 +26,7 @@
 #include <position_set.hpp>
 #include <position.hpp>
 
-//' @name TissueRectangle
-//' @title A rectangle in the tissue
-//' @field get_lower_corner Get the rectangle lower corner
-//' @field get_upper_corner Get the rectangle upper corner
+
 class TissueRectangle : public Races::Drivers::RectangleSet
 {
 public:
@@ -53,34 +50,5 @@ public:
 
   void show() const;
 };
-
-//' @name TissueRectangle$new
-//' @title Build a new rectangle of tissue.
-//' @examples
-//' # build the rectangle [500,550]x[450,475]
-//' rect <- new(TissueRectangle, c(500, 450), c(550, 475))
-//'
-//' rect
-//'
-//' # build the rectangle [500,550]x[450,475]
-//' rect <- new(TissueRectangle, c(500, 450), 50, 25)
-//'
-//' rect
-
-//' @name TissueRectangle$lower_corner
-//' @title The lower corner of the tissue rectangle.
-//' @examples
-//' rect <- new(TissueRectangle, c(500, 500), c(550, 550))
-//'
-//' # get the simulation death activation level
-//' rect$lower_corner
-
-//' @name TissueRectangle$upper_corner
-//' @title The lower corner of the tissue rectangle.
-//' @examples
-//' rect <- new(TissueRectangle, c(500, 500), c(550, 550))
-//'
-//' # get the simulation death activation level
-//' rect$upper_corner
 
 #endif // __RRACES_TISSUE_RECTANGLE__
