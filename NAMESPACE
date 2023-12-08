@@ -16,3 +16,7 @@ export(recover_simulation)
 export(plot_forest)
 export(bbox_sampler)
 export(annotate_forest)
+
+export(setup_mutation_engine)
+export(get_mutation_engine_codes)
+export(setup_mutation_engine_by_code)

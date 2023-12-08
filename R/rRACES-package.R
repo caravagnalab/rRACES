@@ -1,4 +1,5 @@
 loadModule("Drivers", TRUE)
+loadModule("Mutations", TRUE)
 
 ## usethis namespace: start
 #' @importFrom cli cli_alert

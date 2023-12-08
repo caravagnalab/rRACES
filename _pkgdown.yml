@@ -15,7 +15,7 @@ authors:
 
 
 reference:
-- title: "Simulation interface"
+- title: "Spacial simulation interface"
   desc:  "Spacial simulation classes and methods"
   contents:
   - TissueRectangle$new
@@ -70,6 +70,12 @@ reference:
   - annotate_forest
   - bbox_sampler
   - recover_simulation
+- title: "Mutation simulation interface"
+  desc:  "Mutation simulation classes and methods"
+  contents:
+  - setup_mutation_engine
+  - get_mutation_engine_codes
+  - setup_mutation_engine_by_code
   
 
 
