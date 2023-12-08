@@ -1,0 +1,150 @@
+---
+title: "Simulating Mutations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulating Mutations}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 72
+bibliography: references.bib 
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+rRACES/RACES can simulate genomic mutations on the cells represented in 
+a `SamplesForest` according to a specified mutational signature of single
+base substitutions (SBS) (see [@alexandrov2020repertoire]). 
+
+This task requires some preliminary steps to download the reference 
+genome and the corresponding SBS file and to build the corresponding 
+context index. The function `setup_mutation_engine` performs all these
+steps in a single call.
+
+The function `setup_mutation_engine` can be called by specifing the name
+of the set-up directory and the complete URLs of both refence genome and
+SBS file.
+
+```{r}
+library(rRACES)
+
+reference_URL <- paste0("https://ftp.ensembl.org/pub/release-110/fasta/",
+                        "homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.22.fa.gz")
+
+SBS_URL <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2124/",
+                  "COSMIC_v3.4_SBS_GRCh38.txt")
+
+setup_mutation_engine("Test", reference_URL, SBS_URL)
+```
+
+The above function call creates the directory *"Test"* and fills it with all the 
+data required to build a mutation engine. 
+
+```{r}
+dir.exists("Test")
+
+list.files("Test")
+```
+
+The execution of the call may takes some time, but it is meant to be performed 
+one for all and, as long as the user does not need to change the reference genome 
+or the SBS file, it is no more required. In this spirit, any calls of 
+`setup_mutation_engine` checks whether the function execution is really needed 
+and, if this is not the case, avoids to performs it. 
+
+```{r}
+setup_mutation_engine("Test", reference_URL, SBS_URL)
+```
+
+The `setup_mutation_engine` also builds a context index for the reference genome.
+The complete context index of a sequence whose size is up to 4Gbps
+takes 4 times the length of the sequence itself both in memory and on the disk.
+For instance, the complete contex index of a human genome takes about 12GBytes.
+In order to avoid such requirement in memory and disk space, 
+`setup_mutation_engine` allows to sample the reference genome contexts and 
+to stores only some of the them in the context index. This is achieved by 
+the optional parameter `context_sampling` which specifies how many
+occurences of the same context must be identified before adding one of 
+them to the context index. The larger the number of context sampling, 
+the larger the context index. On the other side, the lower the number
+of context sampling, the lower the number of sites in the refernce
+genome that can be affected by simulated mutations.
+The `context_sampling` is set to 100 by default, but it can 
+be specified during the `setup_mutation_engine` call as the last 
+parameter.
+
+```{r}
+# get the size of the context index when `context_sampling` is 100
+utils:::format.object_size(file.size("Test/context_index.cif"), "auto")
+
+# remove "Test" directory contex index
+unlink("Test/context_index.cif")
+
+# set-up the data and build the context index with `context_sampling` is 50
+setup_mutation_engine("Test", reference_URL, SBS_URL, 50)
+
+# get the size of the new context index
+utils:::format.object_size(file.size("Test/context_index.cif"), "auto")
+```
+
+```{r, echo=FALSE,  results='hide', message=FALSE}
+unlink("Test", recursive=TRUE)
+```
+
+The function `setup_mutation_engine` is quite flexible and it allows to specify 
+any possible reference genome and any SBS file. However, the vast majority of
+rRACES users aim a standard set-up for instance involving the human genome. 
+Because of this, the function `setup_mutation_engine_by_code` helps users 
+in building some predefined set-ups.
+A complete list of the supported predefined set-ups can be obtained by invoking 
+the function `get_mutation_engine_codes`.
+
+```{r}
+get_mutation_engine_codes()
+```
+
+Let us prepare the "demo" set-up. 
+
+```{r, echo=FALSE,  results='hide', message=FALSE}
+unlink("demo", recursive=TRUE)
+```
+
+```{r}
+# building the "demo" set-up
+setup_mutation_engine_by_code("demo")
+
+dir.exists("demo")
+```
+
+We can figure out the size of the context index as done above.
+
+```{r}
+# get the size of the context index when `context_sampling` is 100
+utils:::format.object_size(file.size("demo/context_index.cif"), "auto")
+```
+
+We can remove the set-up and rebuild it decreasing the 
+`context_sampling` parameter.
+
+```{r}
+# removing "demo" set-up
+unlink("demo", recursive=TRUE)
+
+# building the "demo" set-up setting context_sampling to 50
+setup_mutation_engine_by_code("demo", 50)
+
+dir.exists("demo")
+
+# get the size of the context index when `context_sampling` is 50
+utils:::format.object_size(file.size("demo/context_index.cif"), "auto")
+```
+
+```{r, echo=FALSE,  results='hide', message=FALSE}
+unlink("demo", recursive=TRUE)
+```
