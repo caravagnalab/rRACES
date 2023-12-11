@@ -40,13 +40,13 @@ consider:
 
 ## Custom multi-region sampling
 
-We consider a simple monoclonal model, without epigenotypes.
+We consider a simple monoclonal model, without epimutants.
 
 ```{r, eval=TRUE}
-# Monoclonal model, no epigenotypes
+# Monoclonal model, no epimutants
 sim <- new(Simulation, "Monoclonal")
 
-sim$add_genotype(name = "A", growth_rates = 0.1, death_rates = 0.01)
+sim$add_mutant(name = "A", growth_rates = 0.1, death_rates = 0.01)
 
 sim$place_cell("A", 500, 500)
 sim$run_up_to_size("A", 60000)
@@ -190,18 +190,18 @@ plot_forest(S_1_1_forest) %>%
 ```{r}
 sim <- new(Simulation, "Randomised")
 
-sim$add_genotype(name = "A", growth_rates = 0.1, death_rates = 0.01)
+sim$add_mutant(name = "A", growth_rates = 0.1, death_rates = 0.01)
 
 sim$place_cell("A", 500, 500)
 sim$run_up_to_size("A", 60000)
 ```
 
-We include a new clone and let it grow. This new clone has much higher
+We include a new mutant and let it grow. This new mutant has much higher
 growth rates than its ancestor.
 
 ```{r,  fig.height=4, fig.width=3}
-# Add a new clone
-sim$add_genotype(name = "B", growth_rates = 1, death_rates = 0.01)
+# Add a new mutant
+sim$add_mutant(name = "B", growth_rates = 1, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 
 sim$run_up_to_size("B", 10000)
@@ -210,7 +210,7 @@ current <- plot_tissue(sim)
 current
 ```
 
-Since clone start has been randomised by `choose_cell_in`, we have no
+Since mutant start has been randomised by `choose_cell_in`, we have no
 exact idea of where to sample to obtain for example, $100$ of its cells.
 We can look visually at the simulation, but this is slow.
 
@@ -286,8 +286,8 @@ sim <- new(Simulation, "Two Populations")
 
 sim$death_activation_level <- 20
 
-# First clone
-sim$add_genotype(name = "A",
+# First mutant
+sim$add_mutant(name = "A",
                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                  growth_rates = c("+" = 0.1, "-" = 0.08),
                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -297,7 +297,7 @@ sim$run_up_to_size("A+", 1000)
 plot_tissue(sim, num_of_bins = 500)
 ```
 
-We sample before introducing a new clone.
+We sample before introducing a new mutant.
 
 ```{r,  fig.height=4, fig.width=3}
 bbox_width <- 10
@@ -320,12 +320,12 @@ sim$run_up_to_time(sim$get_clock() + 15)
 plot_tissue(sim, num_of_bins = 500)
 ```
 
-Add a new subclone.
+Add a new submutant.
 
 ```{r,  fig.height=4, fig.width=3}
 cell <- sim$choose_cell_in("A")
 
-sim$add_genotype(name = "B",
+sim$add_mutant(name = "B",
                  epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
                  growth_rates = c("+" = 0.5, "-" = 0.3),
                  death_rates = c("+" = 0.05, "-" = 0.05))
@@ -378,7 +378,7 @@ sim$death_activation_level <- 20
 
 sim$update_tissue(250, 250)
 
-sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
+sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 sim$place_cell("A", 125, 125)
 sim$run_up_to_size("A", 300)
 
@@ -405,11 +405,11 @@ plot_tissue(sim)
 plot_muller(sim)
 ```
 
-Second clone starts.
+Second mutant starts.
 
 ```{r,  fig.height=4, fig.width=3}
-# New subclone
-sim$add_genotype(name = "B", growth_rates = 0.13, death_rates = 0.01)
+# New submutant
+sim$add_mutant(name = "B", growth_rates = 0.13, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 sim$run_up_to_size("B", 400)
 
@@ -417,7 +417,7 @@ plot_tissue(sim)
 plot_muller(sim)
 ```
 
-Random sampling of cells from both clone `A` and `B`.
+Random sampling of cells from both mutant `A` and `B`.
 
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
@@ -430,11 +430,11 @@ sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 plot_tissue(sim)
 ```
 
-Finally, a third clone branching from `A`.
+Finally, a third mutant branching from `A`.
 
 ```{r,  fig.height=4, fig.width=3}
-# New subclone
-sim$add_genotype(name = "C", growth_rates = 0.6, death_rates = 0.01)
+# New submutant
+sim$add_mutant(name = "C", growth_rates = 0.6, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "C")
 
 sim$run_up_to_size("C", 1000)
@@ -442,7 +442,7 @@ plot_tissue(sim)
 plot_muller(sim)
 ```
 
-With sampling of clones `B` and `C`.
+With sampling of mutants `B` and `C`.
 
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling

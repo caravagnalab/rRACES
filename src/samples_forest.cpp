@@ -19,24 +19,24 @@
 
 
 SamplesForest::SamplesForest():
-  Races::Drivers::DescendantsForest()
+  Races::Mutants::DescendantsForest()
 {}
 
 // This method produces a segmentation fault and I cannot understand why
 /*
 SamplesForest::SamplesForest(const Simulation& simulation):
-  Races::Drivers::DescendantsForest(*(simulation.sim_ptr))
+  Races::Mutants::DescendantsForest(*(simulation.sim_ptr))
 {}
 */
 
-SamplesForest::SamplesForest(const Races::Drivers::Simulation::Simulation& simulation):
-  Races::Drivers::DescendantsForest(simulation)
+SamplesForest::SamplesForest(const Races::Mutants::Evolutions::Simulation& simulation):
+  Races::Mutants::DescendantsForest(simulation)
 {}
 
 
 Rcpp::List SamplesForest::get_nodes() const
 {
-  std::vector<Races::Drivers::CellId> cell_ids;
+  std::vector<Races::Mutants::CellId> cell_ids;
   cell_ids.reserve(num_of_nodes());
   for (const auto& [cell_id, cell]: get_cells()) {
     cell_ids.push_back(cell_id);
@@ -45,13 +45,13 @@ Rcpp::List SamplesForest::get_nodes() const
   return get_nodes(cell_ids);
 }
 
-Rcpp::List SamplesForest::get_nodes(const std::vector<Races::Drivers::CellId>& cell_ids) const
+Rcpp::List SamplesForest::get_nodes(const std::vector<Races::Mutants::CellId>& cell_ids) const
 {
   using namespace Rcpp;
-  using namespace Races::Drivers;
+  using namespace Races::Mutants;
 
   IntegerVector ids(cell_ids.size()), ancestors(cell_ids.size());
-  CharacterVector genotypes(cell_ids.size()), epi_states(cell_ids.size()),
+  CharacterVector mutants(cell_ids.size()), epi_states(cell_ids.size()),
                   sample_names(cell_ids.size());
   NumericVector birth(cell_ids.size());
 
@@ -65,8 +65,8 @@ Rcpp::List SamplesForest::get_nodes(const std::vector<Races::Drivers::CellId>& c
       ancestors[i] = cell_node.parent().get_id();
     }
 
-    genotypes[i] = cell_node.get_genotype_name();
-    epi_states[i] = GenotypeProperties::signature_to_string(cell_node.get_methylation_signature());
+    mutants[i] = cell_node.get_mutant_name();
+    epi_states[i] = MutantProperties::signature_to_string(cell_node.get_methylation_signature());
 
     if (cell_node.is_leaf()) {
       sample_names[i] = cell_node.get_sample().get_name();
@@ -79,7 +79,7 @@ Rcpp::List SamplesForest::get_nodes(const std::vector<Races::Drivers::CellId>& c
   }
 
   return DataFrame::create(_["cell_id"]=ids, _["ancestor"]=ancestors,
-                           _["genotype"]=genotypes, _["epistate"]=epi_states,
+                           _["mutant"]=mutants, _["epistate"]=epi_states,
                            _["sample"]=sample_names, _["birth_time"]=birth);
 }
 
@@ -124,14 +124,14 @@ Rcpp::List SamplesForest::get_samples_info() const
 
 Rcpp::List SamplesForest::get_coalescent_cells() const
 {
-  auto coalencent_ids = Races::Drivers::DescendantsForest::get_coalescent_cells();
+  auto coalencent_ids = Races::Mutants::DescendantsForest::get_coalescent_cells();
 
   return get_nodes(coalencent_ids);
 }
 
-Rcpp::List SamplesForest::get_coalescent_cells(const std::list<Races::Drivers::CellId>& cell_ids) const
+Rcpp::List SamplesForest::get_coalescent_cells(const std::list<Races::Mutants::CellId>& cell_ids) const
 {
-  auto coalencent_ids = Races::Drivers::DescendantsForest::get_coalescent_cells(cell_ids);
+  auto coalencent_ids = Races::Mutants::DescendantsForest::get_coalescent_cells(cell_ids);
 
   return get_nodes(coalencent_ids);
 }
@@ -140,7 +140,7 @@ SamplesForest SamplesForest::get_subforest_for(const std::vector<std::string>& s
 {
   SamplesForest forest;
 
-  static_cast< Races::Drivers::DescendantsForest&>(forest) = Races::Drivers::DescendantsForest::get_subforest_for(sample_names);
+  static_cast< Races::Mutants::DescendantsForest&>(forest) = Races::Mutants::DescendantsForest::get_subforest_for(sample_names);
 
   return forest;
 }
@@ -151,19 +151,19 @@ Rcpp::List SamplesForest::get_species_info() const
 
   size_t num_of_rows = get_species_data().size();
 
-  CharacterVector genotype_names(num_of_rows), epi_states(num_of_rows);
+  CharacterVector mutant_names(num_of_rows), epi_states(num_of_rows);
 
-  using namespace Races::Drivers;
+  using namespace Races::Mutants;
 
   size_t i{0};
   for (const auto& [species_id, species_data]: get_species_data()) {
-    genotype_names[i] = get_genotype_name(species_data.genotype_id);
-    epi_states[i] = GenotypeProperties::signature_to_string(species_data.signature);
+    mutant_names[i] = get_mutant_name(species_data.mutant_id);
+    epi_states[i] = MutantProperties::signature_to_string(species_data.signature);
 
     ++i;
   }
 
-  return DataFrame::create(_["genotype"]=genotype_names, _["epistate"]=epi_states);
+  return DataFrame::create(_["mutant"]=mutant_names, _["epistate"]=epi_states);
 }
 
 void SamplesForest::show() const

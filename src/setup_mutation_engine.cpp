@@ -184,7 +184,7 @@ void MutationGeneratorArranger::download_SBS(const std::string& url)
 void MutationGeneratorArranger::build_contex_index(const size_t context_sampling)
 {
   using namespace Races;
-  using namespace Races::Passengers;
+  using namespace Races::Mutations;
 
   std::string contex_index_filename = get_context_index_path();
 

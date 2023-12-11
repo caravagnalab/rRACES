@@ -16,7 +16,7 @@
 #'
 #' @examples
 #' sim <- new(Simulation)
-#' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
+#' sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
 #' sim$sample_cells("MySample", c(500, 500), c(510, 510))

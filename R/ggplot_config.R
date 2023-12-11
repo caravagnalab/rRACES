@@ -46,19 +46,19 @@ get_species_colors <- function(species) {
   paired_species <- species %>%
     dplyr::filter(!is.na(.data$epistate)) %>%
     dplyr::mutate(
-      species = paste0(.data$genotype, .data$epistate)
+      species = paste0(.data$mutant, .data$epistate)
     ) %>%
-    dplyr::arrange(.data$genotype)
+    dplyr::arrange(.data$mutant)
 
   unpaired_species <- species %>%
     dplyr::filter(is.na(.data$epistate)) %>%
     dplyr::mutate(
-      species = paste0(.data$genotype, .data$epistate)
+      species = paste0(.data$mutant, .data$epistate)
     ) %>%
-    dplyr::arrange(.data$genotype)
+    dplyr::arrange(.data$mutant)
 
   # Unpaired
-  unp_colour <- get_colors_for(unpaired_species, "genotype", "Dark2")
+  unp_colour <- get_colors_for(unpaired_species, "mutant", "Dark2")
 
   # Paired
   pai_colour <- get_colors_for(paired_species, "species", "Paired")

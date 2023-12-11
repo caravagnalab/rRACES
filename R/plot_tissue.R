@@ -30,10 +30,10 @@
 #'
 #' @examples
 #' sim <- new(Simulation)
-#' sim$add_genotype(name = "A",
-#'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-#'                  growth_rates = c("+" = 0.2, "-" = 0.08),
-#'                  death_rates = c("+" = 0.1, "-" = 0.01))
+#' sim$add_mutant(name = "A",
+#'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+#'                growth_rates = c("+" = 0.2, "-" = 0.08),
+#'                death_rates = c("+" = 0.1, "-" = 0.01))
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
 #' plot_tissue(sim)
@@ -46,7 +46,7 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
   # Get the cells in the tissue at current simulation time
   cells <- simulation$get_cells() %>%
     dplyr::as_tibble() %>%
-    dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
+    dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
 
   counts <- simulation$get_counts()
 
@@ -58,7 +58,7 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
 
   #
   # cells %>%
-  #   group_by(genotype, epistate) %>%
+  #   group_by(mutant, epistate) %>%
   #   summarise(n())
 
   color_map <- get_species_colors(simulation$get_species())

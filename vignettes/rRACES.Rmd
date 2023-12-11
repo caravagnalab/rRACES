@@ -19,7 +19,7 @@ rRACES wraps the [RACES](https://github.com/albertocasagrande/RACES) simulation 
 The engine has a number of features, the most relevant are:
 
 1.  cells are associated with *species*, proliferate in a stochastic fashion on a spatial 2D lattice;
-2.  every species is defined by *(i)* a _custom genotype_ and *(ii)* a _binary epistate_. Following a no-back mutations model, at every cell division the genotype heritable, while the epigenotype is instead reversible;
+2.  every species is defined by *(i)* a _custom mutant_ and *(ii)* a _binary epistate_. Following a no-back mutations model, at every cell division the mutant heritable, while the epistate is instead reversible;
 3.  the evolutionary parameters of each species can change over time, mimicking treatment-related evolutionary pressures;
 4.  at the molecular level, the genome of tumour cells are moulded by realistic mutational processes, both at the level of simple mutations and more complex copy number alterations;
 5.  arbitrary tissue sampling schema can be simulated, including multi-region and longitudinal datasets with any number of samples and time-points;

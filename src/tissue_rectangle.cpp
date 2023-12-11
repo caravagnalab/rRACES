@@ -46,26 +46,26 @@ void TissueRectangle::show() const
         << "(" << upper_corner.x <<"," << upper_corner.y << "))" << std::endl;
 }
 
-TissueRectangle::TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
-                                 const Races::Drivers::Simulation::PositionInTissue& upper_corner):
+TissueRectangle::TissueRectangle(const Races::Mutants::Evolutions::PositionInTissue& lower_corner, 
+                                 const Races::Mutants::Evolutions::PositionInTissue& upper_corner):
   RectangleSet(lower_corner, upper_corner)
 {}
 
-TissueRectangle::TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
-                                 const Races::Drivers::Simulation::AxisSize& x_size, 
-                                 const Races::Drivers::Simulation::AxisSize& y_size):
+TissueRectangle::TissueRectangle(const Races::Mutants::Evolutions::PositionInTissue& lower_corner, 
+                                 const Races::Mutants::Evolutions::AxisSize& x_size, 
+                                 const Races::Mutants::Evolutions::AxisSize& y_size):
   RectangleSet(lower_corner, x_size, y_size)
 {}
 
 TissueRectangle::TissueRectangle(const std::vector<uint16_t>& lower_corner, const std::vector<uint16_t>& upper_corner):
-  TissueRectangle(Races::Drivers::Simulation::PositionInTissue{lower_corner[0],lower_corner[1]},
-                  Races::Drivers::Simulation::PositionInTissue{upper_corner[0], upper_corner[1]})
+  TissueRectangle(Races::Mutants::Evolutions::PositionInTissue{lower_corner[0],lower_corner[1]},
+                  Races::Mutants::Evolutions::PositionInTissue{upper_corner[0], upper_corner[1]})
 {}
 
 TissueRectangle::TissueRectangle(const std::vector<uint16_t>& lower_corner, 
-                                 const Races::Drivers::Simulation::AxisSize& x_size, 
-                                 const Races::Drivers::Simulation::AxisSize& y_size):
-  TissueRectangle(Races::Drivers::Simulation::PositionInTissue{lower_corner[0],lower_corner[1]},
+                                 const Races::Mutants::Evolutions::AxisSize& x_size, 
+                                 const Races::Mutants::Evolutions::AxisSize& y_size):
+  TissueRectangle(Races::Mutants::Evolutions::PositionInTissue{lower_corner[0],lower_corner[1]},
                   x_size, y_size)
 {}
 

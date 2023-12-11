@@ -25,14 +25,14 @@
 #include <phylogenetic_forest.hpp>
 
 
-class SamplesForest : private Races::Drivers::DescendantsForest
+class SamplesForest : private Races::Mutants::DescendantsForest
 {
   SamplesForest();
 
-  Rcpp::List get_nodes(const std::vector<Races::Drivers::CellId>& cell_ids) const;
+  Rcpp::List get_nodes(const std::vector<Races::Mutants::CellId>& cell_ids) const;
 
 public:
-  SamplesForest(const Races::Drivers::Simulation::Simulation& simulation);
+  SamplesForest(const Races::Mutants::Evolutions::Simulation& simulation);
 
   Rcpp::List get_nodes() const;
 
@@ -42,7 +42,7 @@ public:
 
   Rcpp::List get_coalescent_cells() const;
 
-  Rcpp::List get_coalescent_cells(const std::list<Races::Drivers::CellId>& cell_ids) const;
+  Rcpp::List get_coalescent_cells(const std::list<Races::Mutants::CellId>& cell_ids) const;
 
   SamplesForest get_subforest_for(const std::vector<std::string>& sample_names) const;
 
