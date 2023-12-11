@@ -8,8 +8,8 @@ Authors@R: c(
     person("Alberto", "Casagrande", role = "aut"))
 Maintainer: Giulio Caravagna <gcaravagna@units.it>
 Description: A wrapper for RACES. This package supports 
-        spacial evolution of different clones, different 
-        epigenetic clone states, timed-triggered driver 
+        spacial evolution of different mutants, different 
+        epigenetic mutant states, timed-triggered driver 
         mutations.
 License: GPL-3 + file LICENSE
 LinkingTo: Rcpp

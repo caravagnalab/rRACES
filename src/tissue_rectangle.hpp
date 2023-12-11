@@ -27,22 +27,22 @@
 #include <position.hpp>
 
 
-class TissueRectangle : public Races::Drivers::RectangleSet
+class TissueRectangle : public Races::Mutants::RectangleSet
 {
 public:
-  TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
-                  const Races::Drivers::Simulation::PositionInTissue& upper_corner);
+  TissueRectangle(const Races::Mutants::Evolutions::PositionInTissue& lower_corner, 
+                  const Races::Mutants::Evolutions::PositionInTissue& upper_corner);
 
-  TissueRectangle(const Races::Drivers::Simulation::PositionInTissue& lower_corner, 
-                  const Races::Drivers::Simulation::AxisSize& x_size, 
-                  const Races::Drivers::Simulation::AxisSize& y_size);
+  TissueRectangle(const Races::Mutants::Evolutions::PositionInTissue& lower_corner, 
+                  const Races::Mutants::Evolutions::AxisSize& x_size, 
+                  const Races::Mutants::Evolutions::AxisSize& y_size);
 
   TissueRectangle(const std::vector<uint16_t>& lower_corner, 
                   const std::vector<uint16_t>& upper_corner);
 
   TissueRectangle(const std::vector<uint16_t>& lower_corner, 
-                  const Races::Drivers::Simulation::AxisSize& x_size, 
-                  const Races::Drivers::Simulation::AxisSize& y_size);
+                  const Races::Mutants::Evolutions::AxisSize& x_size, 
+                  const Races::Mutants::Evolutions::AxisSize& y_size);
 
   Rcpp::IntegerVector get_lower_corner() const;
 

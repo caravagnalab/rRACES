@@ -1,4 +1,4 @@
-loadModule("Drivers", TRUE)
+loadModule("Mutants", TRUE)
 loadModule("Mutations", TRUE)
 
 ## usethis namespace: start

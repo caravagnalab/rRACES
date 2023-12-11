@@ -31,3 +31,13 @@ check_libraries <- function(library_names) {
 
   return(TRUE)
 }
+
+required_packages <- function(function_name, dependencies) {
+
+    for (dep in dependencies) {
+        if (!requireNamespace(dep, quietly = TRUE)) {
+            stop(paste0("\"", function_name, "\" requires \"", dep,
+                        "\". Please install it to call \"", function_name,"\"."));
+        }
+    }
+}

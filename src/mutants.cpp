@@ -26,13 +26,13 @@
 
 using namespace Rcpp;
 
-namespace RS = Races::Drivers::Simulation;
-namespace RD = Races::Drivers;
+namespace RE = Races::Mutants::Evolutions;
+namespace RC = Races::Mutants;
 
 RCPP_EXPOSED_CLASS(TissueRectangle)
 RCPP_EXPOSED_CLASS(Simulation)
 RCPP_EXPOSED_CLASS(SamplesForest)
-RCPP_MODULE(Drivers){
+RCPP_MODULE(Mutants){
 
 //' @name TissueRectangle
 //' @title A rectangle in the tissue
@@ -52,7 +52,7 @@ RCPP_MODULE(Drivers){
 //'
 //' rect
   .constructor<std::vector<uint16_t>, std::vector<uint16_t>>("Create a new rectangle")
-  .constructor<std::vector<uint16_t>, RS::AxisSize, RS::AxisSize>("Create a new rectangle")
+  .constructor<std::vector<uint16_t>, RE::AxisSize, RE::AxisSize>("Create a new rectangle")
 
 //' @name TissueRectangle$lower_corner
 //' @title The lower corner of the tissue rectangle.
@@ -81,38 +81,38 @@ RCPP_MODULE(Drivers){
 //'   the cell species.
 //'
 //'   `Simulation` supports epigenetic evolutions, and it lets users
-//'   define species pairs that have the same genotype (even though,
+//'   define species pairs that belong to the same mutant (even though,
 //'   its genomic characterization is unknown) and differ because
 //'   of their epigenetic state (i.e., either "+" or "-").
 //'
 //'   `Simulation` models epigenetic mutations and allows a cell in
-//'   one of a genotype species to generate a new cell belonging to
-//'   the other species of the same genotype at a specified rate.
+//'   one of mutant species to generate a new cell belonging to
+//'   the other species of the same mutant at a specified rate.
 //'
 //'   `Simulation` also allows users to schedule mutations from one
-//'   genotype to a different genotype.
-//' @field add_genotype Adds a genotype and its species \itemize{
-//' \item \emph{Parameter:} \code{genotype} - The genotype name.
-//' \item \emph{Parameter:} \code{epigenetic_rates} - The epigenetic rates of the genotype species (optional).
-//' \item \emph{Parameter:} \code{growth_rates} - The duplication rates of the genotype species.
-//' \item \emph{Parameter:} \code{death_rates} - The death rates of the genotype species.
+//'   mutant to a different mutant.
+//' @field add_mutant Adds a mutant and its species \itemize{
+//' \item \emph{Parameter:} \code{mutant} - The mutant name.
+//' \item \emph{Parameter:} \code{epigenetic_rates} - The epigenetic rates of the mutant species (optional).
+//' \item \emph{Parameter:} \code{growth_rates} - The duplication rates of the mutant species.
+//' \item \emph{Parameter:} \code{death_rates} - The death rates of the mutant species.
 //' }
-//' @field choose_cell_in Chooses one cell in a genotype \itemize{
-//' \item \emph{Parameter:} \code{genotype} - The genotype of the cell to choose.
+//' @field choose_cell_in Chooses one cell in a mutant \itemize{
+//' \item \emph{Parameter:} \code{mutant} - The mutant of the cell to choose.
 //' \item \emph{Parameter:} \code{lower_corner} - The lower left corner of a rectangular selection (optional).
 //' \item \emph{Parameter:} \code{upper_corner} - The upper right corner of a rectangular selection (optional).
-//' \item \emph{Returns:} A list reporting "cell_id", "genotype", "epistate", "position_x",
+//' \item \emph{Returns:} A list reporting "cell_id", "mutant", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
 //' }
 //' @field death_activation_level The number of cells that activates cell death in a species.
 //' @field duplicate_internal_cells Enable/disable duplication for internal cells.
 //' @field get_added_cells Gets the cells manually added to the simulation \itemize{
-//' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "position_x",
+//' \item \emph{Returns:} A data frame reporting "mutant", "epistate", "position_x",
 //'         "position_y", and "time" for each cells manually added to
 //'         the simulation.
 //' }
 //' @field search_sample Seach a rectangular sample having a minimum number of cells\itemize{
-//' \item \emph{Parameter:} \code{genotype_name} - The genotype of the searched cells.
+//' \item \emph{Parameter:} \code{mutant_name} - The mutant of the searched cells.
 //' \item \emph{Parameter:} \code{num_of_cells} - The number of cells in the searched sample.
 //' \item \emph{Parameter:} \code{width} - The width of the searched sample.
 //' \item \emph{Parameter:} \code{height} - The height of the searched sample.
@@ -122,15 +122,15 @@ RCPP_MODULE(Drivers){
 //' @field get_cell Gets one the tissue cells \itemize{
 //' \item \emph{Parameter:} \code{x} - The position of the aimed cell on the x axis.
 //' \item \emph{Parameter:} \code{y} - The position of the aimed cell on the y axis.
-//' \item \emph{Returns:} A data frame reporting "cell_id", "genotype", "epistate", "position_x",
+//' \item \emph{Returns:} A data frame reporting "cell_id", "mutant", "epistate", "position_x",
 //'    and "position_y" of the aimed cell.
 //' }
 //' @field get_cells Gets the tissue cells \itemize{
 //' \item \emph{Parameter:} \code{lower_corner} - The lower-left corner of the selection frame (optional).
 //' \item \emph{Parameter:} \code{upper_corner} - The upper-right corner of the selection frame (optional).
-//' \item \emph{Parameter:} \code{genotype_filter} - The vector of the to-be-selected genotype names (optional).
+//' \item \emph{Parameter:} \code{mutant_filter} - The vector of the to-be-selected mutant names (optional).
 //' \item \emph{Parameter:} \code{epigenetic_filter} - The vector of the to-be-selected epigenetic states (optional).
-//' \item \emph{Returns:} A data frame reporting "cell_id", "genotype", "epistate", "position_x",
+//' \item \emph{Returns:} A data frame reporting "cell_id", "mutant", "epistate", "position_x",
 //'    and "position_y" for each cells satisfying the provided filters and laying
 //'    in the input frame.
 //' }
@@ -138,19 +138,19 @@ RCPP_MODULE(Drivers){
 //' \item \emph{Returns:} The time simulated by the simulation.
 //' }
 //' @field get_count_history Gets the history of the number of cells per species \itemize{
-//' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "counts",
+//' \item \emph{Returns:} A data frame reporting "mutant", "epistate", "counts",
 //'     and "time" for each species and for each sampled time.
 //' }
 //' @field get_counts Counts the number of cells \itemize{
-//' \item \emph{Returns:} A data frame reporting "genotype", "epistate", "counts" for each
+//' \item \emph{Returns:} A data frame reporting "mutant", "epistate", "counts" for each
 //'      species in the simulation.
 //' }
 //' @field get_firing_history Gets the history of the number of fired events \itemize{
-//' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", "fired",
+//' \item \emph{Returns:} A data frame reporting "event", "mutant", "epistate", "fired",
 //'      and "time" for each event type, for each species, and for each sampled time.
 //' }
 //' @field get_firings Gets the number of fired events \itemize{
-//' \item \emph{Returns:} A data frame reporting "event", "genotype", "epistate", and "fired"
+//' \item \emph{Returns:} A data frame reporting "event", "mutant", "epistate", and "fired"
 //'     for each event type and for each species.
 //' }
 //' @field get_name Gets the simulation name \itemize{
@@ -187,22 +187,22 @@ RCPP_MODULE(Drivers){
 //' }
 //' @field mutate_progeny Generate a mutated offspring \itemize{
 //' \item \emph{Parameter:} \code{cell_position} - The position of the cell whose offspring will mutate.
-//' \item \emph{Parameter:} \code{mutated_genotype} - The genotype of the mutated cell.
+//' \item \emph{Parameter:} \code{mutated_mutant} - The mutant of the mutated cell.
 //' }
 //' or
 //' \itemize{
 //' \item \emph{Parameter:} \code{x} - The position of the cell whose progeny will mutate on the x axis.
 //' \item \emph{Parameter:} \code{y} - The position of the cell whose progeny will mutate on the y axis.
-//' \item \emph{Parameter:} \code{mutated_genotype} - The genotype of the mutated cell.
+//' \item \emph{Parameter:} \code{mutated_mutant} - The mutant of the mutated cell.
 //' }
 //' @field place_cell Place one cell in the tissue \itemize{
 //' \item \emph{Parameter:} \code{species} - The name of the new cell species.
 //' \item \emph{Parameter:} \code{x} - The position on the x axis of the cell.
 //' \item \emph{Parameter:} \code{y} - The position on the y axis of the cell.
 //' }
-//' @field schedule_genotype_mutation Schedules a genotype mutation \itemize{
-//' \item \emph{Parameter:} \code{src} - The name of the genotype from which the mutation occurs.
-//' \item \emph{Parameter:} \code{dest} - The name of the genotype to which the mutation leads.
+//' @field schedule_mutation Schedules a mutant mutation \itemize{
+//' \item \emph{Parameter:} \code{src} - The name of the mutant from which the mutation occurs.
+//' \item \emph{Parameter:} \code{dest} - The name of the mutant to which the mutation leads.
 //' \item \emph{Parameter:} \code{time} - The simulated time at which the mutation will occurs.
 //' }
 //' @field run_up_to_event Simulates cell evolution \itemize{
@@ -246,7 +246,7 @@ RCPP_MODULE(Drivers){
 //' sim <- new(Simulation, "test")
 //'
 //' # add a new species, place a cell in the tissue, and let the simulation evolve.
-//' sim$add_genotype(genotype = "A", growth_rate = 0.3, death_rate = 0.02)
+//' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
 //' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_time(30)
 //'
@@ -264,7 +264,7 @@ RCPP_MODULE(Drivers){
 //'
 //' # as done above, we add a new species, place a cell in the tissue, and let the 
 //' # simulation evolve.
-//' sim$add_genotype(genotype = "A", growth_rate = 0.3, death_rate = 0.02)
+//' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
 //' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_time(30)
 //'
@@ -295,7 +295,7 @@ RCPP_MODULE(Drivers){
 //' @param y The position on the y axis of the cell.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -304,116 +304,116 @@ RCPP_MODULE(Drivers){
 //' sim$place_cell("A+", 500, 500)
   .method("place_cell", &Simulation::place_cell, "Place a cell in the tissue")
 
-//' @name Simulation$add_genotype
-//' @title Adds a genotype and its species
-//' @description This method adds a genotype and its species to the
+//' @name Simulation$add_mutant
+//' @title Adds a mutant and its species
+//' @description This method adds a mutant and its species to the
 //'      simulation. If the optional parameter `epigenetic_rate` is
-//'      provided, then two new species having the same genotype and
+//'      provided, then two new species having the same mutant and
 //'      opposite epigenetic states are created. When, instead, the
 //'      optional parameter `epigenetic_rate` is missing, this
 //'      method creates only one species with no epigenetic states.
-//' @param genotype The genotype name.
-//' @param epigenetic_rates The epigenetic rates of the genotype species (optional).
-//' @param growth_rates The duplication rates of the genotype species.
-//' @param death_rates The death rates of the genotype species.
+//' @param mutant The mutant name.
+//' @param epigenetic_rates The epigenetic rates of the mutant species (optional).
+//' @param growth_rates The duplication rates of the mutant species.
+//' @param death_rates The death rates of the mutant species.
 //' @examples
 //' sim <- new(Simulation)
 //'
-//' # create the two species "A+" and "A-". They both have genotype "A".
-//' sim$add_genotype(genotype = "A",
+//' # create the two species "A+" and "A-". They both have mutant "A".
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
-//' # create the species "C" its genotype is "C".
-//' sim$add_genotype(genotype = "C", growth_rate = 0.2, death_rate = 0.1)
-  .method("add_genotype", (void (Simulation::*)(const std::string&, const List&, const List&,
-                                                const List&))(&Simulation::add_genotype),
+//' # create the species "C" its mutant is "C".
+//' sim$add_mutant(name = "C", growth_rate = 0.2, death_rate = 0.1)
+  .method("add_mutant", (void (Simulation::*)(const std::string&, const List&, const List&,
+                                                const List&))(&Simulation::add_mutant),
           "Add a new species with epigenetic status")
-  .method("add_genotype", (void (Simulation::*)(const std::string&, const double&,
-                                                const double&))(&Simulation::add_genotype),
+  .method("add_mutant", (void (Simulation::*)(const std::string&, const double&,
+                                                const double&))(&Simulation::add_mutant),
           "Add a new species")
 
 //' @name Simulation$choose_cell_in
-//' @title Chooses one cell in a genotype
-//' @description This method chooses one of the cells whose genotype
-//'         is `genotype`. Optionally, the lower and upper corners
+//' @title Chooses one cell in a mutant
+//' @description This method chooses one of the cells whose mutant
+//'         is `mutant`. Optionally, the lower and upper corners
 //'         of a tissue rectangular selection can be provided
 //'         to obtain one cell in the rectangle.
-//' @param genotype The genotype of the cell to choose.
+//' @param mutant The mutant of the cell to choose.
 //' @param lower_corner The lower corner of the rectangular selection (optional).
 //' @param upper_corner The upper corner of the rectangular selection (optional).
-//' @return A list reporting "cell_id", "genotype", "epistate", "position_x",
+//' @return A list reporting "cell_id", "mutant", "epistate", "position_x",
 //'    and "position_y" of the choosen cell.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_genotype(genotype = "B",
+//' sim$add_mutant(name = "B",
 //'                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.15, "-" = 0.3),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
 //' sim$death_activation_level <- 100
-//' sim$schedule_genotype_mutation("A","B",20)
+//' sim$schedule_mutation("A","B",20)
 //' sim$run_up_to_size(species = "B-", num_of_cells = 50)
 //'
 //' # Randomly choose one cell in "B" in the tissue
-//' sim$choose_cell_in(genotype = "B")
+//' sim$choose_cell_in(mutant = "B")
   .method("choose_cell_in", (List (Simulation::*)(const std::string&))(&Simulation::choose_cell_in),
-          "Randomly choose one cell in a genotype")
+          "Randomly choose one cell in a mutant")
 
   .method("choose_cell_in", (List (Simulation::*)(const std::string&,
-                                                  const std::vector<RS::AxisPosition>&,
-                                                  const std::vector<RS::AxisPosition>&))(&Simulation::choose_cell_in),
-          "Randomly choose one cell having a specified genotype in a rectangular selection")
+                                                  const std::vector<RE::AxisPosition>&,
+                                                  const std::vector<RE::AxisPosition>&))(&Simulation::choose_cell_in),
+          "Randomly choose one cell having a specified mutant in a rectangular selection")
 
-//' @name Simulation$schedule_genotype_mutation
-//' @title Schedules a genotype mutation
-//' @description This method schedules a genotype mutation that can occur
-//'      from any of the species of the source genotype to the species of
-//'      the destination genotype with a consistent epigenetic state.
+//' @name Simulation$schedule_mutation
+//' @title Schedules a mutant mutation
+//' @description This method schedules a mutant mutation that can occur
+//'      from any of the species of the source mutant to the species of
+//'      the destination mutant with a consistent epigenetic state.
 //'      For the sake of example, if the mutation from "A" to "B" is
 //'      scheduled, then we have three possible situations:
-//'      1. The genotype "A" consists of the only species "A". Then,
+//'      1. The mutant "A" consists of the only species "A". Then,
 //'         during one duplication of a cell of "A", one cell of "B"
 //'         will arise.
-//'      2. The genotype "A" consists of the species "A+" and "A-" and
+//'      2. The mutant "A" consists of the species "A+" and "A-" and
 //'         during one duplication of a cell of "A+", one cell of "B+"
 //'         will arise.
-//'      3. The genotype "A" consists of the species "A+" and "A-" and
+//'      3. The mutant "A" consists of the species "A+" and "A-" and
 //'         during one duplication of a cell of "A-", one cell of "B-"
 //'         will arise.
 //'      No other scenario can occur.
-//' @param src The name of the genotype from which the mutation occurs.
-//' @param dest The name of the genotype to which the mutation leads.
+//' @param src The name of the mutant from which the mutation occurs.
+//' @param dest The name of the mutant to which the mutation leads.
 //' @param time The simulated time at which the mutation will occurs.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_genotype(genotype = "B",
+//' sim$add_mutant(name = "B",
 //'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
-//' # schedule an evolution from genotype "A" to genotype "B" at time 50
-//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
-  .method("schedule_genotype_mutation", &Simulation::schedule_genotype_mutation,
+//' # schedule an evolution from mutant "A" to mutant "B" at time 50
+//' sim$schedule_mutation(src = "A", dst = "B", time = 50)
+  .method("schedule_mutation", &Simulation::schedule_mutation,
           "Add a timed mutation between two different species")
 
 //' @name Simulation$get_species
 //' @title Gets the species
-//' @return A data frame reporting "genotype", "epistate", "growth_rate",
+//' @return A data frame reporting "mutant", "epistate", "growth_rate",
 //'    "death_rate", and "switch_rate" for each registered species.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
-//' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
+//' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
 //'
 //' # get the added species and their rates. In this case, "A"
 //' # and "B"
@@ -426,7 +426,7 @@ RCPP_MODULE(Drivers){
 //' @return The samples forest having as leaves the sampled cells
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -489,7 +489,7 @@ RCPP_MODULE(Drivers){
 //' @return The time simulated by the simulation.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -506,26 +506,26 @@ RCPP_MODULE(Drivers){
 //'      the tissue.
 //' @param x The position of the aimed cell on the x axis.
 //' @param y The position of the aimed cell on the y axis.
-//' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x",
+//' @return A data frame reporting "cell_id", "mutant", "epistate", "position_x",
 //'    and "position_y" of the aimed cell.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.02, "-" = 0.01))
-//' sim$add_genotype(genotype = "B",
+//' sim$add_mutant(name = "B",
 //'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.02, "-" = 0.01))
-//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
+//' sim$schedule_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(40)
 //'
 //' # collect all the cells in the tissue
 //' sim$get_cell(501, 502)
-  .method("get_cell", (List (Simulation::*)(const RS::AxisPosition&,
-                                            const RS::AxisPosition&) const)(&Simulation::get_cell),
+  .method("get_cell", (List (Simulation::*)(const RE::AxisPosition&,
+                                            const RE::AxisPosition&) const)(&Simulation::get_cell),
           "Get one cell from the simulated tissue")
 
 //' @name Simulation$get_cells
@@ -533,27 +533,27 @@ RCPP_MODULE(Drivers){
 //' @description This method collects some data about the cells in the tissue
 //'      without altering the tissue itself. The pairs of optional parameters
 //'      `lower_corner` and `upper_corner` define a frame of the tissue in
-//'      which the data are sampled. The optional parameters `genotype_filter`
+//'      which the data are sampled. The optional parameters `mutant_filter`
 //'      and `epigenetic_filter` filter the collected cell data according to
-//'      the cell genotype and epigenetic state.
+//'      the cell mutant and epigenetic state.
 //' @param lower_corner The lower-left corner of the selection frame (optional).
 //' @param upper_corner The upper-right corner of the selection frame (optional).
-//' @param genotype_filter The vector of the to-be-selected genotype names (optional).
+//' @param mutant_filter The vector of the to-be-selected mutant names (optional).
 //' @param epigenetic_filter The vector of the to-be-selected epigenetic states (optional).
-//' @return A data frame reporting "cell_id", "genotype", "epistate", "position_x",
+//' @return A data frame reporting "cell_id", "mutant", "epistate", "position_x",
 //'    and "position_y" for each cells satisfying the provided filters and laying
 //'    in the input frame.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_genotype(genotype = "B",
+//' sim$add_mutant(name = "B",
 //'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
+//' sim$schedule_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(30)
 //'
@@ -563,17 +563,17 @@ RCPP_MODULE(Drivers){
 //' # get the cells in the frame [495,505]x[490,500]
 //' sim$get_cells(lower_corner=c(495,490), upper_corner=c(505,500))
 //'
-//' # cells can be filtered by genotype name...
-//' sim$get_cells(genotype_filter=c("A"),epigenetic_filter=c("+","-"))
+//' # cells can be filtered by mutant name...
+//' sim$get_cells(mutant_filter=c("A"),epigenetic_filter=c("+","-"))
 //'
 //' # ...or by epigenetic state
-//' sim$get_cells(genotype_filter=c("A","B"),epigenetic_filter=c("-"))
+//' sim$get_cells(mutant_filter=c("A","B"),epigenetic_filter=c("-"))
 //'
-//' # cells can be filtered by frame, genotype, and epigenetic states
+//' # cells can be filtered by frame, mutant, and epigenetic states
 //' sim$get_cells(lower_corner=c(495,495), upper_corner=c(505,505),
-//'               genotype_filter=c("A"),epigenetic_filter=c("+","-"))
-  .method("get_cells", (List (Simulation::*)(const std::vector<RS::AxisPosition>&,
-                                             const std::vector<RS::AxisPosition>&,
+//'               mutant_filter=c("A"),epigenetic_filter=c("+","-"))
+  .method("get_cells", (List (Simulation::*)(const std::vector<RE::AxisPosition>&,
+                                             const std::vector<RE::AxisPosition>&,
                                              const std::vector<std::string>&,
                                              const std::vector<std::string>&) const)(&Simulation::get_cells),
           "Get cells from the simulated tissue")
@@ -597,7 +597,7 @@ RCPP_MODULE(Drivers){
 //' @title Gets the simulation lineage graph
 //' @description At the beginning of the computation only the species of the added
 //'         cells are present in the tissue. As the simulation proceeds new species
-//'         arise as a consequence of either genotype mutations or epigenetic
+//'         arise as a consequence of either mutant mutations or epigenetic
 //'         switches. The *lineage graph* stores these species evolutions and it
 //'         reports the first occurrence time of any species-to-species transition.
 //'
@@ -606,15 +606,15 @@ RCPP_MODULE(Drivers){
 //'         each species-to-species transition.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_genotype(genotype = "B",
+//' sim$add_mutant(name = "B",
 //'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 20)
+//' sim$schedule_mutation(src = "A", dst = "B", time = 20)
 //' sim$run_up_to_time(50)
 //'
 //' sim$get_lineage_graph()
@@ -645,20 +645,20 @@ RCPP_MODULE(Drivers){
 
 //' @name Simulation$get_added_cells
 //' @title Gets the cells manually added to the simulation
-//' @return A data frame reporting "genotype", "epistate", "position_x",
+//' @return A data frame reporting "mutant", "epistate", "position_x",
 //'         "position_y", and "time" for each cells manually added to
 //'         the simulation.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$add_genotype(genotype = "B",
+//' sim$add_mutant(name = "B",
 //'                  epigenetic_rates = c("+-" = 0.02, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.3, "-" = 0.1),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
-//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 30)
+//' sim$schedule_mutation(src = "A", dst = "B", time = 30)
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(50)
 //'
@@ -669,13 +669,13 @@ RCPP_MODULE(Drivers){
 
 //' @name Simulation$get_counts
 //' @title Counts the number of cells
-//' @return A data frame reporting "genotype", "epistate", "counts" for each
+//' @return A data frame reporting "mutant", "epistate", "counts" for each
 //'      species in the simulation.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
-//' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
-//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
+//' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
+//' sim$schedule_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_time(70)
 //'
@@ -687,13 +687,13 @@ RCPP_MODULE(Drivers){
 //' @title Gets the history of the number of cells per species
 //' @description This method returns a data frame reporting the number of
 //'           species cells in each sampled simulation time.
-//' @return A data frame reporting "genotype", "epistate", "counts",
+//' @return A data frame reporting "mutant", "epistate", "counts",
 //'     and "time" for each species, and for each sampled time.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
-//' sim$add_genotype("B", growth_rate = 0.15, death_rate = 0.05)
-//' sim$schedule_genotype_mutation(src = "A", dst = "B", time = 50)
+//' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
+//' sim$schedule_mutation(src = "A", dst = "B", time = 50)
 //' sim$place_cell("A", 500, 500)
 //' sim$history_delta <- 20
 //' sim$run_up_to_time(70)
@@ -705,11 +705,11 @@ RCPP_MODULE(Drivers){
 
 //' @name Simulation$get_firings
 //' @title Gets the number of fired events
-//' @return A data frame reporting "event", "genotype", "epistate", and "fired"
-//'     for each event type, genotype, and epigenetic states.
+//' @return A data frame reporting "event", "mutant", "epistate", and "fired"
+//'     for each event type, mutant, and epigenetic states.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -725,12 +725,12 @@ RCPP_MODULE(Drivers){
 //' @title Gets the history of the number of fired events
 //' @description This method returns a data frame reporting the number of
 //'           events fired up to each sampled simulation time.
-//' @return A data frame reporting "event", "genotype", "epistate", "fired",
+//' @return A data frame reporting "event", "mutant", "epistate", "fired",
 //'     and "time" for each event type, for each species, and for each
 //'     sampled time.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -749,7 +749,7 @@ RCPP_MODULE(Drivers){
 //' @return The list of the species rates.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -768,7 +768,7 @@ RCPP_MODULE(Drivers){
 //'           position, and the number of tumoural cells.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -813,26 +813,26 @@ RCPP_MODULE(Drivers){
 //' @title Generate a mutated progeny
 //' @description This method simulates both the duplication of the cell in the
 //'       specified position and the birth of one cells of a given
-//'       genotype that preserves the epigenetic status of the original cell.
+//'       mutant that preserves the epigenetic status of the original cell.
 //'       The mutated cell will be located in the position of its parent.
 //' @param cell_position The position of the cell whose offspring will mutate.
-//' @param mutated_genotype The genotype of the mutated cell.
+//' @param mutated_mutant The mutant of the mutated cell.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.01, "-" = 0.01))
 //' sim$place_cell("A+", 500, 500)
 //' sim$run_up_to_time(30)
 //'
-//' sim$add_genotype(genotype = "B",
+//' sim$add_mutant(name = "B",
 //'                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.15, "-" = 0.3),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
 //'
 //' # duplicate the cell in position (503, 492). One of
-//' # its direct descendents will have genotype "B"
+//' # its direct descendents will have mutant "B"
 //' # sim$mutate_progeny(503, 492, "B")
 //'
 //' # the output of `choose_cell_in` and `get_cell` can also be used
@@ -841,8 +841,8 @@ RCPP_MODULE(Drivers){
   .method("mutate_progeny",  (void (Simulation::*)(const List&, const std::string&))
                                                   (&Simulation::mutate_progeny),
           "Duplicate a cell and mutate one of its children")
-  .method("mutate_progeny",  (void (Simulation::*)(const RS::AxisPosition&,
-                                                   const RS::AxisPosition&, const std::string&))
+  .method("mutate_progeny",  (void (Simulation::*)(const RE::AxisPosition&,
+                                                   const RE::AxisPosition&, const std::string&))
                                                   (&Simulation::mutate_progeny),
           "Duplicate a cell and mutate one of its children")
 
@@ -851,7 +851,7 @@ RCPP_MODULE(Drivers){
 //' @param time The final simulation time.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype("A", growth_rate = 0.2, death_rate = 0.1)
+//' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$place_cell("A", 500, 500)
 //'
 //' # simulate the tissue up to simulate timed 100
@@ -868,7 +868,7 @@ RCPP_MODULE(Drivers){
 //' @param num_of_events The threshold for the event number.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -888,7 +888,7 @@ RCPP_MODULE(Drivers){
 //' @param num_of_cells The threshold for the cell number.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -907,7 +907,7 @@ RCPP_MODULE(Drivers){
 //'       retrieved to build a samples forest.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -926,7 +926,7 @@ RCPP_MODULE(Drivers){
 //' @param rates The list of rates to be updated.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                  growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -949,11 +949,11 @@ RCPP_MODULE(Drivers){
 //'
 //' # set the tissue size and its name
 //' sim$update_tissue("Liver", 1200, 900)
-  .method("update_tissue", (void (Simulation::*)(const std::string&, const RS::AxisSize&,
-                                                 const RS::AxisSize&))(&Simulation::update_tissue),
+  .method("update_tissue", (void (Simulation::*)(const std::string&, const RE::AxisSize&,
+                                                 const RE::AxisSize&))(&Simulation::update_tissue),
           "Update tissue name and size")
-  .method("update_tissue", (void (Simulation::*)(const RS::AxisSize&,
-                                                 const RS::AxisSize&))(&Simulation::update_tissue),
+  .method("update_tissue", (void (Simulation::*)(const RE::AxisSize&,
+                                                 const RE::AxisSize&))(&Simulation::update_tissue),
           "Update tissue size")
 
 //' @name Simulation$search_sample
@@ -962,7 +962,7 @@ RCPP_MODULE(Drivers){
 //'        the provided number of cells. The sizes of the sample are also
 //'        provided a parameter of the method. 
 //'        The complexity of this method is O(|tissue rows|*|tissue cols|).
-//' @param genotype_name The genotype of the searched cells.
+//' @param mutant_name The mutant of the searched cells.
 //' @param num_of_cells The number of cells in the searched sample.
 //' @param width The width of the searched sample.
 //' @param height The height of the searched sample.
@@ -971,11 +971,11 @@ RCPP_MODULE(Drivers){
 //' @examples
 //' sim <- new(Simulation)
 //' sim$death_activation_level <- 50
-//' sim$add_genotype(genotype = "A", growth_rate = 0.2, death_rate = 0.01)
+//' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_size(species = "A", num_of_cells = 500)
 //'
-//' sim$add_genotype(genotype = "B", growth_rate = 0.3, death_rate = 0.01)
+//' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 //' sim$run_up_to_size(species = "B", num_of_cells = 1000)
 //'
@@ -994,7 +994,7 @@ RCPP_MODULE(Drivers){
 //'            save_snapshots=TRUE)
 //'
 //' # add the species of "A"
-//' sim$add_genotype("A",
+//' sim$add_mutant("A",
 //'                  epigenetic_rates=c("+-" = 0.01, "-+"=0.01),
 //'                  growth_rates = c("+"=0.1, "-"=0.01),
 //'                  death_rates = c("+"=0.05, "-"=0.005))
@@ -1037,8 +1037,8 @@ RCPP_MODULE(Drivers){
 //'         node is not a root, the ancestor identifier (column
 //'         "ancestor"), whenever the node was sampled, i.e., it is
 //'         one of the forest leaves, the name of the sample
-//'         containing the node, (column "sample"), the genotype
-//'         (column "genotype"), the epistate (column "epistate"),
+//'         containing the node, (column "sample"), the mutant
+//'         (column "mutant"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
 //' }
 //' @field get_nodes Get the forest nodes \itemize{
@@ -1048,8 +1048,8 @@ RCPP_MODULE(Drivers){
 //'              identifier (column "ancestor"), whenever the node
 //'              was sampled, i.e., it is one of the forest
 //'              leaves, the name of the sample containing the
-//'              node, (column "sample"), the genotype (column
-//'              "genotype"), the epistate (column "epistate"),
+//'              node, (column "sample"), the mutant (column
+//'              "mutant"), the epistate (column "epistate"),
 //'              and the birth time (column "birth_time").
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
@@ -1061,7 +1061,7 @@ RCPP_MODULE(Drivers){
 //'         tumoral cells in the sample.
 //' }
 //' @field get_species_info Gets the species data\itemize{
-//' \item \emph{Returns:} A data frame reporting "genotype" and "epistate"
+//' \item \emph{Returns:} A data frame reporting "mutant" and "epistate"
 //'            for each registered species.
 //' }
 //' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
@@ -1079,13 +1079,13 @@ RCPP_MODULE(Drivers){
 //'         identifier (column "ancestor"), whenever the
 //'         node was sampled, i.e., it is one of the forest
 //'         leaves, the name of the sample containing the
-//'         node, (column "sample"), the genotype (column
-//'         "genotype"), the epistate (column "epistate"),
+//'         node, (column "sample"), the mutant (column
+//'         "mutant"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
 //' @examples
 //' # create a simulation having name "get_nodes_test"
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1119,12 +1119,12 @@ RCPP_MODULE(Drivers){
 //'         node is not a root, the ancestor identifier (column
 //'         "ancestor"), whenever the node was sampled, i.e., it is
 //'         one of the forest leaves, the name of the sample
-//'         containing the node, (column "sample"), the genotype
-//'         (column "genotype"), the epistate (column "epistate"),
+//'         containing the node, (column "sample"), the mutant
+//'         (column "mutant"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1140,7 +1140,7 @@ RCPP_MODULE(Drivers){
 //'
 //' forest$get_coalescent_cells()
     .method("get_coalescent_cells",
-            (List (SamplesForest::*)(const std::list<Races::Drivers::CellId>&) const)
+            (List (SamplesForest::*)(const std::list<Races::Mutants::CellId>&) const)
                 (&SamplesForest::get_coalescent_cells),
             "Get the most recent common ancestor of some cells")
     .method("get_coalescent_cells",
@@ -1154,7 +1154,7 @@ RCPP_MODULE(Drivers){
 //' @return A samples forest built on the samples mentioned in `sample_names`
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1187,7 +1187,7 @@ RCPP_MODULE(Drivers){
 //'           the number of tumoural cells.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_genotype(genotype = "A",
+//' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1209,7 +1209,7 @@ RCPP_MODULE(Drivers){
 
 //' @name SamplesForest$get_species_info
 //' @title Gets the species
-//' @return A data frame reporting "genotype" and "epistate"
+//' @return A data frame reporting "mutant" and "epistate"
 //'            for each registered species.
     .method("get_species_info", &SamplesForest::get_species_info,
             "Get the recorded species")

@@ -71,8 +71,8 @@ setMethod("show", "Rcpp_Simulation", function(object) {
       )
 
     my_tab <- species %>%
-      dplyr::left_join(counts_tab, by = c("genotype", "epistate")) %>%
-      dplyr::mutate(species = paste0(.data$genotype, .data$epistate)) %>%
+      dplyr::left_join(counts_tab, by = c("mutant", "epistate")) %>%
+      dplyr::mutate(species = paste0(.data$mutant, .data$epistate)) %>%
       dplyr::select(.data$species, .data$growth_rate,
                     .data$death_rate, .data$switch_rate, .data$counts, .data$`%`)
     colnames(my_tab)[2:4] <- c(" \u03BB ", " \u03B4 ", " \u03B5 ")
@@ -89,7 +89,7 @@ setMethod("show", "Rcpp_Simulation", function(object) {
     # cli::cli_rule(center = "Firings")
     
     f_table = object$get_firings() %>%
-      dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
+      dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
     
     cli::cli_h3(text = paste("Firings:", sum(f_table$fired), 'total'))
     

@@ -46,10 +46,10 @@ collapse_loops <- function(df_edges) {
 #'
 #' @examples
 #' sim <- new(Simulation)
-#' sim$add_genotype(name = "A",
-#'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-#'                  growth_rates = c("+" = 0.2, "-" = 0.08),
-#'                  death_rates = c("+" = 0.02, "-" = 0.01))
+#' sim$add_mutant(name = "A",
+#'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+#'                growth_rates = c("+" = 0.2, "-" = 0.08),
+#'                death_rates = c("+" = 0.02, "-" = 0.01))
 #' sim$history_delta = 1
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
@@ -60,7 +60,7 @@ plot_muller <- function(simulation) {
   # Tumour DF
   df_populations <- simulation$get_count_history() %>%
     dplyr::as_tibble() %>%
-    dplyr::mutate(Identity = paste0(.data$genotype, .data$epistate)) %>%
+    dplyr::mutate(Identity = paste0(.data$mutant, .data$epistate)) %>%
     dplyr::rename(Generation = .data$time, Population = .data$count) %>%
     dplyr::select(.data$Generation, .data$Identity, .data$Population)
 

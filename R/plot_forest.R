@@ -30,7 +30,7 @@
 #'
 #' @examples
 #' sim <- new(Simulation)
-#' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
+#' sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
 #' sim$sample_cells("MySample", c(500, 500), c(510, 510))
@@ -51,11 +51,11 @@ plot_forest <- function(forest, highlight_sample = NULL) {
         from = .data$ancestor,
         to = .data$cell_id
       ) %>%
-      dplyr::select(.data$from, .data$to, .data$genotype,
+      dplyr::select(.data$from, .data$to, .data$mutant,
                     .data$epistate, .data$sample, .data$birth_time) %>%
       dplyr::mutate(
         from = ifelse(is.na(.data$from), "WT", .data$from),
-        species = paste0(.data$genotype, .data$epistate),
+        species = paste0(.data$mutant, .data$epistate),
         sample = ifelse(is.na(.data$sample), "N/A", .data$sample),
         highlight = FALSE
       )

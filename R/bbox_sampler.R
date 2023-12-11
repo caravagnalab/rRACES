@@ -34,7 +34,7 @@
 #'
 #' @examples
 #' sim <- new(Simulation)
-#' sim$add_genotype(name = "A", growth_rates = 0.08, death_rates = 0.01)
+#' sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
 #' bbox <- bbox_sampler(sim, "A", n = 15, n_w = 5, n_h = 5)
@@ -46,7 +46,7 @@ bbox_sampler <- function(simulation, which, n, n_w, n_h, nattempts = 100) {
 
   # where are cells of species which
   locations <- simulation$get_cells() %>%
-    dplyr::mutate(species = paste0(.data$genotype, .data$epistate)) %>%
+    dplyr::mutate(species = paste0(.data$mutant, .data$epistate)) %>%
     dplyr::filter(.data$species == which) %>%
     dplyr::select(.data$position_x, .data$position_y)
 
@@ -62,7 +62,7 @@ bbox_sampler <- function(simulation, which, n, n_w, n_h, nattempts = 100) {
     q <- p + c(n_w, n_h)
 
     nc <- simulation$get_cells(p, q) %>%
-      dplyr::mutate(species = paste0(.data$genotype, .data$epistate)) %>%
+      dplyr::mutate(species = paste0(.data$mutant, .data$epistate)) %>%
       dplyr::filter(.data$species == which) %>%
       nrow()
 

@@ -108,21 +108,25 @@ In order to simulate the evolution of some species we need to add them
 to `sim`. This process defines the evolutionary parameters of the
 species.
 
-A species is a *clone* with a compulsory genotype (e.g., a driver
-mutation), and an optional epigenome. At this point in the simulation
-the genotype is just a name (`A`, `B`, ..) that at later stage could be
-linked to mutations of interest. The epigenome is a binary feature of a
-species that is represented by epistates `+`/`-` (positive and negative
-status). This is an abstraction, and could represent an active/inactive
-state linked to a promoter methylation or, more broadly, a phenotype.
-The evolution of genotypes is non-reversible (no-back mutations model),
-while the evolution among epistates is potentially reversible.
+A *mutant* is a set of cells having the same (potentially unknown) driver
+mutations. Cells in the same mutant can have different liveness rates 
+due to different epigenetic states.
 
-For example, if we define two genotypes `A` and `B` with their epistates
+A *species* is a mutant with an optional epigenetic state. At this point in the 
+simulation the mutant is just a name (`A`, `B`, ..) that at later stage 
+could be linked to mutations of interest. The epigenome is a binary 
+feature of a species that is represented by epistates `+`/`-` (positive 
+and negative status). This is an abstraction, and could represent an 
+active/inactive state linked to a promoter methylation or, more broadly, 
+a phenotype. The evolution of mutants is non-reversible (no-back 
+mutations model), while the evolution among epistates is potentially 
+reversible.
+
+For example, if we define two mutants `A` and `B` with their epistates
 `+`/`-`, we have 4 distinct species: `A+` and `A-`, as well as `B+` and
 `B-`.
 
-Hybrid models can be obtained, e.g., a genotype `A` (with no epistates),
+Hybrid models can be obtained, e.g., a mutant `A` (with no epistates),
 together with `B+` and `B-`.
 
 ### **Evolutionary parameters**
@@ -163,7 +167,7 @@ or $\epsilon_{-+}$ are the ratesat which cells of a certain epistate
 duplicate and flip the epigenetic marker of one of the progeny.
 
 ```{r, eval=TRUE}
-sim$add_genotype(name = "A",
+sim$add_mutant(name = "A",
                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                  growth_rates = c("+" = 0.2, "-" = 0.08),
                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -175,18 +179,18 @@ sim
 sim$get_species()
 ```
 
-A genotype without epistates could be added as
+A mutant without epistates could be added as
 
 ```{r, eval=FALSE}
 # Not run
-sim$add_genotype(name = "A", growth_rates = 0.2, death_rates =  0.1)
+sim$add_mutant(name = "A", growth_rates = 0.2, death_rates =  0.1)
 ```
 
 To be able to simulate the model, an initial cell needs to be displaced
 in the tissue.
 
 ```{r}
-# We add one cell of species A+ (genotype A in epistate +) in
+# We add one cell of species A+ (mutant A in epistate +) in
 # position (500, 500).
 sim$place_cell("A+", 500, 500)
 ```
@@ -318,7 +322,7 @@ sim$get_cells(c(500, 500), c(505, 505), c("A", "B"), c("-"))  %>% head()
 
 ### Evolving new species
 
-rRACES can select cells from the tissue, randomly for every genotype, or
+rRACES can select cells from the tissue, randomly for every mutant, or
 in a constrained tissue area.
 
 ```{r}
@@ -333,27 +337,27 @@ sim$choose_cell_in("A",  c(500, 350), c(550, 450))
 ```
 
 This feature can be used to program the generation of new species,
-mimicking new clones that generate subclonal expansions.
+mimicking new mutants that generate subclonal expansions.
 
-Imagine we want to add a new genotype `B` with epistates -- and
+Imagine we want to add a new mutant `B` with epistates -- and
 therefore new species `B+` and `B-` - as descending from `A,`we need to:
 
--   locate one cell of genotype `A` in the tissue, which is where we
-    will inject the new clone;
+-   locate one cell of mutant `A` in the tissue, which is where we
+    will inject the new mutant;
 
--   add the specifics of genotype `B` (via `add_genotype`, as we did for
+-   add the specifics of mutant `B` (via `add_mutant`, as we did for
     `A`);
 
--   implement the change of the cell of genotype `A` to a cell of
-    genotype `B`.
+-   implement the change of the cell of mutant `A` to a cell of
+    mutant `B`.
 
 ```{r}
 # We locate a random cell
 cell <- sim$choose_cell_in("A")
 cell
 
-# Add genotype
-sim$add_genotype(name = "B",
+# Add mutant
+sim$add_mutant(name = "B",
                  epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
                  growth_rates = c("+" = 0.3, "-" = 0.3),
                  death_rates = c("+" = 0.05, "-" = 0.1))
@@ -362,7 +366,7 @@ sim$add_genotype(name = "B",
 Then we inject the cell, and simulate a little bit.
 
 ```{r}
-# Clone injection
+# Mutant injection
 sim$mutate_progeny(cell, "B")
 
 # Generated event A -> B either in + or - epistates is now recorded 
@@ -388,12 +392,12 @@ library(ggplot2)
 plot_tissue(sim, num_of_bins = 250) + facet_wrap(~species)
 ```
 
-If, at this point in the simulation, we generate a new genotype `C` from
+If, at this point in the simulation, we generate a new mutant `C` from
 `A` in the rectangle $[450,500]\times [550, 600]$.
 
 ```{r}
 # Define evolutionary parameters
-sim$add_genotype(name = "C",
+sim$add_mutant(name = "C",
                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
                  growth_rates = c("+" = 0.2, "-" = 0.4),
                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -462,7 +466,7 @@ sim$get_firing_history() %>% head()
 # For example, total number of the deaths on `B+` at the end of the 
 # previous calls of the `run_to_*` methods
 sim$get_firing_history() %>%
-  filter(event == "death", genotype == "B", epistate == "-") 
+  filter(event == "death", mutant == "B", epistate == "-") 
 
 # The counts
 sim$get_count_history() %>% head()
@@ -481,7 +485,7 @@ If the default time-series is not enough coarse-grained, one can set the
 `Simulation` property `history_delta` to increase the sampling rate of
 the state (by default, `history_delta` is set to $0$).
 
-We show this by re-simulating a tumour with two subclones.
+We show this by re-simulating a tumour with two submutants.
 
 ```{r}
 # Example time-series on a new simulation, with coarse-grained time-series
@@ -491,7 +495,7 @@ sim$history_delta <- 1
 sim$death_activation_level <- 100
 
 # A
-sim$add_genotype(name = "A",
+sim$add_mutant(name = "A",
                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                  growth_rates = c("+" = 0.2, "-" = 0.08),
                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -500,7 +504,7 @@ sim$place_cell("A+", 500, 500)
 sim$run_up_to_size("A+", 400)
 
 # B (linear inside A)
-sim$add_genotype(name = "B",
+sim$add_mutant(name = "B",
                  epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
                  growth_rates = c("+" = 0.3, "-" = 0.3),
                  death_rates = c("+" = 0.05, "-" = 0.1))
@@ -510,7 +514,7 @@ sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 sim$run_up_to_size("B-", 300)
 
 # C (linear inside B)
-sim$add_genotype(name = "C",
+sim$add_mutant(name = "C",
                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
                  growth_rates = c("+" = 0.2, "-" = 0.4),
                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -518,7 +522,7 @@ sim$add_genotype(name = "C",
 sim$mutate_progeny(sim$choose_cell_in("B"), "C")
 
 # D (linear inside A, so branching with C) - same parameters of C
-sim$add_genotype(name = "D",
+sim$add_mutant(name = "D",
                  epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
                  growth_rates = c("+" = 0.2, "-" = 0.4),
                  death_rates = c("+" = 0.1, "-" = 0.01))
@@ -549,7 +553,7 @@ plot_muller(sim)
 ```
 
 In this case every population is annotated as a descendant of the
-ancestor genotype. Note however that reversible espistates do not fit a
+ancestor mutant. Note however that reversible espistates do not fit a
 traditional Muller plot because they violate the no-back mutation model.
 
 In this case, rRACES will show first the epistate that was randomly

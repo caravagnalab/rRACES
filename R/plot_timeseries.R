@@ -28,10 +28,10 @@
 #' @examples
 #' sim <- new(Simulation)
 #' sim$history_delta <- 1 
-#' sim$add_genotype(genotype = "A",
-#'                  epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
-#'                  growth_rates = c("+" = 0.2, "-" = 0.08),
-#'                  death_rates = c("+" = 0.1, "-" = 0.01))
+#' sim$add_mutant(name = "A",
+#'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
+#'                growth_rates = c("+" = 0.2, "-" = 0.08),
+#'                death_rates = c("+" = 0.1, "-" = 0.01))
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
 #'
@@ -41,7 +41,7 @@ plot_timeseries <- function(simulation) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
 
   counts <- simulation$get_count_history() %>%
-    dplyr::mutate(species = paste0(.data$genotype, .data$epistate))
+    dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
 
   ncells <- simulation$get_counts() %>% dplyr::pull(counts) %>% sum()

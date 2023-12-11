@@ -28,8 +28,8 @@ reference:
   - SamplesForest$get_species_info
   - SamplesForest$get_subforest_for
   - SamplesForest
-  - Simulation$add_genotype
-  - Simulation$schedule_genotype_mutation
+  - Simulation$add_mutant
+  - Simulation$schedule_mutation
   - Simulation$choose_cell_in
   - Simulation$death_activation_level
   - Simulation$duplicate_internal_cells
