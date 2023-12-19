@@ -294,4 +294,6 @@ public:
                                 const uint16_t& width, const uint16_t& height);
 };
 
+RCPP_EXPOSED_CLASS(Simulation)
+
 #endif // __RRACES_SIMULATION__

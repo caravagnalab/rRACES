@@ -49,4 +49,6 @@ public:
   void show() const;
 };
 
+RCPP_EXPOSED_CLASS(SamplesForest)
+
 #endif // __RRACES_SAMPLES_FOREST__

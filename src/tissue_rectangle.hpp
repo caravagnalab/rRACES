@@ -51,4 +51,6 @@ public:
   void show() const;
 };
 
+RCPP_EXPOSED_CLASS(TissueRectangle)
+
 #endif // __RRACES_TISSUE_RECTANGLE__

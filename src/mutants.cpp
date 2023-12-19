@@ -29,9 +29,6 @@ using namespace Rcpp;
 namespace RE = Races::Mutants::Evolutions;
 namespace RC = Races::Mutants;
 
-RCPP_EXPOSED_CLASS(TissueRectangle)
-RCPP_EXPOSED_CLASS(Simulation)
-RCPP_EXPOSED_CLASS(SamplesForest)
 RCPP_MODULE(Mutants){
 
 //' @name TissueRectangle
@@ -273,7 +270,7 @@ RCPP_MODULE(Mutants){
 //' "test" %in% list.files(".")
 //'
 //' # let us manually delete the "test" directory
-//' unlink("test", recursive=TRUE)
+//' unlink("test", recursive = TRUE)
 //'
 //' # we can also provide a random seed to the simulation...
 //' sim <- new(Simulation, "test", 13)
@@ -1020,7 +1017,7 @@ RCPP_MODULE(Mutants){
 //' sim
 //'
 //' # delete dump directory
-//' unlink("recover_simulation_test", recursive=TRUE)
+//' unlink("recover_simulation_test", recursive = TRUE)
   function("recover_simulation", &Simulation::load,
            "Recover a simulation");
 
