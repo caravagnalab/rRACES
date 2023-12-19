@@ -73,9 +73,27 @@ reference:
 - title: "Mutation simulation interface"
   desc:  "Mutation simulation classes and methods"
   contents:
-  - setup_mutation_engine
+  - Amplification
+  - build_mutation_engine
+  - CNA
+  - CNA$get_allele
+  - CNA$get_chromosome
+  - CNA$get_dataframe
+  - CNA$get_length
+  - CNA$get_position_in_chromosome
+  - CNA$get_src_allele
+  - Deletion
   - get_mutation_engine_codes
-  - setup_mutation_engine_by_code
+  - MutationEngine
+  - MutationEngine$add_coefficients
+  - MutationEngine$add_mutant
+  - SNV
+  - SNV$get_cause
+  - SNV$get_chromosome
+  - SNV$get_context
+  - SNV$get_dataframe
+  - SNV$get_mutated_base
+  - SNV$get_position_in_chromosome
   
 
 

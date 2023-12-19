@@ -22,21 +22,41 @@
 
 #include <Rcpp.h>
 
+#include <mutation_engine.hpp>
 
-Rcpp::List get_mutation_engine_supported_codes();
 
-void setup_mutation_engine_by_code(const std::string& setup_code,
-                                     const size_t& context_sampling_rate);
+class GenomicDataStorage
+{
+  std::filesystem::path directory;
+  std::string reference_url;
+  std::string SBS_url;
 
-void setup_mutation_engine_by_code(const std::string& setup_code);
+  std::string get_destination_path(const std::string& url) const;
 
-void setup_mutation_engine(const std::string& directory,
-                           const std::string& reference_url,
-                           const std::string& SBS_url,
-                           const size_t& context_sampling);
+  std::filesystem::path download_file(const std::string& url) const;
+public:
+  GenomicDataStorage(const std::string& directory);
 
-void setup_mutation_engine(const std::string& directory,
-                           const std::string& reference_url,
-                           const std::string& SBS_url);
+  void download_reference(const std::string& url);
+
+  void download_SBS(const std::string& url);
+
+  inline std::filesystem::path get_directory() const
+  {
+    return directory;
+  }
+
+  inline std::filesystem::path get_reference_path() const
+  {
+    return directory/std::string("reference.fasta");
+  }
+
+  inline std::filesystem::path get_SBS_path() const
+  {
+    return directory/std::string("SBS.txt");
+  }
+
+  void save_parameters() const;
+};
 
 #endif // __RRACES_SETUP_MUTATION_ENGINE__
