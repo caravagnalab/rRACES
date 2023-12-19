@@ -1,0 +1,103 @@
+/*
+ * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
+ * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "cna.hpp"
+
+// amplification
+CNA::CNA(const Races::Mutations::GenomicRegion& region, const Races::Mutations::AlleleId& allele,
+         const Races::Mutations::AlleleId& src_allele):
+    Races::Mutations::CopyNumberAlteration(region, src_allele, allele,
+                                           Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION)
+{}
+
+// deleletion
+CNA::CNA(const Races::Mutations::GenomicRegion& region, const Races::Mutations::AlleleId& allele):
+    Races::Mutations::CopyNumberAlteration(region, allele, allele,
+                                           Races::Mutations::CopyNumberAlteration::Type::DELETION)
+{}
+
+CNA::CNA()
+{}
+
+Rcpp::List CNA::get_dataframe() const
+{
+    using namespace Rcpp;
+    using namespace Races::Mutations;
+
+    return DataFrame::create(_["chromosome"]=get_chromosome(),
+                             _["pos_in_chr"]=get_position_in_chromosome(),
+                             _["length"]=get_length(),
+                             _["allele"]=get_allele(),
+                             _["src_allele"]=get_src_allele(),
+                             _["type"]=get_type());
+}
+
+void CNA::show() const
+{
+    using namespace Rcpp;
+
+    Rcout << "CNA(chromosome: " <<  get_chromosome()
+          << ", pos_in_chr: " << get_position_in_chromosome()
+          << ", length: " << get_length()
+          << ", allele: " << get_allele();
+
+    if (get_type()=="A") {
+        Rcout << ", src_allele: " << get_src_allele();
+    }
+
+    Rcout << ", type: " << get_type()
+          << ")" << std::endl;
+}
+
+CNA CNA::build_CNA(const SEXP chromosome, const SEXP pos_in_chr,
+                   const SEXP length, const SEXP allele, const SEXP src_allele)
+{
+    using namespace Rcpp;
+    using namespace Races::Mutations;
+
+    auto chr_name = as<std::string>(chromosome);
+    auto chr_id = GenomicPosition::stochr(chr_name);
+
+    auto pos = Rcpp::as<long int>(pos_in_chr);
+    if (pos < 0) {
+        throw std::domain_error("Position in chromosome must be a "
+                                "non-negative number");
+    }
+
+    GenomicPosition gen_pos(chr_id, pos);
+
+    auto len = Rcpp::as<long int>(length);
+    if (len < 0) {
+        throw std::domain_error("Region lengths must be "
+                                "non-negative numbers");
+    }
+
+    GenomicRegion region(gen_pos, len);
+
+    auto dst = Rcpp::as<long int>(allele);
+    if (dst < 0) {
+        throw std::domain_error("The \"allele\" field must be a "
+                                "non-negative number");
+    }
+
+    long int src = Rcpp::as<long int>(src_allele);
+    if (src < 0) {
+        return CNA(region, static_cast<AlleleId>(dst));
+    }
+
+    return CNA(region, static_cast<AlleleId>(dst), static_cast<AlleleId>(src));
+}
