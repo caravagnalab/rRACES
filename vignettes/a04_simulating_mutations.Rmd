@@ -8,7 +8,7 @@ vignette: >
 editor_options:
   markdown:
     wrap: 72
-bibliography: references.bib 
+bibliography: references.bib
 ---
 
 ```{r, include = FALSE}
@@ -18,15 +18,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-rRACES/RACES can simulate genomic mutations on the cells represented in 
+rRACES/RACES can simulate genomic mutations on the cells represented in
 a `SamplesForest` according to a specified mutational signature of single
-base substitutions (SBS) (see [@alexandrov2020repertoire]). 
-This process is performed by the class `MutationEngine` which also takes 
-into account the mutation rate of the simulated species and gives the 
+base substitutions (SBS) (see [@alexandrov2020repertoire]).
+This process is performed by the class `MutationEngine` which also takes
+into account the mutation rate of the simulated species and gives the
 chance to dynamicaly change the SBS signature.
 
-The creation of an object of the type `MutationEngine` requires to download 
-the reference sequence and the corresponding SBS file and to build the 
+The creation of an object of the type `MutationEngine` requires to download
+the reference sequence and the corresponding SBS file and to build the
 corresponding context index. The function `build_mutation_engine` performs
 all these steps in a single call.
 
@@ -55,7 +55,7 @@ m_engine <- build_mutation_engine(directory = "Test",
 m_engine
 ```
 
-The above call creates the directory `Test`, fills it with all the 
+The above call creates the directory `Test`, fills it with all the
 data required to build a mutation engine, and build it.
 
 ```{r}
@@ -64,19 +64,17 @@ dir.exists("Test")
 list.files("Test")
 ```
 
-The execution of the function may takes some time, but it is meant to be performed 
-one for all and, as long as the user does not need to change the reference genome 
+The execution of the function may takes some time, but it is meant to be performed
+one for all and, as long as the user does not need to change the reference genome
 or the SBS file, it is no more required. In this spirit, any call to the function
 `MutationEngine` checks whether all the building process sub-tasks are really
-needed and, if this is not the case, avoids to performs them. 
+needed and, if this is not the case, avoids to performs them.
 
 ```{r}
 # build a new mutation engine and use all the data stored into the
 # directory "Test"
-m_engine <- build_mutation_engine(directory = "Test",
-                                  reference_url = reference_url,
-                                  SBS_url = sbs_url,
-                                  default_num_of_alleles = 2)
+m_engine <- build_mutation_engine("Test", reference_url,
+                                  sbs_url, default_num_of_alleles = 2)
 
 m_engine
 ```
@@ -85,24 +83,22 @@ The `MutationEngine` function also builds a context index of the reference
 sequence. The complete context index of a sequence whose size is up to 4Gbps
 takes 4 times the length of the sequence itself both in memory and on the disk.
 For instance, the complete contex index of a human genome takes about 12GBytes.
-In order to avoid such requirement in memory and disk space, 
-`MutationEngine` allows to sample the reference genome contexts and 
-to stores only some of the them in the context index. This is achieved by 
+In order to avoid such requirement in memory and disk space,
+`MutationEngine` allows to sample the reference genome contexts and
+to stores only some of the them in the context index. This is achieved by
 the optional parameter `context_sampling` which specifies how many
-occurences of the same context must be identified before adding one of 
-them to the context index. The larger the number of context sampling, 
+occurences of the same context must be identified before adding one of
+them to the context index. The larger the number of context sampling,
 the larger the context index. On the other side, the lower the number
 of context sampling, the lower the number of sites in the refernce
 genome that can be affected by simulated mutations.
-The `context_sampling` is set to 100 by default, but it can 
+The `context_sampling` is set to 100 by default, but it can
 be specified during the `MutationEngine` call as the last parameter.
 
 ```{r}
 # set-up the data and build the context index with `context_sampling` is 50
-m_engine <- build_mutation_engine(directory = "Test",
-                                  reference_url = reference_url,
-                                  SBS_url = sbs_url,
-                                  default_num_of_alleles = 2,
+m_engine <- build_mutation_engine("Test", reference_url,
+                                  sbs_url, default_num_of_alleles = 2,
                                   context_sampling = 50)
 
 # get the size of the context index when `context_sampling` is 100
@@ -116,12 +112,12 @@ utils:::format.object_size(file.size("Test/context_index_50.cif"), "auto")
 unlink("Test", recursive = TRUE)
 ```
 
-The function `MutationEngine` is quite flexible and it allows to specify 
+The function `MutationEngine` is quite flexible and it allows to specify
 any possible reference genome and any SBS file. However, the vast majority of
-rRACES users aim a standard set-up for instance involving the human genome. 
-Because of this, rRACES provides some predefined set-ups that can be used 
+rRACES users aim a standard set-up for instance involving the human genome.
+Because of this, rRACES provides some predefined set-ups that can be used
 when building a `MutationEngine` object.
-A complete list of the supported predefined set-ups can be obtained by invoking 
+A complete list of the supported predefined set-ups can be obtained by invoking
 the function `get_mutation_engine_codes`.
 
 ```{r}
@@ -148,7 +144,7 @@ We can figure out the size of the context index as done above.
 utils:::format.object_size(file.size("demo/context_index_100.cif"), "auto")
 ```
 
-We can remove the set-up and rebuild it decreasing the 
+We can remove the set-up and rebuild it decreasing the
 `context_sampling` parameter.
 
 ```{r}
@@ -161,7 +157,7 @@ utils:::format.object_size(file.size("demo/context_index_50.cif"), "auto")
 ```
 
 
-Once the mutation engine has been built, we can define mutant genotype and 
+Once the mutation engine has been built, we can define mutant genotype and
 declare species mutation rates.
 
 ```{r}
@@ -187,9 +183,10 @@ A default set of SBS coefficients must also be defined.
 m_engine$add_coefficients(coefficients = c(SBS13 = 0.2, SBS1 = 0.8))
 ```
 
-A further set of SBS coefficients can also be defined by specifying 
-an adoption time, i.e., this set of coefficient will be used from 
+A further set of SBS coefficients can also be defined by specifying
+an adoption time, i.e., this set of coefficient will be used from
 the specified simulation time.
+
 ```{r}
 # add a default set of SBS coefficients that will be used from simulated
 # time 0 up to the successive SBS coefficient change.
