@@ -373,7 +373,7 @@ std::list<CPP_TYPE> get_ancestor_list(const Rcpp::List& rcpp_list)
 }
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
-                                const SEXP species_rates,
+                                const Rcpp::List& species_rates,
                                 const Rcpp::List& mutant_SNVs)
 {
   Rcpp::List empty_list;
@@ -382,22 +382,22 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
 }
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
-                                const SEXP species_rates,
+                                const Rcpp::List& species_rates,
                                 const Rcpp::List& mutant_SNVs,
                                 const Rcpp::List& mutant_CNAs)
 {
   auto c_snvs = get_ancestor_list<Races::Mutations::SNV, SNV>(mutant_SNVs);
   auto c_cnas = get_ancestor_list<Races::Mutations::CopyNumberAlteration, CNA>(mutant_CNAs);
 
-  switch(TYPEOF(species_rates)) {
-    case REALSXP:
+  switch(species_rates.size()) {
+    case 1:
       {
-        double real_rate = REAL(species_rates)[0];
+        double real_rate = species_rates[0];
         
         m_engine.add_mutant(mutant_name, {{"", real_rate}}, c_snvs, c_cnas);
       }
       break;
-    case VECSXP:
+    case 2:
       {
         std::map<std::string, double> epi_rates;
         try {
@@ -411,7 +411,7 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
       break;
     default:
       throw std::domain_error("Rates is either a real value or a named list "
-                              "representing the mutation rates for mutant "
+                              "representing the mutation rates for the two "
                               "species.");
   }
 }

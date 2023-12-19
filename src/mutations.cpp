@@ -354,10 +354,10 @@ RCPP_MODULE(Mutations){
 //' m_engine$add_mutant("B", 0.3, c(SNV("1", 30, "AGC", "T")))
 //'
 //' m_engine
-    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const SEXP species_rate,
+    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& species_rate,
                                                     const Rcpp::List&))(
                                                         &MutationEngine::add_mutant), "Add mutant")
-    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const SEXP species_rate,
+    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& species_rate,
                                                     const Rcpp::List&, const Rcpp::List&))(
                                                         &MutationEngine::add_mutant), "Add mutant")
 

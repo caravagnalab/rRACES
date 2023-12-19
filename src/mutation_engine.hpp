@@ -57,10 +57,10 @@ public:
 
     void add_coefficients(const double& time, const Rcpp::List& mutational_coefficients);
 
-    void add_mutant(const std::string& mutant_name, const SEXP species_rates,
+    void add_mutant(const std::string& mutant_name, const Rcpp::List& species_rates,
                     const Rcpp::List& mutant_SNVs);
 
-    void add_mutant(const std::string& mutant_name, const SEXP species_rates,
+    void add_mutant(const std::string& mutant_name, const Rcpp::List& species_rates,
                     const Rcpp::List& mutant_SNVs, const Rcpp::List& mutant_CNAs);
 
     void show() const;
