@@ -1226,5 +1226,5 @@ RCPP_MODULE(Mutants){
 //'            forest must be load.
 //' @return The load samples forest
   function("load_samples_forest", &SamplesForest::load,
-           "Recover a  samples forest");
+           "Recover a samples forest");
 }
