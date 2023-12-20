@@ -28,9 +28,10 @@ The engine has a number of features, the most relevant are:
 
 The best way to learn to use rRACES is to go thorough three  vignettes that define the standard workflow:
 
--   [*tissue simulation:*](a01_tissue_simulation.html) simulate the spatio-temporal stochastic process of tumour evolution to define a tissue;
--   [*sampling specification:*](a02_sampling_simulation.html) determine the sampling strategy for the simulated tissue;
--   [*growth models:*](a03_growth_models.html) select one the supported growth models; 
+-   [*tissue simulation:*](tissue_simulation.html) simulate the spatio-temporal stochastic process of tumour evolution to define a tissue;
+-   [*sampling:*](sampling.html) determine the sampling strategy for the simulated tissue;
+-   [*growth models:*](growth_models.html) select one the supported growth models; 
+-   [*mutation simulation:*](mutations.html) simulate mutations on samples forests; 
 -   *molecular data genereation*: generating realistic sequencing data based on sampling and simulation.
 
 

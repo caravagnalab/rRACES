@@ -14,6 +14,15 @@ authors:
     href: https://www.caravagnalab.org/
 
 
+articles:
+- title: Articles
+  navbar: ~
+  contents:
+  - tissue_simulation
+  - sampling
+  - growth_models
+  - mutations
+
 reference:
 - title: "Spacial simulation interface"
   desc:  "Spacial simulation classes and methods"
