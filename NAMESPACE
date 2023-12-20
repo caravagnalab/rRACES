@@ -16,9 +16,11 @@ export(recover_simulation)
 export(plot_forest)
 export(bbox_sampler)
 export(annotate_forest)
+export(load_samples_forest)
 
 export(build_mutation_engine)
 export(get_mutation_engine_codes)
 export(MutationEngine)
 export(SNV)
 export(CNA)
+

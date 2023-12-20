@@ -24,8 +24,11 @@
 
 #include <phylogenetic_forest.hpp>
 
+#include "forest.hpp"
 
-class SamplesForest : private Races::Mutants::DescendantsForest
+class MutationEngine;
+
+class SamplesForest : protected Races::Mutants::DescendantsForest
 {
   SamplesForest();
 
@@ -34,20 +37,44 @@ class SamplesForest : private Races::Mutants::DescendantsForest
 public:
   SamplesForest(const Races::Mutants::Evolutions::Simulation& simulation);
 
-  Rcpp::List get_nodes() const;
+  inline Rcpp::List get_nodes() const
+  {
+    return ForestCore::get_nodes(static_cast<const Races::Mutants::DescendantsForest&>(*this));
+  }
 
-  Rcpp::List get_samples_info() const;
+  inline Rcpp::List get_samples_info() const
+  {
+    return ForestCore::get_samples_info(static_cast<const Races::Mutants::DescendantsForest&>(*this));
+  }
 
-  Rcpp::List get_species_info() const;
+  inline Rcpp::List get_species_info() const
+  {
+    return ForestCore::get_species_info(static_cast<const Races::Mutants::DescendantsForest&>(*this));
+  }
 
-  Rcpp::List get_coalescent_cells() const;
+  inline Rcpp::List get_coalescent_cells() const
+  {
+    return ForestCore::get_coalescent_cells(static_cast<const Races::Mutants::DescendantsForest&>(*this));
+  }
 
-  Rcpp::List get_coalescent_cells(const std::list<Races::Mutants::CellId>& cell_ids) const;
+  inline Rcpp::List get_coalescent_cells(const std::list<Races::Mutants::CellId>& cell_ids) const
+  {
+    return ForestCore::get_coalescent_cells(static_cast<const Races::Mutants::DescendantsForest&>(*this), 
+                                            cell_ids);
+  }
 
   SamplesForest get_subforest_for(const std::vector<std::string>& sample_names) const;
 
+  void save(const std::string& filename) const;
+
+  static SamplesForest load(const std::string& filename);
+
   void show() const;
+
+  friend class MutationEngine;
 };
+
+
 
 RCPP_EXPOSED_CLASS(SamplesForest)
 

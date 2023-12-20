@@ -58,9 +58,9 @@ take two samples, and let the simulation evolve again for 15 time units.
 ```{r}
 # Add a mutant
 sim$add_mutant(name = "A",
-                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                 growth_rates = c("+" = 0.1, "-" = 0.08),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.1, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$place_cell("A+", 500, 500)
 
@@ -88,9 +88,9 @@ are 5000 cells in "B+", and take again two samples.
 
 ```{r}
 sim$add_mutant(name = "B",
-                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
-                 growth_rates = c("+" = 0.8, "-" = 0.3),
-                 death_rates = c("+" = 0.05, "-" = 0.05))
+               epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+               growth_rates = c("+" = 0.8, "-" = 0.3),
+               death_rates = c("+" = 0.05, "-" = 0.05))
 
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 
@@ -126,20 +126,18 @@ plot_forest(forest) %>%
 
 We use a special `highlight` parameter to add the edges connecting cells in each sample.
 ```{r, fig.width=14}
-plot_forest(forest, highlight ='S_1_1') %>%
+plot_forest(forest, highlight = "S_1_1") %>%
   annotate_forest(forest)
 
-plot_forest(forest, highlight ='S_1_2') %>%
+plot_forest(forest, highlight = "S_1_2") %>%
   annotate_forest(forest)
 
-plot_forest(forest, highlight ='S_2_1') %>%
+plot_forest(forest, highlight = "S_2_1") %>%
   annotate_forest(forest)
 
-plot_forest(forest, highlight ='S_2_2') %>%
+plot_forest(forest, highlight = "S_2_2") %>%
   annotate_forest(forest)
 ```
-
-
 
 
 ### "Border" Growth
@@ -161,9 +159,9 @@ Let us repeat what we did in the homogeneous growth model example.
 ```{r}
 # Add a mutant
 sim$add_mutant(name = "A",
-                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                 growth_rates = c("+" = 0.1, "-" = 0.08),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.1, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$place_cell("A+", 500, 500)
 
@@ -186,9 +184,9 @@ sim$run_up_to_time(sim$get_clock() + 15)
 
 # Add a new mutant
 sim$add_mutant(name = "B",
-                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
-                 growth_rates = c("+" = 0.8, "-" = 0.3),
-                 death_rates = c("+" = 0.05, "-" = 0.05))
+               epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+               growth_rates = c("+" = 0.8, "-" = 0.3),
+               death_rates = c("+" = 0.05, "-" = 0.05))
 
 
 # Let one of the "A" cells generate a cell in "B"
@@ -224,16 +222,16 @@ plot_forest(forest) %>%
 
 We use a special `highlight` parameter to add the edges connecting cells in each sample.
 ```{r, fig.width=14}
-plot_forest(forest, highlight ='S_1_1') %>%
+plot_forest(forest, highlight = "S_1_1") %>%
   annotate_forest(forest)
 
-plot_forest(forest, highlight ='S_1_2') %>%
+plot_forest(forest, highlight = "S_1_2") %>%
   annotate_forest(forest)
 
-plot_forest(forest, highlight ='S_2_1') %>%
+plot_forest(forest, highlight = "S_2_1") %>%
   annotate_forest(forest)
 
-plot_forest(forest, highlight ='S_2_2') %>%
+plot_forest(forest, highlight = "S_2_2") %>%
   annotate_forest(forest)
 ```
 
@@ -249,3 +247,35 @@ Moreover, spacial closeness and closeness in the samples ancestor forest
 are strictly related in the "border" growth model, whereas they appear to be loosely 
 related in the homogeneous growth model. 
 This features can be easily spotted in the forest plots. 
+
+### Saving and Loading Samples Forests
+
+A samples forest can be saved in a file by using the method `SamplesForest$save`.
+
+```{r, echo=FALSE,  results='hide', message=FALSE}
+unlink("samples_forest.sff")
+```
+
+```{r}
+# check the file existence. It should not exists.
+file.exists("samples_forest.sff")
+
+# save the samples forest in the file "samples_forest.sff"
+forest$save("samples_forest.sff")
+
+# check the file existence. It now exists.
+file.exists("samples_forest.sff")
+```
+
+The saved samples forest can successively be load by using the function
+`load_samples_forest`.
+
+```{r}
+# load the samples forest from "samples_forest.sff" and store it in `forest2`
+forest2 <- load_samples_forest("samples_forest.sff")
+
+# let us now compare the samples forests stored in `forest` and `forest2`;
+# they should be the same.
+forest
+forest2
+```

@@ -1080,7 +1080,7 @@ RCPP_MODULE(Mutants){
 //'         "mutant"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
 //' @examples
-//' # create a simulation having name "get_nodes_test"
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
@@ -1184,9 +1184,8 @@ RCPP_MODULE(Mutants){
 //'           the number of tumoural cells.
 //' @examples
 //' sim <- new(Simulation)
-//' sim$add_mutant(name = "A",
-//'                  growth_rate = 0.2,
-//'                  death_rate = 0.01)
+//' sim$add_mutant(name = "A", growth_rate = 0.2,
+//'                death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
 //'
 //' sim$death_activation_level <- 100
@@ -1211,7 +1210,21 @@ RCPP_MODULE(Mutants){
     .method("get_species_info", &SamplesForest::get_species_info,
             "Get the recorded species")
 
-    // show
+//' @name SamplesForest$save
+//' @title Save a samples forest in a file
+//' @param filename The path of the file in which the samples 
+//'            forest must be saved.
+    .method("save", &SamplesForest::save,
+            "Save a samples forest")
+
     .method("show", &SamplesForest::show,
-            "Describe the SampleForest");
+            "Describe the SamplesForest");
+
+//' @name load_samples_forest
+//' @title Load a samples forest from a file
+//' @param filename The path of the file from which the samples 
+//'            forest must be load.
+//' @return The load samples forest
+  function("load_samples_forest", &SamplesForest::load,
+           "Recover a  samples forest");
 }
