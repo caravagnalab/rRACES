@@ -248,7 +248,7 @@ are strictly related in the "border" growth model, whereas they appear to be loo
 related in the homogeneous growth model. 
 This features can be easily spotted in the forest plots. 
 
-### Saving and Loading Samples Forests
+### Storing Samples Forests
 
 A samples forest can be saved in a file by using the method `SamplesForest$save`.
 
