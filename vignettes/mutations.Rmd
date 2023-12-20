@@ -165,7 +165,7 @@ Once the mutation engine has been built, we can define mutant genotype and
 declare species mutation rates.
 
 Let us consider the __"Border Growth"__ simulation peformed in
-`vignette("a03_growth_models")`. It involves the two mutants `A` and
+`vignette("growth_models")`. It involves the two mutants `A` and
 "B". Both of them has two possible epigenetic states, `+` and `-`, leading 
 to the four the species `A+`, `A-`, `B+`, and `B-`, respectively.
 Each of these species has a mutation rate that must be declated to 
@@ -182,8 +182,8 @@ The method `MutationEngine$add_mutant` takes care of all these
 declarations.
 
 For the sake of example, let us assume that `A` is characterized by a
-mutation on chromosome 22 on position 10510270, while `B` has two
-mutations on the same chromosome in position 12028576 and 12029660.
+mutation on chromosome 22, while `B` has two mutations on the same
+chromosome.
 
 ```{r}
 # add the mutant "A" characterized by two SNV on chromosome 22 (no CNA) and
@@ -237,7 +237,7 @@ The configurated mutation engine can be used to label each node in a
 samples forest by mutations.
 
 Since the mutation engine has be configurated to deal with the 
-simulation peformed in `vignette("a03_growth_models")`,
+simulation peformed in `vignette("growth_models")`,
 we can use the samples forest saved in the file `"samples_forest.sff"`
 in that article.
 
