@@ -26,6 +26,8 @@
 
 #include "cna.hpp"
 #include "snv.hpp"
+#include "phylogenetic_forest.hpp"
+#include "samples_forest.hpp"
 
 #include "genomic_data_storage.hpp"
 
@@ -62,6 +64,16 @@ public:
 
     void add_mutant(const std::string& mutant_name, const Rcpp::List& species_rates,
                     const Rcpp::List& mutant_SNVs, const Rcpp::List& mutant_CNAs);
+
+    inline PhylogeneticForest place_mutations(const SamplesForest& forest, const int seed)
+    {
+        return m_engine.place_mutations(forest, seed);
+    }
+
+    inline PhylogeneticForest place_mutations(const SamplesForest& forest)
+    {
+        return m_engine.place_mutations(forest, 0);
+    }
 
     void show() const;
 
