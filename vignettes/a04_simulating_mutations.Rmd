@@ -25,6 +25,8 @@ This process is performed by the class `MutationEngine` which also takes
 into account the mutation rate of the simulated species and gives the
 chance to dynamicaly change the SBS signature.
 
+### Setting Up Mutation Engine
+
 The creation of an object of the type `MutationEngine` requires to download
 the reference sequence and the corresponding SBS file and to build the
 corresponding context index. The function `build_mutation_engine` performs
@@ -157,26 +159,59 @@ utils:::format.object_size(file.size("demo/context_index_50.cif"), "auto")
 ```
 
 
+#### Mutant Genetic Characterization 
+
 Once the mutation engine has been built, we can define mutant genotype and
 declare species mutation rates.
+
+Let us consider the __"Border Growth"__ simulation peformed in
+`vignette("a03_growth_models")`. It involves the two mutants `A` and
+"B". Both of them has two possible epigenetic states, `+` and `-`, leading 
+to the four the species `A+`, `A-`, `B+`, and `B-`, respectively.
+Each of these species has a mutation rate that must be declated to 
+the mutation engine before labeling the samples forest.
+Let 3e-9, 6e-9, 4e-9, and 5e-9 be the mutation rates of the
+species `A+`, `A-`, `B+`, and `B-`, respectively.
+
+The two mutants may also be genetically characterized by some mutations. 
+The mutations associated with each of the mutants must occur 
+in any cell belonging to the mutant itself. Hence, also the mutant
+mutations must be declared to the mutant engine before the labeling.
+
+The method `MutationEngine$add_mutant` takes care of all these 
+declarations.
+
+For the sake of example, let us assume that `A` is characterized by a
+mutation on chromosome 22 on position 10510270, while `B` has two
+mutations on the same chromosome in position 12028576 and 12029660.
 
 ```{r}
 # add the mutant "A" characterized by two SNV on chromosome 22 (no CNA) and
 # having two epigenetic states. Its species "A+" and "A-" have mutation rate
-# 0.2 and 0.4, respectively.
+# 3e-9 and 6e-9, respectively.
 m_engine$add_mutant(mutant_rates = "A",
-                    species_rates = c("+" = 0.2, "-" = 0.4),
-                    mutant_SNVs = c(SNV("22", 2001, "GAC", "T"),
-                                    SNV("22", 2020, "CCC", "A")),
+                    species_rates = c("+" = 3e-9, "-" = 6e-9),
+                    mutant_SNVs = c(SNV("22", 10510210, "TAC", "T")),
                     mutant_CNAs = c())
-# add the mutant "B" characterized by one SNV on chromosome 1 (no CNA) and
-# missing epigenetic state. Its species "B" has mutation rate 0.3.
-m_engine$add_mutant("B", 0.3, c(SNV("1", 30, "AGC", "T")))
+
+# add the mutant "B" characterized by two SNVs on chromosome 22 (no CNA) and
+# two epigenetic states. Its species "B+" and "B-" have mutation rate 4e-9
+# and 5e-9, respectively.
+m_engine$add_mutant("B", c("+" = 4e-9, "-" = 5e-9),
+                    c(SNV("22", 12028576, "ACA", "G"),
+                      SNV("22", 12029660, "AAA", "T")))
 
 m_engine
 ```
 
-A default set of SBS coefficients must also be defined.
+#### SBS Coefficients
+
+The probability for a SNV to occur depends on both its context and the 
+active set of SBS coefficients. Thus, we need to specify a
+default set of SBS coefficients (see [@alexandrov2020repertoire]).
+
+This can be achieved as it follows.
+
 ```{r}
 # add a default set of SBS coefficients that will be used from simulated
 # time 0 up to the successive SBS coefficient change.
@@ -184,8 +219,8 @@ m_engine$add_coefficients(coefficients = c(SBS13 = 0.2, SBS1 = 0.8))
 ```
 
 A further set of SBS coefficients can also be defined by specifying
-an adoption time, i.e., this set of coefficient will be used from
-the specified simulation time.
+an activation time, i.e., the new set of coefficients will be used
+from the specified simulation time.
 
 ```{r}
 # add a default set of SBS coefficients that will be used from simulated
@@ -196,7 +231,42 @@ m_engine$add_coefficients(time = 3.2,
 m_engine
 ```
 
+### Building Phylogenetic Forests
+
+The configurated mutation engine can be used to label each node in a 
+samples forest by mutations.
+
+Since the mutation engine has be configurated to deal with the 
+simulation peformed in `vignette("a03_growth_models")`,
+we can use the samples forest saved in the file `"samples_forest.sff"`
+in that article.
+
+```{r}
+samples_forest <- load_samples_forest("samples_forest.sff")
+
+phylo_forest <- m_engine$place_mutations(samples_forest)
+
+phylo_forest
+```
+
+### Storing Phylogenetic Forests
+
+As in the case of the samples forests, the phylogenetic forests 
+can be saved by using the method `PhylogeneticForest$save` and 
+load by the function `load_phylogenetic_forest`.
+
+```{r}
+# save the phylogenetic forest in the file "phylo_forest.sff"
+phylo_forest$save("phylo_forest.sff")
+
+# loading the saved forest
+phylo_forest2 <- load_phylogenetic_forest("phylo_forest.sff")
+
+phylo_forest2
+```
 
 ```{r, echo=FALSE,  results='hide', message=FALSE}
 unlink("demo", recursive = TRUE)
+unlink("samples_forest.sff")
+unlink("phylo_forest.sff")
 ```

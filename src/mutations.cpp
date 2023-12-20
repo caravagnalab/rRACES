@@ -19,6 +19,7 @@
 
 #include <Rcpp.h>
 
+#include "phylogenetic_forest.hpp"
 #include "mutation_engine.hpp"
 #include "snv.hpp"
 #include "cna.hpp"
@@ -344,23 +345,67 @@ RCPP_MODULE(Mutations){
 //'
 //' # add the mutant "A" characterized by two SNV on chromosome 22 (no CNA) and
 //' # having two epigenetic states. Its species "A+" and "A-" have mutation rate 
-//' # 0.2 and 0.4, respectively.
-//' m_engine$add_mutant("A", c("+" = 0.2, "-" = 0.4),
+//' # 3e-9 and 6e-9, respectively.
+//' m_engine$add_mutant("A", c("+" = 3e-9, "-" = 6e-9),
 //'                     c(SNV("22", 2001, "GAC", "T"),
 //'                       SNV("22", 2020, "CCC", "A")))
 //'
 //' # add the mutant "B" characterized by one SNV on chromosome 1 (no CNA) and
-//' # missing epigenetic state. Its species "B" has mutation rate 0.3.
-//' m_engine$add_mutant("B", 0.3, c(SNV("1", 30, "AGC", "T")))
-//'
-//' m_engine
+//' # missing epigenetic state. Its species "B" has mutation rate 5e-9.
+//' m_engine$add_mutant("B", 5e-9, c(SNV("1", 30, "AGC", "T")))
     .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& species_rate,
                                                     const Rcpp::List&))(
-                                                        &MutationEngine::add_mutant), "Add mutant")
+                                                        &MutationEngine::add_mutant),                                            
+            "Add mutant")
     .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& species_rate,
                                                     const Rcpp::List&, const Rcpp::List&))(
-                                                        &MutationEngine::add_mutant), "Add mutant")
+                                                        &MutationEngine::add_mutant), 
+            "Add mutant")
 
+//' @name MutationEngine$place_mutations
+//' @title Place the mutations on a samples forest
+//' @description This method labels each node of a samples forest
+//'         by the mutations occuring for the first time in the
+//'         cell represented by the node itself and produces a
+//'         phylogenetic forest.
+//' @param samples_forest A samples forest.
+//' @return A phylogenetic forest whose structure corresponds to
+//'         `samples_forest`.
+//' @examples
+//' # create a simulation
+//' sim <- new(Simulation)
+//' sim$add_mutant("A", 0.2, 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 50000)
+//'
+//' # sample the region [450,500]x[475,550]
+//' sim$sample_cells("S1", lower_corner = c(450, 475),
+//'                        upper_corner = c(500, 550))
+//'
+//' # build the samples forest
+//' samples_forest <- sim$get_samples_forest()
+//'
+//' # build a mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # add the mutant "A" to the engine
+//' m_engine$add_mutant("A", 3e-9, c(SNV("22", 2001, "GAC", "T")))
+//'
+//' # add the default set of SBS coefficients
+//' m_engine$add_coefficients(c(SBS13 = 0.3, SBS1 = 0.7))
+//'
+//' # place the mutations on the samples forest
+//' phylogenetic_forest <- m_engine$place_mutations(samples_forest)
+//'
+//' phylogenetic_forest
+    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest))(
+                                                        &MutationEngine::place_mutations),
+            "Place mutations on a SamplesForest")
+    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest, const int seed))(
+                                                        &MutationEngine::place_mutations),
+            "Place mutations on a SamplesForest")
     .method("show", &MutationEngine::show);
 
 //' @name build_mutation_engine
@@ -400,7 +445,7 @@ RCPP_MODULE(Mutations){
 //'       sequence, the SBS file, and the previously built context index
 //'       are loaded from the set-up directory avoiding further 
 //'       computations.
-//' @seealso [get_mutation_engine_codes()] provides a list of the supported 
+//' @seealso `get_mutation_engine_codes()` provides a list of the supported 
 //'         set-up codes.
 //' @export
 //' @param setup_code The set-up code (alternative to `directory`).
@@ -477,11 +522,153 @@ RCPP_MODULE(Mutations){
 //' @title Get the supported codes for predefined set-up
 //' @return A data frame reporting the code and a description for each
 //'      supported predefined set-up.
-//' @seealso [build_mutation_engine()] to build a mutation engine
+//' @seealso `build_mutation_engine()` to build a mutation engine
 //' @export
 //' @examples
 //' # get the list of supported mutation engine set-up codes
 //' get_mutation_engine_codes()
   function("get_mutation_engine_codes", &MutationEngine::get_supported_setups,
            "Get mutation engine supported codes");
+
+//' @name PhylogeneticForest
+//' @title The phylogenetic forest of cells in samples.
+//' @description Represents the phylogenetic forest of the
+//'       cells sampled during the computation. The leaves of
+//'       this forest are the sampled cells.
+//'       This class is analoguous to the class `SamplesForest`, 
+//'       but each node is labelled with the mutations occuring
+//'       for the first time on the cell represented by the node
+//'       itself. Moreover each leaf is also associated with the
+//'       genome mutations occurring in the corresponding cell.
+//' @field get_coalescent_cells Retrieve most recent common ancestors\itemize{
+//' \item \emph{Parameter:} \code{cell_ids} - The list of the identifiers of the
+//'               cells whose most recent common ancestors are aimed (optional).
+//' \item \emph{Return:} A data frame representing, for each of the identified
+//'         cells, the identified (column "cell_id"), whenever the
+//'         node is not a root, the ancestor identifier (column
+//'         "ancestor"), whenever the node was sampled, i.e., it is
+//'         one of the forest leaves, the name of the sample
+//'         containing the node, (column "sample"), the mutant
+//'         (column "mutant"), the epistate (column "epistate"),
+//'         and the birth time (column "birth_time").
+//' }
+//' @field get_nodes Get the forest nodes \itemize{
+//' \item \emph{Return:} A data frame representing, for each node
+//'              in the forest, the identified (column "id"),
+//'              whenever the node is not a root, the ancestor
+//'              identifier (column "ancestor"), whenever the node
+//'              was sampled, i.e., it is one of the forest
+//'              leaves, the name of the sample containing the
+//'              node, (column "sample"), the mutant (column
+//'              "mutant"), the epistate (column "epistate"),
+//'              and the birth time (column "birth_time").
+//' }
+//' @field get_samples_info Retrieve information about the samples \itemize{
+//' \item \emph{Returns:} A data frame containing, for each sample collected
+//'         during the simulation, the columns "name", "time", "ymin",
+//'         "xmin", "ymax", "xmax", and  "tumoral cells". "ymin",
+//'         "xmin", "ymax", "xmax" report the boundaries of the sampled
+//'         rectangular region, while "tumoral cells" is the number of
+//'         tumoral cells in the sample.
+//' }
+//' @field get_species_info Gets the species data\itemize{
+//' \item \emph{Returns:} A data frame reporting "mutant" and "epistate"
+//'            for each registered species.
+//' }
+//' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
+//' \item \emph{Parameter:} \code{sample_names} - The names of the samples whose cells will be used
+//'         as leaves of the new forest.
+//' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
+//' }
+  class_<PhylogeneticForest>("PhylogeneticForest")
+
+//' @name PhylogeneticForest$get_nodes
+//' @title Get the nodes of the forest
+//' @return A data frame representing, for each node
+//'         in the forest, the identified (column "cell_id"),
+//'         whenever the node is not a root, the ancestor
+//'         identifier (column "ancestor"), whenever the
+//'         node was sampled, i.e., it is one of the forest
+//'         leaves, the name of the sample containing the
+//'         node, (column "sample"), the mutant (column
+//'         "mutant"), the epistate (column "epistate"),
+//'         and the birth time (column "birth_time").
+//' @seealso `SamplesForest$get_nodes()` for usage examples
+    .method("get_nodes", (List (PhylogeneticForest::*)() const)(&PhylogeneticForest::get_nodes),
+            "Get the nodes of the forest")
+
+//' @name PhylogeneticForest$get_coalescent_cells
+//' @title Retrieve most recent common ancestors
+//' @description This method retrieves the most recent common ancestors
+//'         of a set of cells. If the optional parameter `cell_ids` is
+//'         used, this method find the most recent common ancestors of
+//'         the cells having an identifier among those in `cell_ids`.
+//'         If, otherwise, the optional parameter is not used, this
+//'         method find the most recent common ancestors of the forest
+//'         leaves.
+//' @param cell_ids The list of the identifiers of the cells whose
+//'         most recent common ancestors are aimed (optional).
+//' @return A data frame representing, for each of the identified
+//'         cells, the identified (column "cell_id"), whenever the
+//'         node is not a root, the ancestor identifier (column
+//'         "ancestor"), whenever the node was sampled, i.e., it is
+//'         one of the forest leaves, the name of the sample
+//'         containing the node, (column "sample"), the mutant
+//'         (column "mutant"), the epistate (column "epistate"),
+//'         and the birth time (column "birth_time").
+//' @seealso `SamplesForest$get_coalescent_cells()` for usage examples
+    .method("get_coalescent_cells",
+            (List (PhylogeneticForest::*)(const std::list<Races::Mutants::CellId>&) const)
+                (&PhylogeneticForest::get_coalescent_cells),
+            "Get the most recent common ancestor of some cells")
+    .method("get_coalescent_cells",
+            (List (PhylogeneticForest::*)() const)(&PhylogeneticForest::get_coalescent_cells),
+            "Get the most recent common ancestor of all the forest trees")
+
+//' @name PhylogeneticForest$get_subforest_for
+//' @title Build a subforest using as leaves some of the original samples
+//' @param sample_names The names of the samples whose cells will be used
+//'         as leaves of the new forest
+//' @return A samples forest built on the samples mentioned in `sample_names`
+//' @seealso `SamplesForest$get_subforest_for()` for usage examples
+    .method("get_subforest_for", &PhylogeneticForest::get_subforest_for,
+            "Get the sub-forest for some of the original samples")
+
+//' @name PhylogeneticForest$get_samples_info
+//' @title Retrieve information about the samples
+//' @description This method retrieves information about
+//'           the samples whose cells were used as leaves
+//'           of the samples forest.
+//' @return A data frame reporting, for each sample, the
+//'           name, the sampling time, the position, and
+//'           the number of tumoural cells.
+//' @seealso `SamplesForest$get_samples_info()` for usage examples
+    .method("get_samples_info", &PhylogeneticForest::get_samples_info,
+            "Get some pieces of information about the samples")
+
+//' @name PhylogeneticForest$get_species_info
+//' @title Gets the species
+//' @return A data frame reporting "mutant" and "epistate"
+//'            for each registered species.
+    .method("get_species_info", &PhylogeneticForest::get_species_info,
+            "Get the recorded species")
+
+//' @name PhylogeneticForest$save
+//' @title Save a phylogenetic forest in a file
+//' @param filename The path of the file in which the phylogenetic 
+//'            forest must be saved.
+    .method("save", &PhylogeneticForest::save,
+            "Save a phylogenetic forest")
+
+    // show
+    .method("show", &PhylogeneticForest::show,
+            "Describe the PhylogeneticForest");
+
+//' @name load_phylogenetic_forest
+//' @title Load a phylogenetic forest from a file
+//' @param filename The path of the file from which the phylogenetic 
+//'            forest must be load.
+//' @return The load phylogenetic forest
+  function("load_phylogenetic_forest", &PhylogeneticForest::load,
+           "Recover a phylogenetic forest");
 }

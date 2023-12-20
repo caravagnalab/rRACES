@@ -86,9 +86,18 @@ reference:
   - CNA
   - Deletion
   - get_mutation_engine_codes
+  - load_phylogenetic_forest
   - MutationEngine$add_coefficients
   - MutationEngine$add_mutant
+  - MutationEngine$place_mutations
   - MutationEngine
+  - PhylogeneticForest$get_coalescent_cells
+  - PhylogeneticForest$get_nodes
+  - PhylogeneticForest$get_samples_info
+  - PhylogeneticForest$get_species_info
+  - PhylogeneticForest$get_subforest_for
+  - PhylogeneticForest$save
+  - PhylogeneticForest
   - SNV$get_cause
   - SNV$get_chromosome
   - SNV$get_context
