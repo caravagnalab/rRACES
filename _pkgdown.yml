@@ -18,6 +18,9 @@ reference:
 - title: "Spacial simulation interface"
   desc:  "Spacial simulation classes and methods"
   contents:
+  - annotate_forest
+  - bbox_sampler
+  - load_samples_forest
   - TissueRectangle$new
   - TissueRectangle$lower_corner
   - TissueRectangle$upper_corner
@@ -27,6 +30,7 @@ reference:
   - SamplesForest$get_samples_info
   - SamplesForest$get_species_info
   - SamplesForest$get_subforest_for
+  - SamplesForest$save
   - SamplesForest
   - Simulation$add_mutant
   - Simulation$schedule_mutation
@@ -67,33 +71,31 @@ reference:
   - plot_state
   - plot_tissue
   - plot_timeseries
-  - annotate_forest
-  - bbox_sampler
   - recover_simulation
 - title: "Mutation simulation interface"
   desc:  "Mutation simulation classes and methods"
   contents:
   - Amplification
   - build_mutation_engine
-  - CNA
   - CNA$get_allele
   - CNA$get_chromosome
   - CNA$get_dataframe
   - CNA$get_length
   - CNA$get_position_in_chromosome
   - CNA$get_src_allele
+  - CNA
   - Deletion
   - get_mutation_engine_codes
-  - MutationEngine
   - MutationEngine$add_coefficients
   - MutationEngine$add_mutant
-  - SNV
+  - MutationEngine
   - SNV$get_cause
   - SNV$get_chromosome
   - SNV$get_context
   - SNV$get_dataframe
   - SNV$get_mutated_base
   - SNV$get_position_in_chromosome
+  - SNV
   
 
 
