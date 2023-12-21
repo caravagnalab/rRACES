@@ -65,14 +65,11 @@ public:
     void add_mutant(const std::string& mutant_name, const Rcpp::List& species_rates,
                     const Rcpp::List& mutant_SNVs, const Rcpp::List& mutant_CNAs);
 
-    inline PhylogeneticForest place_mutations(const SamplesForest& forest, const int seed)
-    {
-        return m_engine.place_mutations(forest, seed);
-    }
+    PhylogeneticForest place_mutations(const SamplesForest& forest, const int seed);
 
     inline PhylogeneticForest place_mutations(const SamplesForest& forest)
     {
-        return m_engine.place_mutations(forest, 0);
+        return place_mutations(forest, 0);
     }
 
     void show() const;
