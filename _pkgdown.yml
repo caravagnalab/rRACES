@@ -101,6 +101,7 @@ reference:
   - MutationEngine$place_mutations
   - MutationEngine
   - PhylogeneticForest$get_coalescent_cells
+  - PhylogeneticForest$get_first_occurrence
   - PhylogeneticForest$get_nodes
   - PhylogeneticForest$get_samples_info
   - PhylogeneticForest$get_sampled_cell_SNVs

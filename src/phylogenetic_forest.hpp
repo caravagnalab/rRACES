@@ -25,6 +25,8 @@
 #include <phylogenetic_forest.hpp>
 
 #include "forest.hpp"
+#include "snv.hpp"
+#include "cna.hpp"
 
 class MutationEngine;
 
@@ -65,6 +67,10 @@ public:
   Rcpp::List get_sampled_cell_SNVs() const;
 
   Rcpp::List get_sampled_cell_SNVs(const Races::Mutants::CellId& cell_ids) const;
+
+  Races::Mutants::CellId get_first_occurrence(const SNV& snv) const;
+
+  Races::Mutants::CellId get_first_occurrence(const CNA& cna) const;
 
   void save(const std::string& filename) const;
 

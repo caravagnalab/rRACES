@@ -75,7 +75,7 @@ void fill_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
           chr_pos[index] = snv.position;
           alleles[index] = allele_id;
           contexts[index] = snv.context.get_sequence();
-          mutated_bases[index] = snv.mutated_base;
+          mutated_bases[index] = std::string(1,snv.mutated_base);
           causes[index] = snv.cause;
 
           ++index;
@@ -135,6 +135,36 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_SNVs(const Races::Mutants::CellI
                            _["chr_pos"]=chr_pos, _["allele"]=alleles, 
                            _["context"]=contexts, _["mutated_base"]=mutated_bases,
                            _["cause"]=causes);
+}
+
+Races::Mutants::CellId PhylogeneticForest::get_first_occurrence(const SNV& snv) const
+{
+  auto first_cell_it = get_SNV_first_cell().find(snv);
+
+  if (first_cell_it == get_SNV_first_cell().end()) {
+    std::ostringstream oss;
+
+    oss << "The mutation " << snv << " does not occurs in the sampled cells.";
+
+    throw std::domain_error(oss.str());
+  }
+
+  return first_cell_it->second;
+}
+
+Races::Mutants::CellId PhylogeneticForest::get_first_occurrence(const CNA& cna) const
+{
+  auto first_cell_it = get_CNA_first_cell().find(cna);
+
+  if (first_cell_it == get_CNA_first_cell().end()) {
+    std::ostringstream oss;
+
+    oss << "The mutation " << cna << " does not occurs in the sampled cells.";
+
+    throw std::domain_error(oss.str());
+  }
+
+  return first_cell_it->second;
 }
 
 void PhylogeneticForest::save(const std::string& filename) const
