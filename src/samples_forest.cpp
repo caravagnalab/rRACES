@@ -81,5 +81,5 @@ void SamplesForest::show() const
     sep = ", ";
   }
 
-  Rcout << "}" << std::endl;
+  Rcout << "}" << std::endl << std::endl;
 }

@@ -73,5 +73,8 @@ void PhylogeneticForest::show() const
     sep = ", ";
   }
 
-  Rcout << "}" << std::endl;
+  Rcout << "}" << std::endl << std::endl
+        << "  # of emerged SNVs: " << get_SNV_first_cell().size() << std::endl
+        << "  # of emerged CNAs: " << get_CNA_first_cell().size() << std::endl
+        << std::endl;
 }

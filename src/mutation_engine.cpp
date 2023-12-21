@@ -487,4 +487,5 @@ void MutationEngine::show() const
 
     coeffs_it = next_it;
   }
+  Rcout << std::endl;
 }
