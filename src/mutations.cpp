@@ -277,7 +277,7 @@ RCPP_MODULE(Mutations){
 //'       simulation
 //'
 //'   These data are provided to a mutation engine by using the methods 
-//'   `MutationEngine$add_coefficients` and `MutationEngine$add_coefficients`
+//'   `MutationEngine$add_exposure` and `MutationEngine$add_exposure`
 //'   These data are provided by means of the `MutationEngine$add_mutant`.
 //'   
 //'   The construction of a `MutationEngine` object requires a reference 
@@ -290,42 +290,40 @@ RCPP_MODULE(Mutations){
 //'   
   class_<MutationEngine>("MutationEngine")
 
-//' @name MutationEngine$add_coefficients
-//' @title Add SBS coefficients to the mutation engine. 
-//' @description This method adds a set of SBS coefficients to the mutation 
-//'        engine. The coefficients must sum up to one.
+//' @name MutationEngine$add_exposure
+//' @title Add an exposure to the mutation engine. 
+//' @description This method adds an exposure to the mutation engine.
 //'        
-//'        The SBS coefficients will be used to establish the probability 
-//'        for a SNV to occur depending on its context.
+//'        The exposure will be used to establish the probability 
+//'        for a passenger mutation to occur depending on its context.
 //'
-//'        Each set of SBS coefficients is associated to a time that is 
-//'        the simulated time in which the set is adopted.
-//'        If a time is provided the set of coefficients are used from the
+//'        Each exposure is associated to a time that is the simulated
+//'        time in which the set is adopted.
+//'        If a time is provided the exposure is used from the
 //'        specified time on up to the successive possible change of
-//'        coefficients. When a set of SBS coefficients is added to the 
-//'        mutation engine without specifying the time, its time is 0.
-//' @param time The first simulated time in which the SBS coefficients must 
-//'          be taken into account (optional).
-//' @param SBS_coefficients A list of SBS coefficients. The coefficients
-//'          must sum up to one and their names must corresponds to some of
-//'          the SBS name provided in the SBS file.
+//'        exposure. When an exposure is added to the mutation engine
+//'        without specifying the time, its time is 0.
+//' @param time The simulated time at which the exposure is adopted 
+//'        (optional).
+//' @param exposure An signature exposure, i.e., a discrete probability
+//'        distribution over a set of SBS signature.
 //' @examples
 //' # create a demostrative mutation engine
 //' m_engine <- build_mutation_engine("demo")
 //'
 //' # add a default set of SBS coefficients that will be used from simulated
 //' # time 0 up to the successive SBS coefficient change.
-//' m_engine$add_coefficients(c(SBS13 = 0.3, SBS1 = 0.7))
+//' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))
 //'
 //' # add a default set of SBS coefficients that will be used from simulated
 //' # time 3.2 up to the end of the simulation.
-//' m_engine$add_coefficients(3.2, c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
+//' m_engine$add_exposure(3.2, c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
 //'
 //' m_engine
-    .method("add_coefficients", (void (MutationEngine::*)(const List&))(
-              &MutationEngine::add_coefficients), "Add mutational coefficients")
-    .method("add_coefficients", (void (MutationEngine::*)(const double&, const List&))(
-              &MutationEngine::add_coefficients), "Add mutational coefficients")
+    .method("add_exposure", (void (MutationEngine::*)(const List&))(
+              &MutationEngine::add_exposure), "Add an exposure")
+    .method("add_exposure", (void (MutationEngine::*)(const double&, const List&))(
+              &MutationEngine::add_exposure), "Add an exposure")
 
 //' @name MutationEngine$add_mutant
 //' @title Add a mutant specification to the mutation engine.
@@ -334,24 +332,24 @@ RCPP_MODULE(Mutations){
 //'           characterization (i.e., SNVs and CNAs) of all the simulated mutants
 //'           together with the mutation rates of its species.
 //' @param mutant_name The mutant name.
-//' @param species_rates The named list of the species rates whose names are the 
+//' @param passenger_rates The list of the passenger rates whose names are the 
 //'           epigenetic states of the species or a single rate, if the mutant
 //'           does not have an epigenetic state.
-//' @param mutant_SNVs The list of the SNVs characterizing the mutant.
-//' @param mutant_CNAs The list of the CNAs characterizing the mutant.
+//' @param driver_SNVs The list of the driver SNVs characterizing the mutant.
+//' @param driver_CNAs The list of the driver CNAs characterizing the mutant.
 //' @examples
 //' # create a demostrative mutation engine
 //' m_engine <- build_mutation_engine("demo")
 //'
-//' # add the mutant "A" characterized by two SNV on chromosome 22 (no CNA) and
+//' # add the mutant "A" having two driver SNVs on chromosome 22 (no CNA) and
 //' # having two epigenetic states. Its species "A+" and "A-" have mutation rate 
 //' # 3e-9 and 6e-9, respectively.
 //' m_engine$add_mutant("A", c("+" = 3e-9, "-" = 6e-9),
 //'                     c(SNV("22", 2001, "GAC", "T"),
 //'                       SNV("22", 2020, "CCC", "A")))
 //'
-//' # add the mutant "B" characterized by one SNV on chromosome 1 (no CNA) and
-//' # missing epigenetic state. Its species "B" has mutation rate 5e-9.
+//' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no CNA)
+//  # and missing epigenetic state. Its species "B" has mutation rate 5e-9.
 //' m_engine$add_mutant("B", 5e-9, c(SNV("1", 30, "AGC", "T")))
     .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& species_rate,
                                                     const Rcpp::List&))(
@@ -394,7 +392,7 @@ RCPP_MODULE(Mutations){
 //' m_engine$add_mutant("A", 3e-9, c(SNV("22", 2001, "GAC", "T")))
 //'
 //' # add the default set of SBS coefficients
-//' m_engine$add_coefficients(c(SBS13 = 0.3, SBS1 = 0.7))
+//' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))
 //'
 //' # place the mutations on the samples forest
 //' phylogenetic_forest <- m_engine$place_mutations(samples_forest)

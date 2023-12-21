@@ -336,9 +336,9 @@ MutationEngine::build_MutationEngine(const std::string& directory,
 
 }
 
-void MutationEngine::add_coefficients(const double& time, const Rcpp::List& coefficients)
+void MutationEngine::add_exposure(const double& time, const Rcpp::List& exposure)
 {
-  auto m_coeffs = get_map<double, TestNonNegative>(coefficients);
+  auto m_coeffs = get_map<double, TestNonNegative>(exposure);
 
   double sum{1};
 
@@ -347,16 +347,16 @@ void MutationEngine::add_coefficients(const double& time, const Rcpp::List& coef
   }
 
   if (std::abs(sum)>1e-13) {
-    throw std::domain_error("The mutational coefficients must sum up to 1: "
+    throw std::domain_error("The exposure must sum up to 1: "
                             "it sums up to "+std::to_string(sum));
   }
 
   m_engine.add(time, m_coeffs);
 }
 
-void MutationEngine::add_coefficients(const Rcpp::List& coefficients)
+void MutationEngine::add_exposure(const Rcpp::List& exposure)
 {
-  add_coefficients(0, coefficients);
+  add_exposure(0, exposure);
 }
 
 
@@ -457,39 +457,39 @@ void MutationEngine::show() const
 {
   using namespace Rcpp;
   Rcout << "MutationEngine" << std::endl
-        << " Species rates: ";
+        << " Passenger rates: ";
   
   const auto& m_properties = m_engine.get_mutational_properties();
 
   show_map(Rcout, m_properties.get_species_rates());
 
-  Rcout << std::endl << std::endl << " Mutant genomic characterizations" << std::endl;
-  for (const auto&[mutant_name, mutant_mutations]: m_properties.get_mutant_mutations()) {
-    if (mutant_mutations.SNVs.size()>0 || mutant_mutations.CNAs.size()>0) {
-      Rcout << "   \"" << mutant_name << "\"'s mutations " << std::endl;
+  Rcout << std::endl << std::endl << " Driver mutations" << std::endl;
+  for (const auto&[mutant_name, driver_mutations]: m_properties.get_driver_mutations()) {
+    if (driver_mutations.SNVs.size()>0 || driver_mutations.CNAs.size()>0) {
+      Rcout << "   \"" << mutant_name << "\"'s driver mutations " << std::endl;
     } else {
       Rcout << "   No mutations for \"" << mutant_name << "\"" << std::endl;
     }
-    if (mutant_mutations.SNVs.size()>0) {
+    if (driver_mutations.SNVs.size()>0) {
       Rcout << "     SNVs: " << std::endl;
             
-      show_list(Rcout, mutant_mutations.SNVs.begin(), mutant_mutations.SNVs.end(), "       ");
+      show_list(Rcout, driver_mutations.SNVs.begin(), driver_mutations.SNVs.end(), "       ");
     }
-    if (mutant_mutations.CNAs.size()>0) {
+    if (driver_mutations.CNAs.size()>0) {
       Rcout << "     CNAs: " << std::endl;
 
-      show_list(Rcout, mutant_mutations.CNAs.begin(),  mutant_mutations.CNAs.end(), "       ");
+      show_list(Rcout, driver_mutations.CNAs.begin(),  driver_mutations.CNAs.end(), "       ");
     }
   }
 
-  Rcout << std::endl << " Timed SBS coefficients" << std::endl;
+  Rcout << std::endl << " Timed Exposure" << std::endl;
 
-  const auto& timed_mutational_coeffs = m_engine.get_timed_mutational_coefficients();
-  auto coeffs_it = timed_mutational_coeffs.begin();
-  while (coeffs_it != timed_mutational_coeffs.end()) {
+  const auto& timed_exposures = m_engine.get_timed_exposures();
+  auto coeffs_it = timed_exposures.begin();
+  while (coeffs_it != timed_exposures.end()) {
     auto next_it = coeffs_it;
     ++next_it;
-    if (next_it == timed_mutational_coeffs.end()) {
+    if (next_it == timed_exposures.end()) {
        Rcout << "   [" << coeffs_it->first << ", \u221E[: ";
     } else {
        Rcout << "   [" 
