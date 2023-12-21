@@ -1066,6 +1066,10 @@ RCPP_MODULE(Mutants){
 //'         as leaves of the new forest.
 //' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
 //' }
+//' @field save Save a samples forest in a file \itemize{
+//' \item \emph{Parameter:} \code{filename} - The path of the file in which the samples 
+//'            forest must be saved.
+//' }
   class_<SamplesForest>("SamplesForest")
 
 //' @name SamplesForest$get_nodes
