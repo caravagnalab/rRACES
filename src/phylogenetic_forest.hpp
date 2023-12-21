@@ -62,6 +62,10 @@ public:
 
   PhylogeneticForest get_subforest_for(const std::vector<std::string>& sample_names) const;
 
+  Rcpp::List get_sampled_cell_SNVs() const;
+
+  Rcpp::List get_sampled_cell_SNVs(const Races::Mutants::CellId& cell_ids) const;
+
   void save(const std::string& filename) const;
 
   static PhylogeneticForest load(const std::string& filename);
