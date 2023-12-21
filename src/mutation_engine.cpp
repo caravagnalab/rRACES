@@ -416,6 +416,19 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
   }
 }
 
+PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest, const int seed)
+{
+    Races::UI::ProgressBar progress_bar;
+
+    progress_bar.set_message("Placing mutations");
+
+    auto phylo_forest = m_engine.place_mutations(forest, progress_bar, seed);
+
+    progress_bar.set_message("Mutations placed");
+
+    return phylo_forest;
+}
+
 template<typename OUT, typename ITERATOR>
 OUT& show_list(OUT& os, ITERATOR it, ITERATOR last, const std::string& front="")
 {
