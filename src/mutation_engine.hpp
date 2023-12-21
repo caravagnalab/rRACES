@@ -55,15 +55,15 @@ public:
 
     static Rcpp::List get_supported_setups();
 
-    void add_coefficients(const Rcpp::List& mutational_coefficients);
+    void add_exposure(const Rcpp::List& exposure);
 
-    void add_coefficients(const double& time, const Rcpp::List& mutational_coefficients);
+    void add_exposure(const double& time, const Rcpp::List& exposure);
 
-    void add_mutant(const std::string& mutant_name, const Rcpp::List& species_rates,
-                    const Rcpp::List& mutant_SNVs);
+    void add_mutant(const std::string& mutant_name, const Rcpp::List& passenger_rates,
+                    const Rcpp::List& driver_SNVs);
 
-    void add_mutant(const std::string& mutant_name, const Rcpp::List& species_rates,
-                    const Rcpp::List& mutant_SNVs, const Rcpp::List& mutant_CNAs);
+    void add_mutant(const std::string& mutant_name, const Rcpp::List& passenger_rates,
+                    const Rcpp::List& driver_SNVs, const Rcpp::List& driver_CNAs);
 
     PhylogeneticForest place_mutations(const SamplesForest& forest, const int seed);
 

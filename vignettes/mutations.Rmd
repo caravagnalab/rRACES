@@ -164,39 +164,40 @@ utils:::format.object_size(file.size("demo/context_index_50.cif"), "auto")
 Once the mutation engine has been built, we can define mutant genotype and
 declare species mutation rates.
 
-Let us consider the __"Border Growth"__ simulation peformed in
+Let us consider the _"Border Growth"_ simulation peformed in
 `vignette("growth_models")`. It involves the two mutants `A` and
 "B". Both of them has two possible epigenetic states, `+` and `-`, leading 
 to the four the species `A+`, `A-`, `B+`, and `B-`, respectively.
-Each of these species has a mutation rate that must be declated to 
-the mutation engine before labeling the samples forest.
-Let 3e-9, 6e-9, 4e-9, and 5e-9 be the mutation rates of the
+Each of these species has a passenger mutation rate that must be 
+declated to the mutation engine before labeling the samples forest.
+Let 3e-9, 6e-9, 4e-9, and 5e-9 be the SNV passenger mutation rates of the
 species `A+`, `A-`, `B+`, and `B-`, respectively.
 
-The two mutants may also be genetically characterized by some mutations. 
-The mutations associated with each of the mutants must occur 
-in any cell belonging to the mutant itself. Hence, also the mutant
-mutations must be declared to the mutant engine before the labeling.
+The two mutants may also be genetically characterized by some
+driver mutations. 
+The driver mutations associated with each of the mutants must occur 
+in any cell belonging to the mutant itself. Hence, they must be 
+declared to the mutant engine before the labeling.
 
 The method `MutationEngine$add_mutant` takes care of all these 
 declarations.
 
-For the sake of example, let us assume that `A` is characterized by a
-mutation on chromosome 22, while `B` has two mutations on the same
-chromosome.
+For the sake of example, let us assume that `A` is characterized by one
+driver mutation on chromosome 22, while `B` has two driver mutations on
+the same chromosome.
 
 ```{r}
-# add the mutant "A" characterized by two SNV on chromosome 22 (no CNA) and
-# having two epigenetic states. Its species "A+" and "A-" have mutation rate
-# 1e-9 and 3e-8, respectively.
-m_engine$add_mutant(mutant_rates = "A",
-                    species_rates = c("+" = 1e-9, "-" =  3e-8),
-                    mutant_SNVs = c(SNV("22", 10510210, "TAC", "T")),
-                    mutant_CNAs = c())
+# add the mutant "A" characterized by one driver SNV on chromosome 22 (no
+# CNA) and having two epigenetic states. Its species "A+" and "A-" have
+# mutation rate 1e-9 and 3e-8, respectively.
+m_engine$add_mutant(mutant_name = "A",
+                    passenger_rates = c("+" = 1e-9, "-" =  3e-8),
+                    driver_SNVs = c(SNV("22", 10510210, "TAC", "T")),
+                    driver_CNAs = c())
 
-# add the mutant "B" characterized by two SNVs on chromosome 22 (no CNA) and
-# two epigenetic states. Its species "B+" and "B-" have mutation rate 8e-7
-# and 5e-8, respectively.
+# add the mutant "B" characterized by two driver SNVs on chromosome 22 (no
+# CNA) and two epigenetic states. Its species "B+" and "B-" have mutation
+# rate 8e-7 and 5e-8, respectively.
 m_engine$add_mutant("B", c("+" = 8e-7, "-" = 5e-8),
                     c(SNV("22", 12028576, "ACA", "G"),
                       SNV("22", 12029660, "AAA", "T")))
@@ -204,29 +205,38 @@ m_engine$add_mutant("B", c("+" = 8e-7, "-" = 5e-8),
 m_engine
 ```
 
-#### SBS Coefficients
+#### Mutational Exposures
 
-The probability for a SNV to occur depends on both its context and the 
-active set of SBS coefficients. Thus, we need to specify a
-default set of SBS coefficients (see [@alexandrov2020repertoire]).
+The probability for a mutation to occur depends on both its genomic and 
+environmental context. 
 
+A SBS is a single base mutation substituion signature that provides for any
+genomic context (i.e., a triplet of bases) the probability for a SNV to occur
+on that context.
+
+The SBSs depends on the environmental context (see [@alexandrov2020repertoire]) 
+and, because of that, more than one SBSs may be active at the same time with
+different probabilities. An _mutational exposure_ (or _exposure_) is a
+discrete probability distribution among SBS signatures.
+
+In order to simulate passeger SNVs, we need to specify a default exposure.
 This can be achieved as it follows.
 
 ```{r}
-# add a default set of SBS coefficients that will be used from simulated
-# time 0 up to the successive SBS coefficient change.
-m_engine$add_coefficients(coefficients = c(SBS13 = 0.2, SBS1 = 0.8))
+# add a default exposure. This will be used from simulated
+# time 0 up to the successive exposure change.
+m_engine$add_exposure(coefficients = c(SBS13 = 0.2, SBS1 = 0.8))
 ```
 
-A further set of SBS coefficients can also be defined by specifying
-an activation time, i.e., the new set of coefficients will be used
-from the specified simulation time.
+Further exposures can also be defined by specifying an activation time 
+for each of them, i.e., the new exposures will be used
+from the specified time up to the next exposure change.
 
 ```{r}
-# add a new set of SBS coefficients that will be used from simulated
-# time 100 up to the successive SBS coefficient change.
-m_engine$add_coefficients(time = 100,
-                          c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
+# add a new exposure that will be used from simulated
+# time 100 up to the successive exposure change.
+m_engine$add_exposure(time = 100,
+                      c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
 
 m_engine
 ```

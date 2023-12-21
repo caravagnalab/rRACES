@@ -96,7 +96,7 @@ reference:
   - Deletion
   - get_mutation_engine_codes
   - load_phylogenetic_forest
-  - MutationEngine$add_coefficients
+  - MutationEngine$add_exposure
   - MutationEngine$add_mutant
   - MutationEngine$place_mutations
   - MutationEngine
