@@ -571,6 +571,12 @@ RCPP_MODULE(Mutations){
 //'         rectangular region, while "tumoral cells" is the number of
 //'         tumoral cells in the sample.
 //' }
+//' @field get_sampled_cell_SNVs Gets a the SNVs of the sampled cells \itemize{
+//' \item \emph{Returns:} A data frame reporting `cell_id`, `chromosome`, 
+//'          `chr_pos` (i.e., position in the chromosome), `allele` (in which
+//'          the SNV occurs), `context`, `mutated_base`, and `cause` for each
+//'          SNV in the sampled cell genomes.
+//' }
 //' @field get_species_info Gets the species data\itemize{
 //' \item \emph{Returns:} A data frame reporting "mutant" and "epistate"
 //'            for each registered species.
@@ -579,6 +585,10 @@ RCPP_MODULE(Mutations){
 //' \item \emph{Parameter:} \code{sample_names} - The names of the samples whose cells will be used
 //'         as leaves of the new forest.
 //' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
+//' }
+//' @field save Save a phylogenetic forest in a file \itemize{
+//' \item \emph{Parameter:} \code{filename} - The path of the file in which the phylogenetic 
+//'            forest must be saved.
 //' }
   class_<PhylogeneticForest>("PhylogeneticForest")
 
@@ -652,6 +662,26 @@ RCPP_MODULE(Mutations){
 //'            for each registered species.
     .method("get_species_info", &PhylogeneticForest::get_species_info,
             "Get the recorded species")
+
+//' @name PhylogeneticForest$get_sampled_cell_SNVs
+//' @title Gets a the SNVs of the sampled cells
+//' @description This method returns a data frame representing all the SNVs 
+//'          in the cells sampled during the simulation and represented by 
+//'          the leaves of the phylogenetic forest.
+//'          The data frame also reports the allele in which SNVs occur to 
+//'          support double occurrencies due to CNAs.
+//' @param cell_id The identifier of the cell whose SNVs are aimed (optional).
+//' @return A data frame reporting `cell_id`, `chromosome`, `chr_pos` (i.e., 
+//'          position in the chromosome), `allele` (in which the SNV occurs),
+//'          `context`, `mutated_base`, and `cause` for each SNV in the 
+//'          sampled cell genomes.
+//' @seealso `vignette("mutations")` for usage examples
+    .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
+                (&PhylogeneticForest::get_sampled_cell_SNVs),
+            "Get the SNVs of a sampled cell")
+    .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)() const)
+                (&PhylogeneticForest::get_sampled_cell_SNVs),
+            "Get the SNVs of all the sampled cells")
 
 //' @name PhylogeneticForest$save
 //' @title Save a phylogenetic forest in a file

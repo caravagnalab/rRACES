@@ -34,6 +34,109 @@ PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::
   return forest;
 }
 
+size_t count_SNVs(const Races::Mutations::CellGenomeMutations& cell_mutations)
+{
+  size_t counter{0};
+  for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
+    for (const auto& [allele_id, allele]: chromosome.get_alleles()) {
+      for (const auto& [fragment_pos, fragment]: allele.get_fragments()) {
+          counter += fragment.get_SNVs().size();
+      }
+    }
+  }
+
+  return counter;
+}
+
+size_t count_SNVs(const std::map<Races::Mutants::CellId, Races::Mutations::CellGenomeMutations>& genome_mutations)
+{
+  size_t counter{0};
+  for (const auto& [cell_id, cell_mutations]: genome_mutations) {
+    counter += count_SNVs(cell_mutations);
+  }
+
+  return counter;
+}
+
+void fill_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
+                Rcpp::IntegerVector& cell_ids, Rcpp::CharacterVector& chr_names, 
+                Rcpp::IntegerVector& chr_pos, Rcpp::IntegerVector& alleles,
+                Rcpp::CharacterVector& contexts, Rcpp::CharacterVector& mutated_bases,
+                Rcpp::CharacterVector& causes, size_t& index)
+{
+  using namespace Races::Mutations;
+
+  for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
+    for (const auto& [allele_id, allele]: chromosome.get_alleles()) {
+      for (const auto& [fragment_pos, fragment]: allele.get_fragments()) {
+        for (const auto& [snv_pos, snv]: fragment.get_SNVs()) {
+          cell_ids[index] = cell_mutations.get_id();
+          chr_names[index] = GenomicPosition::chrtos(chr_id);
+          chr_pos[index] = snv.position;
+          alleles[index] = allele_id;
+          contexts[index] = snv.context.get_sequence();
+          mutated_bases[index] = snv.mutated_base;
+          causes[index] = snv.cause;
+
+          ++index;
+        }
+      }
+    }
+  }
+}
+
+Rcpp::List PhylogeneticForest::get_sampled_cell_SNVs() const
+{
+  size_t num_of_mutations = count_SNVs(get_leaves_mutations());
+
+  using namespace Rcpp;
+
+  IntegerVector cell_ids(num_of_mutations), chr_pos(num_of_mutations),
+                alleles(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), contexts(num_of_mutations),
+                  mutated_bases(num_of_mutations), causes(num_of_mutations);
+
+  size_t index{0};
+  for (const auto& [cell_id, cell_mutations]: get_leaves_mutations()) {
+    fill_lists(cell_mutations, cell_ids, chr_names, chr_pos, alleles,
+               contexts, mutated_bases, causes, index);
+  }
+
+  return DataFrame::create(_["cell_id"]=cell_ids, _["chromosome"]=chr_names,
+                           _["chr_pos"]=chr_pos, _["allele"]=alleles, 
+                           _["context"]=contexts, _["mutated_base"]=mutated_bases,
+                           _["cause"]=causes);
+}
+
+Rcpp::List PhylogeneticForest::get_sampled_cell_SNVs(const Races::Mutants::CellId& cell_id) const
+{
+  auto mutation_it = get_leaves_mutations().find(cell_id);
+
+  if (mutation_it == get_leaves_mutations().end()) {
+    throw std::domain_error("Cell \""+std::to_string(cell_id)+"\" is not a leaf");
+  }
+
+  const auto& cell_mutations = mutation_it->second;
+
+  size_t num_of_mutations = count_SNVs(cell_mutations);
+
+  using namespace Rcpp;
+
+  IntegerVector cell_ids(num_of_mutations), chr_pos(num_of_mutations),
+                alleles(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), contexts(num_of_mutations),
+                  mutated_bases(num_of_mutations), causes(num_of_mutations);
+  
+  size_t index{0};
+  fill_lists(cell_mutations, cell_ids, chr_names, chr_pos, alleles,
+             contexts, mutated_bases, causes, index);
+
+  return DataFrame::create(_["cell_id"]=cell_ids, _["chromosome"]=chr_names,
+                           _["chr_pos"]=chr_pos, _["allele"]=alleles, 
+                           _["context"]=contexts, _["mutated_base"]=mutated_bases,
+                           _["cause"]=causes);
+}
+
 void PhylogeneticForest::save(const std::string& filename) const
 {
   Races::Archive::Binary::Out out_archive(filename);

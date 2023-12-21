@@ -103,6 +103,7 @@ reference:
   - PhylogeneticForest$get_coalescent_cells
   - PhylogeneticForest$get_nodes
   - PhylogeneticForest$get_samples_info
+  - PhylogeneticForest$get_sampled_cell_SNVs
   - PhylogeneticForest$get_species_info
   - PhylogeneticForest$get_subforest_for
   - PhylogeneticForest$save

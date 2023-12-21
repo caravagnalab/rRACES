@@ -188,16 +188,16 @@ chromosome.
 ```{r}
 # add the mutant "A" characterized by two SNV on chromosome 22 (no CNA) and
 # having two epigenetic states. Its species "A+" and "A-" have mutation rate
-# 3e-9 and 6e-9, respectively.
+# 1e-9 and 3e-8, respectively.
 m_engine$add_mutant(mutant_rates = "A",
-                    species_rates = c("+" = 3e-9, "-" = 6e-9),
+                    species_rates = c("+" = 1e-9, "-" =  3e-8),
                     mutant_SNVs = c(SNV("22", 10510210, "TAC", "T")),
                     mutant_CNAs = c())
 
 # add the mutant "B" characterized by two SNVs on chromosome 22 (no CNA) and
-# two epigenetic states. Its species "B+" and "B-" have mutation rate 4e-9
-# and 5e-9, respectively.
-m_engine$add_mutant("B", c("+" = 4e-9, "-" = 5e-9),
+# two epigenetic states. Its species "B+" and "B-" have mutation rate 8e-7
+# and 5e-8, respectively.
+m_engine$add_mutant("B", c("+" = 8e-7, "-" = 5e-8),
                     c(SNV("22", 12028576, "ACA", "G"),
                       SNV("22", 12029660, "AAA", "T")))
 
@@ -223,9 +223,9 @@ an activation time, i.e., the new set of coefficients will be used
 from the specified simulation time.
 
 ```{r}
-# add a default set of SBS coefficients that will be used from simulated
-# time 0 up to the successive SBS coefficient change.
-m_engine$add_coefficients(time = 3.2,
+# add a new set of SBS coefficients that will be used from simulated
+# time 100 up to the successive SBS coefficient change.
+m_engine$add_coefficients(time = 100,
                           c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
 
 m_engine
@@ -247,6 +247,32 @@ samples_forest <- load_samples_forest("samples_forest.sff")
 phylo_forest <- m_engine$place_mutations(samples_forest)
 
 phylo_forest
+```
+
+The phylogenetic forest stores all the mutations labeling the 
+sampled cells which are represented by the forest leaves.
+Users can retrieve such data by using the method 
+`Phylogenetic$get_sampled_cell_SNVs`
+
+```{r}
+library(dplyr)
+
+# select the first SNVs among all the mutations occuring in
+# the genomes of the sampled cells
+phylo_forest$get_sampled_cell_SNVs() %>% head()
+
+# get the sampled cells
+sampled_cells <- phylo_forest$get_nodes() %>%
+  filter(!is.na(.data$sample))
+
+# show the first of them
+sampled_cells %>% head()
+
+# get the identifier of the 3rd cell in `sampled_cells`
+cell_id <- sampled_cells[3, 1]
+
+# get the SNVs of the 3rd cell in `sampled_cells`
+phylo_forest$get_sampled_cell_SNVs(cell_id) %>% head()
 ```
 
 ### Storing Phylogenetic Forests
