@@ -466,19 +466,18 @@ void MutationEngine::show() const
   Rcout << std::endl << std::endl << " Driver mutations" << std::endl;
   for (const auto&[mutant_name, driver_mutations]: m_properties.get_driver_mutations()) {
     if (driver_mutations.SNVs.size()>0 || driver_mutations.CNAs.size()>0) {
-      Rcout << "   \"" << mutant_name << "\"'s driver mutations " << std::endl;
-    } else {
-      Rcout << "   No mutations for \"" << mutant_name << "\"" << std::endl;
-    }
-    if (driver_mutations.SNVs.size()>0) {
-      Rcout << "     SNVs: " << std::endl;
-            
-      show_list(Rcout, driver_mutations.SNVs.begin(), driver_mutations.SNVs.end(), "       ");
-    }
-    if (driver_mutations.CNAs.size()>0) {
-      Rcout << "     CNAs: " << std::endl;
+      if (driver_mutations.SNVs.size()>0) {
+        Rcout << "   \"" << mutant_name << "\" SNVs: " << std::endl;
+              
+        show_list(Rcout, driver_mutations.SNVs.begin(), driver_mutations.SNVs.end(), "       ");
+      }
+      if (driver_mutations.CNAs.size()>0) {
+        Rcout << "   \"" << mutant_name << "\" CNAs: " << std::endl;
 
-      show_list(Rcout, driver_mutations.CNAs.begin(),  driver_mutations.CNAs.end(), "       ");
+        show_list(Rcout, driver_mutations.CNAs.begin(),  driver_mutations.CNAs.end(), "       ");
+      }
+    } else {
+      Rcout << "   No driver mutations for \"" << mutant_name << "\"" << std::endl;
     }
   }
 
