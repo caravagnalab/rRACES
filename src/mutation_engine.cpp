@@ -336,29 +336,47 @@ MutationEngine::build_MutationEngine(const std::string& directory,
 
 }
 
+template<typename OUT, typename VALUE>
+OUT& show_map(OUT& os, const std::map<std::string, VALUE>& c_map)
+{
+  os << "{";
+  std::string sep = "";
+  for (const auto& [key, value]: c_map) {
+    os << sep << "\"" << key << "\": " << value;
+    sep = ", ";
+  }
+  os << "}";
+
+  return os;
+}
+
 void MutationEngine::add_exposure(const double& time, const Rcpp::List& exposure)
 {
-  auto m_coeffs = get_map<double, TestNonNegative>(exposure);
+  auto c_exposure = get_map<double, TestNonNegative>(exposure);
 
   double sum{1};
 
-  for (const auto& [sbs, coeff]: m_coeffs) {
+  for (const auto& [sbs, coeff]: c_exposure) {
     sum -= coeff;
   }
 
   if (std::abs(sum)>1e-13) {
-    throw std::domain_error("The exposure must sum up to 1: "
-                            "it sums up to "+std::to_string(sum));
+    std::ostringstream oss;
+
+    oss << "The exposure must sum up to 1: ";
+    show_map(oss, c_exposure);
+    oss << " sums up to " << sum;
+
+    throw std::domain_error(oss.str());
   }
 
-  m_engine.add(time, m_coeffs);
+  m_engine.add(time, c_exposure);
 }
 
 void MutationEngine::add_exposure(const Rcpp::List& exposure)
 {
   add_exposure(0, exposure);
 }
-
 
 template<typename CPP_TYPE, typename RCPP_TYPE>
 std::list<CPP_TYPE> get_ancestor_list(const Rcpp::List& rcpp_list)
@@ -373,47 +391,114 @@ std::list<CPP_TYPE> get_ancestor_list(const Rcpp::List& rcpp_list)
 }
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
-                                const Rcpp::List& species_rates,
-                                const Rcpp::List& mutant_SNVs)
+                                const Rcpp::List& epistate_passenger_rates,
+                                const Rcpp::List& driver_SNVs)
 {
   Rcpp::List empty_list;
 
-  add_mutant(mutant_name, species_rates, mutant_SNVs, empty_list);
+  add_mutant(mutant_name, epistate_passenger_rates, driver_SNVs, empty_list);
+}
+
+double get_non_negative(const Rcpp::List& values,
+                        const std::string& message=": expected non-negative value")
+{
+  if (values.size()!=1) {
+    throw std::runtime_error("Expected one non-negative value. Got a list of "
+                             + std::to_string(values.size()) + " values.");
+  }
+  auto c_value = Rcpp::as<double>(values[0]);
+
+  if (c_value<0) {
+    throw std::runtime_error(std::to_string(c_value) + message);
+  }
+
+  return c_value;
+}
+
+bool contains_passenger_rates(const Rcpp::List& list)
+{
+  Rcpp::CharacterVector names = list.names();
+  for (size_t i=0; i<list.size(); ++i) {
+    if (names[i]!="SNV" && names[i]!="CNA") {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+Races::Mutations::PassengerRates
+get_passenger_rates(const Rcpp::List& list)
+{
+  Races::Mutations::PassengerRates p_rates;
+
+  if (!list.hasAttribute("names")) {
+    throw std::runtime_error("Passenger rates list must be a named list whose names "
+                             "are in the set {\"SNV\", \"CNA\"}.");
+  }
+
+  Rcpp::CharacterVector names = list.names();
+  for (size_t i=0; i<list.size(); ++i) {
+    if (names[i]=="SNV") {
+      p_rates.snv = get_non_negative(list[i], ": SNV rates must be non-negative");
+    } else {
+      if (names[i]=="CNA") {
+        p_rates.cna = get_non_negative(list[i], ": CNA rates must be non-negative");
+      } else {
+        throw std::runtime_error("\"" + names[i] + "\" is an unsupported name in "
+                                 + "passenger rates list.");
+      }
+    }
+  }
+
+  return p_rates;
+}
+
+std::map<std::string, Races::Mutations::PassengerRates>
+get_epistate_passenger_rates(const Rcpp::List& list)
+{
+  std::map<std::string, Races::Mutations::PassengerRates> ep_rates;
+
+  if (!list.hasAttribute("names")) {
+    throw std::runtime_error("Epistate passenger rates list must be a "
+                             "named list whose names are epistates, "
+                             "i.e., either \"+\" or \"-\".");
+  }
+
+  Rcpp::CharacterVector names = list.names();
+  for (size_t i=0; i<list.size(); ++i) {
+    if (names[i]=="+") {
+      ep_rates["+"] = get_passenger_rates(list[i]);
+    } else {
+      if (names[i]=="-") {
+        ep_rates["-"] = get_passenger_rates(list[i]);
+      } else {
+        throw std::runtime_error("\"" + names[i] + "\" is an unsupported name in "
+                                 + "epistate passenger rate list.");
+      }
+    }
+  }
+
+  return ep_rates;
 }
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
-                                const Rcpp::List& species_rates,
-                                const Rcpp::List& mutant_SNVs,
-                                const Rcpp::List& mutant_CNAs)
+                                const Rcpp::List& epistate_passenger_rates,
+                                const Rcpp::List& driver_SNVs,
+                                const Rcpp::List& driver_CNAs)
 {
-  auto c_snvs = get_ancestor_list<Races::Mutations::SNV, SNV>(mutant_SNVs);
-  auto c_cnas = get_ancestor_list<Races::Mutations::CopyNumberAlteration, CNA>(mutant_CNAs);
+  auto c_snvs = get_ancestor_list<Races::Mutations::SNV, SNV>(driver_SNVs);
+  auto c_cnas = get_ancestor_list<Races::Mutations::CopyNumberAlteration, CNA>(driver_CNAs);
 
-  switch(species_rates.size()) {
-    case 1:
-      {
-        double real_rate = species_rates[0];
-        
-        m_engine.add_mutant(mutant_name, {{"", real_rate}}, c_snvs, c_cnas);
-      }
-      break;
-    case 2:
-      {
-        std::map<std::string, double> epi_rates;
-        try {
-          epi_rates = get_map<double, TestNonNegative>(species_rates);
-        } catch (std::exception& e) {
-          throw std::domain_error("The rates must be non-negative");
-        };
-        
-        m_engine.add_mutant(mutant_name, epi_rates, c_snvs, c_cnas);
-      }
-      break;
-    default:
-      throw std::domain_error("Rates is either a real value or a named list "
-                              "representing the mutation rates for the two "
-                              "species.");
+  if (contains_passenger_rates(epistate_passenger_rates)) {
+    auto p_rates = get_passenger_rates(epistate_passenger_rates);
+    m_engine.add_mutant(mutant_name, {{"", p_rates}}, c_snvs, c_cnas);
+
+    return;
   }
+
+  auto epi_rates = get_epistate_passenger_rates(epistate_passenger_rates);
+  m_engine.add_mutant(mutant_name, epi_rates, c_snvs, c_cnas);
 }
 
 PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest, const int seed)
@@ -439,29 +524,26 @@ OUT& show_list(OUT& os, ITERATOR it, ITERATOR last, const std::string& front="")
   return os;
 }
 
-template<typename OUT, typename VALUE>
-OUT& show_map(OUT& os, const std::map<std::string, VALUE>& c_map)
-{
-  os << "{";
-  std::string sep = "";
-  for (const auto& [key, value]: c_map) {
-    os << sep << "\"" << key << "\": " << value;
-    sep = ", ";
-  }
-  os << "}";
-
-  return os;
-}
-
 void MutationEngine::show() const
 {
   using namespace Rcpp;
   Rcout << "MutationEngine" << std::endl
-        << " Passenger rates: ";
+        << " Passenger rates";
   
   const auto& m_properties = m_engine.get_mutational_properties();
 
-  show_map(Rcout, m_properties.get_species_rates());
+  for (const auto& [species_name, p_rates] : m_properties.get_passenger_rates()) {
+    Rcout << std::endl << "   \"" << species_name << "\": {";
+    std::string sep;
+    if (p_rates.snv>0) {
+      Rcout << "SNV: " << p_rates.snv;
+      sep = ", ";
+    }
+    if (p_rates.cna>0) {
+      Rcout << sep << "CNA: " << p_rates.cna;
+    }
+    Rcout << "}";
+  }
 
   Rcout << std::endl << std::endl << " Driver mutations" << std::endl;
   for (const auto&[mutant_name, driver_mutations]: m_properties.get_driver_mutations()) {
