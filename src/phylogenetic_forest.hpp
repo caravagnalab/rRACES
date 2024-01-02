@@ -68,9 +68,9 @@ public:
 
   Rcpp::List get_sampled_cell_SNVs(const Races::Mutants::CellId& cell_ids) const;
 
-  Races::Mutants::CellId get_first_occurrence(const SNV& snv) const;
+  Rcpp::List get_first_occurrence(const SNV& snv) const;
 
-  Races::Mutants::CellId get_first_occurrence(const CNA& cna) const;
+  Rcpp::List get_first_occurrence(const CNA& cna) const;
 
   void save(const std::string& filename) const;
 

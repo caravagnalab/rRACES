@@ -137,34 +137,39 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_SNVs(const Races::Mutants::CellI
                            _["cause"]=causes);
 }
 
-Races::Mutants::CellId PhylogeneticForest::get_first_occurrence(const SNV& snv) const
+template<typename MUTATION_TYPE, typename R_MUTATION> 
+Rcpp::List get_first_occurrence(const std::map<MUTATION_TYPE, std::set<Races::Mutants::CellId>>& mutation_first_cells,
+                                const R_MUTATION& mutation)
 {
-  auto first_cell_it = get_SNV_first_cell().find(snv);
+  auto first_cell_it = mutation_first_cells.find(mutation);
 
-  if (first_cell_it == get_SNV_first_cell().end()) {
+  if (first_cell_it == mutation_first_cells.end()) {
     std::ostringstream oss;
 
-    oss << "The mutation " << snv << " does not occurs in the sampled cells.";
+    oss << "The mutation " << mutation << " does not occurs in the sampled cells.";
 
     throw std::domain_error(oss.str());
   }
 
-  return first_cell_it->second;
+  const auto& cell_ids = first_cell_it->second;
+
+  Rcpp::List R_cell_ids(cell_ids.size());
+
+  auto ids_it = cell_ids.begin();
+  for (size_t i=0; i<cell_ids.size(); ++i, ++ids_it) {
+    R_cell_ids[i] = *ids_it;
+  }
+  return R_cell_ids;
 }
 
-Races::Mutants::CellId PhylogeneticForest::get_first_occurrence(const CNA& cna) const
+Rcpp::List PhylogeneticForest::get_first_occurrence(const SNV& snv) const
 {
-  auto first_cell_it = get_CNA_first_cell().find(cna);
+  return ::get_first_occurrence(get_SNV_first_cells(), snv);
+}
 
-  if (first_cell_it == get_CNA_first_cell().end()) {
-    std::ostringstream oss;
-
-    oss << "The mutation " << cna << " does not occurs in the sampled cells.";
-
-    throw std::domain_error(oss.str());
-  }
-
-  return first_cell_it->second;
+Rcpp::List PhylogeneticForest::get_first_occurrence(const CNA& cna) const
+{
+  return ::get_first_occurrence(get_CNA_first_cells(), cna);
 }
 
 void PhylogeneticForest::save(const std::string& filename) const
@@ -207,7 +212,7 @@ void PhylogeneticForest::show() const
   }
 
   Rcout << "}" << std::endl << std::endl
-        << "  # of emerged SNVs: " << get_SNV_first_cell().size() << std::endl
-        << "  # of emerged CNAs: " << get_CNA_first_cell().size() << std::endl
+        << "  # of emerged SNVs: " << get_SNV_first_cells().size() << std::endl
+        << "  # of emerged CNAs: " << get_CNA_first_cells().size() << std::endl
         << std::endl;
 }

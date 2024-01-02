@@ -554,7 +554,7 @@ RCPP_MODULE(Mutations){
 //'         (column "mutant"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
 //' }
-//' @field get_first_occurrence Gets the identifier of the cell in which a 
+//' @field get_first_occurrences Gets the identifier of the cell in which a 
 //'        mutation occurs for the first time\itemize{
 //' \item \emph{Parameter:} \code{mutation} - A mutation being either a 
 //'              SNV or a CNA.
@@ -692,15 +692,15 @@ RCPP_MODULE(Mutations){
                 (&PhylogeneticForest::get_sampled_cell_SNVs),
             "Get the SNVs of all the sampled cells")
 
-//' @name PhylogeneticForest$get_first_occurrence
+//' @name PhylogeneticForest$get_first_occurrences
 //' @title Gets the identifier of the cell in which a mutation occurs for the first time
 //' @param mutation A mutation being either a SNV or a CNA.
 //' @return The identifier of the cell in which a mutation occurs for the first time
 //' @seealso `vignette("mutations")` for usage examples
-    .method("get_first_occurrence", (Races::Mutants::CellId (PhylogeneticForest::*)(const SNV&) const)
+    .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const SNV&) const)
                 (&PhylogeneticForest::get_first_occurrence),
             "Get the identifier of the cell in which the SNV for the first time")
-    .method("get_first_occurrence", (Races::Mutants::CellId (PhylogeneticForest::*)(const CNA&) const)
+    .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const CNA&) const)
                 (&PhylogeneticForest::get_first_occurrence),
             "Get the identifier of the cell in which the CNA for the first time")
 

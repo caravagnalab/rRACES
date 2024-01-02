@@ -292,12 +292,18 @@ phylo_forest$get_sampled_cell_SNVs(cell_id) %>% head()
 Users can also identify the cell in which a mutation emerged 
 even when the cell was not sampled.
 
-```{r, eval = FALSE}
-# build a SNV that occurs in one of the sampled cells
-snv <- SNV("22", 13085324, "TTT", "G")
+```{r}
+# select one of the mutations
+mutation_row <- phylo_forest$get_sampled_cell_SNVs(cell_id)[2,]
 
-# get the identifier of the oldest cell in which it occurs
-phylo_forest$get_first_occurrence(snv)
+# rebuild the corresponding SNV
+snv <- SNV(mutation_row["chromosome"][1, ],
+           mutation_row["chr_pos"][1, ],
+           mutation_row["context"][1, ],
+           mutation_row["mutated_base"][1, ])
+
+# get the identifier of the oldest cells in which the SNV occurs
+phylo_forest$get_first_occurrences(snv)
 ```
 
 ### Storing Phylogenetic Forests
