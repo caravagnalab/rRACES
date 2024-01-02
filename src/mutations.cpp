@@ -342,20 +342,23 @@ RCPP_MODULE(Mutations){
 //' m_engine <- build_mutation_engine("demo")
 //'
 //' # add the mutant "A" having two driver SNVs on chromosome 22 (no CNA) and
-//' # having two epigenetic states. Its species "A+" and "A-" have mutation rate 
-//' # 3e-9 and 6e-9, respectively.
-//' m_engine$add_mutant("A", c("+" = 3e-9, "-" = 6e-9),
+//' # having two epigenetic states. Its species "A+" and "A-" have passenger 
+//' # SNV rates 1e-9 and 3e-8, respectively, and passenger CNA rates 0 and
+//' # 1e-11, respectively.
+//' m_engine$add_mutant("A", list("+" = c(SNV = 1e-9),
+//'                               "-" = c(SNV = 3e-8, CNA = 1e-11)),
 //'                     c(SNV("22", 2001, "GAC", "T"),
 //'                       SNV("22", 2020, "CCC", "A")))
 //'
 //' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no CNA)
-//  # and missing epigenetic state. Its species "B" has mutation rate 5e-9.
-//' m_engine$add_mutant("B", 5e-9, c(SNV("1", 30, "AGC", "T")))
-    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& species_rate,
+//' # and missing epigenetic state. Its species "B" has passenger SNV rate 5e-9
+//' # and passenger CNA rate 0.
+//' m_engine$add_mutant("B", c(SNV = 5e-9), c(SNV("1", 30, "AGC", "T")))
+    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates,
                                                     const Rcpp::List&))(
                                                         &MutationEngine::add_mutant),                                            
             "Add mutant")
-    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& species_rate,
+    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates,
                                                     const Rcpp::List&, const Rcpp::List&))(
                                                         &MutationEngine::add_mutant), 
             "Add mutant")
@@ -372,7 +375,7 @@ RCPP_MODULE(Mutations){
 //' @examples
 //' # create a simulation
 //' sim <- new(Simulation)
-//' sim$add_mutant("A", 0.2, 0.01)
+//' sim$add_mutant("A", c(SNV = 0.2), 0.01)
 //' sim$place_cell("A", 500, 500)
 //'
 //' sim$death_activation_level <- 100
@@ -389,7 +392,8 @@ RCPP_MODULE(Mutations){
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
 //' # add the mutant "A" to the engine
-//' m_engine$add_mutant("A", 3e-9, c(SNV("22", 2001, "GAC", "T")))
+//' m_engine$add_mutant("A", c(SNV = 3e-9),
+//'                     c(SNV("22", 2001, "GAC", "T")))
 //'
 //' # add the default set of SBS coefficients
 //' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))
