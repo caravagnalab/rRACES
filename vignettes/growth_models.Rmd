@@ -52,7 +52,7 @@ sim$death_activation_level <- 50
 ```
 
 Add a mutant `A` with epigenetic state, let the 
-simulation evolve until there are 1000 cells of species `A+`, 
+simulation evolve until there are 1275 cells of species `A+`, 
 take two samples, and let the simulation evolve again for 15 time units.
 
 ```{r}
@@ -65,7 +65,7 @@ sim$add_mutant(name = "A",
 sim$place_cell("A+", 500, 500)
 
 # Let the simulation evolve until "A+" consists of 1000 cells
-sim$run_up_to_size("A+", 1000)
+sim$run_up_to_size("A+", 1275)
 
 bbox_width <- 15
 
@@ -154,7 +154,9 @@ sim$duplicate_internal_cells <- FALSE
 sim$death_activation_level <- 50
 ```
 
-Let us repeat what we did in the homogeneous growth model example.
+Let us repeat what we did in the homogeneous growth model
+example. 
+
 
 ```{r}
 # Add a mutant
@@ -166,7 +168,7 @@ sim$add_mutant(name = "A",
 sim$place_cell("A+", 500, 500)
 
 # Let the simulation evolve until "A+" consists of 1000 cells
-sim$run_up_to_size("A+", 1000)
+sim$run_up_to_size("A+", 1275)
 
 bbox_width <- 15
 
@@ -195,7 +197,7 @@ sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 # Let the simulation evolve until "B+" consists of 5000 cells
 sim$run_up_to_size("B+", 5000)
 
-ncells <- 0.8 * bbox_width * bbox_width
+ncells <- 0.9 * bbox_width * bbox_width
 
 bbox <- sim$search_sample("B", ncells, bbox_width, bbox_width)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
@@ -245,8 +247,9 @@ model.
 
 Moreover, spacial closeness and closeness in the samples ancestor forest 
 are strictly related in the "border" growth model, whereas they appear to be loosely 
-related in the homogeneous growth model. 
-This features can be easily spotted in the forest plots. 
+related in the homogeneous growth model.
+This features can be easily spotted in the forest plots when
+the sample `S_2_1` is selected near the external tumor border.
 
 ### Storing Samples Forests
 
