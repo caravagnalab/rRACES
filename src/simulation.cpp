@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1216,7 +1216,7 @@ SamplesForest Simulation::get_samples_forest() const
 
 size_t count_in(const std::set<Races::Mutants::SpeciesId>& species_ids,
                 const Races::Mutants::Evolutions::Tissue& tissue,
-                const uint16_t init_x, const uint16_t init_y,
+                const uint16_t& init_x, const uint16_t& init_y,
                 const uint16_t& width, const uint16_t& height)
 {
   size_t counter{0};
@@ -1241,6 +1241,32 @@ size_t count_in(const std::set<Races::Mutants::SpeciesId>& species_ids,
   return counter;
 }
 
+inline
+size_t count_in(const std::set<Races::Mutants::SpeciesId>& species_ids,
+                const Races::Mutants::Evolutions::Tissue& tissue,
+                const TissueRectangle& tumor_bounding_box,
+                const uint16_t& grid_x, const uint16_t& grid_y,
+                const uint16_t& width, const uint16_t& height)
+{
+  const uint16_t x = grid_x*width+tumor_bounding_box.lower_corner.x,
+                 y = grid_y*height+tumor_bounding_box.lower_corner.y;
+
+  return count_in(species_ids, tissue, x, y, width, height);
+}
+
+inline 
+TissueRectangle get_tissue_rectangle(const TissueRectangle& tumor_bounding_box,
+                                     const uint16_t& grid_x, const uint16_t& grid_y,
+                                     const uint16_t& width, const uint16_t& height)
+{
+  using namespace Races::Mutants::Evolutions;
+
+  const uint16_t x = grid_x*width+tumor_bounding_box.lower_corner.x,
+                 y = grid_y*height+tumor_bounding_box.lower_corner.y;
+
+  return TissueRectangle(PositionInTissue{x,y}, width, height);
+}
+
 std::set<Races::Mutants::SpeciesId> 
 collect_species_of(const Races::Mutants::Evolutions::Simulation& simulation,
                    const std::string& mutant_name)
@@ -1259,31 +1285,106 @@ collect_species_of(const Races::Mutants::Evolutions::Simulation& simulation,
   return species_ids;
 }
 
+TissueRectangle Simulation::get_tumor_bounding_box() const
+{
+  using namespace Races::Mutants::Evolutions;
+  const auto& tissue = sim_ptr->tissue();
+  const auto tissue_sizes = tissue.size();
+
+  PositionInTissue lower_corner(static_cast<AxisSize>(tissue_sizes[0]),
+                                static_cast<AxisSize>(tissue_sizes[1])), upper_corner{0,0};
+
+  for (uint16_t grid_x=0; grid_x<tissue_sizes[0]; ++grid_x) {
+    for (uint16_t grid_y=0; grid_y<tissue_sizes[1]; ++grid_y) {
+      Races::Mutants::Evolutions::PositionInTissue pos{grid_x, grid_y};
+      if (!tissue(pos).is_wild_type()) {
+        if (grid_x < lower_corner.x) {
+          lower_corner.x = grid_x;
+        }
+        if (grid_y < lower_corner.y) {
+          lower_corner.y = grid_y;
+        }
+        if (grid_x > upper_corner.x) {
+          upper_corner.x = grid_x;
+        }
+        if (grid_y > upper_corner.y) {
+          upper_corner.y = grid_y;
+        }
+      }
+    }
+  }
+
+  return {lower_corner, upper_corner};
+}
+
+template<typename T>
+inline T div_ceil(const T& dividend, const T& divisor)
+{
+  if (dividend==0) return dividend;
+
+  return 1+(dividend-1)/divisor;
+}
+
 TissueRectangle Simulation::search_sample(const std::string& mutant_name, const size_t& num_of_cells,
                                           const uint16_t& width, const uint16_t& height)
 {
   auto species_ids = collect_species_of(*sim_ptr, mutant_name);
 
+  auto t_bbox = get_tumor_bounding_box();
+
   const auto& tissue = sim_ptr->tissue();
-  const auto tissue_sizes = tissue.size();
+  const auto t_width = t_bbox.upper_corner.x - t_bbox.lower_corner.x;
+  const auto t_height = t_bbox.upper_corner.y - t_bbox.lower_corner.y;
 
-  uint16_t grid_width = tissue_sizes[0]/width+((tissue_sizes[0]%width>0?1:0));
-  uint16_t grid_height = tissue_sizes[1]/height+((tissue_sizes[1]%height>0?1:0));
+  const uint16_t grid_width = t_width/width+((t_width%width>0?1:0));
+  const uint16_t grid_height = t_height/height+((t_height%height>0?1:0));
 
-  std::vector<size_t> grid_column(grid_height);
-  std::vector<std::vector<size_t>> grid(grid_width, grid_column);
+  const uint16_t diag_size = div_ceil(std::min(grid_width, grid_height),
+                                      static_cast<uint16_t>(2));
 
-  for (uint16_t grid_x=0; grid_x<grid_width; ++grid_x) {
-    for (uint16_t grid_y=0; grid_y<grid_height; ++grid_y) {
-      const uint16_t x = grid_x*width, y = grid_y*height;
-      grid[grid_x][grid_y] = count_in(species_ids, tissue, x, y, 
-                                      width, height);
-      if (grid[grid_x][grid_y]>num_of_cells) {
-        return TissueRectangle(Races::Mutants::Evolutions::PositionInTissue{x,y}, width, height);
+  for (uint16_t diag=0; diag<diag_size; ++diag) {
+    uint16_t grid_x=diag, grid_y=diag;
+
+    for (; grid_x<grid_width-diag; ++grid_x) {
+      const auto counted_cells = count_in(species_ids, tissue, t_bbox, grid_x, grid_y, 
+                                          width, height);
+      if (counted_cells>num_of_cells) {
+        return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
+      }
+    }
+
+    for (; grid_y<grid_height-diag; ++grid_y) {
+      const auto counted_cells = count_in(species_ids, tissue, t_bbox, grid_x, grid_y, 
+                                          width, height);
+      if (counted_cells>num_of_cells) {
+        return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
+      }
+    }
+
+    for (; grid_x>diag; --grid_x) {
+      const auto counted_cells = count_in(species_ids, tissue, t_bbox, grid_x, grid_y, 
+                                          width, height);
+      if (counted_cells>num_of_cells) {
+        return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
+      }
+    }
+
+    {
+      const auto counted_cells = count_in(species_ids, tissue, t_bbox, grid_x, grid_y, 
+                                          width, height);
+      if (counted_cells>num_of_cells) {
+        return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
+      }
+    }
+
+    for (; grid_y>diag; --grid_y) {
+      const auto counted_cells = count_in(species_ids, tissue, t_bbox, grid_x, grid_y, 
+                                          width, height);
+      if (counted_cells>num_of_cells) {
+        return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
       }
     }
   }
-
   throw std::runtime_error("No bounding box found!");
 }
 

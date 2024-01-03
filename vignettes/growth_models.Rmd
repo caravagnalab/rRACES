@@ -52,7 +52,7 @@ sim$death_activation_level <- 50
 ```
 
 Add a mutant `A` with epigenetic state, let the 
-simulation evolve until there are 1275 cells of species `A+`, 
+simulation evolve until there are 1300 cells of species `A+`, 
 take two samples, and let the simulation evolve again for 15 time units.
 
 ```{r}
@@ -64,8 +64,8 @@ sim$add_mutant(name = "A",
 
 sim$place_cell("A+", 500, 500)
 
-# Let the simulation evolve until "A+" consists of 1000 cells
-sim$run_up_to_size("A+", 1275)
+# Let the simulation evolve until "A+" consists of 1300 cells
+sim$run_up_to_size("A+", 1300)
 
 bbox_width <- 15
 
@@ -167,8 +167,8 @@ sim$add_mutant(name = "A",
 
 sim$place_cell("A+", 500, 500)
 
-# Let the simulation evolve until "A+" consists of 1000 cells
-sim$run_up_to_size("A+", 1275)
+# Let the simulation evolve until "A+" consists of 1300 cells
+sim$run_up_to_size("A+", 1300)
 
 bbox_width <- 15
 

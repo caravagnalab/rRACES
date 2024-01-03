@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,6 +289,8 @@ public:
   static Simulation load(const std::string& directory_name);
 
   SamplesForest get_samples_forest() const;
+
+  TissueRectangle get_tumor_bounding_box() const;
 
   TissueRectangle search_sample(const std::string& mutant_name, const size_t& num_of_cells,
                                 const uint16_t& width, const uint16_t& height);
