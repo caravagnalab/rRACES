@@ -2,9 +2,10 @@
 # rRACES <a href="caravagnalab.github.io/rRACES"><img src="man/figures/logo.png" align="right" height="120" alt="" /></a>
 
 <!-- badges: start -->
-
+<!--
 [![R-CMD-check](https://github.com/caravagnalab/rRACES/workflows/R-CMD-check/badge.svg)](https://github.com/caravagnalab/rRACES/actions)
 [![pkgdown](https://github.com/caravagnalab/rRACES/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/caravagnalab/rRACES/actions/workflows/pkgdown.yaml)
+-->
 <!-- badges: end -->
 
 `rRACES` is the R wrapper for
