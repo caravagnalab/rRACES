@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,13 @@
 
 class MutationEngine;
 
-class PhylogeneticForest : private Races::Mutations::PhylogeneticForest
+class PhylogeneticForest : public Races::Mutations::PhylogeneticForest
 {
-  PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig);
+  std::filesystem::path reference_path;
+
+  PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig, const std::filesystem::path& reference_path);
+
+  PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig, const std::filesystem::path& reference_path);
 public:
   PhylogeneticForest();
 
@@ -71,6 +75,11 @@ public:
   Rcpp::List get_first_occurrence(const SNV& snv) const;
 
   Rcpp::List get_first_occurrence(const CNA& cna) const;
+
+  inline std::filesystem::path get_reference_path() const
+  {
+    return reference_path;
+  }
 
   void save(const std::string& filename) const;
 

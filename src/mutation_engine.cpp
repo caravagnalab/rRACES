@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,6 +226,8 @@ void MutationEngine::init_mutation_engine(const GenomicDataStorage& storage,
                                           const std::map<std::string, size_t>& alleles_num_exceptions,
                                           const size_t& context_sampling_rate)
 {
+  reference_path = storage.get_reference_path();
+
   context_index = build_contex_index<MutationEngine::AbsGenotypePosition>(storage, context_sampling_rate);
 
   auto num_of_alleles = get_num_of_alleles(context_index, default_num_of_alleles, alleles_num_exceptions);
@@ -503,15 +505,15 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
 
 PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest, const int seed)
 {
-    Races::UI::ProgressBar progress_bar;
+  Races::UI::ProgressBar progress_bar;
 
-    progress_bar.set_message("Placing mutations");
+  progress_bar.set_message("Placing mutations");
 
-    auto phylo_forest = m_engine.place_mutations(forest, progress_bar, seed);
+  auto phylo_forest = m_engine.place_mutations(forest, progress_bar, seed);
 
-    progress_bar.set_message("Mutations placed");
+  progress_bar.set_message("Mutations placed");
 
-    return phylo_forest;
+  return {phylo_forest, reference_path};
 }
 
 template<typename OUT, typename ITERATOR>

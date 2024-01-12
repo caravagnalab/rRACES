@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,12 @@ PhylogeneticForest::PhylogeneticForest():
   Races::Mutations::PhylogeneticForest()
 {}
 
-PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig):
-   Races::Mutations::PhylogeneticForest(orig)
+PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig, const std::filesystem::path& reference_path):
+   Races::Mutations::PhylogeneticForest(orig), reference_path(reference_path) 
+{}
+
+PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig, const std::filesystem::path& reference_path):
+   Races::Mutations::PhylogeneticForest(std::move(orig)), reference_path(reference_path)
 {}
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const
@@ -176,16 +180,23 @@ void PhylogeneticForest::save(const std::string& filename) const
 {
   Races::Archive::Binary::Out out_archive(filename);
 
-  Races::Mutations::PhylogeneticForest::save(out_archive);
+  out_archive & reference_path;
+
+  out_archive.save(static_cast<const Races::Mutations::PhylogeneticForest&>(*this), "forest");
 }
 
 PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
 {
-  PhylogeneticForest forest;
-
   Races::Archive::Binary::In in_archive(filename);
 
-  static_cast<Races::Mutations::PhylogeneticForest&>(forest) = Races::Mutations::PhylogeneticForest::load(in_archive);
+  std::string reference_path;
+
+  in_archive & reference_path;
+
+  PhylogeneticForest forest;
+  forest.reference_path = reference_path;
+
+  in_archive.load(static_cast<Races::Mutations::PhylogeneticForest&>(forest), "forest");
 
   return forest;
 }

@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@
 class MutationEngine
 {
     using AbsGenotypePosition = uint32_t;
+
+    std::filesystem::path reference_path;
 
     Races::Mutations::ContextIndex<AbsGenotypePosition> context_index;
     Races::Mutations::MutationEngine<AbsGenotypePosition, std::mt19937_64> m_engine;
@@ -70,6 +72,11 @@ public:
     inline PhylogeneticForest place_mutations(const SamplesForest& forest)
     {
         return place_mutations(forest, 0);
+    }
+
+    inline std::filesystem::path get_reference_path() const
+    {
+        return reference_path;
     }
 
     void show() const;
