@@ -196,15 +196,15 @@ the same chromosome.
 m_engine$add_mutant(mutant_name = "A",
                     passenger_rates = list("+" = c(SNV = 1e-9),
                                            "-" = c(SNV = 3e-8, CNA = 1e-11)),
-                    driver_SNVs = c(SNV("22", 10510210, "TAC", "T")),
+                    driver_SNVs = c(SNV("22", 10510210, "ATT", "C")),
                     driver_CNAs = c())
 
 # add the mutant "B" characterized by two driver SNVs on chromosome 22 (no
 # CNA) and two epigenetic states. Its species "B+" and "B-" have passenger
 # SNV rates 8e-7 and 5e-8, respectively, and CNA rates 0 for both species.
 m_engine$add_mutant("B", list("+" = c(SNV = 8e-7), "-" = c(SNV = 5e-8)),
-                    c(SNV("22", 12028576, "ACA", "G"),
-                      SNV("22", 12029660, "AAA", "T")))
+                    c(SNV("22", 12028576, "TAT", "G"),
+                      SNV("22", 12029660, "TTG", "A")))
 
 m_engine
 ```
@@ -323,7 +323,5 @@ phylo_forest2
 ```
 
 ```{r, echo=FALSE,  results='hide', message=FALSE}
-unlink("demo", recursive = TRUE)
 unlink("samples_forest.sff")
-unlink("phylo_forest.sff")
 ```

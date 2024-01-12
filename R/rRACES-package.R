@@ -1,5 +1,6 @@
 loadModule("Mutants", TRUE)
 loadModule("Mutations", TRUE)
+loadModule("Sequencing", TRUE)
 
 ## usethis namespace: start
 #' @importFrom cli cli_alert

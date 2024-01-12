@@ -1,0 +1,135 @@
+---
+title: "Sequencing Simulation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sequencing Simulation}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 72
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+unlink("rRACES_SAM", recursive = TRUE)
+```
+
+Once a phylogenetic forest has been computed (see `vignette("mutations")`)
+for the details), rRACES/RACES can simulate the sequencing of the 
+samples in the forest and return the observed data.
+
+### Sequencing Simulation
+
+Let us consider the phylogenetic forest produced in 
+`vignette("mutations")`.
+
+```{r}
+library(rRACES)
+
+phylo_forest <- load_phylogenetic_forest("phylo_forest.sff")
+
+phylo_forest
+```
+
+The loaded phylogenetic forest models the cell evolution of 
+4 different samples: `S_1_1`, `S_1_2`, `S_2_1`, and `S_2_2`. 
+
+We can simulate the sequencing of these samples with coverage 
+of 2.5X by as it follows. 
+
+```{r}
+# let us simulate a 2.5x sequencing of the four sample
+seq_results <- simulate_seq(phylo_forest, coverage = 2.5)
+
+# let us load the dplyr library to filter the `simulate_seq` output
+library(dplyr)
+
+seq_results %>% head
+```
+
+The function `simulate_seq` returns a data frame whose rows 
+represent the mutations observed in the simulated reads
+(currently, only SNVs are supported).
+
+The number of columns in the data frame depends on the number 
+of samples in the phygenetic forest. The first 4 columns 
+describe the mutation and report the chromosome and the position 
+in the chromosome of the mutation (columns "`chromosome`" and 
+"`chr_pos`", respectively), the genetic context in which the 
+mutation occurs (column "`context`"), and the new base (column 
+"`mutated_base`").
+Then, there are 3 columns for each of the samples: they 
+contain the number of simulated reads affected by the 
+mutation, the sequencing coverage of the mutation locus, 
+and the ratio between these two last columns 
+(columns "`<sample name> occurrences`", "`<sample name> coverage`", 
+and "`<sample name> VAF`", respectively).
+
+### Cell Partition by Epigenetic State (Epi-FACS)
+
+The sequencing simulation supports cell partition by epigenetic state (epi-FACS) by 
+using the `simualate_seq` parameter `epi_FACS`.
+At the beginning of the sequencing simulation process, each sample in the phylogenetic 
+forest is splitted in two distinct samples: `<sample name>_P`, that contains 
+all the cells in the original sample having epigenetic state `+`, and 
+`<sample name>_N`, that consists in the cells having epigenetic state `-`.
+The results of the simulation reports the data for the splitted samples.
+
+```{r}
+seq_results <- simulate_seq(phylo_forest, coverage = 2.5, epi_FACS = TRUE)
+
+seq_results %>% head
+```
+
+
+### Saving the Simulated Reads
+
+rRACES/RACE can also save the simulated reads in the SAM format 
+(see [@10.1093/bioinformatics/btp352]). By setting the 
+optional parameter `write_SAM` to `TRUE`, 
+the function `simulate_seq` creates the directory `rRACES_SAM`
+and saves the SAM files in it. Each file is named after one the 
+reference genome chromosomes and it contains the reads simulated 
+for it. 
+
+```{r}
+seq_results <- simulate_seq(phylo_forest, coverage = 2.5, write_SAM = TRUE)
+
+SAM_files <- list.files("rRACES_SAM/")
+
+ex_file <- paste("rRACES_SAM/", SAM_files[1], sep="")
+for (line in readLines(ex_file, n = 10)) {
+    cat(paste(line,"\n"))
+}
+```
+
+Each SAM file contains the reads produced by simulating the sequencing 
+of *all* the samples. The command line tools `samtools` can be used to
+split the reads by sample (see [here](http://www.htslib.org)).
+
+```{bash, eval = FALSE}
+foo@bar % samtools split  -f "%*_%\!.sam" rRACES_SAM/chr_22.sam
+foo@bar % ls chr_22_*
+chr_22_S_1_1.sam        chr_22_S_1_2.sam        chr_22_S_2_1.sam        chr_22_S_2_2.sam
+```
+
+The resulting files are named after the phylogenetic forest samples and each of them 
+contains the reads of only one sample.
+
+Please, refer to the [`samtools split` manual](http://www.htslib.org/doc/samtools-split.html)
+for more details.
+
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+unlink("rRACES_SAM", recursive = TRUE)
+unlink("demo", recursive = TRUE)
+unlink("phylo_forest.sff")
+```

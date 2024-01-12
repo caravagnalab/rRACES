@@ -22,6 +22,7 @@ articles:
   - sampling
   - growth_models
   - mutations
+  - sequencing
 
 reference:
 - title: "Spacial simulation interface"
@@ -116,7 +117,10 @@ reference:
   - SNV$get_mutated_base
   - SNV$get_position_in_chromosome
   - SNV
-  
+- title: "Sequencing simulation interface"
+  desc:  "Sequencing simulation methods"
+  contents:
+  - simulate_seq
 
 
 
