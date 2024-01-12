@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -447,7 +447,7 @@ RCPP_MODULE(Mutations){
 //'       sequence, the SBS file, and the previously built context index
 //'       are loaded from the set-up directory avoiding further 
 //'       computations.
-//' @seealso `get_mutation_engine_codes()` provides a list of the supported 
+//' @seealso `get_mutation_engine_codes` provides a list of the supported 
 //'         set-up codes.
 //' @export
 //' @param setup_code The set-up code (alternative to `directory`).
@@ -524,7 +524,7 @@ RCPP_MODULE(Mutations){
 //' @title Get the supported codes for predefined set-up
 //' @return A data frame reporting the code and a description for each
 //'      supported predefined set-up.
-//' @seealso `build_mutation_engine()` to build a mutation engine
+//' @seealso `build_mutation_engine` to build a mutation engine
 //' @export
 //' @examples
 //' # get the list of supported mutation engine set-up codes
@@ -572,6 +572,12 @@ RCPP_MODULE(Mutations){
 //'              "mutant"), the epistate (column "epistate"),
 //'              and the birth time (column "birth_time").
 //' }
+//' @field get_sampled_cell_SNVs Gets a the SNVs of the sampled cells \itemize{
+//' \item \emph{Returns:} A data frame reporting `cell_id`, `chromosome`, 
+//'          `chr_pos` (i.e., position in the chromosome), `allele` (in which
+//'          the SNV occurs), `context`, `mutated_base`, and `cause` for each
+//'          SNV in the sampled cell genomes.
+//' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected
 //'         during the simulation, the columns "name", "time", "ymin",
@@ -579,12 +585,6 @@ RCPP_MODULE(Mutations){
 //'         "xmin", "ymax", "xmax" report the boundaries of the sampled
 //'         rectangular region, while "tumoral cells" is the number of
 //'         tumoral cells in the sample.
-//' }
-//' @field get_sampled_cell_SNVs Gets a the SNVs of the sampled cells \itemize{
-//' \item \emph{Returns:} A data frame reporting `cell_id`, `chromosome`, 
-//'          `chr_pos` (i.e., position in the chromosome), `allele` (in which
-//'          the SNV occurs), `context`, `mutated_base`, and `cause` for each
-//'          SNV in the sampled cell genomes.
 //' }
 //' @field get_species_info Gets the species data\itemize{
 //' \item \emph{Returns:} A data frame reporting "mutant" and "epistate"
@@ -612,7 +612,7 @@ RCPP_MODULE(Mutations){
 //'         node, (column "sample"), the mutant (column
 //'         "mutant"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
-//' @seealso `SamplesForest$get_nodes()` for usage examples
+//' @seealso `SamplesForest$get_nodes` for usage examples
     .method("get_nodes", (List (PhylogeneticForest::*)() const)(&PhylogeneticForest::get_nodes),
             "Get the nodes of the forest")
 
@@ -635,7 +635,7 @@ RCPP_MODULE(Mutations){
 //'         containing the node, (column "sample"), the mutant
 //'         (column "mutant"), the epistate (column "epistate"),
 //'         and the birth time (column "birth_time").
-//' @seealso `SamplesForest$get_coalescent_cells()` for usage examples
+//' @seealso `SamplesForest$get_coalescent_cells` for usage examples
     .method("get_coalescent_cells",
             (List (PhylogeneticForest::*)(const std::list<Races::Mutants::CellId>&) const)
                 (&PhylogeneticForest::get_coalescent_cells),
@@ -649,7 +649,7 @@ RCPP_MODULE(Mutations){
 //' @param sample_names The names of the samples whose cells will be used
 //'         as leaves of the new forest
 //' @return A samples forest built on the samples mentioned in `sample_names`
-//' @seealso `SamplesForest$get_subforest_for()` for usage examples
+//' @seealso `SamplesForest$get_subforest_for` for usage examples
     .method("get_subforest_for", &PhylogeneticForest::get_subforest_for,
             "Get the sub-forest for some of the original samples")
 
@@ -661,7 +661,7 @@ RCPP_MODULE(Mutations){
 //' @return A data frame reporting, for each sample, the
 //'           name, the sampling time, the position, and
 //'           the number of tumoural cells.
-//' @seealso `SamplesForest$get_samples_info()` for usage examples
+//' @seealso `SamplesForest$get_samples_info` for usage examples
     .method("get_samples_info", &PhylogeneticForest::get_samples_info,
             "Get some pieces of information about the samples")
 
@@ -695,7 +695,7 @@ RCPP_MODULE(Mutations){
 //' @name PhylogeneticForest$get_first_occurrences
 //' @title Gets the identifier of the cell in which a mutation occurs for the first time
 //' @param mutation A mutation being either a SNV or a CNA.
-//' @return The identifier of the cell in which a mutation occurs for the first time
+//' @return The identifier of the cell in which a mutation occurs for the first time.
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const SNV&) const)
                 (&PhylogeneticForest::get_first_occurrence),
