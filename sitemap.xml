@@ -7,25 +7,118 @@
     <loc>https://caravagnalab.github.io/rRACES/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/a01_tissue_simulation.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/a02_sampling_simulation.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/a03_growth_models.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/articles/growth_models.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/index.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/mutations.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/rRACES.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/sampling.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/sequencing.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/tissue_simulation.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/authors.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/index.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Amplification.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_allele.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_chromosome.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_dataframe.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_length.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_position_in_chromosome.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_src_allele.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/CNA.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Deletion.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_exposure.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_mutant.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-place_mutations.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_coalescent_cells.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_first_occurrences.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_nodes.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_SNVs.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_samples_info.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_species_info.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_subforest_for.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-save.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_cause.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_chromosome.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_context.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_dataframe.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_mutated_base.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_position_in_chromosome.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_coalescent_cells.html</loc>
@@ -43,10 +136,13 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_subforest_for.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-save.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-add_genotype.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-add_mutant.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-choose_cell_in.html</loc>
@@ -130,7 +226,7 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-sample_cells.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-schedule_genotype_mutation.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-schedule_mutation.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-search_sample.html</loc>
@@ -163,7 +259,19 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/bbox_sampler.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/build_mutation_engine.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/get_mutation_engine_codes.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/load_phylogenetic_forest.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/load_samples_forest.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_firings.html</loc>
@@ -185,5 +293,8 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/simulate_seq.html</loc>
   </url>
 </urlset>
