@@ -1087,7 +1087,7 @@ Simulation::choose_cell_in(const std::string& mutant_name,
   namespace RS = Races::Mutants::Evolutions;
 
   if (sim_ptr->duplicate_internal_cells) {
-    auto rectangle = get_rectangle(lower_corner, upper_corner);
+    const auto rectangle = get_rectangle(lower_corner, upper_corner);
     const auto& cell = sim_ptr->choose_cell_in(mutant_name, rectangle,
                                                Races::Mutants::CellEventType::DUPLICATION);
 
@@ -1112,18 +1112,19 @@ Rcpp::List Simulation::choose_cell_in(const std::string& mutant_name)
 
 Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name)
 {
-  PlainChooser chooser(sim_ptr, mutant_name);
+    const auto& cell = sim_ptr->choose_border_cell_in(mutant_name);
 
-  return choose_border_cell_in(chooser);
+    return wrap_a_cell(cell);
 }
 
 Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name,
-                                       const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                                       const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner)
+                                             const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                             const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner)
 {
-  RectangularChooser chooser(sim_ptr, mutant_name, lower_corner, upper_corner);
+    const auto rectangle = get_rectangle(lower_corner, upper_corner);
+    const auto& cell = sim_ptr->choose_border_cell_in(mutant_name, rectangle);
 
-  return choose_border_cell_in(chooser);
+    return wrap_a_cell(cell);
 }
 
 void Simulation::mutate_progeny(const Races::Mutants::Evolutions::AxisPosition& x,
