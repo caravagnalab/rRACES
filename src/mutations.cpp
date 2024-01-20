@@ -232,13 +232,13 @@ RCPP_MODULE(Mutations){
 //'
 //' cna
 //'
-//' # create a deletion from the allele "0"
-//' cna <- CNA("D", "Y", 101310, 205, allele="0")
+//' # create a deletion from the allele 0
+//' cna <- CNA("D", "Y", 101310, 205, allele=0)
 //' 
 //' cna
   function("CNA", &CNA::build_CNA,
            List::create(_["type"], _["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]="?", _["src_allele"]="?"),
+                        _["allele"]=false, _["src_allele"]=false),
            "Create a copy number alteration (CNA)");
 
 //' @name Amplification
@@ -255,7 +255,7 @@ RCPP_MODULE(Mutations){
 //' cna
   function("Amplification", &CNA::build_amplification,
            List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]="?", _["src_allele"]="?"),
+                        _["allele"]=false, _["src_allele"]=false),
            "Create a CNA amplification");
 
 //' @name Deletion
@@ -271,7 +271,7 @@ RCPP_MODULE(Mutations){
 //' cna
   function("Deletion", &CNA::build_deletion,
            List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]="?"),
+                        _["allele"]=false),
            "Create a CNA deletion");
 
 //' @name MutationEngine

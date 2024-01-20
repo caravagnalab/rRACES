@@ -33,6 +33,27 @@ CNA::CNA(const Races::Mutations::GenomicRegion& region, const Races::Mutations::
 CNA::CNA()
 {}
 
+SEXP wrap_allele_id(const Races::Mutations::AlleleId& allele_id)
+{
+    if (allele_id == RANDOM_ALLELE) {
+        return Rcpp::wrap(NA_INTEGER);
+    }
+    return Rcpp::wrap(allele_id); 
+}
+
+SEXP CNA::get_src_allele() const
+{
+    if (type == Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION) {
+        return wrap_allele_id(source);
+    }
+    return Rcpp::wrap(NA_INTEGER);
+}
+
+SEXP CNA::get_allele() const
+{
+    return wrap_allele_id(dest);
+}
+
 Rcpp::List CNA::get_dataframe() const
 {
     using namespace Rcpp;
@@ -50,39 +71,42 @@ void CNA::show() const
 {
     using namespace Rcpp;
 
-    Rcout << "CNA(chromosome: " <<  get_chromosome()
-          << ", pos_in_chr: " << get_position_in_chromosome()
-          << ", length: " << get_length()
-          << ", allele: " << get_allele();
+    Rcout << "CNA(type: \"" << get_type()
+          << "\", chromosome: \"" <<  get_chromosome()
+          << "\", pos_in_chr: " << get_position_in_chromosome()
+          << ", length: " << get_length();
 
-    if (get_type()=="A") {
-        Rcout << ", src_allele: " << get_src_allele();
+    if (dest != RANDOM_ALLELE) {
+        Rcout << ", allele: " << dest;
     }
 
-    Rcout << ", type: " << get_type()
-          << ")" << std::endl;
+    if (get_type()=="A") {
+        if (dest != RANDOM_ALLELE) {
+            Rcout << ", src_allele: " << source;
+        }
+    }
+
+    Rcout << ")" << std::endl;
 }
 
 Races::Mutations::AlleleId
 cast_to_allele(const SEXP allele, const std::string& parameter_name)
 {
-    auto allele_str = Rcpp::as<std::string>(allele);
-
-    if (allele_str == "?") {
+    if (TYPEOF(allele) == LGLSXP) {
         return RANDOM_ALLELE;
     }
 
     long int allele_l;
     try {
-        allele_l = std::stol(allele_str);
+        allele_l = Rcpp::as<long int>(allele);
     } catch (std::invalid_argument& ex) {
         allele_l = -1;
     }
 
     if (allele_l < 0) {
         throw std::domain_error("The parameter \"" + parameter_name 
-                                + "\" must be either a"
-                                + "non-negative number or \"?\"");
+                                + "\" must be either a "
+                                + "non-negative number or NA.");
     }
 
     return static_cast<Races::Mutations::AlleleId>(allele_l);

@@ -53,18 +53,9 @@ public:
         return region.size();
     }
 
-    inline const Races::Mutations::AlleleId get_src_allele() const
-    {
-        if (type == Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION) {
-            return source;
-        }
-        return NA_INTEGER;
-    }
+    SEXP get_src_allele() const;
 
-    inline const Races::Mutations::AlleleId get_allele() const
-    {
-        return dest;
-    }
+    SEXP get_allele() const;
 
     inline std::string get_type() const
     {
