@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,8 @@ class SNV : public Races::Mutations::SNV
 
     SNV(const Races::Mutations::ChromosomeId& chromosome_id,
         const Races::Mutations::ChrPosition& chromosomic_position,
-        const char* context, const char& mutated_base,
-        const std::string& cause="");
+        const Races::Mutations::MutationalContext& context,
+        const char& mutated_base, const std::string& cause="");
 
 public:
     SNV();
@@ -76,7 +76,7 @@ public:
     static
     SNV build_SNV(const SEXP chromosome_name,
                   const SEXP position_in_chromosome,
-                  const SEXP context, const SEXP mutated_base,
+                  const SEXP mutated_base, const SEXP context, 
                   const SEXP cause);
 };
 

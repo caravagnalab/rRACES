@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,14 +20,14 @@
 // amplification
 CNA::CNA(const Races::Mutations::GenomicRegion& region, const Races::Mutations::AlleleId& allele,
          const Races::Mutations::AlleleId& src_allele):
-    Races::Mutations::CopyNumberAlteration(region, src_allele, allele,
-                                           Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION)
+    Races::Mutations::CopyNumberAlteration(region, Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION,
+                                           src_allele, allele)
 {}
 
 // deleletion
 CNA::CNA(const Races::Mutations::GenomicRegion& region, const Races::Mutations::AlleleId& allele):
-    Races::Mutations::CopyNumberAlteration(region, allele, allele,
-                                           Races::Mutations::CopyNumberAlteration::Type::DELETION)
+    Races::Mutations::CopyNumberAlteration(region, Races::Mutations::CopyNumberAlteration::Type::DELETION,
+                                           allele, allele)
 {}
 
 CNA::CNA()
@@ -63,7 +63,32 @@ void CNA::show() const
           << ")" << std::endl;
 }
 
-CNA CNA::build_CNA(const SEXP chromosome, const SEXP pos_in_chr,
+Races::Mutations::AlleleId
+cast_to_allele(const SEXP allele, const std::string& parameter_name)
+{
+    auto allele_str = Rcpp::as<std::string>(allele);
+
+    if (allele_str == "?") {
+        return RANDOM_ALLELE;
+    }
+
+    long int allele_l;
+    try {
+        allele_l = std::stol(allele_str);
+    } catch (std::invalid_argument& ex) {
+        allele_l = -1;
+    }
+
+    if (allele_l < 0) {
+        throw std::domain_error("The parameter \"" + parameter_name 
+                                + "\" must be either a"
+                                + "non-negative number or \"?\"");
+    }
+
+    return static_cast<Races::Mutations::AlleleId>(allele_l);
+}
+
+CNA CNA::build_CNA(const std::string type, const SEXP chromosome, const SEXP pos_in_chr,
                    const SEXP length, const SEXP allele, const SEXP src_allele)
 {
     using namespace Rcpp;
@@ -88,16 +113,18 @@ CNA CNA::build_CNA(const SEXP chromosome, const SEXP pos_in_chr,
 
     GenomicRegion region(gen_pos, len);
 
-    auto dst = Rcpp::as<long int>(allele);
-    if (dst < 0) {
-        throw std::domain_error("The \"allele\" field must be a "
-                                "non-negative number");
+    AlleleId allele_id = cast_to_allele(allele, "allele");
+    if (type == "D") {
+        return CNA(region, allele_id);
+    } 
+
+    if (type == "A") {
+        AlleleId src_allele_id = cast_to_allele(allele, "src_allele");
+
+        return CNA(region, allele_id, src_allele_id);
     }
 
-    long int src = Rcpp::as<long int>(src_allele);
-    if (src < 0) {
-        return CNA(region, static_cast<AlleleId>(dst));
-    }
-
-    return CNA(region, static_cast<AlleleId>(dst), static_cast<AlleleId>(src));
+    throw std::domain_error("Unknown CNA type \"" + type 
+                            + "\". Supported types are \"A\" and \"D\" for "
+                            + "amplification and deletion, respectively");
 }

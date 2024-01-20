@@ -67,11 +67,14 @@ public:
     void add_mutant(const std::string& mutant_name, const Rcpp::List& passenger_rates,
                     const Rcpp::List& driver_SNVs, const Rcpp::List& driver_CNAs);
 
-    PhylogeneticForest place_mutations(const SamplesForest& forest, const int seed);
+    PhylogeneticForest place_mutations(const SamplesForest& forest,
+                                       const size_t& num_of_preneoplatic_mutations,
+                                       const int seed);
 
-    inline PhylogeneticForest place_mutations(const SamplesForest& forest)
+    inline PhylogeneticForest place_mutations(const SamplesForest& forest,
+                                              const size_t& num_of_preneoplatic_mutations)
     {
-        return place_mutations(forest, 0);
+        return place_mutations(forest, num_of_preneoplatic_mutations, 0);
     }
 
     inline std::filesystem::path get_reference_path() const

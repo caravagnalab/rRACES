@@ -24,6 +24,8 @@
 #include <context_index.hpp>
 #include <progress_bar.hpp>
 
+#include <read_simulator.hpp>
+
 #include "mutation_engine.hpp"
 
 #include "genomic_data_storage.hpp"
@@ -484,6 +486,54 @@ get_epistate_passenger_rates(const Rcpp::List& list)
   return ep_rates;
 }
 
+  struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
+  {
+      Races::Mutations::ChromosomeId last_chr_id;
+
+      inline bool operator()(const std::string& header)
+      {
+          return !Races::IO::FASTA::is_chromosome_header(header, last_chr_id);
+      } 
+  };
+
+
+void retrieve_missing_contexts(const std::filesystem::path& fasta_filename, std::list<Races::Mutations::SNV>& SNVs)
+{
+  using SNV_iterator = std::list<std::list<Races::Mutations::SNV>::iterator>;
+
+  std::map<Races::Mutations::ChromosomeId, SNV_iterator> missing_context_SNVs;
+
+  size_t missing{0};
+  for (auto it=SNVs.begin(); it != SNVs.end(); ++it) {
+    if (!it->context.is_defined()) {
+      missing_context_SNVs[it->chr_id].push_back(it);
+      ++missing;
+    }
+  }
+
+  if (missing == 0) {
+    return;
+  }
+
+  Races::IO::FASTA::Sequence chr_seq;
+
+  FilterNonChromosomeSequence filter;
+
+  std::ifstream fasta_stream(fasta_filename);
+  while (Races::IO::FASTA::Sequence::read(fasta_stream, chr_seq, filter)) {
+    auto chr_id = filter.last_chr_id;
+    if (missing_context_SNVs.count(chr_id)>0) {
+      for (auto& SNV_it : missing_context_SNVs[chr_id]) {
+        SNV_it->context = chr_seq.nucleotides.substr(SNV_it->position-2, 3);
+        --missing;
+      }
+      if (missing == 0) {
+        return;
+      }
+    }
+  }
+}
+
 void MutationEngine::add_mutant(const std::string& mutant_name,
                                 const Rcpp::List& epistate_passenger_rates,
                                 const Rcpp::List& driver_SNVs,
@@ -491,6 +541,8 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
 {
   auto c_snvs = get_ancestor_list<Races::Mutations::SNV, SNV>(driver_SNVs);
   auto c_cnas = get_ancestor_list<Races::Mutations::CopyNumberAlteration, CNA>(driver_CNAs);
+
+  retrieve_missing_contexts(reference_path, c_snvs);
 
   if (contains_passenger_rates(epistate_passenger_rates)) {
     auto p_rates = get_passenger_rates(epistate_passenger_rates);
@@ -503,13 +555,15 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
   m_engine.add_mutant(mutant_name, epi_rates, c_snvs, c_cnas);
 }
 
-PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest, const int seed)
+PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest, 
+                                                   const size_t& num_of_preneoplatic_mutations,
+                                                   const int seed)
 {
   Races::UI::ProgressBar progress_bar;
 
   progress_bar.set_message("Placing mutations");
 
-  auto phylo_forest = m_engine.place_mutations(forest, progress_bar, seed);
+  auto phylo_forest = m_engine.place_mutations(forest, num_of_preneoplatic_mutations, progress_bar, seed);
 
   progress_bar.set_message("Mutations placed");
 

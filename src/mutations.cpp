@@ -37,7 +37,7 @@ RCPP_MODULE(Mutations){
 //' @title Get the chromosome in which the SNV occurs.
 //' @return The chromosome in which the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "GAC", "T")
+//' snv <- SNV("X", 20002, "T", "GAC")
 //'
 //' # get the chromosome in which `snv` occurs (i.e., "X")
 //' snv$get_chromosome()
@@ -47,7 +47,7 @@ RCPP_MODULE(Mutations){
 //' @title Get the position in chromosome where the SNV occurs.
 //' @return The position in chromosome where the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "GAC", "T")
+//' snv <- SNV("X", 20002, "T", "GAC")
 //'
 //' # get the position in chromosome where `snv` occurs (i.e., 20002)
 //' snv$get_position_in_chromosome()
@@ -58,7 +58,7 @@ RCPP_MODULE(Mutations){
 //' @title Get the context in which the SNV occurs.
 //' @return The context in which the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "GAC", "T")
+//' snv <- SNV("X", 20002, "T", "GAC")
 //'
 //' # get the context in which `snv` occurs (i.e., "GAC")
 //' snv$get_context()
@@ -68,7 +68,7 @@ RCPP_MODULE(Mutations){
 //' @title Get the base after the SNV occurs.
 //' @return The base after the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "GAC", "T")
+//' snv <- SNV("X", 20002, "T", "GAC")
 //'
 //' # get the base after `snv` occurs (i.e., "T")
 //' snv$get_mutated_base()
@@ -83,13 +83,13 @@ RCPP_MODULE(Mutations){
 //' @return The base after the SNV occurs.
 //' @examples
 //' # let us build a SNV without specifying any cause for it
-//' snv <- SNV("X", 20002, "GAC", "T")
+//' snv <- SNV("X", 20002, "T", "GAC")
 //'
 //' # get the cause of `snv` (i.e., "NA")
 //' snv$get_cause()
 //'
 //' # we can also build a SNV, specifying a cause for it
-//' snv <- SNV("X", 20002, "GAC", "T", cause = "SBS13")
+//' snv <- SNV("X", 20002, "T", "GAC", cause = "SBS13")
 //'
 //' # get the cause of `snv` (i.e., "SBS13")
 //' snv$get_cause()
@@ -101,7 +101,7 @@ RCPP_MODULE(Mutations){
 //'        columns are `chromosome`, `pos_in_chr`, `context`, `mutated_base`, and
 //'        `cause`.
 //' @examples
-//' snv <- SNV("X", 20002, "GAC", "T")
+//' snv <- SNV("X", 20002, "T", "GAC")
 //'
 //' snv$get_dataframe()
     .method("get_dataframe",&SNV::get_dataframe, "Get a dataframe representing the SNV")
@@ -111,20 +111,24 @@ RCPP_MODULE(Mutations){
 //' @title Create a SNV amplification.
 //' @param chromosome The name of the chromosome in which the SNV occurs.
 //' @param pos_in_chr The position in the chromosome where the SNV occurs.
-//' @param context The SNV context.
 //' @param mutated_base The base after the mutation.
+//' @param context The SNV context (optional).
 //' @param cause The cause of the SNV (optional).
 //' @examples
+//' # create a SNV without specifying the cause and context 
+//' snv <- SNV("X", 20002, "T")
+//' snv
+//'
 //' # create a SNV and do not specify the cause
-//' snv <- SNV("X", 20002, "GAC", "T")
+//' snv <- SNV("X", 20002, "T", "GAC")
 //' snv
 //'
 //' # create a SNV with a cause
-//' snv <- SNV("X", 20002, "GAC", "T", cause = "SBS1")
+//' snv <- SNV("X", 20002, "T", cause = "SBS1")
 //' snv
   function("SNV", &SNV::build_SNV,
-           List::create(_["chromosome"], _["pos_in_chr"], _["context"],
-                        _["mutated_base"], _["cause"] = ""),
+           List::create(_["chromosome"], _["pos_in_chr"], _["mutated_base"], 
+                        _["context"] = "???", _["cause"] = ""),
            "Create a single nucleotide variation (SNV)");
 
 //' @name CNA
@@ -214,20 +218,27 @@ RCPP_MODULE(Mutations){
 
 //' @name CNA
 //' @title Create a CNA amplification.
+//' @param type The CNA type: either "A" or "D" for amplification and 
+//'            deletion, respectively.
 //' @param chromosome The name of the chromosome in which the CNA occurs.
 //' @param pos_in_chr The position in the chromosome where the CNA occurs.
 //' @param len The CNA length.
-//' @param allele The allele in which the CNA occurs.
-//' @param src_allele The allele from which the region is amplified (optional:
-//'               if not specified the CNA is a deletion).
+//' @param allele The allele in which the CNA occurs. (optional)
+//' @param src_allele The allele from which the region is amplified. (optional, 
+//'             for amplification only)
 //' @examples
-//' # create an amplification CNA
-//' cna <- CNA("X", 20002, 100, 1, 0)
+//' # create an amplification
+//' cna <- CNA("A", "X", 20002, 100)
 //'
 //' cna
+//'
+//' # create a deletion from the allele "0"
+//' cna <- CNA("D", "Y", 101310, 205, allele="0")
+//' 
+//' cna
   function("CNA", &CNA::build_CNA,
-           List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"], _["src_allele"] = -1),
+           List::create(_["type"], _["chromosome"], _["pos_in_chr"], _["len"],
+                        _["allele"]="?", _["src_allele"]="?"),
            "Create a copy number alteration (CNA)");
 
 //' @name Amplification
@@ -235,16 +246,16 @@ RCPP_MODULE(Mutations){
 //' @param chromosome The name of the chromosome in which the CNA occurs.
 //' @param pos_in_chr The position in the chromosome where the CNA occurs.
 //' @param len The CNA length.
-//' @param allele The allele in which the amplification is placed.
-//' @param src_allele The allele from which the region is amplified.
+//' @param allele The allele in which the amplification is placed. (optional)
+//' @param src_allele The allele from which the region is amplified. (optional)
 //' @examples
 //' # create an amplification CNA
-//' cna <- Amplification("X", 20002, 100, 1, 0)
+//' cna <- Amplification("X", 20002, 100)
 //'
 //' cna
-  function("Amplification", &CNA::build_CNA,
+  function("Amplification", &CNA::build_amplification,
            List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"], _["src_allele"]),
+                        _["allele"]="?", _["src_allele"]="?"),
            "Create a CNA amplification");
 
 //' @name Deletion
@@ -252,15 +263,15 @@ RCPP_MODULE(Mutations){
 //' @param chromosome The name of the chromosome in which the CNA occurs.
 //' @param pos_in_chr The position in the chromosome where the CNA occurs.
 //' @param len The CNA length.
-//' @param allele The allele in which the deletion occurs.
+//' @param allele The allele in which the deletion occurs. (optional)
 //' @examples
 //' # create a deletion CNA
-//' cna <- Deletion("Y", 40020, 200, 0)
+//' cna <- Deletion("Y", 40020, 200)
 //'
 //' cna
-  function("Deletion", &CNA::build_CNA,
+  function("Deletion", &CNA::build_deletion,
            List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]),
+                        _["allele"]="?"),
            "Create a CNA deletion");
 
 //' @name MutationEngine
@@ -370,6 +381,9 @@ RCPP_MODULE(Mutations){
 //'         cell represented by the node itself and produces a
 //'         phylogenetic forest.
 //' @param samples_forest A samples forest.
+//' @param num_of_preneoplatic_mutations The number of pre-neoplastic
+//'         mutations.
+//' @param seed The seed for random number generator. (optional)
 //' @return A phylogenetic forest whose structure corresponds to
 //'         `samples_forest`.
 //' @examples
@@ -398,14 +412,18 @@ RCPP_MODULE(Mutations){
 //' # add the default set of SBS coefficients
 //' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))
 //'
-//' # place the mutations on the samples forest
-//' phylogenetic_forest <- m_engine$place_mutations(samples_forest)
+//' # place the mutations on the samples forest assuming 
+//' # 1000 pre-neoplastic mutations
+//' phylogenetic_forest <- m_engine$place_mutations(samples_forest, 1000)
 //'
 //' phylogenetic_forest
-    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest))(
+    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
+                                                                       const size_t& num_of_preneoplatic_mutations))(
                                                         &MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
-    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest, const int seed))(
+    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
+                                                                       const size_t& num_of_preneoplatic_mutations,
+                                                                       const int seed))(
                                                         &MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
     .method("show", &MutationEngine::show);

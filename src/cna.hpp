@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,9 +79,26 @@ public:
     void show() const;
 
     static
-    CNA build_CNA(const SEXP chr, const SEXP pos_in_chr,
+    CNA build_CNA(const std::string type,
+                  const SEXP chr, const SEXP pos_in_chr,
                   const SEXP length, const SEXP allele,
                   const SEXP src_allele);
+
+    static
+    inline CNA
+    build_amplification(const SEXP chr, const SEXP pos_in_chr,
+                        const SEXP length, const SEXP allele,
+                        const SEXP src_allele)
+    {
+        return build_CNA("A", chr, pos_in_chr, length, allele, src_allele);
+    }
+    static
+    inline CNA
+    build_deletion(const SEXP chr, const SEXP pos_in_chr,
+                   const SEXP length, const SEXP allele)
+    {
+        return build_CNA("D", chr, pos_in_chr, length, allele, allele);
+    }
 };
 
 

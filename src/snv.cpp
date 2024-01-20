@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,8 @@
 
 SNV::SNV(const Races::Mutations::ChromosomeId& chromosome_id,
          const Races::Mutations::ChrPosition& chromosomic_position,
-         const char* context, const char& mutated_base, const std::string& cause):
+         const Races::Mutations::MutationalContext& context,
+         const char& mutated_base, const std::string& cause):
     Races::Mutations::SNV(chromosome_id, chromosomic_position, context,
                           mutated_base, cause)
 {}
@@ -55,8 +56,8 @@ void SNV::show() const
 }
 
 SNV SNV::build_SNV(const SEXP chromosome_name,
-                   const SEXP position_in_chromosome,
-                   const SEXP context, const SEXP mutated_base,
+                   const SEXP position_in_chromosome, 
+                   const SEXP mutated_base, const SEXP context, 
                    const SEXP cause)
 {
     using namespace Rcpp;
@@ -70,9 +71,16 @@ SNV SNV::build_SNV(const SEXP chromosome_name,
         throw std::domain_error("Position in chromosome must be a "
                                 "non-negative number");
     }
+
+    Races::Mutations::MutationalContext m_context;
+
     auto context_str = Rcpp::as<std::string>(context);
     if (context_str.size() != 3) {
         throw std::domain_error("Contexts are triplets of nucleotides.");
+    }
+
+    if (context_str != "???") {
+        m_context = context_str;
     }
 
     auto mutated_base_str = Rcpp::as<std::string>(mutated_base);
@@ -83,5 +91,5 @@ SNV SNV::build_SNV(const SEXP chromosome_name,
 
     auto cause_str = Rcpp::as<std::string>(cause);
     return SNV(chr_id, static_cast<Races::Mutations::ChrPosition>(pos),
-               context_str.c_str(), mutated_base_str[0], cause_str);
+               m_context, mutated_base_str[0], cause_str);
 }
