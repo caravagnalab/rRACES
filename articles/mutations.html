@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -147,11 +147,8 @@ all the data required to build a mutation engine, and build it.</p>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"Test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "context_index_100.cif"                      </span></span>
-<span><span class="co">#&gt; [2] "Homo_sapiens.GRCh38.dna.chromosome.22.fa.gz"</span></span>
-<span><span class="co">#&gt; [3] "parameters.txt"                             </span></span>
-<span><span class="co">#&gt; [4] "reference.fasta"                            </span></span>
-<span><span class="co">#&gt; [5] "SBS.txt"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "context_index_100.cif" "parameters.txt"        "reference.fasta"      </span></span>
+<span><span class="co">#&gt; [4] "SBS.txt"</span></span></code></pre></div>
 <p>The execution of the function may takes some time, but it is meant to
 be performed one for all and, as long as the user does not need to
 change the reference genome or the SBS file, it is no more required. In
@@ -305,8 +302,8 @@ characterized by one driver mutation on chromosome 22, while
 <span><span class="co">#&gt;    "A" SNVs: </span></span>
 <span><span class="co">#&gt;        chr22(10510210)(A[T&gt;C]T)</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
-<span><span class="co">#&gt;        CNA('D',GenomicRegion(chr: 22, begin: 5010000, length: 200000),"random allele")</span></span>
-<span><span class="co">#&gt;        CNA('A',GenomicRegion(chr: 22, begin: 10303470, length: 200000),"random allele","random allele")</span></span>
+<span><span class="co">#&gt;        CNA("D",GenomicRegion(chr: 22, begin: 5010000, length: 200000))</span></span>
+<span><span class="co">#&gt;        CNA("A",GenomicRegion(chr: 22, begin: 10303470, length: 200000))</span></span>
 <span><span class="co">#&gt;    "B" SNVs: </span></span>
 <span><span class="co">#&gt;        chr22(12028576)(T[A&gt;G]T)</span></span>
 <span><span class="co">#&gt;        chr22(12029660)(T[T&gt;A]G)</span></span>
@@ -352,8 +349,8 @@ specified time up to the next exposure change.</p>
 <span><span class="co">#&gt;    "A" SNVs: </span></span>
 <span><span class="co">#&gt;        chr22(10510210)(A[T&gt;C]T)</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
-<span><span class="co">#&gt;        CNA('D',GenomicRegion(chr: 22, begin: 5010000, length: 200000),"random allele")</span></span>
-<span><span class="co">#&gt;        CNA('A',GenomicRegion(chr: 22, begin: 10303470, length: 200000),"random allele","random allele")</span></span>
+<span><span class="co">#&gt;        CNA("D",GenomicRegion(chr: 22, begin: 5010000, length: 200000))</span></span>
+<span><span class="co">#&gt;        CNA("A",GenomicRegion(chr: 22, begin: 10303470, length: 200000))</span></span>
 <span><span class="co">#&gt;    "B" SNVs: </span></span>
 <span><span class="co">#&gt;        chr22(12028576)(T[A&gt;G]T)</span></span>
 <span><span class="co">#&gt;        chr22(12029660)(T[T&gt;A]G)</span></span>
