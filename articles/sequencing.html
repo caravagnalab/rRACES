@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,12 +108,12 @@ observed data.</p>
 <span><span class="va">phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
 <span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 4875</span></span>
+<span><span class="co">#&gt;   # of nodes: 4773</span></span>
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 61716</span></span>
-<span><span class="co">#&gt;   # of emerged CNAs: 0</span></span></code></pre></div>
+<span><span class="co">#&gt;   # of emerged SNVs: 67937</span></span>
+<span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The loaded phylogenetic forest models the cell evolution of 4
 different samples: <code>S_1_1</code>, <code>S_1_2</code>,
 <code>S_2_1</code>, and <code>S_2_2</code>.</p>
@@ -136,26 +136,26 @@ by as it follows.</p>
 <span></span>
 <span><span class="va">seq_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
 <span><span class="co">#&gt;   chromosome  chr_pos context mutated_base S_1_1.occurrences S_1_1.coverage</span></span>
-<span><span class="co">#&gt; 1         22 10510210     ATT            C                 1              3</span></span>
-<span><span class="co">#&gt; 2         22 10521375     TGT            C                 0              2</span></span>
-<span><span class="co">#&gt; 3         22 10548226     GGG            C                 0              3</span></span>
-<span><span class="co">#&gt; 4         22 10557508     TCA            A                 0              6</span></span>
-<span><span class="co">#&gt; 5         22 10560831     ATG            G                 0              2</span></span>
-<span><span class="co">#&gt; 6         22 10605570     GCT            T                 0              5</span></span>
+<span><span class="co">#&gt; 1         22 10510210     ATT            C                 2              3</span></span>
+<span><span class="co">#&gt; 2         22 10512747     AGT            A                 0              4</span></span>
+<span><span class="co">#&gt; 3         22 10546164     ATA            C                 0              3</span></span>
+<span><span class="co">#&gt; 4         22 10556479     TGT            C                 0              2</span></span>
+<span><span class="co">#&gt; 5         22 10559722     AGA            A                 0              3</span></span>
+<span><span class="co">#&gt; 6         22 10561702     AAG            T                 0              2</span></span>
 <span><span class="co">#&gt;   S_1_1.VAF S_1_2.occurrences S_1_2.coverage S_1_2.VAF S_2_1.occurrences</span></span>
-<span><span class="co">#&gt; 1 0.3333333                 1              1         1                 1</span></span>
-<span><span class="co">#&gt; 2 0.0000000                 0              1         0                 3</span></span>
+<span><span class="co">#&gt; 1 0.6666667                 0              0       NaN                 3</span></span>
+<span><span class="co">#&gt; 2 0.0000000                 0              3         0                 1</span></span>
 <span><span class="co">#&gt; 3 0.0000000                 0              3         0                 1</span></span>
-<span><span class="co">#&gt; 4 0.0000000                 0              2         0                 1</span></span>
+<span><span class="co">#&gt; 4 0.0000000                 0              4         0                 0</span></span>
 <span><span class="co">#&gt; 5 0.0000000                 0              1         0                 1</span></span>
-<span><span class="co">#&gt; 6 0.0000000                 0              0       NaN                 1</span></span>
+<span><span class="co">#&gt; 6 0.0000000                 0              2         0                 1</span></span>
 <span><span class="co">#&gt;   S_2_1.coverage S_2_1.VAF S_2_2.occurrences S_2_2.coverage S_2_2.VAF</span></span>
-<span><span class="co">#&gt; 1              2 0.5000000                 1              2       0.5</span></span>
-<span><span class="co">#&gt; 2              3 1.0000000                 0              1       0.0</span></span>
-<span><span class="co">#&gt; 3              7 0.1428571                 0              1       0.0</span></span>
-<span><span class="co">#&gt; 4              2 0.5000000                 0              3       0.0</span></span>
-<span><span class="co">#&gt; 5              2 0.5000000                 0              2       0.0</span></span>
-<span><span class="co">#&gt; 6              4 0.2500000                 0              6       0.0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1              5      0.60                 1              1 1.0000000</span></span>
+<span><span class="co">#&gt; 2              4      0.25                 0              1 0.0000000</span></span>
+<span><span class="co">#&gt; 3              1      1.00                 0              1 0.0000000</span></span>
+<span><span class="co">#&gt; 4              2      0.00                 1              3 0.3333333</span></span>
+<span><span class="co">#&gt; 5              4      0.25                 0              7 0.0000000</span></span>
+<span><span class="co">#&gt; 6              5      0.20                 0              0       NaN</span></span></code></pre></div>
 <p>The function <code>simulate_seq</code> returns a data frame whose
 rows represent the mutations observed in the simulated reads (currently,
 only SNVs are supported).</p>
@@ -190,47 +190,47 @@ reports the data for the splitted samples.</p>
 <span></span>
 <span><span class="va">seq_results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
 <span><span class="co">#&gt;   chromosome  chr_pos context mutated_base S_1_1_N.occurrences S_1_1_N.coverage</span></span>
-<span><span class="co">#&gt; 1         22 10510210     ATT            C                   2                3</span></span>
-<span><span class="co">#&gt; 2         22 10521045     CAA            T                   0                7</span></span>
-<span><span class="co">#&gt; 3         22 10521375     TGT            C                   0                2</span></span>
-<span><span class="co">#&gt; 4         22 10538689     TCA            T                   0                2</span></span>
-<span><span class="co">#&gt; 5         22 10552226     CTC            A                   0                2</span></span>
-<span><span class="co">#&gt; 6         22 10557508     TCA            A                   0                6</span></span>
+<span><span class="co">#&gt; 1         22 10510210     ATT            C                   1                3</span></span>
+<span><span class="co">#&gt; 2         22 10523839     AAA            G                   0                4</span></span>
+<span><span class="co">#&gt; 3         22 10539459     TGA            C                   0                4</span></span>
+<span><span class="co">#&gt; 4         22 10539572     AGA            C                   0                3</span></span>
+<span><span class="co">#&gt; 5         22 10542531     GAG            C                   0                0</span></span>
+<span><span class="co">#&gt; 6         22 10548947     ATT            C                   0                4</span></span>
 <span><span class="co">#&gt;   S_1_1_N.VAF S_1_1_P.occurrences S_1_1_P.coverage S_1_1_P.VAF</span></span>
-<span><span class="co">#&gt; 1   0.6666667                   0                1           0</span></span>
-<span><span class="co">#&gt; 2   0.0000000                   0                3           0</span></span>
-<span><span class="co">#&gt; 3   0.0000000                   0                1           0</span></span>
-<span><span class="co">#&gt; 4   0.0000000                   0                4           0</span></span>
-<span><span class="co">#&gt; 5   0.0000000                   0                2           0</span></span>
-<span><span class="co">#&gt; 6   0.0000000                   0                2           0</span></span>
+<span><span class="co">#&gt; 1   0.3333333                   0                1         0.0</span></span>
+<span><span class="co">#&gt; 2   0.0000000                   0                1         0.0</span></span>
+<span><span class="co">#&gt; 3   0.0000000                   0                4         0.0</span></span>
+<span><span class="co">#&gt; 4   0.0000000                   0                2         0.0</span></span>
+<span><span class="co">#&gt; 5         NaN                   1                5         0.2</span></span>
+<span><span class="co">#&gt; 6   0.0000000                   0                1         0.0</span></span>
 <span><span class="co">#&gt;   S_1_2_N.occurrences S_1_2_N.coverage S_1_2_N.VAF S_1_2_P.occurrences</span></span>
-<span><span class="co">#&gt; 1                   1                2         0.5                   1</span></span>
-<span><span class="co">#&gt; 2                   0                4         0.0                   0</span></span>
-<span><span class="co">#&gt; 3                   0                3         0.0                   0</span></span>
-<span><span class="co">#&gt; 4                   0                3         0.0                   0</span></span>
-<span><span class="co">#&gt; 5                   0                1         0.0                   0</span></span>
-<span><span class="co">#&gt; 6                   0                2         0.0                   0</span></span>
+<span><span class="co">#&gt; 1                   2                2           1                   0</span></span>
+<span><span class="co">#&gt; 2                   0                2           0                   0</span></span>
+<span><span class="co">#&gt; 3                   0                0         NaN                   0</span></span>
+<span><span class="co">#&gt; 4                   0                5           0                   0</span></span>
+<span><span class="co">#&gt; 5                   0                1           0                   0</span></span>
+<span><span class="co">#&gt; 6                   0                6           0                   0</span></span>
 <span><span class="co">#&gt;   S_1_2_P.coverage S_1_2_P.VAF S_2_1_N.occurrences S_2_1_N.coverage S_2_1_N.VAF</span></span>
-<span><span class="co">#&gt; 1                2         0.5                   1                2         0.5</span></span>
-<span><span class="co">#&gt; 2                2         0.0                   0                4         0.0</span></span>
-<span><span class="co">#&gt; 3                1         0.0                   0                0         NaN</span></span>
-<span><span class="co">#&gt; 4                2         0.0                   0                5         0.0</span></span>
-<span><span class="co">#&gt; 5                2         0.0                   0                2         0.0</span></span>
-<span><span class="co">#&gt; 6                3         0.0                   0                2         0.0</span></span>
+<span><span class="co">#&gt; 1                0         NaN                   1                2         0.5</span></span>
+<span><span class="co">#&gt; 2                3           0                   1                2         0.5</span></span>
+<span><span class="co">#&gt; 3                2           0                   0                3         0.0</span></span>
+<span><span class="co">#&gt; 4                1           0                   0                3         0.0</span></span>
+<span><span class="co">#&gt; 5                3           0                   0                1         0.0</span></span>
+<span><span class="co">#&gt; 6                0         NaN                   0                3         0.0</span></span>
 <span><span class="co">#&gt;   S_2_1_P.occurrences S_2_1_P.coverage S_2_1_P.VAF S_2_2_N.occurrences</span></span>
-<span><span class="co">#&gt; 1                   0                4   0.0000000                   0</span></span>
-<span><span class="co">#&gt; 2                   1                3   0.3333333                   0</span></span>
-<span><span class="co">#&gt; 3                   1                3   0.3333333                   0</span></span>
-<span><span class="co">#&gt; 4                   2                3   0.6666667                   0</span></span>
-<span><span class="co">#&gt; 5                   1                4   0.2500000                   0</span></span>
-<span><span class="co">#&gt; 6                   1                2   0.5000000                   0</span></span>
+<span><span class="co">#&gt; 1                   2                4   0.5000000                   0</span></span>
+<span><span class="co">#&gt; 2                   1                5   0.2000000                   0</span></span>
+<span><span class="co">#&gt; 3                   1                6   0.1666667                   0</span></span>
+<span><span class="co">#&gt; 4                   0                4   0.0000000                   1</span></span>
+<span><span class="co">#&gt; 5                   0                4   0.0000000                   0</span></span>
+<span><span class="co">#&gt; 6                   1                8   0.1250000                   0</span></span>
 <span><span class="co">#&gt;   S_2_2_N.coverage S_2_2_N.VAF S_2_2_P.occurrences S_2_2_P.coverage S_2_2_P.VAF</span></span>
-<span><span class="co">#&gt; 1                2           0                   0                2           0</span></span>
-<span><span class="co">#&gt; 2                3           0                   0                4           0</span></span>
-<span><span class="co">#&gt; 3                2           0                   0                3           0</span></span>
-<span><span class="co">#&gt; 4                2           0                   0                1           0</span></span>
-<span><span class="co">#&gt; 5                1           0                   0                1           0</span></span>
-<span><span class="co">#&gt; 6                1           0                   0                0         NaN</span></span></code></pre></div>
+<span><span class="co">#&gt; 1                0         NaN                   2                5         0.4</span></span>
+<span><span class="co">#&gt; 2                3   0.0000000                   0                2         0.0</span></span>
+<span><span class="co">#&gt; 3                3   0.0000000                   0                7         0.0</span></span>
+<span><span class="co">#&gt; 4                3   0.3333333                   0                6         0.0</span></span>
+<span><span class="co">#&gt; 5                3   0.0000000                   0                4         0.0</span></span>
+<span><span class="co">#&gt; 6                1   0.0000000                   0                5         0.0</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="saving-the-simulated-reads">Saving the Simulated Reads<a class="anchor" aria-label="anchor" href="#saving-the-simulated-reads"></a>
