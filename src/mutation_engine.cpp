@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <sstream>
 
 #include <Rcpp.h>
 
@@ -497,37 +498,56 @@ get_epistate_passenger_rates(const Rcpp::List& list)
   };
 
 
-void retrieve_missing_contexts(const std::filesystem::path& fasta_filename, std::list<Races::Mutations::SNV>& SNVs)
+void check_SNVs_and_retrieve_missing_contexts(const std::filesystem::path& fasta_filename, std::list<Races::Mutations::SNV>& SNVs)
 {
   using SNV_iterator = std::list<std::list<Races::Mutations::SNV>::iterator>;
 
-  std::map<Races::Mutations::ChromosomeId, SNV_iterator> missing_context_SNVs;
+  std::map<Races::Mutations::ChromosomeId, SNV_iterator> SNV_partition;
 
-  size_t missing{0};
   for (auto it=SNVs.begin(); it != SNVs.end(); ++it) {
-    if (!it->context.is_defined()) {
-      missing_context_SNVs[it->chr_id].push_back(it);
-      ++missing;
-    }
-  }
-
-  if (missing == 0) {
-    return;
+    SNV_partition[it->chr_id].push_back(it);
   }
 
   Races::IO::FASTA::Sequence chr_seq;
 
   FilterNonChromosomeSequence filter;
 
+  size_t SNV_to_check{SNVs.size()};
   std::ifstream fasta_stream(fasta_filename);
   while (Races::IO::FASTA::Sequence::read(fasta_stream, chr_seq, filter)) {
     auto chr_id = filter.last_chr_id;
-    if (missing_context_SNVs.count(chr_id)>0) {
-      for (auto& SNV_it : missing_context_SNVs[chr_id]) {
-        SNV_it->context = chr_seq.nucleotides.substr(SNV_it->position-2, 3);
-        --missing;
+
+    auto found = SNV_partition.find(chr_id);
+    if (found != SNV_partition.end()) {
+      for (auto& SNV_it : found->second) {
+        if (SNV_it->position >= chr_seq.nucleotides.size()) {
+          std::ostringstream oss;
+
+          oss << "The SNV context of " << *SNV_it
+              << " does not lay into the chromosome." << std::endl;
+          throw std::out_of_range(oss.str());
+        }
+
+        auto candidate_context = chr_seq.nucleotides.substr(SNV_it->position-2, 3);
+        if (!SNV_it->context.is_defined()) {
+          if (candidate_context.find('N') == std::string::npos) {
+            SNV_it->context = candidate_context;
+          }
+        } else {
+          if (SNV_it->context.get_sequence() != candidate_context) {
+            std::ostringstream oss;
+
+            oss << "Reference contains sequence \""
+                << candidate_context << "\" instead of \"" 
+                << SNV_it->context.get_sequence()
+                << "\" as context for " 
+                << *SNV_it << "." << std::endl;
+            throw std::out_of_range(oss.str());
+          }
+        }
+        --SNV_to_check;
       }
-      if (missing == 0) {
+      if (SNV_to_check == 0) {
         return;
       }
     }
@@ -542,7 +562,7 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
   auto c_snvs = get_ancestor_list<Races::Mutations::SNV, SNV>(driver_SNVs);
   auto c_cnas = get_ancestor_list<Races::Mutations::CopyNumberAlteration, CNA>(driver_CNAs);
 
-  retrieve_missing_contexts(reference_path, c_snvs);
+  check_SNVs_and_retrieve_missing_contexts(reference_path, c_snvs);
 
   if (contains_passenger_rates(epistate_passenger_rates)) {
     auto p_rates = get_passenger_rates(epistate_passenger_rates);
