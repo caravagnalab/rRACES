@@ -132,6 +132,70 @@ RCPP_MODULE(Mutations){
            "Create a single nucleotide variation (SNV)");
 
 //' @name CNA
+//' @title Create a CNA amplification.
+//' @param type The CNA type: either "A" or "D" for amplification and 
+//'            deletion, respectively.
+//' @param chromosome The name of the chromosome in which the CNA occurs.
+//' @param pos_in_chr The position in the chromosome where the CNA occurs.
+//' @param len The CNA length.
+//' @param allele The allele in which the CNA occurs. (optional)
+//' @param src_allele The allele from which the region is amplified. (optional, 
+//'             for amplification only)
+//' @seealso `Amplification` to build an amplification; `Deletion` to build a 
+//'          deletion.
+//' @examples
+//' # create an amplification
+//' cna <- CNA("A", "X", 20002, 100)
+//'
+//' cna
+//'
+//' # create a deletion from the allele 0
+//' cna <- CNA("D", "Y", 101310, 205, allele=0)
+//' 
+//' cna
+  function("CNA", &CNA::build_CNA,
+           List::create(_["type"], _["chromosome"], _["pos_in_chr"], _["len"],
+                        _["allele"]=false, _["src_allele"]=false),
+           "Create a copy number alteration (CNA)");
+
+//' @name Amplification
+//' @title Create a CNA amplification.
+//' @param chromosome The name of the chromosome in which the CNA occurs.
+//' @param pos_in_chr The position in the chromosome where the CNA occurs.
+//' @param len The CNA length.
+//' @param allele The allele in which the amplification is placed. (optional)
+//' @param src_allele The allele from which the region is amplified. (optional)
+//' @seealso `Deletion` to build a deletion; `CNA` to build both amplifications 
+//'        and deletions.
+//' @examples
+//' # create an amplification CNA
+//' cna <- Amplification("X", 20002, 100)
+//'
+//' cna
+  function("Amplification", &CNA::build_amplification,
+           List::create(_["chromosome"], _["pos_in_chr"], _["len"],
+                        _["allele"]=false, _["src_allele"]=false),
+           "Create a CNA amplification");
+
+//' @name Deletion
+//' @title Create a CNA deletion.
+//' @param chromosome The name of the chromosome in which the CNA occurs.
+//' @param pos_in_chr The position in the chromosome where the CNA occurs.
+//' @param len The CNA length.
+//' @param allele The allele in which the deletion occurs. (optional)
+//' @seealso `Amplification` to build an amplification; `CNA` to build 
+//'         both amplifications and deletions.
+//' @examples
+//' # create a deletion CNA
+//' cna <- Deletion("Y", 40020, 200)
+//'
+//' cna
+  function("Deletion", &CNA::build_deletion,
+           List::create(_["chromosome"], _["pos_in_chr"], _["len"],
+                        _["allele"]=false),
+           "Create a CNA deletion");
+
+//' @name CNA
 //' @title A copy number alteration
   class_<CNA>("CNA")
     .constructor()
@@ -141,7 +205,7 @@ RCPP_MODULE(Mutations){
 //' @return The chromosome in which the CNA occurs.
 //' @examples
 //' # create an amplification CNA
-//' cna <- Amplification("X", 20002, 100, 1, 0)
+//' cna <- CNA("A", "X", 20002, 100)
 //'
 //' # get the chromosome in which `cna` occurs (i.e., "X")
 //' cna$get_chromosome()
@@ -164,7 +228,7 @@ RCPP_MODULE(Mutations){
 //' @return The CNA length.
 //' @examples
 //' # create an amplification CNA
-//' cna <- Amplification("X", 20002, 100, 1, 0)
+//' cna <- CNA("A", "X", 20002, 100)
 //'
 //' # get the length of `cna` (i.e., 100)
 //' cna$get_length()
@@ -205,7 +269,7 @@ RCPP_MODULE(Mutations){
 //'        `src_allele`, and `type`.
 //' @examples
 //' # create an amplification CNA
-//' amp_cna <- Amplification("X", 20002, 100, 1, 0)
+//' amp_cna <- Amplification("X", 20002, 100)
 //'
 //' amp_cna$get_dataframe()
 //'
@@ -215,64 +279,6 @@ RCPP_MODULE(Mutations){
 //' del_cna$get_dataframe()
     .method("get_dataframe",&CNA::get_dataframe, "Get a dataframe representing the CNA")
     .method("show",&CNA::show);
-
-//' @name CNA
-//' @title Create a CNA amplification.
-//' @param type The CNA type: either "A" or "D" for amplification and 
-//'            deletion, respectively.
-//' @param chromosome The name of the chromosome in which the CNA occurs.
-//' @param pos_in_chr The position in the chromosome where the CNA occurs.
-//' @param len The CNA length.
-//' @param allele The allele in which the CNA occurs. (optional)
-//' @param src_allele The allele from which the region is amplified. (optional, 
-//'             for amplification only)
-//' @examples
-//' # create an amplification
-//' cna <- CNA("A", "X", 20002, 100)
-//'
-//' cna
-//'
-//' # create a deletion from the allele 0
-//' cna <- CNA("D", "Y", 101310, 205, allele=0)
-//' 
-//' cna
-  function("CNA", &CNA::build_CNA,
-           List::create(_["type"], _["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]=false, _["src_allele"]=false),
-           "Create a copy number alteration (CNA)");
-
-//' @name Amplification
-//' @title Create a CNA amplification.
-//' @param chromosome The name of the chromosome in which the CNA occurs.
-//' @param pos_in_chr The position in the chromosome where the CNA occurs.
-//' @param len The CNA length.
-//' @param allele The allele in which the amplification is placed. (optional)
-//' @param src_allele The allele from which the region is amplified. (optional)
-//' @examples
-//' # create an amplification CNA
-//' cna <- Amplification("X", 20002, 100)
-//'
-//' cna
-  function("Amplification", &CNA::build_amplification,
-           List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]=false, _["src_allele"]=false),
-           "Create a CNA amplification");
-
-//' @name Deletion
-//' @title Create a CNA deletion.
-//' @param chromosome The name of the chromosome in which the CNA occurs.
-//' @param pos_in_chr The position in the chromosome where the CNA occurs.
-//' @param len The CNA length.
-//' @param allele The allele in which the deletion occurs. (optional)
-//' @examples
-//' # create a deletion CNA
-//' cna <- Deletion("Y", 40020, 200)
-//'
-//' cna
-  function("Deletion", &CNA::build_deletion,
-           List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]=false),
-           "Create a CNA deletion");
 
 //' @name MutationEngine
 //' @title Mutation engines generate phylogenetic forests
@@ -320,7 +326,7 @@ RCPP_MODULE(Mutations){
 //'        distribution over a set of SBS signature.
 //' @examples
 //' # create a demostrative mutation engine
-//' m_engine <- build_mutation_engine("demo")
+//' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
 //' # add a default set of SBS coefficients that will be used from simulated
 //' # time 0 up to the successive SBS coefficient change.
@@ -350,21 +356,25 @@ RCPP_MODULE(Mutations){
 //' @param driver_CNAs The list of the driver CNAs characterizing the mutant.
 //' @examples
 //' # create a demostrative mutation engine
-//' m_engine <- build_mutation_engine("demo")
+//' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # add the mutant "A" having two driver SNVs on chromosome 22 (no CNA) and
-//' # having two epigenetic states. Its species "A+" and "A-" have passenger 
-//' # SNV rates 1e-9 and 3e-8, respectively, and passenger CNA rates 0 and
-//' # 1e-11, respectively.
+//' # add the mutant "A" characterized by one driver SNV on chromosome 22 and
+//' # two CNAs: an amplification and a deletion. The mutant has two epigenetic
+//' # states and its species "A+" and "A-" have passenger SNV rates 1e-9 and
+//' # 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.
 //' m_engine$add_mutant("A", list("+" = c(SNV = 1e-9),
 //'                               "-" = c(SNV = 3e-8, CNA = 1e-11)),
-//'                     c(SNV("22", 2001, "GAC", "T"),
-//'                       SNV("22", 2020, "CCC", "A")))
+//'                     driver_SNVs = c(SNV("22", 10510210, "C")),
+//'                     driver_CNAs = c(CNA(type = "A", "22", pos_in_chr = 10303470,
+//'                                         len = 200000),
+//'                                     CNA("D", "22", 5010000, 200000)))
 //'
 //' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no CNA)
 //' # and missing epigenetic state. Its species "B" has passenger SNV rate 5e-9
 //' # and passenger CNA rate 0.
-//' m_engine$add_mutant("B", c(SNV = 5e-9), c(SNV("1", 30, "AGC", "T")))
+//' m_engine$add_mutant("B", c(SNV = 5e-9), c(SNV("1", 10510210, "C")))
+//'
+//' m_engine
     .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates,
                                                     const Rcpp::List&))(
                                                         &MutationEngine::add_mutant),                                            
@@ -407,7 +417,7 @@ RCPP_MODULE(Mutations){
 //'
 //' # add the mutant "A" to the engine
 //' m_engine$add_mutant("A", c(SNV = 3e-9),
-//'                     c(SNV("22", 2001, "GAC", "T")))
+//'                     c(SNV("22", 12028576, "G")))
 //'
 //' # add the default set of SBS coefficients
 //' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))

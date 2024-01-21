@@ -56,18 +56,7 @@ public:
         return std::string(1,mutated_base);
     }
 
-    inline SEXP get_cause() const
-    {
-        if (cause!="") {
-            Rcpp::CharacterVector cause_v(1);
-
-            cause_v[0]=cause;
-
-            return cause_v;
-        }
-
-        return NA_STRING;
-    }
+    SEXP get_cause() const;
 
     Rcpp::List get_dataframe() const;
 

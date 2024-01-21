@@ -28,6 +28,19 @@ SNV::SNV(const Races::Mutations::ChromosomeId& chromosome_id,
 SNV::SNV()
 {}
 
+SEXP SNV::get_cause() const
+{
+    Rcpp::StringVector cause_v(1);
+
+    if (cause=="") {
+        cause_v[0] = NA_STRING;
+    } else {
+        cause_v[0] = cause;
+    }
+
+    return cause_v;
+}
+
 Rcpp::List SNV::get_dataframe() const
 {
     using namespace Rcpp;

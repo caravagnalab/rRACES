@@ -25,5 +25,7 @@ export(MutationEngine)
 export(PhylogeneticForest)
 export(SNV)
 export(CNA)
+export(Amplification)
+export(Deletion)
 
 export(simulate_seq)
