@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -271,9 +271,9 @@ these declarations.</p>
 characterized by one driver mutation on chromosome 22, while
 <code>B</code> has two driver mutations on the same chromosome.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># add the mutant "A" characterized by one driver SNV on chromosome 22 and </span></span>
-<span><span class="co"># two CNAs: an amplification and a deletion. The mutant has two epigenetic </span></span>
-<span><span class="co"># states and its species "A+" and "A-" have passenger SNV rates 1e-9 and </span></span>
+<code class="sourceCode R"><span><span class="co"># add the mutant "A" characterized by one driver SNV on chromosome 22 and</span></span>
+<span><span class="co"># two CNAs: an amplification and a deletion. The mutant has two epigenetic</span></span>
+<span><span class="co"># states and its species "A+" and "A-" have passenger SNV rates 1e-9 and</span></span>
 <span><span class="co"># 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.</span></span>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>mutant_name <span class="op">=</span> <span class="st">"A"</span>,</span>
 <span>                    passenger_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">1e-9</span><span class="op">)</span>,</span>
