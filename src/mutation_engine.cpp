@@ -487,21 +487,46 @@ get_epistate_passenger_rates(const Rcpp::List& list)
   return ep_rates;
 }
 
-  struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
-  {
-      Races::Mutations::ChromosomeId last_chr_id;
+struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
+{
+    Races::Mutations::ChromosomeId last_chr_id;
 
-      inline bool operator()(const std::string& header)
-      {
-          return !Races::IO::FASTA::is_chromosome_header(header, last_chr_id);
-      } 
-  };
+    inline bool operator()(const std::string& header)
+    {
+        return !Races::IO::FASTA::is_chromosome_header(header, last_chr_id);
+    } 
+};
 
+using SNV_iterator = std::list<std::list<Races::Mutations::SNV>::iterator>;
+
+void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SNV_iterator>& SNV_partition)
+{
+  if (SNV_partition.size()>0) {
+    std::ostringstream oss;
+
+    std::string sep="";
+    size_t counter{0};
+    for (const auto& [chr, SNV_class] : SNV_partition) {
+      for (auto& SNV_it : SNV_class) {
+        oss << sep << *SNV_it;
+
+        if (sep.size()==0) {
+          sep = ", ";
+        }
+        ++counter;
+      }
+    }
+
+    throw std::runtime_error((counter>1?"SNVs ":"SNV ")
+                            + oss.str()
+                            + (counter>1?" belong":" belongs")
+                            + (SNV_partition.size()>1?" to unknown chromosomes":
+                                                      " to an unknown chromosome"));
+  }
+}
 
 void check_SNVs_and_retrieve_missing_contexts(const std::filesystem::path& fasta_filename, std::list<Races::Mutations::SNV>& SNVs)
 {
-  using SNV_iterator = std::list<std::list<Races::Mutations::SNV>::iterator>;
-
   std::map<Races::Mutations::ChromosomeId, SNV_iterator> SNV_partition;
 
   for (auto it=SNVs.begin(); it != SNVs.end(); ++it) {
@@ -550,8 +575,12 @@ void check_SNVs_and_retrieve_missing_contexts(const std::filesystem::path& fasta
       if (SNV_to_check == 0) {
         return;
       }
+
+      SNV_partition.erase(found);
     }
   }
+
+  check_wrong_chromosome_SNV(SNV_partition);
 }
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
