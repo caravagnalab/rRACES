@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -271,9 +271,9 @@ these declarations.</p>
 characterized by one driver mutation on chromosome 22, while
 <code>B</code> has two driver mutations on the same chromosome.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># add the mutant "A" characterized by one driver SNV on chromosome 22 and</span></span>
-<span><span class="co"># two CNAs: an amplification and a deletion. The mutant has two epigenetic</span></span>
-<span><span class="co"># states and its species "A+" and "A-" have passenger SNV rates 1e-9 and</span></span>
+<code class="sourceCode R"><span><span class="co"># add the mutant "A" characterized by one driver SNV on chromosome 22 and </span></span>
+<span><span class="co"># two CNAs: an amplification and a deletion. The mutant has two epigenetic </span></span>
+<span><span class="co"># states and its species "A+" and "A-" have passenger SNV rates 1e-9 and </span></span>
 <span><span class="co"># 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.</span></span>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>mutant_name <span class="op">=</span> <span class="st">"A"</span>,</span>
 <span>                    passenger_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">1e-9</span><span class="op">)</span>,</span>
@@ -359,6 +359,29 @@ specified time up to the next exposure change.</p>
 <span><span class="co">#&gt;    [0, 100[: {"SBS1": 0.8, "SBS13": 0.2}</span></span>
 <span><span class="co">#&gt;    [100, ∞[: {"SBS2": 0.2, "SBS3": 0.5, "SBS5": 0.3}</span></span></code></pre></div>
 </div>
+<div class="section level4">
+<h4 id="passenger-cnas-and-tumor-type">Passenger CNAs and Tumor Type<a class="anchor" aria-label="anchor" href="#passenger-cnas-and-tumor-type"></a>
+</h4>
+<p>The passenger CNAs applied during the simulation depend on tumor
+type. The type of tumor can be specified when building the mutation
+engine by using the <code>tumor_type</code> parameter. For instance, the
+passenger CNAs identified in breast carcinoma in the UK can be applied
+during the simulation as it follows.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>,</span>
+<span>                                  tumor_type <span class="op">=</span> <span class="st">"BRCA-UK"</span><span class="op">)</span></span></code></pre></div>
+<p>The function <code><a href="../reference/get_admissible_CNA_tumor_types.html">get_admissible_CNA_tumor_types()</a></code> returns
+the complete list of tumors supported by rRACES.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_admissible_CNA_tumor_types.html">get_admissible_CNA_tumor_types</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "BLCA-US" "BOCA-UK" "BRCA-EU" "BRCA-UK" "BRCA-US" "BTCA-SG" "CESC-US"</span></span>
+<span><span class="co">#&gt;  [8] "CLLE-ES" "CMDI-UK" "COAD-US" "DLBC-US" "EOPC-DE" "ESAD-UK" "GACA-CN"</span></span>
+<span><span class="co">#&gt; [15] "GBM-US"  "HNSC-US" "KICH-US" "KIRC-US" "KIRP-US" "LAML-KR" "LGG-US" </span></span>
+<span><span class="co">#&gt; [22] "LICA-FR" "LIHC-US" "LINC-JP" "LIRI-JP" "LUAD-US" "LUSC-US" "MALY-DE"</span></span>
+<span><span class="co">#&gt; [29] "MELA-AU" "ORCA-IN" "OV-AU"   "OV-US"   "PACA-AU" "PACA-CA" "PAEN-AU"</span></span>
+<span><span class="co">#&gt; [36] "PAEN-IT" "PBCA-DE" "PRAD-CA" "PRAD-UK" "PRAD-US" "READ-US" "RECA-EU"</span></span>
+<span><span class="co">#&gt; [43] "SARC-US" "SKCM-US" "STAD-US" "THCA-US" "UCEC-US"</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="building-phylogenetic-forests">Building Phylogenetic Forests<a class="anchor" aria-label="anchor" href="#building-phylogenetic-forests"></a>
@@ -369,7 +392,7 @@ samples forest by mutations.</p>
 simulation peformed in <code><a href="../articles/growth_models.html">vignette("growth_models")</a></code>, we can
 use the samples forest saved in the file
 <code>"samples_forest.sff"</code> in that article.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_samples_forest.html">load_samples_forest</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># place mutations on the sample forest assuming 1000</span></span>
@@ -383,13 +406,14 @@ use the samples forest saved in the file
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 67937</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs: 67663</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The phylogenetic forest stores all the mutations labeling the sampled
 cells which are represented by the forest leaves. Users can retrieve
-such data by using the method
-<code>Phylogenetic$get_sampled_cell_SNVs</code></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+such data by using the methods
+<code>Phylogenetic$get_sampled_cell_SNVs</code> and
+<code>Phylogenetic$get_sampled_cell_CNAs</code>.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
@@ -410,6 +434,17 @@ such data by using the method
 <span><span class="co">#&gt; 4  109584         22 10716405      0     TGC            A Pre-neoplastic</span></span>
 <span><span class="co">#&gt; 5  109584         22 10716802      0     CGC            A Pre-neoplastic</span></span>
 <span><span class="co">#&gt; 6  109584         22 10717082      0     TCG            T Pre-neoplastic</span></span>
+<span></span>
+<span><span class="co"># select the first CNAs among all the mutations occuring in</span></span>
+<span><span class="co"># the genomes of the sampled cells</span></span>
+<span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   cell_id type chromosome    begin      end allele src.allele</span></span>
+<span><span class="co">#&gt; 1  109584    D         22  5010000  5209999      1         NA</span></span>
+<span><span class="co">#&gt; 2  109584    A         22 10303470 10503469      2          0</span></span>
+<span><span class="co">#&gt; 3  109679    D         22  5010000  5209999      1         NA</span></span>
+<span><span class="co">#&gt; 4  109679    A         22 10303470 10503469      2          0</span></span>
+<span><span class="co">#&gt; 5  109691    D         22  5010000  5209999      1         NA</span></span>
+<span><span class="co">#&gt; 6  109691    A         22 10303470 10503469      2          0</span></span>
 <span></span>
 <span><span class="co"># get the sampled cells</span></span>
 <span><span class="va">sampled_cells</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -436,10 +471,16 @@ such data by using the method
 <span><span class="co">#&gt; 3  109691         22 10697434      0     TGC            A Pre-neoplastic</span></span>
 <span><span class="co">#&gt; 4  109691         22 10716405      0     TGC            A Pre-neoplastic</span></span>
 <span><span class="co">#&gt; 5  109691         22 10716802      0     CGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 6  109691         22 10717082      0     TCG            T Pre-neoplastic</span></span></code></pre></div>
+<span><span class="co">#&gt; 6  109691         22 10717082      0     TCG            T Pre-neoplastic</span></span>
+<span></span>
+<span><span class="co"># get the CNAs of the 3rd cell in `sampled_cells`</span></span>
+<span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   cell_id type chromosome    begin      end allele src.allele</span></span>
+<span><span class="co">#&gt; 1  109691    D         22  5010000  5209999      1         NA</span></span>
+<span><span class="co">#&gt; 2  109691    A         22 10303470 10503469      2          0</span></span></code></pre></div>
 <p>Users can also identify the cell in which a mutation emerged even
 when the cell was not sampled.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select one of the mutations</span></span>
 <span><span class="va">mutation_row</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_SNVs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span>
 <span></span>
@@ -460,7 +501,7 @@ when the cell was not sampled.</p>
 <p>As in the case of the samples forests, the phylogenetic forests can
 be saved by using the method <code>PhylogeneticForest$save</code> and
 load by the function <code>load_phylogenetic_forest</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the phylogenetic forest in the file "phylo_forest.sff"</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
 <span></span>
@@ -474,7 +515,7 @@ load by the function <code>load_phylogenetic_forest</code>.</p>
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 67937</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs: 67663</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-alexandrov2020repertoire" class="csl-entry">

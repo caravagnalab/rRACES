@@ -82,6 +82,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_nodes.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_CNAs.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_SNVs.html</loc>
   </url>
   <url>
@@ -260,6 +263,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/build_mutation_engine.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/get_admissible_CNA_tumor_types.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/get_mutation_engine_codes.html</loc>

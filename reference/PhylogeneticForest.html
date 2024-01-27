@@ -24,7 +24,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -118,6 +118,15 @@
              node, (column "sample"), the mutant (column
              "mutant"), the epistate (column "epistate"),
              and the birth time (column "birth_time").</p></li>
+</ul></dd>
+
+
+<dt><code>get_sampled_cell_CNAs</code></dt>
+<dd><p>Gets a the CNAs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting `cell_id`, `type` (`"A"` for 
+         amplifications and `"D"` for deletions), `chromosome`, `begin`
+         (i.e., the first CNA locus in the chromosome), `end` (i.e., the
+         last CNA locus in the chromosome), `allele`, and `src allele` 
+         (the allele origin for amplifications, `NA` for deletions).</p></li>
 </ul></dd>
 
 

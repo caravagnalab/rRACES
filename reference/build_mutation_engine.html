@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,6 +94,13 @@ in provided).</p></dd>
 <dd><p>The number of reference contexts per context in the
 index (optional: default value is 100).</p></dd>
 
+
+<dt>tumor_type</dt>
+<dd><p>The type of tumor. This is currently used to select the
+admissible passenger CNAs. If any passenger CNA in the dataset is
+admissible, use the the empty string `""` (optional: default value is
+"BRCA-EU").</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -137,7 +144,8 @@ index (optional: default value is 100).</p></dd>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>`get_mutation_engine_codes` provides a list of the supported 
-        set-up codes.</p></div>
+        set-up codes.</p>
+<p>`get_available_CNA_tumor_types()` for valid `tumor_type` values</p></div>
     </div>
 
     <div class="section level2">
