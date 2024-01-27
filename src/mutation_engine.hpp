@@ -43,19 +43,24 @@ class MutationEngine
     void init_mutation_engine(const GenomicDataStorage& storage,
                               const size_t& default_num_of_alleles,
                               const std::map<std::string, size_t>& alleles_num_exceptions,
-                              const size_t& context_sampling_rate=100);
+                              const size_t& context_sampling_rate=100,
+                              const std::string& tumor_type="");
 public:
     MutationEngine(const std::string& setup_code,
-                   const size_t& context_sampling_rate=100);
+                   const size_t& context_sampling_rate=100,
+                   const std::string& tumor_type="");
 
     MutationEngine(const std::string& directory,
                    const std::string& reference_url,
                    const std::string& SBS_url,
                    const size_t& default_num_of_alleles,
                    const std::map<std::string, size_t>& exceptions_on_allele_number,
-                   const size_t& context_sampling=100);
+                   const size_t& context_sampling=100,
+                   const std::string& tumor_type="");
 
     static Rcpp::List get_supported_setups();
+
+    static std::list<std::string> get_supported_tumor_types();
 
     void add_exposure(const Rcpp::List& exposure);
 
@@ -91,7 +96,8 @@ public:
                          const size_t& default_num_of_alleles,
                          const Rcpp::List& exceptions_on_allele_number,
                          const std::string& setup_code,
-                         const size_t& context_sampling);
+                         const size_t& context_sampling,
+                         const std::string& tumor_type);
 };
 
 RCPP_EXPOSED_CLASS(MutationEngine)

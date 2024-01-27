@@ -19,6 +19,7 @@ export(annotate_forest)
 export(load_samples_forest)
 
 export(build_mutation_engine)
+export(get_admissible_CNA_tumor_types)
 export(get_mutation_engine_codes)
 export(load_phylogenetic_forest)
 export(MutationEngine)

@@ -490,6 +490,11 @@ RCPP_MODULE(Mutations){
 //'                in provided).
 //' @param context_sampling The number of reference contexts per context in the
 //'     index (optional: default value is 100).
+//' @param tumor_type The type of tumor. This is currently used to select the
+//'     admissible passenger CNAs. If any passenger CNA in the dataset is
+//'     admissible, use the the empty string `""` (optional: default value is
+//'     "BRCA-EU").
+//' @seealso `get_available_CNA_tumor_types()` for valid `tumor_type` values
 //' @return A mutation engine object.
 //' @examples
 //' # set the reference and SBS URLs
@@ -545,8 +550,19 @@ RCPP_MODULE(Mutations){
                         _["default_num_of_alleles"] = 0,
                         _["exceptions_on_allele_number"] = Rcpp::List::create(),
                         _["setup_code"] = "", 
-                        _["context_sampling"] = 100),
+                        _["context_sampling"] = 100, 
+                        _["tumor_type"] = "BRCA-EU"),
            "Create a MutationEngine");
+
+//' @name get_admissible_CNA_tumor_types
+//' @title Get the list of tumor types having admissible CNAs
+//' @details This function the list of tumor types for which 
+//'          a list of admissible passenger CNAs is available.
+//' @examples
+//' # get the list of tumor types for admissible CNA
+//' get_admissible_CNA_tumor_types()
+  function("get_admissible_CNA_tumor_types", &MutationEngine::get_supported_tumor_types,
+           "Get the list of tumor types for which a list of admissible passenger CNAs is available.");
 
 //' @name get_mutation_engine_codes
 //' @title Get the supported codes for predefined set-up
@@ -599,6 +615,13 @@ RCPP_MODULE(Mutations){
 //'              node, (column "sample"), the mutant (column
 //'              "mutant"), the epistate (column "epistate"),
 //'              and the birth time (column "birth_time").
+//' }
+//' @field get_sampled_cell_CNAs Gets a the CNAs of the sampled cells \itemize{
+//' \item \emph{Returns:} A data frame reporting `cell_id`, `type` (`"A"` for 
+//'          amplifications and `"D"` for deletions), `chromosome`, `begin`
+//'          (i.e., the first CNA locus in the chromosome), `end` (i.e., the
+//'          last CNA locus in the chromosome), `allele`, and `src allele` 
+//'          (the allele origin for amplifications, `NA` for deletions).
 //' }
 //' @field get_sampled_cell_SNVs Gets a the SNVs of the sampled cells \itemize{
 //' \item \emph{Returns:} A data frame reporting `cell_id`, `chromosome`, 
@@ -700,6 +723,25 @@ RCPP_MODULE(Mutations){
     .method("get_species_info", &PhylogeneticForest::get_species_info,
             "Get the recorded species")
 
+//' @name PhylogeneticForest$get_sampled_cell_CNAs
+//' @title Gets a the CNAs of the sampled cells
+//' @description This method returns a data frame representing all the CNAs 
+//'          in the cells sampled during the simulation and represented by 
+//'          the leaves of the phylogenetic forest.
+//' @param cell_id The identifier of the cell whose CNAs are aimed (optional).
+//' @return A data frame reporting `cell_id`, `type` (`"A"` for amplifications
+//'          and `"D"` for deletions), `chromosome`, `begin` (i.e., the first
+//'          CNA locus in the chromosome), `end` (i.e., last CNA locus in the
+//'          chromosome), `allele`, and `src allele` (the allele origin for
+//'          amplifications, `NA` for deletions).
+//' @seealso `vignette("mutations")` for usage examples
+    .method("get_sampled_cell_CNAs", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
+                (&PhylogeneticForest::get_sampled_cell_CNAs),
+            "Get the CNAs of a sampled cell")
+    .method("get_sampled_cell_CNAs", (List (PhylogeneticForest::*)() const)
+                (&PhylogeneticForest::get_sampled_cell_CNAs),
+            "Get the CNAs of all the sampled cells")
+
 //' @name PhylogeneticForest$get_sampled_cell_SNVs
 //' @title Gets a the SNVs of the sampled cells
 //' @description This method returns a data frame representing all the SNVs 
@@ -709,9 +751,9 @@ RCPP_MODULE(Mutations){
 //'          support double occurrencies due to CNAs.
 //' @param cell_id The identifier of the cell whose SNVs are aimed (optional).
 //' @return A data frame reporting `cell_id`, `chromosome`, `chr_pos` (i.e., 
-//'          position in the chromosome), `allele` (in which the SNV occurs),
-//'          `context`, `mutated_base`, and `cause` for each SNV in the 
-//'          sampled cell genomes.
+//'          the position in the chromosome), `allele` (in which the SNV
+//'          occurs), `context`, `mutated_base`, and `cause` for each SNV in 
+//'          the sampled cell genomes.
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
                 (&PhylogeneticForest::get_sampled_cell_SNVs),

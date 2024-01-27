@@ -247,6 +247,26 @@ m_engine$add_exposure(time = 100,
 m_engine
 ```
 
+#### Passenger CNAs and Tumor Type
+
+The passenger CNAs applied during the simulation depend on tumor type. 
+The type of tumor can be specified when building the mutation engine 
+by using the `tumor_type` parameter. For instance, the passenger CNAs 
+identified in breast carcinoma in the UK can be applied during the 
+simulation as it follows.
+
+```{r, eval=FALSE}
+m_engine <- build_mutation_engine(setup_code = "demo",
+                                  tumor_type = "BRCA-UK")
+```
+
+The function `get_admissible_CNA_tumor_types()` returns the 
+complete list of tumors supported by rRACES.
+
+```{r}
+get_admissible_CNA_tumor_types()
+```
+
 ### Building Phylogenetic Forests
 
 The configurated mutation engine can be used to label each node in a 
@@ -269,8 +289,9 @@ phylo_forest
 
 The phylogenetic forest stores all the mutations labeling the 
 sampled cells which are represented by the forest leaves.
-Users can retrieve such data by using the method 
-`Phylogenetic$get_sampled_cell_SNVs`
+Users can retrieve such data by using the methods 
+`Phylogenetic$get_sampled_cell_SNVs` and 
+`Phylogenetic$get_sampled_cell_CNAs`.
 
 ```{r}
 library(dplyr)
@@ -278,6 +299,10 @@ library(dplyr)
 # select the first SNVs among all the mutations occuring in
 # the genomes of the sampled cells
 phylo_forest$get_sampled_cell_SNVs() %>% head()
+
+# select the first CNAs among all the mutations occuring in
+# the genomes of the sampled cells
+phylo_forest$get_sampled_cell_CNAs() %>% head()
 
 # get the sampled cells
 sampled_cells <- phylo_forest$get_nodes() %>%
@@ -291,6 +316,9 @@ cell_id <- sampled_cells[3, 1]
 
 # get the SNVs of the 3rd cell in `sampled_cells`
 phylo_forest$get_sampled_cell_SNVs(cell_id) %>% head()
+
+# get the CNAs of the 3rd cell in `sampled_cells`
+phylo_forest$get_sampled_cell_CNAs(cell_id) %>% head()
 ```
 
 Users can also identify the cell in which a mutation emerged 

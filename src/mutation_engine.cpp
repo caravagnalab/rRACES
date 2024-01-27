@@ -23,9 +23,10 @@
 
 
 #include <context_index.hpp>
-#include <progress_bar.hpp>
-
+#include <csv_reader.hpp>
 #include <read_simulator.hpp>
+
+#include <progress_bar.hpp>
 
 #include "mutation_engine.hpp"
 
@@ -223,11 +224,132 @@ load_SBS(const GenomicDataStorage& storage)
   return Races::Mutations::MutationalSignature::read_from_stream(is);
 }
 
+Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRow& row, const size_t& row_num)
+{
+  using namespace Races::Mutations;
+
+  ChromosomeId chr_id;    
+  try {
+    chr_id = GenomicPosition::stochr(row.get_field(0).substr(3));
+  } catch (std::invalid_argument) {
+    throw std::domain_error("Unknown chromosome specification " + row.get_field(1) 
+                            + " in row number " + std::to_string(row_num) 
+                            + ".");
+  }
+
+  uint32_t begin_pos;         
+  try {
+    begin_pos = stoul(row.get_field(1));
+  } catch (std::invalid_argument) {
+    throw std::domain_error("Unknown begin specification " + row.get_field(1) 
+                            + " in row number " + std::to_string(row_num) 
+                            + ".");
+  }
+
+  GenomicPosition pos(chr_id, begin_pos);
+
+  uint32_t end_pos;                
+  try {
+    end_pos = stoul(row.get_field(2));
+  } catch (std::invalid_argument) {
+    throw std::domain_error("Unknown end specification " + row.get_field(2) 
+                            + " in row number " + std::to_string(row_num) 
+                            + ".");
+  }
+
+  if (begin_pos>end_pos) {
+    throw std::domain_error("The CNA begin lays after the end in row number "
+                            + std::to_string(row_num));
+  }
+  
+  return {pos, end_pos+1-begin_pos};
+}
+
+
+std::vector<Races::Mutations::CopyNumberAlteration> load_passenger_CNAs(const std::filesystem::path& CNAs_csv,
+                                                                        const std::string& tumor_type)
+{
+  using namespace Races::Mutations;
+
+  std::vector<CopyNumberAlteration> CNAs;
+
+  Races::IO::CSVReader csv_reader(CNAs_csv);
+
+  size_t row_num{2};
+  for (const auto& row : csv_reader) {
+    if (row.size()<6) {
+      throw std::runtime_error("The CNA CSV must contains at least 6 columns");
+    }
+    if ((tumor_type=="") || (row.get_field(5) == tumor_type)) {
+      const auto region = get_CNA_region(row, row_num);
+
+      const auto major = row.get_field(3);
+      try {
+        if (major=="NA" || (stoi(major)>1)) {
+          CNAs.push_back({region, CopyNumberAlteration::Type::AMPLIFICATION});
+        }
+      } catch (std::invalid_argument) {
+        throw std::domain_error("Unknown major specification " + major 
+                                + " in row number " + std::to_string(row_num) 
+                                + ".");
+      }
+
+      const auto minor = row.get_field(4);
+      try {
+        if (minor=="NA" || (stoi(minor)<1)) {
+          CNAs.push_back({region, CopyNumberAlteration::Type::DELETION});
+        }
+      } catch (std::invalid_argument) {
+        throw std::domain_error("Unknown minor specification " + major 
+                                + " in row number " + std::to_string(row_num) 
+                                + ".");
+      }
+    }
+
+    ++row_num;
+  }
+
+  return CNAs;
+}
+
+std::filesystem::path get_passenger_data_file_path()
+{
+  using namespace Rcpp;
+
+  Function system_file("system.file");
+
+  auto CNA_file = system_file("extdata", "passenger_CNAs.csv", _["package"]="rRACES");
+
+  return as<std::string>(CNA_file);
+}
+
+std::list<std::string> MutationEngine::get_supported_tumor_types()
+{
+  auto CNA_file = get_passenger_data_file_path();
+
+  std::set<std::string> tumor_types;
+
+  Races::IO::CSVReader csv_reader(CNA_file);
+  for (const auto& row : csv_reader) {
+    tumor_types.insert(row.get_field(5));
+  }
+
+  return {tumor_types.begin(),tumor_types.end()};
+}
+
+std::vector<Races::Mutations::CopyNumberAlteration>
+load_passenger_CNAs(const std::string& tumor_type="")
+{
+  auto CNA_file = get_passenger_data_file_path();
+
+  return load_passenger_CNAs(CNA_file, tumor_type);
+}
 
 void MutationEngine::init_mutation_engine(const GenomicDataStorage& storage,
                                           const size_t& default_num_of_alleles,
                                           const std::map<std::string, size_t>& alleles_num_exceptions,
-                                          const size_t& context_sampling_rate)
+                                          const size_t& context_sampling_rate,
+                                          const std::string& tumor_type)
 {
   reference_path = storage.get_reference_path();
 
@@ -237,11 +359,14 @@ void MutationEngine::init_mutation_engine(const GenomicDataStorage& storage,
 
   auto SBS = load_SBS(storage);
 
-  m_engine = Races::Mutations::MutationEngine(context_index, num_of_alleles, SBS);
+  auto passenger_CNAs = load_passenger_CNAs(tumor_type);
+
+  m_engine = Races::Mutations::MutationEngine(context_index, num_of_alleles, SBS, passenger_CNAs);
 }
 
 MutationEngine::MutationEngine(const std::string& setup_name,
-                               const size_t& context_sampling_rate)
+                               const size_t& context_sampling_rate,
+                               const std::string& tumor_type)
 {
   auto storage = setup_storage(setup_name);
 
@@ -249,7 +374,7 @@ MutationEngine::MutationEngine(const std::string& setup_name,
 
   init_mutation_engine(storage, setup_cfg.default_num_of_alleles,
                        setup_cfg.exceptions_on_allele_number,
-                       context_sampling_rate);
+                       context_sampling_rate, tumor_type);
 }
 
 MutationEngine::MutationEngine(const std::string& directory,
@@ -257,12 +382,13 @@ MutationEngine::MutationEngine(const std::string& directory,
                                const std::string& SBS_url,
                                const size_t& default_num_of_alleles,
                                const std::map<std::string, size_t>& alleles_num_exceptions,
-                               const size_t& context_sampling_rate)
+                               const size_t& context_sampling_rate,
+                               const std::string& tumor_type)
 {
   auto storage = setup_storage(directory, reference_url, SBS_url);
 
   init_mutation_engine(storage, default_num_of_alleles, alleles_num_exceptions, 
-                       context_sampling_rate);
+                       context_sampling_rate, tumor_type);
 }
 
 struct DummyTest
@@ -314,7 +440,8 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                                      const size_t& default_num_of_alleles,
                                      const Rcpp::List& exceptions_on_allele_number,
                                      const std::string& setup_code,
-                                     const size_t& context_sampling)
+                                     const size_t& context_sampling,
+                                     const std::string& tumor_type)
 {
   if (setup_code!="") {
     if (directory!="" || reference_url!="" || SBS_url!="" || 
@@ -337,7 +464,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
   auto exceptions = get_map<size_t, TestNonNegative>(exceptions_on_allele_number);
 
   return MutationEngine(directory, reference_url, SBS_url, default_num_of_alleles,
-                        exceptions, context_sampling);
+                        exceptions, context_sampling, tumor_type);
 
 }
 

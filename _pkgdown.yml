@@ -95,6 +95,7 @@ reference:
   - CNA$get_src_allele
   - CNA
   - Deletion
+  - get_admissible_CNA_tumor_types
   - get_mutation_engine_codes
   - load_phylogenetic_forest
   - MutationEngine$add_exposure
@@ -105,6 +106,7 @@ reference:
   - PhylogeneticForest$get_first_occurrences
   - PhylogeneticForest$get_nodes
   - PhylogeneticForest$get_samples_info
+  - PhylogeneticForest$get_sampled_cell_CNAs
   - PhylogeneticForest$get_sampled_cell_SNVs
   - PhylogeneticForest$get_species_info
   - PhylogeneticForest$get_subforest_for
