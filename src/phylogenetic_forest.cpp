@@ -262,14 +262,30 @@ Rcpp::List get_first_occurrence(const std::map<MUTATION_TYPE, std::set<Races::Mu
   return R_cell_ids;
 }
 
-Rcpp::List PhylogeneticForest::get_first_occurrence(const SNV& snv) const
+Rcpp::List PhylogeneticForest::get_first_occurrence(const SEXP& mutation) const
 {
-  return ::get_first_occurrence(get_SNV_first_cells(), snv);
-}
+  if ( TYPEOF(mutation) == S4SXP ) {
 
-Rcpp::List PhylogeneticForest::get_first_occurrence(const CNA& cna) const
-{
-  return ::get_first_occurrence(get_CNA_first_cells(), cna);
+    Rcpp::S4 s4obj( mutation );
+    if ( s4obj.is("Rcpp_SNV" ) ) {
+      Rcpp::Environment env( s4obj );
+      Rcpp::XPtr<SNV> snv_ptr( env.get(".pointer") );
+
+      return ::get_first_occurrence(get_SNV_first_cells(), *snv_ptr);
+    }
+
+    if ( s4obj.is("Rcpp_CNA" ) ) {
+      Rcpp::Environment env( s4obj );
+      Rcpp::XPtr<CNA> cna_ptr( env.get(".pointer") );
+
+    std::cout << *cna_ptr << std::endl;
+
+      return ::get_first_occurrence(get_CNA_first_cells(), *cna_ptr);
+    }
+  }
+
+  ::Rf_error("This methods exclusively accepts as the parameters "
+             "SNV or CNA objects.");
 }
 
 void PhylogeneticForest::save(const std::string& filename) const

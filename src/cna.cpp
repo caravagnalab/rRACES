@@ -143,7 +143,7 @@ CNA CNA::build_CNA(const std::string type, const SEXP chromosome, const SEXP pos
     } 
 
     if (type == "A") {
-        AlleleId src_allele_id = cast_to_allele(allele, "src_allele");
+        AlleleId src_allele_id = cast_to_allele(src_allele, "src_allele");
 
         return CNA(region, allele_id, src_allele_id);
     }

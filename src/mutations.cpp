@@ -767,12 +767,9 @@ RCPP_MODULE(Mutations){
 //' @param mutation A mutation being either a SNV or a CNA.
 //' @return The identifier of the cell in which a mutation occurs for the first time.
 //' @seealso `vignette("mutations")` for usage examples
-    .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const SNV&) const)
+    .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const SEXP&) const)
                 (&PhylogeneticForest::get_first_occurrence),
-            "Get the identifier of the cell in which the SNV for the first time")
-    .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const CNA&) const)
-                (&PhylogeneticForest::get_first_occurrence),
-            "Get the identifier of the cell in which the CNA for the first time")
+            "Get the identifier of the cell in which the mutation occurs for the first time")
 
 //' @name PhylogeneticForest$save
 //' @title Save a phylogenetic forest in a file

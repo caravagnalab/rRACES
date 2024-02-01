@@ -76,9 +76,7 @@ public:
 
   Rcpp::List get_sampled_cell_CNAs(const Races::Mutants::CellId& cell_ids) const;
 
-  Rcpp::List get_first_occurrence(const SNV& snv) const;
-
-  Rcpp::List get_first_occurrence(const CNA& cna) const;
+  Rcpp::List get_first_occurrence(const SEXP& mutation) const;
 
   inline std::filesystem::path get_reference_path() const
   {
