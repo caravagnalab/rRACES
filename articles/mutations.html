@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -494,6 +494,31 @@ when the cell was not sampled.</p>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_first_occurrences</span><span class="op">(</span><span class="va">snv</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
+<p>The exposures used in placing the mutations on the cells in the
+phylogenetic forest can be obtained by using the method
+<code>PhylogeneticForest$get_exposures()</code>.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get the exposures used in placing the mutations</span></span>
+<span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_exposures</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   time signature exposure type</span></span>
+<span><span class="co">#&gt; 1    0      SBS1      0.8  SBS</span></span>
+<span><span class="co">#&gt; 2    0     SBS13      0.2  SBS</span></span>
+<span><span class="co">#&gt; 3  100      SBS2      0.2  SBS</span></span>
+<span><span class="co">#&gt; 4  100      SBS3      0.5  SBS</span></span>
+<span><span class="co">#&gt; 5  100      SBS5      0.3  SBS</span></span></code></pre></div>
+<p>The details about the SBSs adopted during the evolution are available
+in the mutation engine and they can be retrieved by using the method
+<code>MutationEngine$get_SBSs()</code>.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get the SBSs used during the evolutions</span></span>
+<span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_SBSs</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
+<span><span class="co">#&gt;      Type         SBS1         SBS2        SBS3        SBS4</span></span>
+<span><span class="co">#&gt; 1 A[C&gt;A]A 0.0008760226 5.789892e-07 0.020919749 0.042450737</span></span>
+<span><span class="co">#&gt; 2 A[C&gt;A]C 0.0022201200 1.455043e-04 0.016343192 0.032989582</span></span>
+<span><span class="co">#&gt; 3 A[C&gt;A]G 0.0001797268 5.361706e-05 0.001807548 0.016115961</span></span>
+<span><span class="co">#&gt; 4 A[C&gt;A]T 0.0012650525 9.758841e-05 0.012265066 0.029662770</span></span>
+<span><span class="co">#&gt; 5 A[C&gt;G]A 0.0018390547 2.226114e-16 0.019813416 0.006930938</span></span>
+<span><span class="co">#&gt; 6 A[C&gt;G]C 0.0011879592 1.307576e-04 0.011588809 0.002813526</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="storing-phylogenetic-forests">Storing Phylogenetic Forests<a class="anchor" aria-label="anchor" href="#storing-phylogenetic-forests"></a>
@@ -501,7 +526,7 @@ when the cell was not sampled.</p>
 <p>As in the case of the samples forests, the phylogenetic forests can
 be saved by using the method <code>PhylogeneticForest$save</code> and
 load by the function <code>load_phylogenetic_forest</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the phylogenetic forest in the file "phylo_forest.sff"</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
 <span></span>

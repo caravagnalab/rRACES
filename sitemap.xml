@@ -67,6 +67,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_mutant.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_SBSs.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-place_mutations.html</loc>
   </url>
   <url>
@@ -74,6 +77,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_coalescent_cells.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_exposures.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_first_occurrences.html</loc>
