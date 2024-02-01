@@ -21,12 +21,16 @@ PhylogeneticForest::PhylogeneticForest():
   Races::Mutations::PhylogeneticForest()
 {}
 
-PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig, const std::filesystem::path& reference_path):
-   Races::Mutations::PhylogeneticForest(orig), reference_path(reference_path) 
+PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
+                                       const std::filesystem::path& reference_path,
+                                       const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures):
+   Races::Mutations::PhylogeneticForest(orig), reference_path(reference_path), timed_exposures(timed_exposures)
 {}
 
-PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig, const std::filesystem::path& reference_path):
-   Races::Mutations::PhylogeneticForest(std::move(orig)), reference_path(reference_path)
+PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
+                                       const std::filesystem::path& reference_path,
+                                       const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures):
+   Races::Mutations::PhylogeneticForest(std::move(orig)), reference_path(reference_path), timed_exposures(timed_exposures)
 {}
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const
@@ -288,11 +292,44 @@ Rcpp::List PhylogeneticForest::get_first_occurrence(const SEXP& mutation) const
              "SNV or CNA objects.");
 }
 
+Rcpp::List PhylogeneticForest::get_timed_exposures() const
+{
+  using namespace Rcpp;
+  using namespace Races::Mutants;
+
+  size_t dataframe_size{0};
+  for (const auto& [time, exposure]: timed_exposures) {
+    for (const auto& [SBS, prob]: exposure) {
+      (void)SBS;
+
+      ++dataframe_size;
+    } 
+  }
+
+  NumericVector times(dataframe_size), probs(dataframe_size);
+  CharacterVector SBSs(dataframe_size), types(dataframe_size);
+
+  size_t index{0};
+  for (const auto& [time, exposure]: timed_exposures) {
+    for (const auto& [SBS, prob]: exposure) {
+      times[index] = time;
+      probs[index] = prob;
+      SBSs[index] = SBS;
+      types[index] = "SBS";
+      ++index;
+    }
+  }
+
+  return DataFrame::create(_["time"]=times, _["signature"]=SBSs,
+                           _["exposure"]=probs, _["type"]=types);
+}
+
 void PhylogeneticForest::save(const std::string& filename) const
 {
   Races::Archive::Binary::Out out_archive(filename);
 
-  out_archive & reference_path;
+  out_archive & reference_path
+              & timed_exposures;
 
   out_archive.save(static_cast<const Races::Mutations::PhylogeneticForest&>(*this), "forest");
 }
@@ -307,6 +344,8 @@ PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
 
   PhylogeneticForest forest;
   forest.reference_path = reference_path;
+
+  in_archive & forest.timed_exposures;
 
   in_archive.load(static_cast<Races::Mutations::PhylogeneticForest&>(forest), "forest");
 

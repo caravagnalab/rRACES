@@ -100,9 +100,11 @@ reference:
   - load_phylogenetic_forest
   - MutationEngine$add_exposure
   - MutationEngine$add_mutant
+  - MutationEngine$get_SBSs
   - MutationEngine$place_mutations
   - MutationEngine
   - PhylogeneticForest$get_coalescent_cells
+  - PhylogeneticForest$get_exposures
   - PhylogeneticForest$get_first_occurrences
   - PhylogeneticForest$get_nodes
   - PhylogeneticForest$get_samples_info

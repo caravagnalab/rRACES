@@ -338,6 +338,24 @@ snv <- SNV(mutation_row["chromosome"][1, ],
 phylo_forest$get_first_occurrences(snv)
 ```
 
+The exposures used in placing the mutations on the cells in the 
+phylogenetic forest can be obtained by using the method 
+`PhylogeneticForest$get_exposures()`.
+
+```{r}
+# get the exposures used in placing the mutations
+phylo_forest$get_exposures()
+```
+
+The details about the SBSs adopted during the evolution are 
+available in the mutation engine and they can be retrieved 
+by using the method `MutationEngine$get_SBSs()`.
+
+```{r}
+# get the SBSs used during the evolutions
+m_engine$get_SBSs()[1:6,1:5]
+```
+
 ### Storing Phylogenetic Forests
 
 As in the case of the samples forests, the phylogenetic forests 

@@ -436,6 +436,28 @@ RCPP_MODULE(Mutations){
                                                                        const int seed))(
                                                         &MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
+
+//' @name MutationEngine$get_SBSs
+//' @title Get a data frame containing the available SBSs
+//' @description This method returns a data frame containing the
+//'         available SBSs and the corresponding mutation
+//'         probability. The first column ("Type") describes a 
+//'         mutation in a context, while each of the remaining
+//'         columns contains the probabilities of the mutations
+//'         for one of the available SBSs.
+//' @return A data frame containing the available SBSs.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # loading dplyr to filter `get_SBSs()` output
+//' library("dplyr")
+//'
+//' # get the SBS data frame
+//' m_engine$get_SBSs() %>% head()
+    .method("get_SBSs", &MutationEngine::get_SBS_dataframe,
+            "Get the SBS data frame")
+
     .method("show", &MutationEngine::show);
 
 //' @name build_mutation_engine
@@ -761,6 +783,17 @@ RCPP_MODULE(Mutations){
     .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)() const)
                 (&PhylogeneticForest::get_sampled_cell_SNVs),
             "Get the SNVs of all the sampled cells")
+
+//' @name PhylogeneticForest$get_exposures
+//' @title Gets the timed exposure data frame
+//' @description This method returns a data frame representing the exposure 
+//'          evolution over time.
+//' @return A data frame reporting `time`, `signature`, `exposure` and, 
+//'          `type`.
+//' @examples
+//' @seealso `vignette("mutations")` for usage examples
+    .method("get_exposures", &PhylogeneticForest::get_timed_exposures,
+            "Get the timed exposure data frame")
 
 //' @name PhylogeneticForest$get_first_occurrences
 //' @title Gets the identifier of the cell in which a mutation occurs for the first time

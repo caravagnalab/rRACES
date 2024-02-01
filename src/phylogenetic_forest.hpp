@@ -18,11 +18,13 @@
 #ifndef __RRACES_PHYLOGENETIC_FOREST__
 #define __RRACES_PHYLOGENETIC_FOREST__
 
+#include <map>
 #include <vector>
 
 #include <Rcpp.h>
 
 #include <phylogenetic_forest.hpp>
+#include <mutation_engine.hpp>
 
 #include "forest.hpp"
 #include "snv.hpp"
@@ -34,9 +36,15 @@ class PhylogeneticForest : public Races::Mutations::PhylogeneticForest
 {
   std::filesystem::path reference_path;
 
-  PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig, const std::filesystem::path& reference_path);
+  std::map<Races::Time, Races::Mutations::Exposure> timed_exposures;
 
-  PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig, const std::filesystem::path& reference_path);
+  PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig, 
+                     const std::filesystem::path& reference_path,
+                     const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures);
+
+  PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
+                     const std::filesystem::path& reference_path,
+                     const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures);
 public:
   PhylogeneticForest();
 
@@ -77,6 +85,8 @@ public:
   Rcpp::List get_sampled_cell_CNAs(const Races::Mutants::CellId& cell_ids) const;
 
   Rcpp::List get_first_occurrence(const SEXP& mutation) const;
+
+  Rcpp::List get_timed_exposures() const;
 
   inline std::filesystem::path get_reference_path() const
   {

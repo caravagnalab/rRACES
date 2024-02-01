@@ -36,6 +36,7 @@ class MutationEngine
     using AbsGenotypePosition = uint32_t;
 
     std::filesystem::path reference_path;
+    std::filesystem::path SBS_path;
 
     Races::Mutations::ContextIndex<AbsGenotypePosition> context_index;
     Races::Mutations::MutationEngine<AbsGenotypePosition, std::mt19937_64> m_engine;
@@ -81,6 +82,8 @@ public:
     {
         return place_mutations(forest, num_of_preneoplatic_mutations, 0);
     }
+
+    Rcpp::List get_SBS_dataframe();
 
     inline std::filesystem::path get_reference_path() const
     {

@@ -25,6 +25,7 @@
 #include <context_index.hpp>
 #include <csv_reader.hpp>
 #include <read_simulator.hpp>
+#include <csv_reader.hpp>
 
 #include <progress_bar.hpp>
 
@@ -352,6 +353,7 @@ void MutationEngine::init_mutation_engine(const GenomicDataStorage& storage,
                                           const std::string& tumor_type)
 {
   reference_path = storage.get_reference_path();
+  SBS_path = storage.get_SBS_path();
 
   context_index = build_contex_index<MutationEngine::AbsGenotypePosition>(storage, context_sampling_rate);
 
@@ -743,7 +745,16 @@ PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
 
   progress_bar.set_message("Mutations placed");
 
-  return {phylo_forest, reference_path};
+  return {std::move(phylo_forest), reference_path, m_engine.get_timed_exposures()};
+}
+
+Rcpp::List MutationEngine::get_SBS_dataframe()
+{
+  Rcpp::Function read_delim("read.delim");
+  
+  std::cout << SBS_path << std::endl;
+
+  return read_delim(std::string(SBS_path), Rcpp::_["quote"]="");
 }
 
 template<typename OUT, typename ITERATOR>
