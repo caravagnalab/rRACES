@@ -63,6 +63,7 @@ germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
 m_engine <- build_mutation_engine(directory = "Test",
                                   reference_src = reference_url,
                                   SBS_src = SBS_url,
+                                  drivers_src = drivers_url,
                                   passenger_CNAs_src = passenger_CNAs_url,
                                   germline_src = germline_url)
 
@@ -88,7 +89,8 @@ needed and, if this is not the case, avoids to performs them.
 # build a new mutation engine and use all the data stored into the
 # directory "Test"
 m_engine <- build_mutation_engine("Test", reference_url, SBS_url,
-                                  passenger_CNAs_url, germline_url)
+                                  passenger_CNAs_url, drivers_url,
+                                  germline_url)
 
 m_engine
 ```
@@ -112,8 +114,8 @@ be specified during the `MutationEngine` call as the last parameter.
 ```{r}
 # set-up the data and build the context index with `context_sampling` is 50
 m_engine <- build_mutation_engine("Test", reference_url, SBS_url,
-                                  passenger_CNAs_url, germline_url,
-                                  context_sampling = 50)
+                                  passenger_CNAs_url, drivers_url,
+                                  germline_url, context_sampling = 50)
 
 # get the size of the context index when `context_sampling` is 100
 utils:::format.object_size(file.size("Test/context_index_100.cif"), "auto")
@@ -320,7 +322,7 @@ all the successive selection of the same subject directly
 loads the binary file.
 
 ```{r}
-m_engine$set_germline_subjects(subjects[2,"sample"])
+m_engine$set_germline_subject(subjects[2,"sample"])
 
 m_engine$get_active_germline()
 ```
@@ -389,8 +391,8 @@ mutation_row <- phylo_forest$get_sampled_cell_SNVs(cell_id)[2,]
 # rebuild the corresponding SNV
 snv <- SNV(mutation_row["chromosome"][1, ],
            mutation_row["chr_pos"][1, ],
-           mutation_row["alt_base"][1, ],
-           mutation_row["context"][1, ],)
+           mutation_row["alt"][1, ],
+           mutation_row["ref"][1, ],)
 
 # get the identifier of the oldest cells in which the SNV occurs
 phylo_forest$get_first_occurrences(snv)

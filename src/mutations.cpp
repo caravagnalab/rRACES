@@ -371,9 +371,9 @@ RCPP_MODULE(Mutations){
 //'                                     CNA("D", "22", 5010000, 200000)))
 //'
 //' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no
-//' # CNA) and missing epigenetic state. Its species "B" has passenger SNV rate
-//' # 5e-9 and passenger CNA rate 0.
-//' m_engine$add_mutant("B", c(SNV = 5e-9), c(SNV("1", 10510210, "C")))
+//' # CNA) and missing epigenetic state. Its species "B" has passenger SNV
+//' # rate 5e-9 and passenger CNA rate 0.
+//' m_engine$add_mutant("B", c(SNV = 5e-9), c(SNV("22", 10510210, "C")))
 //'
 //' m_engine
     .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates,
@@ -639,9 +639,11 @@ RCPP_MODULE(Mutations){
 //'
 //' # a futher contruction with the same parameters avoids both downloads
 //' # and context index construction.
-//' m_engine <- build_mutation_engine("Test", rreference_url, sbs_url,
+//' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
 //'                                   drivers_url, passenger_CNAs_url,
 //'                                   germline_url, context_sampling = 50)
+//'
+//' m_engine
 //'
 //' # the parameters `directory`, `reference_src`, `SBS_src`, `drivers_src`,
 //' # `passenger_CNAs_src`, and `germline_src` can be avoided by providing
@@ -653,6 +655,8 @@ RCPP_MODULE(Mutations){
 //' # configuration is adopted.
 //' m_engine <- build_mutation_engine(setup_code = "demo",
 //'                                   context_sampling = 50)
+//'
+//' m_engine
 //' 
 //' # remove the "Test" and "demo" directories
 //' unlink("Test", recursive = TRUE)

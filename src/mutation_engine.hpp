@@ -122,7 +122,7 @@ public:
 
     void rebuild_context_index();
 
-    void reset();
+    void reset(const bool full=true);
 };
 
 RCPP_EXPOSED_CLASS(MutationEngine)

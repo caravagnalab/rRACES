@@ -830,9 +830,17 @@ void MutationEngine::set_context_sampling(const size_t& context_sampling)
   context_index = build_contex_index(storage, context_sampling);
 }
 
-void MutationEngine::reset()
+void MutationEngine::reset(const bool full)
 {
   using namespace Races::Mutations;
+
+  MutationalProperties mutational_properties;
+  std::map<Races::Time, Exposure> timed_exposures;
+
+  if (!full) {
+    mutational_properties = m_engine.get_mutational_properties();
+    timed_exposures = m_engine.get_timed_exposures();
+  }
 
   auto SBS = load_SBS(storage);
 
@@ -855,8 +863,13 @@ void MutationEngine::reset()
 
   auto germline = germline_storage.get_germline(germline_subject);
 
-  m_engine = Races::Mutations::MutationEngine(context_index, SBS, germline,
+  m_engine = Races::Mutations::MutationEngine(context_index, SBS,
+                                              mutational_properties, germline,
                                               driver_storage, passenger_CNAs);
+
+  for (const auto& [time, exposure] : timed_exposures) {
+    m_engine.add(time, exposure);
+  }
 }
 
 void MutationEngine::set_germline_subject(const std::string& germline_subject)
@@ -865,5 +878,5 @@ void MutationEngine::set_germline_subject(const std::string& germline_subject)
 
   this->germline_subject = germline_subject;
 
-  reset();
+  reset(false);
 }
