@@ -44,7 +44,7 @@ RCPP_MODULE(Sequencing){
 //'         SNVs, the chromosome and the position in which
 //'         it occurs (columns `chromosome` and `chr_pos`),
 //'         the SNV context and the new base (columns `context`
-//'         and `mutated_base`). Moreover, for each of the 
+//'         and `alt_base`). Moreover, for each of the 
 //'         sequencied samples `<sample name>`, the returned data 
 //'         frame contains three columns: the number of reads 
 //'         in which the corresponding SNV occurs 

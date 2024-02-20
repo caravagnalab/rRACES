@@ -30,8 +30,8 @@ class SNV : public Races::Mutations::SNV
 
     SNV(const Races::Mutations::ChromosomeId& chromosome_id,
         const Races::Mutations::ChrPosition& chromosomic_position,
-        const Races::Mutations::MutationalContext& context,
-        const char& mutated_base, const std::string& cause="");
+        const char& ref_base, const char& alt_base,
+        const std::string& cause="");
 
 public:
     SNV();
@@ -46,14 +46,14 @@ public:
         return position;
     }
 
-    inline std::string get_context() const
+    inline std::string get_ref_base() const
     {
-        return context.get_sequence();
+        return std::string(1,ref_base);
     }
 
-    inline std::string get_mutated_base() const
+    inline std::string get_alt_base() const
     {
-        return std::string(1,mutated_base);
+        return std::string(1,alt_base);
     }
 
     SEXP get_cause() const;
@@ -65,7 +65,7 @@ public:
     static
     SNV build_SNV(const SEXP chromosome_name,
                   const SEXP position_in_chromosome,
-                  const SEXP mutated_base, const SEXP context, 
+                  const SEXP alt_base, const SEXP ref_base, 
                   const SEXP cause);
 };
 

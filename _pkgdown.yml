@@ -95,13 +95,16 @@ reference:
   - CNA$get_src_allele
   - CNA
   - Deletion
-  - get_admissible_CNA_tumor_types
   - get_mutation_engine_codes
   - load_phylogenetic_forest
   - MutationEngine$add_exposure
   - MutationEngine$add_mutant
+  - MutationEngine$get_active_germline
+  - MutationEngine$get_germline_subjects
+  - MutationEngine$get_population_descritions
   - MutationEngine$get_SBSs
   - MutationEngine$place_mutations
+  - MutationEngine$set_germline_subject
   - MutationEngine
   - PhylogeneticForest$get_coalescent_cells
   - PhylogeneticForest$get_exposures
@@ -114,11 +117,11 @@ reference:
   - PhylogeneticForest$get_subforest_for
   - PhylogeneticForest$save
   - PhylogeneticForest
+  - SNV$get_alt_base
   - SNV$get_cause
   - SNV$get_chromosome
-  - SNV$get_context
   - SNV$get_dataframe
-  - SNV$get_mutated_base
+  - SNV$get_ref_base
   - SNV$get_position_in_chromosome
   - SNV
 - title: "Sequencing simulation interface"

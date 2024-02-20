@@ -26,23 +26,23 @@ void add_SNV_data(Rcpp::DataFrame& df,
   size_t num_of_mutations = sample_statistics.get_SNV_occurrences().size();
 
   IntegerVector chr_pos(num_of_mutations);
-  CharacterVector chr_names(num_of_mutations), contexts(num_of_mutations),
-                  mutated_bases(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), ref_bases(num_of_mutations),
+                  alt_bases(num_of_mutations);
 
   size_t index{0};
   for (const auto& [snv, occurrences] : sample_statistics.get_SNV_occurrences()) {
     chr_names[index] = GenomicPosition::chrtos(snv.chr_id);
     chr_pos[index] = snv.position;
-    contexts[index] = snv.context.get_sequence();
-    mutated_bases[index] = std::string(1,snv.mutated_base);
+    ref_bases[index] = std::string(1,snv.ref_base);
+    alt_bases[index] = std::string(1,snv.alt_base);
   
     ++index;
   }
 
   df.push_back(chr_names, "chromosome");
   df.push_back(chr_pos, "chr_pos");
-  df.push_back(contexts, "context");
-  df.push_back(mutated_bases, "mutated_base");
+  df.push_back(ref_bases, "ref");
+  df.push_back(alt_bases, "alt");
 }
 
 void add_sample_statistics(Rcpp::DataFrame& df,
@@ -110,17 +110,17 @@ split_by_epigenetic_status(std::list<Races::Mutations::SampleGenomeMutations>& F
     std::map<SpeciesId, SampleGenomeMutations*> meth_samples;
 
     for (const auto& cell_mutations : sample_mutations.mutations) {
-        auto found = meth_samples.find(cell_mutations.get_species_id());
+        auto found = meth_samples.find(cell_mutations->get_species_id());
 
         if (found == meth_samples.end()) {
             auto new_name = sample_mutations.name+"_"+
-                                methylation_map.at(cell_mutations.get_species_id());
+                                methylation_map.at(cell_mutations->get_species_id());
 
-            FACS_samples.push_back(SampleGenomeMutations(new_name));
+            FACS_samples.emplace_back(new_name, sample_mutations.germline_mutations);
 
             FACS_samples.back().mutations.push_back(cell_mutations);
 
-            meth_samples.insert({cell_mutations.get_species_id(), &(FACS_samples.back())});
+            meth_samples.insert({cell_mutations->get_species_id(), &(FACS_samples.back())});
         } else {
             (found->second)->mutations.push_back(cell_mutations);
         }

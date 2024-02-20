@@ -65,7 +65,7 @@ describe the mutation and report the chromosome and the position
 in the chromosome of the mutation (columns "`chromosome`" and 
 "`chr_pos`", respectively), the genetic context in which the 
 mutation occurs (column "`context`"), and the new base (column 
-"`mutated_base`").
+"`alt_base`").
 Then, there are 3 columns for each of the samples: they 
 contain the number of simulated reads affected by the 
 mutation, the sequencing coverage of the mutation locus, 

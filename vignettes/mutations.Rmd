@@ -33,26 +33,38 @@ corresponding context index. The function `build_mutation_engine` performs
 all these steps in a single call.
 
 The function `build_mutation_engine` can be called by specifing the name
-of the set-up directory, the complete URLs of both refence genome and
-SBS file, the default number of alleles per chromosome, and, optionally,
-a name list of exceptions for the default number of alleles whose names
-must be chromosome names.
+of the set-up directory, the path or URL of the reference sequence, the 
+SBS file, the driver SNVs file, the passenger CNAs file, and the germline 
+data directory.
 
 ```{r}
 library(rRACES)
 
-reference_url <- paste0("https://ftp.ensembl.org/pub/release-110/fasta/",
-                        "homo_sapiens/dna/Homo_sapiens.GRCh38.dna.",
-                        "chromosome.22.fa.gz")
+reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/current/",
+                        "fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.",
+                        "dna.chromosome.22.fa.gz")
 
-sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2124/",
-                  "COSMIC_v3.4_SBS_GRCh38.txt")
+SBS_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
+                  "COSMIC_v3.4_SBS_GRCh37.txt")
+
+drivers_url <- paste0("https://raw.githubusercontent.com/",
+                      "caravagnalab/rRACES/main/inst/extdata/",
+                      "driver_mutations_hg19.csv")
+
+passenger_CNAs_url <- paste0("https://raw.githubusercontent.com/",
+                             "caravagnalab/rRACES/main/inst/extdata/",
+                             "passenger_CNAs_hg19.csv")
+
+germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
+                       "m6wjve/germline_data_demo.tar.gz?rlkey=15jshul",
+                       "d3bqgyfcs7fa0bzqeo&dl=1")
 
 # build a mutation engine and place all the files in the directory "Test"
 m_engine <- build_mutation_engine(directory = "Test",
-                                  reference_url = reference_url,
-                                  SBS_url = sbs_url,
-                                  default_num_of_alleles = 2)
+                                  reference_src = reference_url,
+                                  SBS_src = SBS_url,
+                                  passenger_CNAs_src = passenger_CNAs_url,
+                                  germline_src = germline_url)
 
 m_engine
 ```
@@ -75,8 +87,8 @@ needed and, if this is not the case, avoids to performs them.
 ```{r}
 # build a new mutation engine and use all the data stored into the
 # directory "Test"
-m_engine <- build_mutation_engine("Test", reference_url,
-                                  sbs_url, default_num_of_alleles = 2)
+m_engine <- build_mutation_engine("Test", reference_url, SBS_url,
+                                  passenger_CNAs_url, germline_url)
 
 m_engine
 ```
@@ -99,8 +111,8 @@ be specified during the `MutationEngine` call as the last parameter.
 
 ```{r}
 # set-up the data and build the context index with `context_sampling` is 50
-m_engine <- build_mutation_engine("Test", reference_url,
-                                  sbs_url, default_num_of_alleles = 2,
+m_engine <- build_mutation_engine("Test", reference_url, SBS_url,
+                                  passenger_CNAs_url, germline_url,
                                   context_sampling = 50)
 
 # get the size of the context index when `context_sampling` is 100
@@ -251,20 +263,66 @@ m_engine
 
 The passenger CNAs applied during the simulation depend on tumor type. 
 The type of tumor can be specified when building the mutation engine 
-by using the `tumor_type` parameter. For instance, the passenger CNAs 
-identified in breast carcinoma in the UK can be applied during the 
-simulation as it follows.
+by using the `tumor_type` parameter. For instance, if the 
+passenger CNAs file used to build the mutation engine contains 
+some of the data identified in breast carcinoma in the UK, 
+the specific CNA can be applied during the simulation as it follows.
 
 ```{r, eval=FALSE}
 m_engine <- build_mutation_engine(setup_code = "demo",
                                   tumor_type = "BRCA-UK")
 ```
 
-The function `get_admissible_CNA_tumor_types()` returns the 
-complete list of tumors supported by rRACES.
+#### Germline Mutations
+
+rRACES gives the chance to apply the germline mutations of one of 
+the subjects available in the germline data provided when the 
+mutation engine is built. This feature allows users to simulate 
+the evolution of a specific cancer type on an individual having the 
+desired gender and ethnicity.
+
+The available subjects together with their sex and ethnicity can be 
+obtained by using the method 
+`MutationEngine$get_germline_subjects()`.
 
 ```{r}
-get_admissible_CNA_tumor_types()
+subjects <- m_engine$get_germline_subjects()
+
+subjects
+```
+
+The column `sample` contains the name of the available subjects.
+The columns `pop` and `super_pop` report the population and 
+the super population codes of the subjects. The last column, 
+`gender`, contains the subject gender.
+
+The method `MutationEngine$get_population_descritions()` clarifies the
+meaning of the codes reported in the `pop` columns.
+
+```{r}
+m_engine$get_population_descritions()
+```
+
+The method `MutationEngine$get_active_germline()` returns the  
+the subject whose genome used by rRACES as wild-type genome.
+
+```{r}
+m_engine$get_active_germline()
+```
+
+In order to change the germline subject, we must use the 
+method `MutationEngine$set_germline_subject()`.
+
+When a subject is selected for the first time, rRACES builds
+a binary representation of the subject genome and it saves 
+it for future use. This step may take few minutes, however,
+all the successive selection of the same subject directly
+loads the binary file.
+
+```{r}
+m_engine$set_germline_subjects(subjects[2,"sample"])
+
+m_engine$get_active_germline()
 ```
 
 ### Building Phylogenetic Forests
@@ -331,7 +389,7 @@ mutation_row <- phylo_forest$get_sampled_cell_SNVs(cell_id)[2,]
 # rebuild the corresponding SNV
 snv <- SNV(mutation_row["chromosome"][1, ],
            mutation_row["chr_pos"][1, ],
-           mutation_row["mutated_base"][1, ],
+           mutation_row["alt_base"][1, ],
            mutation_row["context"][1, ],)
 
 # get the identifier of the oldest cells in which the SNV occurs
@@ -352,8 +410,8 @@ available in the mutation engine and they can be retrieved
 by using the method `MutationEngine$get_SBSs()`.
 
 ```{r}
-# get the SBSs used during the evolutions
-m_engine$get_SBSs()[1:6,1:5]
+# get the SBSs used in placing the mutations
+m_engine$get_SBSs()[1:6, 1:5]
 ```
 
 ### Storing Phylogenetic Forests

@@ -37,7 +37,7 @@ RCPP_MODULE(Mutations){
 //' @title Get the chromosome in which the SNV occurs.
 //' @return The chromosome in which the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "T", "GAC")
+//' snv <- SNV("X", 20002, "T", "A")
 //'
 //' # get the chromosome in which `snv` occurs (i.e., "X")
 //' snv$get_chromosome()
@@ -47,32 +47,32 @@ RCPP_MODULE(Mutations){
 //' @title Get the position in chromosome where the SNV occurs.
 //' @return The position in chromosome where the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "T", "GAC")
+//' snv <- SNV("X", 20002, "T", "A")
 //'
 //' # get the position in chromosome where `snv` occurs (i.e., 20002)
 //' snv$get_position_in_chromosome()
     .method("get_position_in_chromosome",&SNV::get_position_in_chromosome,
             "Get the SNV position in the chromosome")
 
-//' @name SNV$get_context
-//' @title Get the context in which the SNV occurs.
-//' @return The context in which the SNV occurs.
+//' @name SNV$get_ref_base
+//' @title Get the reference base in which the SNV occurs.
+//' @return The reference base in which the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "T", "GAC")
+//' snv <- SNV("X", 20002, "T", "A")
 //'
-//' # get the context in which `snv` occurs (i.e., "GAC")
-//' snv$get_context()
-    .method("get_context",&SNV::get_context, "Get the SNV context")
+//' # get the reference base in which `snv` occurs (i.e., "A")
+//' snv$get_ref_base()
+    .method("get_ref_base",&SNV::get_ref_base, "Get the reference base in the SNV locus")
 
-//' @name SNV$get_mutated_base
+//' @name SNV$get_alt_base
 //' @title Get the base after the SNV occurs.
 //' @return The base after the SNV occurs.
 //' @examples
-//' snv <- SNV("X", 20002, "T", "GAC")
+//' snv <- SNV("X", 20002, "T", "A")
 //'
 //' # get the base after `snv` occurs (i.e., "T")
-//' snv$get_mutated_base()
-    .method("get_mutated_base",&SNV::get_mutated_base, "Get the new base of the SNV")
+//' snv$get_alt_base()
+    .method("get_alt_base",&SNV::get_alt_base, "Get the new base of the SNV")
 
 //' @name SNV$get_cause
 //' @title Get the SNV cause.
@@ -83,13 +83,13 @@ RCPP_MODULE(Mutations){
 //' @return The base after the SNV occurs.
 //' @examples
 //' # let us build a SNV without specifying any cause for it
-//' snv <- SNV("X", 20002, "T", "GAC")
+//' snv <- SNV("X", 20002, "T", "A")
 //'
 //' # get the cause of `snv` (i.e., "NA")
 //' snv$get_cause()
 //'
 //' # we can also build a SNV, specifying a cause for it
-//' snv <- SNV("X", 20002, "T", "GAC", cause = "SBS13")
+//' snv <- SNV("X", 20002, "T", "A", cause = "SBS13")
 //'
 //' # get the cause of `snv` (i.e., "SBS13")
 //' snv$get_cause()
@@ -98,10 +98,10 @@ RCPP_MODULE(Mutations){
 //' @name SNV$get_dataframe
 //' @title Get a data frame representing the SNV.
 //' @description This method returns a data frame that represents the SNV and whose
-//'        columns are `chromosome`, `pos_in_chr`, `context`, `mutated_base`, and
+//'        columns are `chromosome`, `pos_in_chr`, `ref`, `alt`, and
 //'        `cause`.
 //' @examples
-//' snv <- SNV("X", 20002, "T", "GAC")
+//' snv <- SNV("X", 20002, "T", "A")
 //'
 //' snv$get_dataframe()
     .method("get_dataframe",&SNV::get_dataframe, "Get a dataframe representing the SNV")
@@ -111,8 +111,8 @@ RCPP_MODULE(Mutations){
 //' @title Create a SNV amplification.
 //' @param chromosome The name of the chromosome in which the SNV occurs.
 //' @param pos_in_chr The position in the chromosome where the SNV occurs.
-//' @param mutated_base The base after the mutation.
-//' @param context The SNV context (optional).
+//' @param alt The base after the mutation.
+//' @param ref The base before the mutation (optional).
 //' @param cause The cause of the SNV (optional).
 //' @examples
 //' # create a SNV without specifying the cause and context 
@@ -120,15 +120,15 @@ RCPP_MODULE(Mutations){
 //' snv
 //'
 //' # create a SNV and do not specify the cause
-//' snv <- SNV("X", 20002, "T", "GAC")
+//' snv <- SNV("X", 20002, "T", "A")
 //' snv
 //'
 //' # create a SNV with a cause
 //' snv <- SNV("X", 20002, "T", cause = "SBS1")
 //' snv
   function("SNV", &SNV::build_SNV,
-           List::create(_["chromosome"], _["pos_in_chr"], _["mutated_base"], 
-                        _["context"] = "???", _["cause"] = ""),
+           List::create(_["chromosome"], _["pos_in_chr"], _["alt"], 
+                        _["ref"] = "?", _["cause"] = ""),
            "Create a single nucleotide variation (SNV)");
 
 //' @name CNA
@@ -265,7 +265,7 @@ RCPP_MODULE(Mutations){
 //' @name CNA$get_dataframe
 //' @title Get a data frame representing the CNA.
 //' @description This method returns a data frame that represents the CNA and whose
-//'        columns are `chromosome`, `pos_in_chr`, `length`, `mutated_base`, `allele`,
+//'        columns are `chromosome`, `pos_in_chr`, `length`, `alt_base`, `allele`,
 //'        `src_allele`, and `type`.
 //' @examples
 //' # create an amplification CNA
@@ -365,13 +365,14 @@ RCPP_MODULE(Mutations){
 //' m_engine$add_mutant("A", list("+" = c(SNV = 1e-9),
 //'                               "-" = c(SNV = 3e-8, CNA = 1e-11)),
 //'                     driver_SNVs = c(SNV("22", 10510210, "C")),
-//'                     driver_CNAs = c(CNA(type = "A", "22", pos_in_chr = 10303470,
+//'                     driver_CNAs = c(CNA(type = "A", "22", 
+//'                                         pos_in_chr = 10303470,
 //'                                         len = 200000),
 //'                                     CNA("D", "22", 5010000, 200000)))
 //'
-//' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no CNA)
-//' # and missing epigenetic state. Its species "B" has passenger SNV rate 5e-9
-//' # and passenger CNA rate 0.
+//' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no
+//' # CNA) and missing epigenetic state. Its species "B" has passenger SNV rate
+//' # 5e-9 and passenger CNA rate 0.
 //' m_engine$add_mutant("B", c(SNV = 5e-9), c(SNV("1", 10510210, "C")))
 //'
 //' m_engine
@@ -437,6 +438,81 @@ RCPP_MODULE(Mutations){
                                                         &MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
 
+//' @name MutationEngine$get_active_germline
+//' @title Get a data frame describing the active germline subject
+//' @description This method returns a data frame containing the
+//'         active germline subject. The first column ("sample") 
+//'         reports the subject name; the second and third columns
+//'         ("pop" and "super_pop", respectively) contain the 
+//'         subject population and super population, respectively;
+//'         the fourth column ("gender") declares the subject
+//'         gender.
+//' @return A data frame the active germline subject.
+//' @seealso `MutationEngine$get_germline_subjects()` to get the
+//'      available germline subjects; `MutationEngine$set_germline_subject()`
+//'      to set the active germline subject.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # get the active germline subject data frame
+//' head(m_engine$get_active_germline(), 5)
+    .method("get_active_germline", &MutationEngine::get_active_germline)
+
+//' @name MutationEngine$set_germline_subject
+//' @title Set the germline subject
+//' @description This method sets the germline subject. The subject 
+//'        must be one among those reported by `get_germline_subjects()`.
+//' @return Set the germline subject.
+//' @seealso `MutationEngine$get_germline_subjects()` to get the
+//'      available germline subjects; `MutationEngine$get_active_germline()`
+//'      to get the active germline subject.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # set the active germline subject data frame
+//' m_engine$set_germline_subject("NA18941")
+    .method("set_germline_subject", &MutationEngine::set_germline_subject)
+
+//' @name MutationEngine$get_germline_subjects
+//' @title Get a data frame reporting the available germline subjects
+//' @description This method returns a data frame containing the
+//'         avaiable germline subjects. The first column ("sample") 
+//'         reports the subject names; the second and third columns
+//'         ("pop" and "super_pop", respectively) contain the 
+//'         subject populations and super populations, respectively;
+//'         the fourth column ("gender") declares the subject
+//'         genders.
+//' @return A data frame the avaiable germline subjects.
+//' @seealso `MutationEngine$get_active_germline()` to get the
+//'      available germline subjects; `MutationEngine$set_germline_subject()`
+//'      to set the active germline.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # get the active germline subject data frame
+//' head(m_engine$get_germline_subjects(), 5)
+    .method("get_germline_subjects", &MutationEngine::get_germline_subjects)
+
+//' @name MutationEngine$get_population_descritions
+//' @title Get a data frame containing the population descriptions
+//' @description This method returns a data frame describing the
+//'         populations. The first column ("code") contains the 
+//'         population codes; the second and third columns
+//'         ("description" and "long description", respectively)
+//'         report a brief and a long description for the populations,
+//'         respectively.
+//' @return A data frame containing the population descriptions.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # get the active germline subject data frame
+//' head(m_engine$get_population_descritions(), 5)
+    .method("get_population_descritions", &MutationEngine::get_population_descritions)
+
 //' @name MutationEngine$get_SBSs
 //' @title Get a data frame containing the available SBSs
 //' @description This method returns a data frame containing the
@@ -450,11 +526,8 @@ RCPP_MODULE(Mutations){
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # loading dplyr to filter `get_SBSs()` output
-//' library("dplyr")
-//'
 //' # get the SBS data frame
-//' m_engine$get_SBSs() %>% head()
+//' head(m_engine$get_SBSs(), 5)
     .method("get_SBSs", &MutationEngine::get_SBS_dataframe,
             "Get the SBS data frame")
 
@@ -471,16 +544,15 @@ RCPP_MODULE(Mutations){
 //'       the former in many cases.
 //'
 //'       The first building modality requires to specify the directory in
-//'       which the data must be saved, the reference sequence URL, the SBS
-//'       file URL, the default number of alleles per chromosome, and, 
-//'       optionally, the exceptions on the number of alleles (e.g., one 
-//'       allele for "X" and "Y" in human genome) through the parameters 
-//'       `directory`, `reference_url`, `SBS_url`, `default_num_of_alleles`,
-//'       and `exceptions_on_allele_number`, respectively.
+//'       which the data must be saved, the path or URL of the reference 
+//'       sequence, the SBS file, the driver SNVs file, the passenger CNAs
+//'       file, and the germline data directory through the parameters 
+//'       `directory`, `reference_src`, `SBS_src`, `drivers_src`, 
+//'       `passenger_CNAs_src`, and `germline_src`, respectively.
 //'
 //'       The second building modality exclusively requires a set-up code 
 //'       (parameter `setup_code`). The list of supported set-up codes can 
-//'       be obtained by using the function `get_mutation_engine_codes`.
+//'       be obtained by using the function `get_mutation_engine_codes()`.
 //'
 //'       The number of context sampling is an optional parameter that allows
 //'       sampling the reference contexts while building the context index.
@@ -502,60 +574,79 @@ RCPP_MODULE(Mutations){
 //' @export
 //' @param setup_code The set-up code (alternative to `directory`).
 //' @param directory The set-up directory (alternative to `setup_code`).
-//' @param reference_url The reference genome URL (mandatory when `directory`
+//' @param reference_src The reference genome path or URL (mandatory when `directory`
 //'                is provided).
-//' @param SBS_url The SBS file URL (mandatory when `directory` is provided).
-//' @param default_num_of_alleles The default number of alleles per chromosome 
-//'                (mandatory when `directory` is provided).
-//' @param exceptions_on_allele_number A list of exceptions for the default 
-//'                number of alleles per chromosome (optional when `directory`
-//'                in provided).
+//' @param SBS_src The SBS file path or URL (mandatory when `directory` is provided).
+//' @param drivers_src The driver mutation file path or URL (mandatory when 
+//'                `directory` is provided).
+//' @param passenger_CNAs_src The passenger CNAs file path or URL (mandatory when 
+//'                `directory` is provided).
+//' @param germline_src The germline directory path or URL (mandatory when 
+//'                `directory` is provided).
+//' @param germline_subject The germline subject (optional).
 //' @param context_sampling The number of reference contexts per context in the
 //'     index (optional: default value is 100).
 //' @param tumor_type The type of tumor. This is currently used to select the
 //'     admissible passenger CNAs. If any passenger CNA in the dataset is
 //'     admissible, use the the empty string `""` (optional: default value is
-//'     "BRCA-EU").
-//' @seealso `get_available_CNA_tumor_types()` for valid `tumor_type` values
+//'     "").
+//' @seealso `MutationEngine$get_germline_subjects()` to get the available
+//'     germline subjects; `MutationEngine$set_germline_subject()` to set the
+//'     active germline subject; `MutationEngine$get_active_germline()` to get
+//'     the active germline subject.
 //' @return A mutation engine object.
 //' @examples
 //' # set the reference and SBS URLs
-//' reference_url <- paste0("https://ftp.ensembl.org/pub/release-110/fasta/",
-//'                         "homo_sapiens/dna/Homo_sapiens.GRCh38.dna.",
-//'                         "chromosome.22.fa.gz")
-//' sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2124/",
-//'                   "COSMIC_v3.4_SBS_GRCh38.txt")
+//' reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/current/",
+//'                         "fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.",
+//'                         "dna.chromosome.22.fa.gz")
+//' sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
+//'                   "COSMIC_v3.4_SBS_GRCh37.txt")
+//' drivers_url <- paste0("https://raw.githubusercontent.com/",
+//'                       "caravagnalab/rRACES/main/inst/extdata/",
+//'                       "driver_mutations_hg19.csv")
+//' passenger_CNAs_url <- paste0("https://raw.githubusercontent.com/",
+//'                              "caravagnalab/rRACES/main/inst/extdata/",
+//'                              "passenger_CNAs_hg19.csv")
+//' germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
+//'                        "m6wjve/germline_data_demo.tar.gz?rlkey=15jshul",
+//'                        "d3bqgyfcs7fa0bzqeo&dl=1")
 //'
 //' # build a mutation engine and save the required files into the
-//' # directory "Test"
+//' # directory "Test". The `drivers_url` parameter is optional, but 
+//' # it is suggested to avoid passenger mutations on driver loci.
 //' m_engine <- build_mutation_engine(directory = "Test",
-//'                                   reference_url = reference_url,
-//'                                   SBS_url = sbs_url,
-//'                                   default_num_of_alleles = 2)
+//'                                   reference_src = reference_url,
+//'                                   SBS_src = sbs_url,
+//'                                   drivers_src = drivers_url,
+//'                                   passenger_CNAs_src = passenger_CNAs_url,
+//'                                   germline_src = germline_url)
 //'
 //' # if the parameters of a mutation engine construction match those of a
 //' # previous construction, then the corresponding reference sequence,
 //' # the SBS file, and the previously built context index are loaded from
 //' # the set-up directory avoiding further computations.
 //' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
-//'                                   default_num_of_alleles = 2)
+//'                                   drivers_url, passenger_CNAs_url,
+//'                                   germline_url)
 //'
 //' # if the `context_sampling` parameter changes, a new context index is
 //' # built, while neither the reference sequence nor the SBS file are 
 //' # downloaded again.
 //' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
-//'                                   default_num_of_alleles = 2,
-//'                                   context_sampling = 50)
+//'                                   drivers_url, passenger_CNAs_url,
+//'                                   germline_url, context_sampling = 50)
 //'
 //' # a futher contruction with the same parameters avoids both downloads
 //' # and context index construction.
-//' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
-//'                                   default_num_of_alleles = 2,
-//'                                   context_sampling = 50)
+//' m_engine <- build_mutation_engine("Test", rreference_url, sbs_url,
+//'                                   drivers_url, passenger_CNAs_url,
+//'                                   germline_url, context_sampling = 50)
 //'
-//' # the parameters `directory`, `reference_url`, and `SBS_url` can be
-//' # avoided by providing the `setup_code` parameter. The set-up code 
-//' # `demo` is provided among those available for testing purpose.
+//' # the parameters `directory`, `reference_src`, `SBS_src`, `drivers_src`,
+//' # `passenger_CNAs_src`, and `germline_src` can be avoided by providing
+//' # the `setup_code` parameter. The set-up code `demo` is provided among 
+//' # those available for testing purpose.
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //' 
 //' # the `context_sampling` can be used also when a pre-defined set-up
@@ -568,23 +659,12 @@ RCPP_MODULE(Mutations){
 //' unlink("demo", recursive = TRUE)
   function("build_mutation_engine", &MutationEngine::build_MutationEngine,
            List::create(_["directory"] = "",
-                        _["reference_url"] = "",  _["SBS_url"] = "",
-                        _["default_num_of_alleles"] = 0,
-                        _["exceptions_on_allele_number"] = Rcpp::List::create(),
-                        _["setup_code"] = "", 
-                        _["context_sampling"] = 100, 
-                        _["tumor_type"] = "BRCA-EU"),
+                        _["reference_src"] = "", _["SBS_src"] = "",
+                        _["drivers_src"] = "", _["passenger_CNAs_src"] = "",
+                        _["germline_src"] = "", _["setup_code"] = "", 
+                        _["germline_subject"] = "", _["context_sampling"] = 100, 
+                        _["tumor_type"] = ""),
            "Create a MutationEngine");
-
-//' @name get_admissible_CNA_tumor_types
-//' @title Get the list of tumor types having admissible CNAs
-//' @details This function the list of tumor types for which 
-//'          a list of admissible passenger CNAs is available.
-//' @examples
-//' # get the list of tumor types for admissible CNA
-//' get_admissible_CNA_tumor_types()
-  function("get_admissible_CNA_tumor_types", &MutationEngine::get_supported_tumor_types,
-           "Get the list of tumor types for which a list of admissible passenger CNAs is available.");
 
 //' @name get_mutation_engine_codes
 //' @title Get the supported codes for predefined set-up
@@ -648,7 +728,7 @@ RCPP_MODULE(Mutations){
 //' @field get_sampled_cell_SNVs Gets a the SNVs of the sampled cells \itemize{
 //' \item \emph{Returns:} A data frame reporting `cell_id`, `chromosome`, 
 //'          `chr_pos` (i.e., position in the chromosome), `allele` (in which
-//'          the SNV occurs), `context`, `mutated_base`, and `cause` for each
+//'          the SNV occurs), `ref`, `alt`, and `cause` for each
 //'          SNV in the sampled cell genomes.
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
@@ -774,8 +854,8 @@ RCPP_MODULE(Mutations){
 //' @param cell_id The identifier of the cell whose SNVs are aimed (optional).
 //' @return A data frame reporting `cell_id`, `chromosome`, `chr_pos` (i.e., 
 //'          the position in the chromosome), `allele` (in which the SNV
-//'          occurs), `context`, `mutated_base`, and `cause` for each SNV in 
-//'          the sampled cell genomes.
+//'          occurs), `ref`, `alt`, and `cause` for each SNV in the sampled
+//'          cell genomes.
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
                 (&PhylogeneticForest::get_sampled_cell_SNVs),

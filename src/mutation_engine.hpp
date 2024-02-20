@@ -35,33 +35,35 @@ class MutationEngine
 {
     using AbsGenotypePosition = uint32_t;
 
-    std::filesystem::path reference_path;
-    std::filesystem::path SBS_path;
+    GenomicDataStorage storage;
+
+    std::string germline_subject;
+    size_t context_sampling;
+    std::string tumor_type;
 
     Races::Mutations::ContextIndex<AbsGenotypePosition> context_index;
     Races::Mutations::MutationEngine<AbsGenotypePosition, std::mt19937_64> m_engine;
 
-    void init_mutation_engine(const GenomicDataStorage& storage,
-                              const size_t& default_num_of_alleles,
-                              const std::map<std::string, size_t>& alleles_num_exceptions,
-                              const size_t& context_sampling_rate=100,
-                              const std::string& tumor_type="");
+    GermlineSubject get_germline_subject(const std::string& subject_name) const;
+
+    void init_mutation_engine();
 public:
     MutationEngine(const std::string& setup_code,
-                   const size_t& context_sampling_rate=100,
+                   const std::string& germline_subject="",
+                   const size_t& context_sampling=100,
                    const std::string& tumor_type="");
 
     MutationEngine(const std::string& directory,
-                   const std::string& reference_url,
-                   const std::string& SBS_url,
-                   const size_t& default_num_of_alleles,
-                   const std::map<std::string, size_t>& exceptions_on_allele_number,
+                   const std::string& reference_source,
+                   const std::string& SBS_source,
+                   const std::string& drivers_source,
+                   const std::string& passenger_CNAs_source,
+                   const std::string& germline_source,
+                   const std::string& germline_subject="",
                    const size_t& context_sampling=100,
                    const std::string& tumor_type="");
 
     static Rcpp::List get_supported_setups();
-
-    static std::list<std::string> get_supported_tumor_types();
 
     void add_exposure(const Rcpp::List& exposure);
 
@@ -72,6 +74,23 @@ public:
 
     void add_mutant(const std::string& mutant_name, const Rcpp::List& passenger_rates,
                     const Rcpp::List& driver_SNVs, const Rcpp::List& driver_CNAs);
+
+    inline Rcpp::List get_active_germline() const
+    {
+        return storage.get_germline_storage().get_subject_df(germline_subject);
+    }
+
+    inline Rcpp::List get_germline_subjects() const
+    {
+        return storage.get_germline_storage().get_population_df();
+    }
+
+    inline Rcpp::List get_population_descritions() const
+    {
+        return storage.get_germline_storage().get_population_descritions_df();
+    }
+
+    void set_germline_subject(const std::string& germline_subject);
 
     PhylogeneticForest place_mutations(const SamplesForest& forest,
                                        const size_t& num_of_preneoplatic_mutations,
@@ -85,22 +104,25 @@ public:
 
     Rcpp::List get_SBS_dataframe();
 
-    inline std::filesystem::path get_reference_path() const
-    {
-        return reference_path;
-    }
-
     void show() const;
 
     static MutationEngine 
     build_MutationEngine(const std::string& directory,
-                         const std::string& reference_url,
-                         const std::string& SBS_url,
-                         const size_t& default_num_of_alleles,
-                         const Rcpp::List& exceptions_on_allele_number,
+                         const std::string& reference_source,
+                         const std::string& SBS_source,
+                         const std::string& drivers_source,
+                         const std::string& passenger_CNAs_source,
+                         const std::string& germline_source,
                          const std::string& setup_code,
+                         const std::string& germline_subject,
                          const size_t& context_sampling,
                          const std::string& tumor_type);
+
+    void set_context_sampling(const size_t& context_sampling);
+
+    void rebuild_context_index();
+
+    void reset();
 };
 
 RCPP_EXPOSED_CLASS(MutationEngine)

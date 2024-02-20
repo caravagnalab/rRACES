@@ -19,10 +19,9 @@
 
 SNV::SNV(const Races::Mutations::ChromosomeId& chromosome_id,
          const Races::Mutations::ChrPosition& chromosomic_position,
-         const Races::Mutations::MutationalContext& context,
-         const char& mutated_base, const std::string& cause):
-    Races::Mutations::SNV(chromosome_id, chromosomic_position, context,
-                          mutated_base, cause)
+         const char& ref_base, const char& alt_base, const std::string& cause):
+    Races::Mutations::SNV(chromosome_id, chromosomic_position, ref_base,
+                          alt_base, cause)
 {}
 
 SNV::SNV()
@@ -48,8 +47,8 @@ Rcpp::List SNV::get_dataframe() const
 
     return DataFrame::create(_["chromosome"]=get_chromosome(),
                              _["pos_in_chr"]=position,
-                             _["context"]=get_context(),
-                             _["mutated_base"]=get_mutated_base(),
+                             _["ref"]=get_ref_base(),
+                             _["alt"]=get_alt_base(),
                              _["cause"]=get_cause());
 }
 
@@ -59,8 +58,8 @@ void SNV::show() const
 
     Rcout << "SNV(chromosome: "<< get_chromosome()
           << ", pos_in_chr: " << static_cast<size_t>(position)
-          << ", context: " << get_context()
-          << ", mutated base: " << mutated_base;
+          << ", ref: " << ref_base
+          << ", alt: " << alt_base;
 
     if (cause!="") {
         Rcout << ", cause: \"" << cause << "\"";
@@ -70,7 +69,7 @@ void SNV::show() const
 
 SNV SNV::build_SNV(const SEXP chromosome_name,
                    const SEXP position_in_chromosome, 
-                   const SEXP mutated_base, const SEXP context, 
+                   const SEXP alt_base, const SEXP ref_base, 
                    const SEXP cause)
 {
     using namespace Rcpp;
@@ -85,24 +84,19 @@ SNV SNV::build_SNV(const SEXP chromosome_name,
                                 "non-negative number");
     }
 
-    Races::Mutations::MutationalContext m_context;
-
-    auto context_str = Rcpp::as<std::string>(context);
-    if (context_str.size() != 3) {
-        throw std::domain_error("Contexts are triplets of nucleotides.");
+    auto ref_base_str = Rcpp::as<std::string>(ref_base);
+    if (ref_base_str.size() != 1) {
+        throw std::domain_error("The reference base must be a single "
+                                "nucleotide.");
     }
 
-    if (context_str != "???") {
-        m_context = context_str;
-    }
-
-    auto mutated_base_str = Rcpp::as<std::string>(mutated_base);
-    if (mutated_base_str.size() != 1) {
-        throw std::domain_error("The mutated base must be a single "
+    auto alt_base_str = Rcpp::as<std::string>(alt_base);
+    if (alt_base_str.size() != 1) {
+        throw std::domain_error("The altered base must be a single "
                                 "nucleotide.");
     }
 
     auto cause_str = Rcpp::as<std::string>(cause);
     return SNV(chr_id, static_cast<Races::Mutations::ChrPosition>(pos),
-               m_context, mutated_base_str[0], cause_str);
+               ref_base_str[0], alt_base_str[0], cause_str);
 }
