@@ -1,7 +1,7 @@
 Package: rRACES
 Type: Package
 Title: rRACES: An R Wrapper for RACES
-Version: 0.4.0
+Version: 0.4.1
 Date: 2024-02-20
 Authors@R: c(
     person("Giulio", "Caravagna", email = "gcaravagna@units.it", role = c("aut", "cre")),
@@ -18,6 +18,7 @@ SystemRequirements: C++17, GNU make
 Imports: 
     dplyr,
     Rcpp (>= 1.0.11),
+    R.utils,
     ggplot2,
     cli,
     crayon,
@@ -27,7 +28,7 @@ Imports:
     ggmuller,
     ggraph,
     tidygraph
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Suggests: 
     rmarkdown
 VignetteBuilder: knitr

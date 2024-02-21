@@ -33,6 +33,9 @@ R CMD build rRACES
 R CMD install rRACES_*.tar.gz
 ```
 
+Please, notice that plotting may require the R package 
+`hexbin` under GNU/Linux.
+
 ------------------------------------------------------------------------
 
 #### Copyright and contacts

@@ -54,7 +54,7 @@ void add_sample_statistics(Rcpp::DataFrame& df,
 
   size_t num_of_mutations = sample_statistics.get_SNV_occurrences().size();
 
-  if (num_of_mutations != df.nrows()) {
+  if (num_of_mutations != static_cast<size_t>(df.nrows())) {
     throw std::runtime_error("SeqSimResults are not canonical!!!");
   }
 

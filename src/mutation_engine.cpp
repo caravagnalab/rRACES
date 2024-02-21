@@ -255,7 +255,7 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
   ChromosomeId chr_id;    
   try {
     chr_id = GenomicPosition::stochr(row.get_field(0).substr(3));
-  } catch (std::invalid_argument) {
+  } catch (std::invalid_argument const&) {
     throw std::domain_error("Unknown chromosome specification " + row.get_field(1) 
                             + " in row number " + std::to_string(row_num) 
                             + ".");
@@ -264,7 +264,7 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
   uint32_t begin_pos;         
   try {
     begin_pos = stoul(row.get_field(1));
-  } catch (std::invalid_argument) {
+  } catch (std::invalid_argument const&) {
     throw std::domain_error("Unknown begin specification " + row.get_field(1) 
                             + " in row number " + std::to_string(row_num) 
                             + ".");
@@ -275,7 +275,7 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
   uint32_t end_pos;                
   try {
     end_pos = stoul(row.get_field(2));
-  } catch (std::invalid_argument) {
+  } catch (std::invalid_argument const&) {
     throw std::domain_error("Unknown end specification " + row.get_field(2) 
                             + " in row number " + std::to_string(row_num) 
                             + ".");
@@ -312,7 +312,7 @@ std::vector<Races::Mutations::CopyNumberAlteration> load_passenger_CNAs(const st
         if (major=="NA" || (stoi(major)>1)) {
           CNAs.emplace_back(region, CopyNumberAlteration::Type::AMPLIFICATION);
         }
-      } catch (std::invalid_argument) {
+      } catch (std::invalid_argument const&) {
         throw std::domain_error("Unknown major specification " + major 
                                 + " in row number " + std::to_string(row_num) 
                                 + ".");
@@ -323,7 +323,7 @@ std::vector<Races::Mutations::CopyNumberAlteration> load_passenger_CNAs(const st
         if (minor=="NA" || (stoi(minor)<1)) {
           CNAs.emplace_back(region, CopyNumberAlteration::Type::DELETION);
         }
-      } catch (std::invalid_argument) {
+      } catch (std::invalid_argument const&) {
         throw std::domain_error("Unknown minor specification " + major 
                                 + " in row number " + std::to_string(row_num) 
                                 + ".");
@@ -407,7 +407,8 @@ get_map(const Rcpp::List& list)
 
   using namespace Rcpp;
   CharacterVector names = list.names();
-  for (size_t i=0; i<list.size(); ++i) {
+  const size_t list_size = static_cast<size_t>(list.size());
+  for (size_t i=0; i<list_size; ++i) {
     tester.validate(list[i]);
     c_map[as<std::string>(names[i])] = as<VALUE>(list[i]);
   }
@@ -502,7 +503,8 @@ std::list<CPP_TYPE> get_super_object_list(const Rcpp::List& rcpp_list)
 {
   std::list<CPP_TYPE> cpp_list;
 
-  for (size_t i=0; i<rcpp_list.size(); ++i) {
+  const size_t list_size = static_cast<size_t>(rcpp_list.size());
+  for (size_t i=0; i<list_size; ++i) {
     cpp_list.push_back(static_cast<const CPP_TYPE&>(Rcpp::as<RCPP_TYPE>(rcpp_list[i])));
   }
 
@@ -537,7 +539,8 @@ double get_non_negative(const Rcpp::List& values,
 bool contains_passenger_rates(const Rcpp::List& list)
 {
   Rcpp::CharacterVector names = list.names();
-  for (size_t i=0; i<list.size(); ++i) {
+  const size_t list_size = static_cast<size_t>(list.size());
+  for (size_t i=0; i<list_size; ++i) {
     if (names[i]!="SNV" && names[i]!="CNA") {
       return false;
     }
@@ -557,7 +560,8 @@ get_passenger_rates(const Rcpp::List& list)
   }
 
   Rcpp::CharacterVector names = list.names();
-  for (size_t i=0; i<list.size(); ++i) {
+  const size_t list_size = static_cast<size_t>(list.size());
+  for (size_t i=0; i<list_size; ++i) {
     if (names[i]=="SNV") {
       p_rates.snv = get_non_negative(list[i], ": SNV rates must be non-negative");
     } else {
@@ -585,7 +589,8 @@ get_epistate_passenger_rates(const Rcpp::List& list)
   }
 
   Rcpp::CharacterVector names = list.names();
-  for (size_t i=0; i<list.size(); ++i) {
+  const size_t list_size = static_cast<size_t>(list.size());
+  for (size_t i=0; i<list_size; ++i) {
     if (names[i]=="+") {
       ep_rates["+"] = get_passenger_rates(list[i]);
     } else {

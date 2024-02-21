@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -436,6 +436,8 @@ RCPP_MODULE(Mutants){
 //'
 //' # build the samples forest
 //' forest <- sim$get_samples_forest()
+//'
+//' forest
   .method("get_samples_forest", &Simulation::get_samples_forest,
           "Get the descendants forest having as leaves the sampled cells")
 

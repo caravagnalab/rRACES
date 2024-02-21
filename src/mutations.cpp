@@ -874,7 +874,6 @@ RCPP_MODULE(Mutations){
 //'          evolution over time.
 //' @return A data frame reporting `time`, `signature`, `exposure` and, 
 //'          `type`.
-//' @examples
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_exposures", &PhylogeneticForest::get_timed_exposures,
             "Get the timed exposure data frame")
