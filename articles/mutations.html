@@ -403,12 +403,12 @@ can be applied during the simulation as it follows.</p>
 <div class="section level4">
 <h4 id="germline-mutations">Germline Mutations<a class="anchor" aria-label="anchor" href="#germline-mutations"></a>
 </h4>
-<p>rRACES gives the chance to apply the germline mutations of one of the
-subjects available in the germline data provided when the mutation
-engine is built. This feature allows users to simulate the evolution of
-a specific cancer type on an individual having the desired gender and
+<p>rRACES allows users to apply the germline mutations of one of the
+subjects available in the germline data provided in building the
+mutation engine. This feature will enable users to simulate a specific
+cancer type’s evolution on an individual with the desired gender and
 ethnicity.</p>
-<p>The available subjects together with their sex and ethnicity can be
+<p>The available subjects, together with their sex and ethnicity, can be
 obtained by using the method
 <code>MutationEngine$get_germline_subjects()</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -418,13 +418,12 @@ obtained by using the method
 <span><span class="co">#&gt;    sample pop super_pop gender</span></span>
 <span><span class="co">#&gt; 1 NA18941 JPT       EAS female</span></span>
 <span><span class="co">#&gt; 2 NA20513 TSI       EUR   male</span></span></code></pre></div>
-<p>The column <code>sample</code> contains the name of the available
+<p>The column <code>sample</code> contains the names of the available
 subjects. The columns <code>pop</code> and <code>super_pop</code> report
-the population and the super population codes of the subjects. The last
-column, <code>gender</code>, contains the subject gender.</p>
+the subjects’ population and super-population codes. The last column,
+<code>gender</code>, includes the subject gender.</p>
 <p>The method <code>MutationEngine$get_population_descritions()</code>
-clarifies the meaning of the codes reported in the <code>pop</code>
-columns.</p>
+clarifies the meaning of the codes reported in the pop columns.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_population_descritions</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    code          description</span></span>
@@ -485,17 +484,17 @@ columns.</p>
 <span><span class="co">#&gt; 27                                            Indian Telugu in the UK</span></span></code></pre></div>
 <p>The method <code>MutationEngine$get_active_germline()</code> returns
 the<br>
-the subject whose genome used by rRACES as wild-type genome.</p>
+the active germline subject.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_active_germline</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    sample pop super_pop gender</span></span>
 <span><span class="co">#&gt; 1 NA18941 JPT       EAS female</span></span></code></pre></div>
-<p>In order to change the germline subject, we must use the method
+<p>Users can change the germline subject using the method
 <code>MutationEngine$set_germline_subject()</code>.</p>
 <p>When a subject is selected for the first time, rRACES builds a binary
-representation of the subject genome and it saves it for future use.
-This step may take few minutes, however, all the successive selection of
-the same subject directly loads the binary file.</p>
+representation of the subject genome, saving it for future use. This
+step may take a few minutes. However, all the successive selections of
+the same subject directly load the binary file.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">set_germline_subject</span><span class="op">(</span><span class="va">subjects</span><span class="op">[</span><span class="fl">2</span>,<span class="st">"sample"</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
