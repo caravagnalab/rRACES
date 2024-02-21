@@ -14,8 +14,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Simulating Mutations">
 <meta property="og:description" content="rRACES">
@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,30 +106,49 @@ file and to build the corresponding context index. The function
 <code>build_mutation_engine</code> performs all these steps in a single
 call.</p>
 <p>The function <code>build_mutation_engine</code> can be called by
-specifing the name of the set-up directory, the complete URLs of both
-refence genome and SBS file, the default number of alleles per
-chromosome, and, optionally, a name list of exceptions for the default
-number of alleles whose names must be chromosome names.</p>
+specifing the name of the set-up directory, the path or URL of the
+reference sequence, the SBS file, the driver SNVs file, the passenger
+CNAs file, and the germline data directory.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rRACES</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">reference_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://ftp.ensembl.org/pub/release-110/fasta/"</span>,</span>
-<span>                        <span class="st">"homo_sapiens/dna/Homo_sapiens.GRCh38.dna."</span>,</span>
-<span>                        <span class="st">"chromosome.22.fa.gz"</span><span class="op">)</span></span>
+<span><span class="va">reference_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://ftp.ensembl.org/pub/grch37/current/"</span>,</span>
+<span>                        <span class="st">"fasta/homo_sapiens/dna/Homo_sapiens.GRCh37."</span>,</span>
+<span>                        <span class="st">"dna.chromosome.22.fa.gz"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sbs_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://cancer.sanger.ac.uk/signatures/documents/2124/"</span>,</span>
-<span>                  <span class="st">"COSMIC_v3.4_SBS_GRCh38.txt"</span><span class="op">)</span></span>
+<span><span class="va">SBS_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://cancer.sanger.ac.uk/signatures/documents/2123/"</span>,</span>
+<span>                  <span class="st">"COSMIC_v3.4_SBS_GRCh37.txt"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">drivers_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/"</span>,</span>
+<span>                      <span class="st">"caravagnalab/rRACES/main/inst/extdata/"</span>,</span>
+<span>                      <span class="st">"driver_mutations_hg19.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">passenger_CNAs_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/"</span>,</span>
+<span>                             <span class="st">"caravagnalab/rRACES/main/inst/extdata/"</span>,</span>
+<span>                             <span class="st">"passenger_CNAs_hg19.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">germline_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://www.dropbox.com/scl/fi/g9oloxkip18tr1r"</span>,</span>
+<span>                       <span class="st">"m6wjve/germline_data_demo.tar.gz?rlkey=15jshul"</span>,</span>
+<span>                       <span class="st">"d3bqgyfcs7fa0bzqeo&amp;dl=1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># build a mutation engine and place all the files in the directory "Test"</span></span>
 <span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>directory <span class="op">=</span> <span class="st">"Test"</span>,</span>
-<span>                                  reference_url <span class="op">=</span> <span class="va">reference_url</span>,</span>
-<span>                                  SBS_url <span class="op">=</span> <span class="va">sbs_url</span>,</span>
-<span>                                  default_num_of_alleles <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>                                  reference_src <span class="op">=</span> <span class="va">reference_url</span>,</span>
+<span>                                  SBS_src <span class="op">=</span> <span class="va">SBS_url</span>,</span>
+<span>                                  drivers_src <span class="op">=</span> <span class="va">drivers_url</span>,</span>
+<span>                                  passenger_CNAs_src <span class="op">=</span> <span class="va">passenger_CNAs_url</span>,</span>
+<span>                                  germline_src <span class="op">=</span> <span class="va">germline_url</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Downloading reference genome...</span></span>
 <span><span class="co">#&gt; Reference genome downloaded</span></span>
 <span><span class="co">#&gt; Decompressing reference file...done</span></span>
 <span><span class="co">#&gt; Downloading SBS file...</span></span>
 <span><span class="co">#&gt; SBS file downloaded</span></span>
+<span><span class="co">#&gt; Downloading driver mutation file...</span></span>
+<span><span class="co">#&gt; Driver mutation file downloaded</span></span>
+<span><span class="co">#&gt; Downloading passenger CNAs file...</span></span>
+<span><span class="co">#&gt; Passenger CNAs file downloaded</span></span>
+<span><span class="co">#&gt; Downloading germline mutations...</span></span>
+<span><span class="co">#&gt; Germline mutations downloaded</span></span>
 <span><span class="co">#&gt; Building context index...</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span></span>
@@ -147,8 +166,10 @@ all the data required to build a mutation engine, and build it.</p>
 <span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"Test"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "context_index_100.cif" "parameters.txt"        "reference.fasta"      </span></span>
-<span><span class="co">#&gt; [4] "SBS.txt"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "context_index_100.cif"     "drivers.txt"              </span></span>
+<span><span class="co">#&gt; [3] "germline_data"             "germline_data_demo.tar.gz"</span></span>
+<span><span class="co">#&gt; [5] "passenger_CNAs.txt"        "reference.fasta"          </span></span>
+<span><span class="co">#&gt; [7] "SBS.txt"                   "sources.csv"</span></span></code></pre></div>
 <p>The execution of the function may takes some time, but it is meant to
 be performed one for all and, as long as the user does not need to
 change the reference genome or the SBS file, it is no more required. In
@@ -158,8 +179,9 @@ this is not the case, avoids to performs them.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># build a new mutation engine and use all the data stored into the</span></span>
 <span><span class="co"># directory "Test"</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>,</span>
-<span>                                  <span class="va">sbs_url</span>, default_num_of_alleles <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>, <span class="va">SBS_url</span>,</span>
+<span>                                  <span class="va">passenger_CNAs_url</span>, <span class="va">drivers_url</span>,</span>
+<span>                                  <span class="va">germline_url</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m_engine</span></span>
 <span><span class="co">#&gt; MutationEngine</span></span>
@@ -186,19 +208,19 @@ default, but it can be specified during the <code>MutationEngine</code>
 call as the last parameter.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># set-up the data and build the context index with `context_sampling` is 50</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>,</span>
-<span>                                  <span class="va">sbs_url</span>, default_num_of_alleles <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>                                  context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>, <span class="va">SBS_url</span>,</span>
+<span>                                  <span class="va">passenger_CNAs_url</span>, <span class="va">drivers_url</span>,</span>
+<span>                                  <span class="va">germline_url</span>, context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Building context index...</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span></span>
 <span><span class="co"># get the size of the context index when `context_sampling` is 100</span></span>
 <span><span class="fu">utils</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">format.object_size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="st">"Test/context_index_100.cif"</span><span class="op">)</span>, <span class="st">"auto"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "1.5 Mb"</span></span>
+<span><span class="co">#&gt; [1] "1.3 Mb"</span></span>
 <span></span>
 <span><span class="co"># get the size of the context index when `context_sampling` is 50</span></span>
 <span><span class="fu">utils</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">format.object_size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="st">"Test/context_index_50.cif"</span><span class="op">)</span>, <span class="st">"auto"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "3 Mb"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "2.7 Mb"</span></span></code></pre></div>
 <p>The function <code>MutationEngine</code> is quite flexible and it
 allows to specify any possible reference genome and any SBS file.
 However, the vast majority of rRACES users aim a standard set-up for
@@ -223,6 +245,12 @@ configuration.</p>
 <span><span class="co">#&gt; Decompressing reference file...done</span></span>
 <span><span class="co">#&gt; Downloading SBS file...</span></span>
 <span><span class="co">#&gt; SBS file downloaded</span></span>
+<span><span class="co">#&gt; Downloading driver mutation file...</span></span>
+<span><span class="co">#&gt; Driver mutation file downloaded</span></span>
+<span><span class="co">#&gt; Downloading passenger CNAs file...</span></span>
+<span><span class="co">#&gt; Passenger CNAs file downloaded</span></span>
+<span><span class="co">#&gt; Downloading germline mutations...</span></span>
+<span><span class="co">#&gt; Germline mutations downloaded</span></span>
 <span><span class="co">#&gt; Building context index...</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span></span>
@@ -232,7 +260,7 @@ configuration.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the size of the context index when `context_sampling` is 100</span></span>
 <span><span class="fu">utils</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">format.object_size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="st">"demo/context_index_100.cif"</span><span class="op">)</span>, <span class="st">"auto"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "1.5 Mb"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "1.3 Mb"</span></span></code></pre></div>
 <p>We can remove the set-up and rebuild it decreasing the
 <code>context_sampling</code> parameter.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -244,7 +272,7 @@ configuration.</p>
 <span></span>
 <span><span class="co"># get the size of the context index when `context_sampling` is 50</span></span>
 <span><span class="fu">utils</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">format.object_size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="st">"demo/context_index_50.cif"</span><span class="op">)</span>, <span class="st">"auto"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "3 Mb"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "2.7 Mb"</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="mutant-genetic-characterization">Mutant Genetic Characterization<a class="anchor" aria-label="anchor" href="#mutant-genetic-characterization"></a>
 </h4>
@@ -300,13 +328,13 @@ characterized by one driver mutation on chromosome 22, while
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Driver mutations</span></span>
 <span><span class="co">#&gt;    "A" SNVs: </span></span>
-<span><span class="co">#&gt;        chr22(10510210)(A[T&gt;C]T)</span></span>
+<span><span class="co">#&gt;        chr22(10510210)[N&gt;C]</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
 <span><span class="co">#&gt;        CNA("D",GenomicRegion(chr: 22, begin: 5010000, length: 200000))</span></span>
 <span><span class="co">#&gt;        CNA("A",GenomicRegion(chr: 22, begin: 10303470, length: 200000))</span></span>
 <span><span class="co">#&gt;    "B" SNVs: </span></span>
-<span><span class="co">#&gt;        chr22(12028576)(T[A&gt;G]T)</span></span>
-<span><span class="co">#&gt;        chr22(12029660)(T[T&gt;A]G)</span></span>
+<span><span class="co">#&gt;        chr22(12028576)[N&gt;G]</span></span>
+<span><span class="co">#&gt;        chr22(12029660)[N&gt;A]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span></code></pre></div>
 </div>
@@ -347,13 +375,13 @@ specified time up to the next exposure change.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Driver mutations</span></span>
 <span><span class="co">#&gt;    "A" SNVs: </span></span>
-<span><span class="co">#&gt;        chr22(10510210)(A[T&gt;C]T)</span></span>
+<span><span class="co">#&gt;        chr22(10510210)[N&gt;C]</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
 <span><span class="co">#&gt;        CNA("D",GenomicRegion(chr: 22, begin: 5010000, length: 200000))</span></span>
 <span><span class="co">#&gt;        CNA("A",GenomicRegion(chr: 22, begin: 10303470, length: 200000))</span></span>
 <span><span class="co">#&gt;    "B" SNVs: </span></span>
-<span><span class="co">#&gt;        chr22(12028576)(T[A&gt;G]T)</span></span>
-<span><span class="co">#&gt;        chr22(12029660)(T[T&gt;A]G)</span></span>
+<span><span class="co">#&gt;        chr22(12028576)[N&gt;G]</span></span>
+<span><span class="co">#&gt;        chr22(12029660)[N&gt;A]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    [0, 100[: {"SBS1": 0.8, "SBS13": 0.2}</span></span>
@@ -364,23 +392,116 @@ specified time up to the next exposure change.</p>
 </h4>
 <p>The passenger CNAs applied during the simulation depend on tumor
 type. The type of tumor can be specified when building the mutation
-engine by using the <code>tumor_type</code> parameter. For instance, the
-passenger CNAs identified in breast carcinoma in the UK can be applied
-during the simulation as it follows.</p>
+engine by using the <code>tumor_type</code> parameter. For instance, if
+the passenger CNAs file used to build the mutation engine contains some
+of the data identified in breast carcinoma in the UK, the specific CNA
+can be applied during the simulation as it follows.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>,</span>
 <span>                                  tumor_type <span class="op">=</span> <span class="st">"BRCA-UK"</span><span class="op">)</span></span></code></pre></div>
-<p>The function <code><a href="../reference/get_admissible_CNA_tumor_types.html">get_admissible_CNA_tumor_types()</a></code> returns
-the complete list of tumors supported by rRACES.</p>
+</div>
+<div class="section level4">
+<h4 id="germline-mutations">Germline Mutations<a class="anchor" aria-label="anchor" href="#germline-mutations"></a>
+</h4>
+<p>rRACES gives the chance to apply the germline mutations of one of the
+subjects available in the germline data provided when the mutation
+engine is built. This feature allows users to simulate the evolution of
+a specific cancer type on an individual having the desired gender and
+ethnicity.</p>
+<p>The available subjects together with their sex and ethnicity can be
+obtained by using the method
+<code>MutationEngine$get_germline_subjects()</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/get_admissible_CNA_tumor_types.html">get_admissible_CNA_tumor_types</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "BLCA-US" "BOCA-UK" "BRCA-EU" "BRCA-UK" "BRCA-US" "BTCA-SG" "CESC-US"</span></span>
-<span><span class="co">#&gt;  [8] "CLLE-ES" "CMDI-UK" "COAD-US" "DLBC-US" "EOPC-DE" "ESAD-UK" "GACA-CN"</span></span>
-<span><span class="co">#&gt; [15] "GBM-US"  "HNSC-US" "KICH-US" "KIRC-US" "KIRP-US" "LAML-KR" "LGG-US" </span></span>
-<span><span class="co">#&gt; [22] "LICA-FR" "LIHC-US" "LINC-JP" "LIRI-JP" "LUAD-US" "LUSC-US" "MALY-DE"</span></span>
-<span><span class="co">#&gt; [29] "MELA-AU" "ORCA-IN" "OV-AU"   "OV-US"   "PACA-AU" "PACA-CA" "PAEN-AU"</span></span>
-<span><span class="co">#&gt; [36] "PAEN-IT" "PBCA-DE" "PRAD-CA" "PRAD-UK" "PRAD-US" "READ-US" "RECA-EU"</span></span>
-<span><span class="co">#&gt; [43] "SARC-US" "SKCM-US" "STAD-US" "THCA-US" "UCEC-US"</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">subjects</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">get_germline_subjects</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">subjects</span></span>
+<span><span class="co">#&gt;    sample pop super_pop gender</span></span>
+<span><span class="co">#&gt; 1 NA18941 JPT       EAS female</span></span>
+<span><span class="co">#&gt; 2 NA20513 TSI       EUR   male</span></span></code></pre></div>
+<p>The column <code>sample</code> contains the name of the available
+subjects. The columns <code>pop</code> and <code>super_pop</code> report
+the population and the super population codes of the subjects. The last
+column, <code>gender</code>, contains the subject gender.</p>
+<p>The method <code>MutationEngine$get_population_descritions()</code>
+clarifies the meaning of the codes reported in the <code>pop</code>
+columns.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_population_descritions</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    code          description</span></span>
+<span><span class="co">#&gt; 1   CHB          Han Chinese</span></span>
+<span><span class="co">#&gt; 2   JPT             Japanese</span></span>
+<span><span class="co">#&gt; 3   CHS Southern Han Chinese</span></span>
+<span><span class="co">#&gt; 4   CDX          Dai Chinese</span></span>
+<span><span class="co">#&gt; 5   KHV      Kinh Vietnamese</span></span>
+<span><span class="co">#&gt; 6   CHD       Denver Chinese</span></span>
+<span><span class="co">#&gt; 7   CEU                 CEPH</span></span>
+<span><span class="co">#&gt; 8   TSI               Tuscan</span></span>
+<span><span class="co">#&gt; 9   GBR              British</span></span>
+<span><span class="co">#&gt; 10  FIN              Finnish</span></span>
+<span><span class="co">#&gt; 11  IBS              Spanish</span></span>
+<span><span class="co">#&gt; 12  YRI               Yoruba</span></span>
+<span><span class="co">#&gt; 13  LWK                Luhya</span></span>
+<span><span class="co">#&gt; 14  GWD              Gambian</span></span>
+<span><span class="co">#&gt; 15  MSL                Mende</span></span>
+<span><span class="co">#&gt; 16  ESN                 Esan</span></span>
+<span><span class="co">#&gt; 17  ASW  African-American SW</span></span>
+<span><span class="co">#&gt; 18  ACB    African-Caribbean</span></span>
+<span><span class="co">#&gt; 19  MXL     Mexican-American</span></span>
+<span><span class="co">#&gt; 20  PUR         Puerto Rican</span></span>
+<span><span class="co">#&gt; 21  CLM            Colombian</span></span>
+<span><span class="co">#&gt; 22  PEL             Peruvian</span></span>
+<span><span class="co">#&gt; 23  GIH             Gujarati</span></span>
+<span><span class="co">#&gt; 24  PJL              Punjabi</span></span>
+<span><span class="co">#&gt; 25  BEB              Bengali</span></span>
+<span><span class="co">#&gt; 26  STU           Sri Lankan</span></span>
+<span><span class="co">#&gt; 27  ITU               Indian</span></span>
+<span><span class="co">#&gt;                                                      long.description</span></span>
+<span><span class="co">#&gt; 1                                       Han Chinese in Beijing, China</span></span>
+<span><span class="co">#&gt; 2                                            Japanese in Tokyo, Japan</span></span>
+<span><span class="co">#&gt; 3                                                   Han Chinese South</span></span>
+<span><span class="co">#&gt; 4                                 Chinese Dai in Xishuangbanna, China</span></span>
+<span><span class="co">#&gt; 5                                   Kinh in Ho Chi Minh City, Vietnam</span></span>
+<span><span class="co">#&gt; 6                          Chinese in Denver, Colorado (pilot 3 only)</span></span>
+<span><span class="co">#&gt; 7  Utah residents (CEPH) with Northern and Western European ancestry </span></span>
+<span><span class="co">#&gt; 8                                                  Toscani in Italia </span></span>
+<span><span class="co">#&gt; 9                                    British in England and Scotland </span></span>
+<span><span class="co">#&gt; 10                                                Finnish in Finland </span></span>
+<span><span class="co">#&gt; 11                                      Iberian populations in Spain </span></span>
+<span><span class="co">#&gt; 12                                          Yoruba in Ibadan, Nigeria</span></span>
+<span><span class="co">#&gt; 13                                             Luhya in Webuye, Kenya</span></span>
+<span><span class="co">#&gt; 14                           Gambian in Western Division, The Gambia </span></span>
+<span><span class="co">#&gt; 15                                              Mende in Sierra Leone</span></span>
+<span><span class="co">#&gt; 16                                                    Esan in Nigeria</span></span>
+<span><span class="co">#&gt; 17                                  African Ancestry in Southwest US </span></span>
+<span><span class="co">#&gt; 18                                      African Caribbean in Barbados</span></span>
+<span><span class="co">#&gt; 19                        Mexican Ancestry in Los Angeles, California</span></span>
+<span><span class="co">#&gt; 20                                        Puerto Rican in Puerto Rico</span></span>
+<span><span class="co">#&gt; 21                                    Colombian in Medellin, Colombia</span></span>
+<span><span class="co">#&gt; 22                                             Peruvian in Lima, Peru</span></span>
+<span><span class="co">#&gt; 23                                     Gujarati Indian in Houston, TX</span></span>
+<span><span class="co">#&gt; 24                                        Punjabi in Lahore, Pakistan</span></span>
+<span><span class="co">#&gt; 25                                              Bengali in Bangladesh</span></span>
+<span><span class="co">#&gt; 26                                         Sri Lankan Tamil in the UK</span></span>
+<span><span class="co">#&gt; 27                                            Indian Telugu in the UK</span></span></code></pre></div>
+<p>The method <code>MutationEngine$get_active_germline()</code> returns
+the<br>
+the subject whose genome used by rRACES as wild-type genome.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_active_germline</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    sample pop super_pop gender</span></span>
+<span><span class="co">#&gt; 1 NA18941 JPT       EAS female</span></span></code></pre></div>
+<p>In order to change the germline subject, we must use the method
+<code>MutationEngine$set_germline_subject()</code>.</p>
+<p>When a subject is selected for the first time, rRACES builds a binary
+representation of the subject genome and it saves it for future use.
+This step may take few minutes, however, all the successive selection of
+the same subject directly loads the binary file.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">set_germline_subject</span><span class="op">(</span><span class="va">subjects</span><span class="op">[</span><span class="fl">2</span>,<span class="st">"sample"</span><span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_active_germline</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    sample pop super_pop gender</span></span>
+<span><span class="co">#&gt; 1 NA20513 TSI       EUR   male</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -392,7 +513,7 @@ samples forest by mutations.</p>
 simulation peformed in <code><a href="../articles/growth_models.html">vignette("growth_models")</a></code>, we can
 use the samples forest saved in the file
 <code>"samples_forest.sff"</code> in that article.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_samples_forest.html">load_samples_forest</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># place mutations on the sample forest assuming 1000</span></span>
@@ -406,14 +527,14 @@ use the samples forest saved in the file
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 67663</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs: 68264</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The phylogenetic forest stores all the mutations labeling the sampled
 cells which are represented by the forest leaves. Users can retrieve
 such data by using the methods
 <code>Phylogenetic$get_sampled_cell_SNVs</code> and
 <code>Phylogenetic$get_sampled_cell_CNAs</code>.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
@@ -427,13 +548,13 @@ such data by using the methods
 <span><span class="co"># select the first SNVs among all the mutations occuring in</span></span>
 <span><span class="co"># the genomes of the sampled cells</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_SNVs</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id chromosome  chr_pos allele context mutated_base          cause</span></span>
-<span><span class="co">#&gt; 1  109584         22 10510210      0     ATT            C              A</span></span>
-<span><span class="co">#&gt; 2  109584         22 10637130      0     TGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 3  109584         22 10697434      0     TGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 4  109584         22 10716405      0     TGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 5  109584         22 10716802      0     CGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 6  109584         22 10717082      0     TCG            T Pre-neoplastic</span></span>
+<span><span class="co">#&gt;   cell_id chromosome  chr_pos allele ref alt          cause</span></span>
+<span><span class="co">#&gt; 1  109584         22 10510210      0   N   C              A</span></span>
+<span><span class="co">#&gt; 2  109584         22 16096660      0   G   A Pre-neoplastic</span></span>
+<span><span class="co">#&gt; 3  109584         22 16159477      0   G   A Pre-neoplastic</span></span>
+<span><span class="co">#&gt; 4  109584         22 16230073      0   G   A Pre-neoplastic</span></span>
+<span><span class="co">#&gt; 5  109584         22 16313691      0   C   T Pre-neoplastic</span></span>
+<span><span class="co">#&gt; 6  109584         22 16396477      0   G   A Pre-neoplastic</span></span>
 <span></span>
 <span><span class="co"># select the first CNAs among all the mutations occuring in</span></span>
 <span><span class="co"># the genomes of the sampled cells</span></span>
@@ -465,13 +586,13 @@ such data by using the methods
 <span></span>
 <span><span class="co"># get the SNVs of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_SNVs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id chromosome  chr_pos allele context mutated_base          cause</span></span>
-<span><span class="co">#&gt; 1  109691         22 10510210      0     ATT            C              A</span></span>
-<span><span class="co">#&gt; 2  109691         22 10637130      0     TGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 3  109691         22 10697434      0     TGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 4  109691         22 10716405      0     TGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 5  109691         22 10716802      0     CGC            A Pre-neoplastic</span></span>
-<span><span class="co">#&gt; 6  109691         22 10717082      0     TCG            T Pre-neoplastic</span></span>
+<span><span class="co">#&gt;   cell_id chromosome  chr_pos allele ref alt          cause</span></span>
+<span><span class="co">#&gt; 1  109691         22 10510210      0   N   C              A</span></span>
+<span><span class="co">#&gt; 2  109691         22 16096660      0   G   A Pre-neoplastic</span></span>
+<span><span class="co">#&gt; 3  109691         22 16159477      0   G   A Pre-neoplastic</span></span>
+<span><span class="co">#&gt; 4  109691         22 16230073      0   G   A Pre-neoplastic</span></span>
+<span><span class="co">#&gt; 5  109691         22 16246019      0   C   T           SBS3</span></span>
+<span><span class="co">#&gt; 6  109691         22 16265258      0   T   A           SBS3</span></span>
 <span></span>
 <span><span class="co"># get the CNAs of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -480,15 +601,15 @@ such data by using the methods
 <span><span class="co">#&gt; 2  109691    A         22 10303470 10503469      2          0</span></span></code></pre></div>
 <p>Users can also identify the cell in which a mutation emerged even
 when the cell was not sampled.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select one of the mutations</span></span>
 <span><span class="va">mutation_row</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_SNVs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span>
 <span></span>
 <span><span class="co"># rebuild the corresponding SNV</span></span>
 <span><span class="va">snv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="va">mutation_row</span><span class="op">[</span><span class="st">"chromosome"</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,</span>
 <span>           <span class="va">mutation_row</span><span class="op">[</span><span class="st">"chr_pos"</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,</span>
-<span>           <span class="va">mutation_row</span><span class="op">[</span><span class="st">"mutated_base"</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,</span>
-<span>           <span class="va">mutation_row</span><span class="op">[</span><span class="st">"context"</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,<span class="op">)</span></span>
+<span>           <span class="va">mutation_row</span><span class="op">[</span><span class="st">"alt"</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,</span>
+<span>           <span class="va">mutation_row</span><span class="op">[</span><span class="st">"ref"</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,<span class="op">)</span></span>
 <span></span>
 <span><span class="co"># get the identifier of the oldest cells in which the SNV occurs</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_first_occurrences</span><span class="op">(</span><span class="va">snv</span><span class="op">)</span></span>
@@ -497,7 +618,7 @@ when the cell was not sampled.</p>
 <p>The exposures used in placing the mutations on the cells in the
 phylogenetic forest can be obtained by using the method
 <code>PhylogeneticForest$get_exposures()</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the exposures used in placing the mutations</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_exposures</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   time signature exposure type</span></span>
@@ -509,16 +630,16 @@ phylogenetic forest can be obtained by using the method
 <p>The details about the SBSs adopted during the evolution are available
 in the mutation engine and they can be retrieved by using the method
 <code>MutationEngine$get_SBSs()</code>.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># get the SBSs used during the evolutions</span></span>
-<span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_SBSs</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
-<span><span class="co">#&gt;      Type         SBS1         SBS2        SBS3        SBS4</span></span>
-<span><span class="co">#&gt; 1 A[C&gt;A]A 0.0008760226 5.789892e-07 0.020919749 0.042450737</span></span>
-<span><span class="co">#&gt; 2 A[C&gt;A]C 0.0022201200 1.455043e-04 0.016343192 0.032989582</span></span>
-<span><span class="co">#&gt; 3 A[C&gt;A]G 0.0001797268 5.361706e-05 0.001807548 0.016115961</span></span>
-<span><span class="co">#&gt; 4 A[C&gt;A]T 0.0012650525 9.758841e-05 0.012265066 0.029662770</span></span>
-<span><span class="co">#&gt; 5 A[C&gt;G]A 0.0018390547 2.226114e-16 0.019813416 0.006930938</span></span>
-<span><span class="co">#&gt; 6 A[C&gt;G]C 0.0011879592 1.307576e-04 0.011588809 0.002813526</span></span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># get the SBSs used in placing the mutations</span></span>
+<span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_SBSs</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
+<span><span class="co">#&gt;      Type        SBS1        SBS2       SBS3        SBS4</span></span>
+<span><span class="co">#&gt; 1 A[C&gt;A]A 0.000886157 5.80000e-07 0.02080832 0.042196498</span></span>
+<span><span class="co">#&gt; 2 A[C&gt;A]C 0.002280405 1.48004e-04 0.01650660 0.033297236</span></span>
+<span><span class="co">#&gt; 3 A[C&gt;A]G 0.000177031 5.23000e-05 0.00175070 0.015598705</span></span>
+<span><span class="co">#&gt; 4 A[C&gt;A]T 0.001280227 9.78000e-05 0.01220488 0.029497552</span></span>
+<span><span class="co">#&gt; 5 A[C&gt;G]A 0.001860330 2.23000e-16 0.01970788 0.006889428</span></span>
+<span><span class="co">#&gt; 6 A[C&gt;G]C 0.001220217 1.33004e-04 0.01170468 0.002839764</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="storing-phylogenetic-forests">Storing Phylogenetic Forests<a class="anchor" aria-label="anchor" href="#storing-phylogenetic-forests"></a>
@@ -526,7 +647,7 @@ in the mutation engine and they can be retrieved by using the method
 <p>As in the case of the samples forests, the phylogenetic forests can
 be saved by using the method <code>PhylogeneticForest$save</code> and
 load by the function <code>load_phylogenetic_forest</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the phylogenetic forest in the file "phylo_forest.sff"</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
 <span></span>
@@ -540,7 +661,7 @@ load by the function <code>load_phylogenetic_forest</code>.</p>
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 67663</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs: 68264</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-alexandrov2020repertoire" class="csl-entry">

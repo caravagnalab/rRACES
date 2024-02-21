@@ -70,7 +70,19 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_SBSs.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_active_germline.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_germline_subjects.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_population_descritions.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-place_mutations.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-set_germline_subject.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine.html</loc>
@@ -109,22 +121,22 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_alt_base.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_cause.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_chromosome.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_context.html</loc>
-  </url>
-  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_dataframe.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_mutated_base.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_position_in_chromosome.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_position_in_chromosome.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SNV-cash-get_ref_base.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SNV.html</loc>
@@ -269,9 +281,6 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/build_mutation_engine.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/get_admissible_CNA_tumor_types.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/get_mutation_engine_codes.html</loc>
