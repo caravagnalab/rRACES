@@ -277,15 +277,14 @@ m_engine <- build_mutation_engine(setup_code = "demo",
 
 #### Germline Mutations
 
-rRACES gives the chance to apply the germline mutations of one of 
-the subjects available in the germline data provided when the 
-mutation engine is built. This feature allows users to simulate 
-the evolution of a specific cancer type on an individual having the 
+rRACES allows users to apply the germline mutations of one of
+the subjects available in the germline data provided in building
+the mutation engine. This feature will enable users to simulate 
+a specific cancer type's evolution on an individual with the 
 desired gender and ethnicity.
 
-The available subjects together with their sex and ethnicity can be 
-obtained by using the method 
-`MutationEngine$get_germline_subjects()`.
+The available subjects, together with their sex and ethnicity, can
+be obtained by using the method `MutationEngine$get_germline_subjects()`.
 
 ```{r}
 subjects <- m_engine$get_germline_subjects()
@@ -293,33 +292,33 @@ subjects <- m_engine$get_germline_subjects()
 subjects
 ```
 
-The column `sample` contains the name of the available subjects.
-The columns `pop` and `super_pop` report the population and 
-the super population codes of the subjects. The last column, 
-`gender`, contains the subject gender.
+The column `sample` contains the names of the available subjects.
+The columns `pop` and `super_pop` report the subjects' population
+and super-population codes. The last column,
+`gender`, includes the subject gender.
 
-The method `MutationEngine$get_population_descritions()` clarifies the
-meaning of the codes reported in the `pop` columns.
+The method `MutationEngine$get_population_descritions()` clarifies
+the meaning of the codes reported in the pop columns.
 
 ```{r}
 m_engine$get_population_descritions()
 ```
 
 The method `MutationEngine$get_active_germline()` returns the  
-the subject whose genome used by rRACES as wild-type genome.
+the active germline subject.
 
 ```{r}
 m_engine$get_active_germline()
 ```
 
-In order to change the germline subject, we must use the 
-method `MutationEngine$set_germline_subject()`.
+Users can change the germline subject using the method 
+`MutationEngine$set_germline_subject()`.
 
 When a subject is selected for the first time, rRACES builds
-a binary representation of the subject genome and it saves 
-it for future use. This step may take few minutes, however,
-all the successive selection of the same subject directly
-loads the binary file.
+a binary representation of the subject genome, saving
+it for future use. This step may take a few minutes. However,
+all the successive selections of the same subject directly
+load the binary file.
 
 ```{r}
 m_engine$set_germline_subject(subjects[2,"sample"])
