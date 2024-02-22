@@ -16,7 +16,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,8 +71,9 @@
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>mutant_name</dt>
-<dd><p>The mutant of the searched cells.</p></dd>
+    <dl><dt>min_num_of_cells</dt>
+<dd><p>A named integer vector reporting the minimum number 
+of cells per species or mutant.</p></dd>
 
 
 <dt>num_of_cells</dt>
@@ -107,8 +108,8 @@
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"B"</span>, num_of_cells <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># find a 10x10 sample containing 80 "B" cells</span></span></span>
-<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="st">"B"</span>,<span class="fl">80</span>,<span class="fl">50</span>,<span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># find a 10x10 sample containing 80 "B" cells and 10 "A" cells at least</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span> <span class="op">=</span> <span class="fl">10</span>, <span class="st">"B"</span> <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>,<span class="fl">50</span>,<span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> TissueRectangle((484,435),(533,484))</span>
 </code></pre></div>
     </div>
