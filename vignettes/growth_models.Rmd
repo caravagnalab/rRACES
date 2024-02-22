@@ -98,10 +98,10 @@ sim$run_up_to_size("B+", 5000)
 
 ncells <- 0.9 * bbox_width * bbox_width
 
-bbox <- sim$search_sample("B", ncells, bbox_width, bbox_width)
+bbox <- sim$search_sample(c("B" = ncells), bbox_width, bbox_width)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- sim$search_sample("A", ncells, bbox_width, bbox_width)
+bbox <- sim$search_sample(c("A" = ncells), bbox_width, bbox_width)
 sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 ```
 
@@ -199,10 +199,10 @@ sim$run_up_to_size("B+", 5000)
 
 ncells <- 0.9 * bbox_width * bbox_width
 
-bbox <- sim$search_sample("B", ncells, bbox_width, bbox_width)
+bbox <- sim$search_sample(c("B" = ncells), bbox_width, bbox_width)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- sim$search_sample("A", ncells, bbox_width, bbox_width)
+bbox <- sim$search_sample(c("A" = ncells), bbox_width, bbox_width)
 sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 ```
 

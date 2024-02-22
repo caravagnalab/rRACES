@@ -234,7 +234,7 @@ n_w <- n_h <- 50
 ncells <- 0.8*n_w*n_h
 
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
-bbox <- sim$search_sample("B", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
 
 current +
   geom_rect(xmin = bbox$lower_corner[1], xmax = bbox$upper_corner[1],
@@ -249,7 +249,7 @@ sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 Something similar with species `A`.
 
 ```{r,  fig.height=4, fig.width=3}
-bbox <- sim$search_sample("A", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
 
 current +
   geom_rect(xmin = bbox$lower_corner[1], xmax = bbox$upper_corner[1],
@@ -344,10 +344,10 @@ Sample again and plot the tissue
 n_w <- n_h <- 50
 ncells <- 0.8*n_w*n_h
 
-bbox <- sim$search_sample("A", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- sim$search_sample("B", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
 sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim, num_of_bins = 500)
@@ -392,10 +392,10 @@ n_w <- n_h <- 7
 ncells <- 0.3*n_w*n_h
 
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
-bbox <- sim$search_sample("A", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
 sim$sample_cells("S_1_1", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- sim$search_sample("A", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
 sim$sample_cells("S_1_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim)
@@ -421,10 +421,10 @@ Random sampling of cells from both mutant `A` and `B`.
 
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
-bbox <- sim$search_sample("A", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- sim$search_sample("B", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
 sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim)
@@ -446,10 +446,10 @@ With sampling of mutants `B` and `C`.
 
 ```{r,  fig.height=4, fig.width=3}
 # Sampling with random box sampling
-bbox <- sim$search_sample("B", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
 sim$sample_cells("S_3_1", bbox$lower_corner, bbox$upper_corner)
 
-bbox <- sim$search_sample("C", ncells, n_w, n_h)
+bbox <- sim$search_sample(c("C" = ncells), n_w, n_h)
 sim$sample_cells("S_3_2", bbox$lower_corner, bbox$upper_corner)
 
 plot_tissue(sim, num_of_bins = 100)

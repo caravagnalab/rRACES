@@ -422,7 +422,7 @@ RCPP_MODULE(Mutants){
 //' @title Get the samples forest
 //' @return The samples forest having as leaves the sampled cells
 //' @examples
-//' sim <- new(Simulation)
+//' sim <- new(Simulation, "get_samples_forest")
 //' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -961,7 +961,8 @@ RCPP_MODULE(Mutants){
 //'        the provided number of cells. The sizes of the sample are also
 //'        provided a parameter of the method. 
 //'        The complexity of this method is O(|tissue rows|*|tissue cols|).
-//' @param mutant_name The mutant of the searched cells.
+//' @param min_num_of_cells A named integer vector reporting the minimum number 
+//'        of cells per species or mutant.
 //' @param num_of_cells The number of cells in the searched sample.
 //' @param width The width of the searched sample.
 //' @param height The height of the searched sample.
@@ -978,8 +979,8 @@ RCPP_MODULE(Mutants){
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 //' sim$run_up_to_size(species = "B", num_of_cells = 1000)
 //'
-//' # find a 10x10 sample containing 80 "B" cells
-//' sim$search_sample("B",80,50,50)
+//' # find a 10x10 sample containing 80 "B" cells and 10 "A" cells at least
+//' sim$search_sample(c("A" = 10, "B" = 80),50,50)
   .method("search_sample", &Simulation::search_sample, 
           "Search a rectangular sample containing a given number of cells");
 

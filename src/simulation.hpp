@@ -292,7 +292,7 @@ public:
 
   TissueRectangle get_tumor_bounding_box() const;
 
-  TissueRectangle search_sample(const std::string& mutant_name, const size_t& num_of_cells,
+  TissueRectangle search_sample(const Rcpp::IntegerVector& minimum_cell_vector,
                                 const uint16_t& width, const uint16_t& height);
 };
 
