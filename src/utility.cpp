@@ -1,0 +1,86 @@
+/*
+ * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
+ * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, version 3.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <iostream>
+
+#include <sstream>
+#include <random>
+#include <cstdint>
+
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+#include <unistd.h>
+#include <pwd.h>
+#elif defined (_WIN32)  
+#include<Windows.h>  
+#endif
+
+#include "utility.hpp"
+
+std::string get_user_name()
+{
+#if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
+
+    auto userid = getuid();
+    auto pwd = getpwuid(userid);
+    return pwd->pw_name;
+
+#elif defined (_WIN32)
+
+    const int MAX_LEN = 100;
+    char szBuffer[MAX_LEN];
+    DWORD len = MAX_LEN;
+    if (GetUserName(szBuffer, &len)) {
+        return szBuffer;
+    }
+
+    return "unknown";
+
+#else
+
+    return "unknown";
+
+#endif
+}
+
+template<typename T, typename std::enable_if_t<std::is_integral_v<T>, bool> = true>
+std::string int2hex(const T value)
+{
+  std::ostringstream oss;
+
+  oss << std::setfill('0') << std::setw(8) << std::hex << value;
+
+  return oss.str();
+}
+
+std::filesystem::path get_tmp_dir_path(const std::string& base_name)
+{
+  int i{0};
+
+  std::mt19937 r_gen((unsigned) time(NULL));
+
+  std::uniform_int_distribution<uint32_t> dist;
+
+  std::string base_path = std::filesystem::temp_directory_path()/(base_name + "_" 
+                                                                  + get_user_name());
+  std::filesystem::path output_path = base_path + "_" + int2hex(dist(r_gen));
+
+  while (std::filesystem::exists(output_path)) {
+    output_path = base_path + "_" + int2hex(dist(r_gen)+(++i));
+  }
+
+  return output_path;
+}

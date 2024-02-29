@@ -22,6 +22,8 @@
 
 #include "simulation.hpp"
 
+#include "utility.hpp"
+
 
 template<typename SIMULATION_TEST>
 struct RTest : public SIMULATION_TEST
@@ -345,7 +347,6 @@ Simulation Simulation::load(const std::string& directory_name)
   return simulation;
 }
 
-
 std::string get_time_string()
 {
     std::time_t time;
@@ -366,21 +367,6 @@ get_default_name()
   return "races_"+get_time_string();
 }
 
-inline std::filesystem::path
-get_tmp_path()
-{
-  using namespace std::filesystem;
-  size_t i{0};
-  std::string base_path = temp_directory_path()/get_default_name();
-  auto tmp_path = base_path;
-
-  while (exists(tmp_path)) {
-    tmp_path = base_path + "_" + std::to_string(++i);
-  }
-
-  return tmp_path;
-}
-
 void Simulation::init(const SEXP& sexp)
 {
   using namespace Rcpp;
@@ -397,7 +383,7 @@ void Simulation::init(const SEXP& sexp)
       if (save_snapshots) {
         sim_ptr = std::make_shared<RS::Simulation>(name, seed);
       } else {
-        sim_ptr = std::make_shared<RS::Simulation>(get_tmp_path(), seed);
+        sim_ptr = std::make_shared<RS::Simulation>(get_tmp_dir_path(), seed);
       }
       break;
     }
@@ -407,7 +393,7 @@ void Simulation::init(const SEXP& sexp)
       if (save_snapshots) {
         sim_ptr = std::make_shared<RS::Simulation>(name);
       } else {
-        sim_ptr = std::make_shared<RS::Simulation>(get_tmp_path());
+        sim_ptr = std::make_shared<RS::Simulation>(get_tmp_dir_path());
       }
       break;
     }
@@ -423,7 +409,7 @@ void Simulation::init(const SEXP& sexp)
 }
 
 Simulation::Simulation():
-  sim_ptr(std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_path())),
+  sim_ptr(std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_dir_path())),
   name(get_default_name()), save_snapshots(false)
 {}
 
@@ -439,7 +425,7 @@ Simulation::Simulation(const SEXP& sexp):
     if (save_snapshots) {
       sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(name);
     } else {
-      sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_path());
+      sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_dir_path());
     }
 
     return;
@@ -486,7 +472,7 @@ Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
   name = as<std::string>(first_param);
   int seed = as<int>(second_param);
 
-  sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_path(), seed);
+  sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(name, seed);
 }
 
 Simulation::Simulation(const std::string& simulation_name, const int& seed, const bool& save_snapshots):
@@ -495,7 +481,7 @@ Simulation::Simulation(const std::string& simulation_name, const int& seed, cons
   if (save_snapshots) {
     sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(simulation_name, seed);
   } else {
-    sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_path(), seed);
+    sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_dir_path(), seed);
   }
 }
 
@@ -504,7 +490,7 @@ Simulation::~Simulation()
   if (sim_ptr.use_count()==1 && !save_snapshots) {
     auto dir = sim_ptr->get_logger().get_directory();
 
-    sim_ptr = std::shared_ptr<Races::Mutants::Evolutions::Simulation>();
+    sim_ptr = nullptr;
 
     std::filesystem::remove_all(dir);
   }

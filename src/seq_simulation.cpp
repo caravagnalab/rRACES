@@ -17,6 +17,8 @@
 
 #include "seq_simulation.hpp"
 
+#include "utility.hpp"
+
 void add_SNV_data(Rcpp::DataFrame& df,
                   const Races::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
 {
@@ -173,7 +175,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage
 
   if (!write_SAM) {
     remove_output_path = true;
-    output_path = std::filesystem::temp_directory_path()/output_dir;
+    output_path = get_tmp_dir_path(output_dir);
   }
 
   if (insert_size==0) {
