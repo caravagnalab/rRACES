@@ -349,8 +349,8 @@ phylo_forest
 The phylogenetic forest stores all the mutations labeling the 
 sampled cells which are represented by the forest leaves.
 Users can retrieve such data by using the methods 
-`Phylogenetic$get_sampled_cell_SNVs` and 
-`Phylogenetic$get_sampled_cell_CNAs`.
+`PhylogeneticForest$get_sampled_cell_SNVs` and 
+`PhylogeneticForest$get_sampled_cell_CNAs`.
 
 ```{r}
 library(dplyr)
