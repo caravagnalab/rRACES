@@ -19,24 +19,62 @@
 
 #include "utility.hpp"
 
+std::string join(const std::set<std::string>& S, const char& sep=';')
+{
+  std::ostringstream oss;
+
+  if (S.size()>0) {
+    auto S_it = S.begin();
+    oss << *S_it;
+    while (++S_it != S.end()) {
+      oss << sep << *S_it;
+    }
+  }
+
+  return oss.str();
+}
+
+std::set<std::string> get_descriptions(const std::set<SNV::Type>& types)
+{
+  std::set<std::string> string_types;
+
+  for (const auto& type: types) {
+    string_types.insert(SNV::get_type_description(type));
+  }
+
+  return string_types;
+}
+
 void add_SNV_data(Rcpp::DataFrame& df,
                   const Races::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
 {
   using namespace Rcpp;
   using namespace Races::Mutations;
 
-  size_t num_of_mutations = sample_statistics.get_SNV_occurrences().size();
+  size_t num_of_mutations = sample_statistics.get_SNV_data().size();
 
   IntegerVector chr_pos(num_of_mutations);
   CharacterVector chr_names(num_of_mutations), ref_bases(num_of_mutations),
-                  alt_bases(num_of_mutations);
+                  alt_bases(num_of_mutations), causes(num_of_mutations),
+                  classes(num_of_mutations);
 
   size_t index{0};
-  for (const auto& [snv, occurrences] : sample_statistics.get_SNV_occurrences()) {
+  for (const auto& [snv, data] : sample_statistics.get_SNV_data()) {
     chr_names[index] = GenomicPosition::chrtos(snv.chr_id);
     chr_pos[index] = snv.position;
     ref_bases[index] = std::string(1,snv.ref_base);
     alt_bases[index] = std::string(1,snv.alt_base);
+  
+    auto full_causes = join(data.causes, ';');
+
+    if (full_causes == "") {
+      causes[index] = NA_STRING;
+    } else {
+      causes[index] = full_causes;
+    }
+
+    auto descr = get_descriptions(data.types);
+    classes[index] = join(descr, ';');
   
     ++index;
   }
@@ -45,6 +83,8 @@ void add_SNV_data(Rcpp::DataFrame& df,
   df.push_back(chr_pos, "chr_pos");
   df.push_back(ref_bases, "ref");
   df.push_back(alt_bases, "alt");
+  df.push_back(causes, "causes");
+  df.push_back(classes, "classes");
 }
 
 void add_sample_statistics(Rcpp::DataFrame& df,
@@ -54,7 +94,7 @@ void add_sample_statistics(Rcpp::DataFrame& df,
     add_SNV_data(df, sample_statistics);
   }
 
-  size_t num_of_mutations = sample_statistics.get_SNV_occurrences().size();
+  size_t num_of_mutations = sample_statistics.get_SNV_data().size();
 
   if (num_of_mutations != static_cast<size_t>(df.nrows())) {
     throw std::runtime_error("SeqSimResults are not canonical!!!");
@@ -69,15 +109,15 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   size_t index{0};
   auto coverage_it = sample_statistics.get_SNV_coverage().begin();
   std::less<GenomicPosition> come_before; 
-  for (const auto& [snv, snv_occurrences] : sample_statistics.get_SNV_occurrences()) {
-    occurrences[index] = snv_occurrences;
+  for (const auto& [snv, snv_data] : sample_statistics.get_SNV_data()) {
+    occurrences[index] = snv_data.num_of_occurrences;
   
     if (come_before(coverage_it->first, snv)) {
       ++coverage_it;
     }
   
     coverages[index] = coverage_it->second;
-    VAF[index] = static_cast<double>(snv_occurrences)/coverage_it->second;
+    VAF[index] = static_cast<double>(snv_data.num_of_occurrences)/coverage_it->second;
   
     ++index;
   }
