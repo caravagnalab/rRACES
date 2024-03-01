@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,13 +106,14 @@ and any value greater than 0 for pair read sequencing
 <p>A data frame representing, for each of the observed
         SNVs, the chromosome and the position in which
         it occurs (columns `chromosome` and `chr_pos`),
-        the SNV context and the new base (columns `context`
-        and `alt_base`). Moreover, for each of the 
-        sequencied samples `&lt;sample name&gt;`, the returned data 
-        frame contains three columns: the number of reads 
-        in which the corresponding SNV occurs 
-        (column `&lt;sample name&gt;.occurrences`), the coverage of
-        the SNV locus (column `&lt;sample name&gt;.coverage`), and the
+        the SNV reference base, the alterate base, the causes, 
+        and the classes of the SNV (columns `ref_base`, `alt_base`,
+        `causes`, and `classes`, respectively). Moreover, for each
+        of the sequencied samples `&lt;sample name&gt;`, the returned
+        data frame contains three columns: the number of reads in
+        which the corresponding SNV occurs (column 
+        `&lt;sample name&gt;.occurrences`), the coverage of the SNV
+        locus (column `&lt;sample name&gt;.coverage`), and the
         corresponding VAF (column `&lt;sample name&gt;.VAF`).</p>
     </div>
     <div class="section level2">
