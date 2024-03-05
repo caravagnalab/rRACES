@@ -90,6 +90,16 @@ public:
         return storage.get_germline_storage().get_population_descritions_df();
     }
 
+    inline bool get_infinite_sites_model() const
+    {
+        return m_engine.infinite_sites_model;
+    }
+
+    inline void set_infinite_sites_model(const bool infinite_sites_model)
+    {
+        m_engine.infinite_sites_model = infinite_sites_model;
+    }
+
     void set_germline_subject(const std::string& germline_subject);
 
     PhylogeneticForest place_mutations(const SamplesForest& forest,

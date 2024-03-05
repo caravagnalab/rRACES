@@ -103,6 +103,7 @@ reference:
   - MutationEngine$get_germline_subjects
   - MutationEngine$get_population_descritions
   - MutationEngine$get_SBSs
+  - MutationEngine$infinite_sites_model
   - MutationEngine$place_mutations
   - MutationEngine$set_germline_subject
   - MutationEngine

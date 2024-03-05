@@ -307,6 +307,26 @@ RCPP_MODULE(Mutations){
 //'   
   class_<MutationEngine>("MutationEngine")
 
+//' @name MutationEngine$infinite_sites_model
+//' @title A flag to enable/disable the infinite sites model.
+//' @description This property enables/disables the infinite sites model.
+//'          When it is `TRUE`, the infinite sites model is enabled and 
+//'          new mutations are exclusively placed in mutation-free loci.
+//' @examples
+//' # create a demostrative mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # the infinite sites model is enabled by default
+//' m_engine$infinite_sites_model
+//' 
+//' # the infinite sites model can be disabled
+//' m_engine$infinite_sites_model <- FALSE
+//'
+//' m_engine$infinite_sites_model
+    .property("infinite_sites_model", &MutationEngine::get_infinite_sites_model, 
+              &MutationEngine::set_infinite_sites_model,
+              "A flag to enable/disable the infinite sites model")
+
 //' @name MutationEngine$add_exposure
 //' @title Add an exposure to the mutation engine. 
 //' @description This method adds an exposure to the mutation engine.
