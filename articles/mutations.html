@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,7 +96,7 @@ in a <code>SamplesForest</code> according to a specified mutational
 signature of single base substitutions (SBS) (see <span class="citation">(Alexandrov et al. 2020)</span>). This process is
 performed by the class <code>MutationEngine</code> which also takes into
 account the mutation rate of the simulated species and gives the chance
-to dynamicaly change the SBS signature.</p>
+to dynamically change the SBS signature.</p>
 <div class="section level3">
 <h3 id="setting-up-mutation-engine">Setting Up Mutation Engine<a class="anchor" aria-label="anchor" href="#setting-up-mutation-engine"></a>
 </h3>
@@ -496,7 +496,7 @@ representation of the subject genome, saving it for future use. This
 step may take a few minutes. However, all the successive selections of
 the same subject directly load the binary file.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">set_germline_subject</span><span class="op">(</span><span class="va">subjects</span><span class="op">[</span><span class="fl">2</span>,<span class="st">"sample"</span><span class="op">]</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">set_germline_subject</span><span class="op">(</span><span class="va">subjects</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"sample"</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_active_germline</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    sample pop super_pop gender</span></span>
@@ -526,7 +526,7 @@ use the samples forest saved in the file
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 68971</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs: 70174</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The phylogenetic forest stores all the mutations labeling the sampled
 cells which are represented by the forest leaves. Users can retrieve
@@ -587,11 +587,11 @@ such data by using the methods
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_SNVs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id chromosome  chr_pos allele ref alt cause          class</span></span>
 <span><span class="co">#&gt; 1  109691         22 16096660      0   G   A  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 2  109691         22 16119456      0   C   T  SBS2      passenger</span></span>
-<span><span class="co">#&gt; 3  109691         22 16153005      0   G   A  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 4  109691         22 16224021      0   G   A  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 5  109691         22 16246019      0   C   T  SBS3      passenger</span></span>
-<span><span class="co">#&gt; 6  109691         22 16313691      0   C   T  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 2  109691         22 16153005      0   G   A  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 3  109691         22 16224021      0   G   A  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 4  109691         22 16313691      0   C   T  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 5  109691         22 16392404      0   G   A  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 6  109691         22 16598273      0   C   T  SBS1 pre-neoplastic</span></span>
 <span></span>
 <span><span class="co"># get the CNAs of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -613,7 +613,7 @@ when the cell was not sampled.</p>
 <span><span class="co"># get the identifier of the oldest cells in which the SNV occurs</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_first_occurrences</span><span class="op">(</span><span class="va">snv</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 5262</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>The exposures used in placing the mutations on the cells in the
 phylogenetic forest can be obtained by using the method
 <code>PhylogeneticForest$get_exposures()</code>.</p>
@@ -641,26 +641,101 @@ in the mutation engine and they can be retrieved by using the method
 <span><span class="co">#&gt; 6 A[C&gt;G]C 0.001220217 1.33004e-04 0.01170468 0.002839764</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="infinite-sites-model">Infinite Sites Model<a class="anchor" aria-label="anchor" href="#infinite-sites-model"></a>
+</h3>
+<p>The mutation engine places mutation on the sampled cell genome
+according to the <a href="https://en.wikipedia.org/wiki/Infinite_sites_model" class="external-link">infinite sites
+model</a> by default. In particular, any new mutations is placed on a
+locus whose context is mutation-free.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># this function verifies whether any mutation arised in</span></span>
+<span><span class="co"># two unrelated cells represented in a phylogenetic forest</span></span>
+<span><span class="va">test_infinite_sites_model</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">phylo_forest</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co"># extract non-germinal SNVs that appear multiple times either</span></span>
+<span>  <span class="co"># in the same cell or different cells</span></span>
+<span>  <span class="va">SNVs</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_SNVs</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">class</span> <span class="op">!=</span> <span class="st">"germinal"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/count.html" class="external-link">count</a></span><span class="op">(</span><span class="va">chromosome</span>, <span class="va">chr_pos</span>, <span class="va">ref</span>, <span class="va">alt</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">n</span><span class="op">&gt;</span><span class="fl">1</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># search for an SNV that independently occurred in two unrelated cells</span></span>
+<span>  <span class="va">first_occurrences</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="va">row</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span>  <span class="kw">while</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">first_occurrences</span><span class="op">)</span><span class="op">&lt;</span><span class="fl">2</span> <span class="op">&amp;&amp;</span> <span class="va">row</span> <span class="op">&lt;=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">SNVs</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">snv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="va">SNVs</span><span class="op">[</span><span class="va">row</span>,<span class="st">"chromosome"</span><span class="op">]</span>, <span class="va">SNVs</span><span class="op">[</span><span class="va">row</span>,<span class="st">"chr_pos"</span><span class="op">]</span>,</span>
+<span>               ref<span class="op">=</span><span class="va">SNVs</span><span class="op">[</span><span class="va">row</span>,<span class="st">"ref"</span><span class="op">]</span>, alt<span class="op">=</span><span class="va">SNVs</span><span class="op">[</span><span class="va">row</span>,<span class="st">"alt"</span><span class="op">]</span><span class="op">)</span></span>
+<span>    </span>
+<span>    <span class="va">first_occurrences</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_first_occurrences</span><span class="op">(</span><span class="va">snv</span><span class="op">)</span></span>
+<span>    <span class="va">row</span> <span class="op">&lt;-</span> <span class="va">row</span><span class="op">+</span><span class="fl">1</span></span>
+<span>  <span class="op">}</span></span>
+<span>  </span>
+<span>  <span class="co"># if the last handled SNV independently occurred in two unrelated </span></span>
+<span>  <span class="co"># cells at least</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">first_occurrences</span><span class="op">)</span><span class="op">&gt;=</span><span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    </span>
+<span>    <span class="co"># print a message containing the two cells </span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"SNV('"</span>,<span class="va">snv</span><span class="op">$</span><span class="fu">get_chromosome</span><span class="op">(</span><span class="op">)</span>,<span class="st">"'',"</span>,<span class="va">snv</span><span class="op">$</span><span class="fu">get_position_in_chromosome</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>     <span class="st">",'"</span>,<span class="va">snv</span><span class="op">$</span><span class="fu">get_ref_base</span><span class="op">(</span><span class="op">)</span>,<span class="st">"','"</span>,<span class="va">snv</span><span class="op">$</span><span class="fu">get_alt_base</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>     <span class="st">"') independently arises in cells "</span>, <span class="va">first_occurrences</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="st">" and "</span>,</span>
+<span>     <span class="va">first_occurrences</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"Every mutation arises exclusively in one cell"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># test whether the infinite sites conditions hold </span></span>
+<span><span class="co"># in the built phylogenetic forest</span></span>
+<span><span class="fu">test_infinite_sites_model</span><span class="op">(</span><span class="va">phylo_forest</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Every mutation arises exclusively in one cell"</span></span></code></pre></div>
+<p>This behavior can be changed by using the mutation engine property
+<code>MutationEngine$infinite_sites_model</code>. This property is a
+Boolean flag that enable/disable the infinite sites model.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># establish whether the infinite sites model is used</span></span>
+<span><span class="va">m_engine</span><span class="op">$</span><span class="va">infinite_sites_model</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="co"># disable it</span></span>
+<span><span class="va">m_engine</span><span class="op">$</span><span class="va">infinite_sites_model</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span></code></pre></div>
+<p>When the infinite sites model is disabled,
+<code>MutationEngine$place_mutations</code> may place two mutations in
+the same locus of different alleles of the same genome or the same
+mutation in the same locus of one allele of the genomes of two cells
+that are not each other ancestors.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># test whether the infinite sites model is enable</span></span>
+<span><span class="va">m_engine</span><span class="op">$</span><span class="va">infinite_sites_model</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span>
+<span></span>
+<span><span class="co"># place the mutations on the same samples forest </span></span>
+<span><span class="co"># used above</span></span>
+<span><span class="va">phylo_forest2</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># test whether the infinite sites conditions hold</span></span>
+<span><span class="co"># in the new phylogenetic forest</span></span>
+<span><span class="fu">test_infinite_sites_model</span><span class="op">(</span><span class="va">phylo_forest2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "SNV('22'',16085212,'C','T') independently arises in cells 227845 and 249047"</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="storing-phylogenetic-forests">Storing Phylogenetic Forests<a class="anchor" aria-label="anchor" href="#storing-phylogenetic-forests"></a>
 </h3>
 <p>As in the case of the samples forests, the phylogenetic forests can
 be saved by using the method <code>PhylogeneticForest$save</code> and
 load by the function <code>load_phylogenetic_forest</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the phylogenetic forest in the file "phylo_forest.sff"</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># loading the saved forest</span></span>
-<span><span class="va">phylo_forest2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_phylogenetic_forest.html">load_phylogenetic_forest</a></span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
+<span><span class="va">loaded_phylo_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_phylogenetic_forest.html">load_phylogenetic_forest</a></span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">phylo_forest2</span></span>
+<span><span class="va">loaded_phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
 <span><span class="co">#&gt;   # of trees: 1</span></span>
 <span><span class="co">#&gt;   # of nodes: 4773</span></span>
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 68971</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs: 70174</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-alexandrov2020repertoire" class="csl-entry">

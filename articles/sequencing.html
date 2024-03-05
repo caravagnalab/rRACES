@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,7 +112,7 @@ observed data.</p>
 <span><span class="co">#&gt;   # of leaves: 953</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 68971</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs: 70174</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The loaded phylogenetic forest models the cell evolution of 4
 different samples: <code>S_1_1</code>, <code>S_1_2</code>,
@@ -138,24 +138,24 @@ by as it follows.</p>
 <span><span class="co">#&gt;   chromosome  chr_pos ref alt causes  classes S_1_1.occurrences S_1_1.coverage</span></span>
 <span><span class="co">#&gt; 1         22 10510210   N   C      A   driver                 1              4</span></span>
 <span><span class="co">#&gt; 2         22 12028576   N   G      B   driver                 0              2</span></span>
-<span><span class="co">#&gt; 3         22 12029660   N   A      B   driver                 0              4</span></span>
-<span><span class="co">#&gt; 4         22 16051493   G   A   &lt;NA&gt; germinal                 1              1</span></span>
-<span><span class="co">#&gt; 5         22 16052080   G   A   &lt;NA&gt; germinal                 1              1</span></span>
-<span><span class="co">#&gt; 6         22 16053659   A   C   &lt;NA&gt; germinal                 3              3</span></span>
+<span><span class="co">#&gt; 3         22 16051493   G   A   &lt;NA&gt; germinal                 1              1</span></span>
+<span><span class="co">#&gt; 4         22 16052080   G   A   &lt;NA&gt; germinal                 1              1</span></span>
+<span><span class="co">#&gt; 5         22 16053659   A   C   &lt;NA&gt; germinal                 3              3</span></span>
+<span><span class="co">#&gt; 6         22 16053863   G   A   &lt;NA&gt; germinal                 1              1</span></span>
 <span><span class="co">#&gt;   S_1_1.VAF S_1_2.occurrences S_1_2.coverage S_1_2.VAF S_2_1.occurrences</span></span>
 <span><span class="co">#&gt; 1      0.25                 2              2 1.0000000                 1</span></span>
-<span><span class="co">#&gt; 2      0.00                 0              1 0.0000000                 2</span></span>
-<span><span class="co">#&gt; 3      0.00                 0              2 0.0000000                 2</span></span>
-<span><span class="co">#&gt; 4      1.00                 2              6 0.3333333                 3</span></span>
-<span><span class="co">#&gt; 5      1.00                 3              3 1.0000000                 3</span></span>
-<span><span class="co">#&gt; 6      1.00                 2              2 1.0000000                 4</span></span>
+<span><span class="co">#&gt; 2      0.00                 0              1 0.0000000                 5</span></span>
+<span><span class="co">#&gt; 3      1.00                 2              6 0.3333333                 3</span></span>
+<span><span class="co">#&gt; 4      1.00                 3              3 1.0000000                 3</span></span>
+<span><span class="co">#&gt; 5      1.00                 2              2 1.0000000                 4</span></span>
+<span><span class="co">#&gt; 6      1.00                 0              2 0.0000000                 2</span></span>
 <span><span class="co">#&gt;   S_2_1.coverage S_2_1.VAF S_2_2.occurrences S_2_2.coverage S_2_2.VAF</span></span>
 <span><span class="co">#&gt; 1              3 0.3333333                 1              2       0.5</span></span>
-<span><span class="co">#&gt; 2              7 0.2857143                 0              3       0.0</span></span>
-<span><span class="co">#&gt; 3              2 1.0000000                 0              2       0.0</span></span>
-<span><span class="co">#&gt; 4              6 0.5000000                 2              4       0.5</span></span>
-<span><span class="co">#&gt; 5              4 0.7500000                 3              5       0.6</span></span>
-<span><span class="co">#&gt; 6              4 1.0000000                 3              3       1.0</span></span></code></pre></div>
+<span><span class="co">#&gt; 2              7 0.7142857                 0              3       0.0</span></span>
+<span><span class="co">#&gt; 3              6 0.5000000                 2              4       0.5</span></span>
+<span><span class="co">#&gt; 4              4 0.7500000                 3              5       0.6</span></span>
+<span><span class="co">#&gt; 5              4 1.0000000                 3              3       1.0</span></span>
+<span><span class="co">#&gt; 6              5 0.4000000                 0              1       0.0</span></span></code></pre></div>
 <p>The function <code>simulate_seq</code> returns a data frame whose
 rows represent the mutations observed in the simulated reads (currently,
 only SNVs are supported).</p>
@@ -212,15 +212,15 @@ reports the data for the splitted samples.</p>
 <span><span class="co">#&gt; 6                   3                3   1.0000000                   2</span></span>
 <span><span class="co">#&gt;   S_1_2_P.coverage S_1_2_P.VAF S_2_1_N.occurrences S_2_1_N.coverage S_2_1_N.VAF</span></span>
 <span><span class="co">#&gt; 1                0         NaN                   1                1   1.0000000</span></span>
-<span><span class="co">#&gt; 2                4   0.0000000                   1                3   0.3333333</span></span>
+<span><span class="co">#&gt; 2                4   0.0000000                   2                3   0.6666667</span></span>
 <span><span class="co">#&gt; 3                6   0.0000000                   0                0         NaN</span></span>
 <span><span class="co">#&gt; 4                3   0.3333333                   2                5   0.4000000</span></span>
 <span><span class="co">#&gt; 5                5   0.6000000                   2                2   1.0000000</span></span>
 <span><span class="co">#&gt; 6                2   1.0000000                   2                2   1.0000000</span></span>
 <span><span class="co">#&gt;   S_2_1_P.occurrences S_2_1_P.coverage S_2_1_P.VAF S_2_2_N.occurrences</span></span>
 <span><span class="co">#&gt; 1                   2                4   0.5000000                   0</span></span>
-<span><span class="co">#&gt; 2                   1                1   1.0000000                   0</span></span>
-<span><span class="co">#&gt; 3                   2                3   0.6666667                   0</span></span>
+<span><span class="co">#&gt; 2                   0                1   0.0000000                   0</span></span>
+<span><span class="co">#&gt; 3                   1                3   0.3333333                   0</span></span>
 <span><span class="co">#&gt; 4                   0                1   0.0000000                   2</span></span>
 <span><span class="co">#&gt; 5                   0                0         NaN                   0</span></span>
 <span><span class="co">#&gt; 6                   1                1   1.0000000                   2</span></span>
