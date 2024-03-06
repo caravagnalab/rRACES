@@ -1,8 +1,8 @@
 Package: rRACES
 Type: Package
 Title: rRACES: An R Wrapper for RACES
-Version: 0.4.4
-Date: 2024-03-05
+Version: 0.4.1
+Date: 2024-02-20
 Authors@R: c(
     person("Giulio", "Caravagna", email = "gcaravagna@units.it", role = c("aut", "cre")),
     person("Alberto", "Casagrande", role = "aut"))
@@ -27,7 +27,8 @@ Imports:
     rlang,
     ggmuller,
     ggraph,
-    tidygraph
+    tidygraph,
+    Polychrome
 RoxygenNote: 7.3.1
 Suggests: 
     rmarkdown
