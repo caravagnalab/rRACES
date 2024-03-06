@@ -1264,14 +1264,17 @@ std::set<Races::Mutants::SpeciesId>
 collect_species_of(const Races::Mutants::Evolutions::Simulation& simulation,
                    const std::string& mutant_name)
 {
-  const auto& tissue = simulation.tissue();
-  auto mutant_id = simulation.find_mutant_id(mutant_name);
-
   std::set<Races::Mutants::SpeciesId> species_ids;
 
-  for (const auto& species: tissue) {
-    if (species.get_mutant_id()==mutant_id) {
-      species_ids.insert(species.get_id());
+  if (mutant_name.back()!='+' && mutant_name.back()!='-') {
+    const auto& tissue = simulation.tissue();
+
+    auto mutant_id = simulation.find_mutant_id(mutant_name);
+
+    for (const auto& species: tissue) {
+      if (species.get_mutant_id()==mutant_id) {
+        species_ids.insert(species.get_id());
+      }
     }
   }
 
@@ -1355,19 +1358,29 @@ get_species_constraints(const Races::Mutants::Evolutions::Simulation& simulation
   for (auto i=0; i<minimum_cell_vector.size(); ++i) {
     const auto name = Rcpp::as<std::string>(names[i]);
 
-    for (const auto& species: tissue) {
-      if (species.get_name()==name) {
-        const auto& threshold = minimum_cell_vector[i];
+    if (name.back()=='+' || name.back()=='-') {
+      bool name_found{false};
+      for (const auto& species: tissue) {
+        if (species.get_name()==name) {
+          name_found = true;
+          const auto& threshold = minimum_cell_vector[i];
 
-        if (minimum_cell_vector[i] < 0) {
-          throw std::domain_error("The minimum number of cells must be "
-                                  "a non-negative number. Specified "
-                                  + std::to_string(threshold) 
-                                  + " for species \"" + name + "\".");
+          if (minimum_cell_vector[i] < 0) {
+            throw std::domain_error("The minimum number of cells must be "
+                                    "a non-negative number. Specified "
+                                    + std::to_string(threshold) 
+                                    + " for species \"" + name + "\".");
+          }
+          species_constraints.emplace_back(name, species.get_id(),
+                                          static_cast<size_t>(threshold));
         }
-        species_constraints.emplace_back(name, species.get_id(),
-                                         static_cast<size_t>(threshold));
       }
+
+      if (!name_found) {
+        throw std::out_of_range("Unknown species \"" + name + "\"");
+      }
+    } else {
+      simulation.find_mutant_id(name);
     }
   }
 
