@@ -10,6 +10,8 @@
 #' has been derived.
 #' @param samples If `TRUE` it annotates samples.
 #' @param MRCAs If `TRUE` it annotates MRCAs
+#' @param exposures If `TRUE` it annotates exposures to mutational signatures
+#' @param facet_signatures If `TRUE` and if `exposures` is `TRUE` it creates a faceted forest plot where the exposure to each signature is annotated on a separated plot 
 #'
 #' @return A `ggraph` tree plot.
 #' @export
