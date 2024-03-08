@@ -12,6 +12,8 @@
 #' @param MRCAs If `TRUE` it annotates MRCAs
 #' @param exposures If `TRUE` it annotates exposures to mutational signatures
 #' @param facet_signatures If `TRUE` and if `exposures` is `TRUE` it creates a faceted forest plot where the exposure to each signature is annotated on a separated plot 
+#' @param drivers If `TRUE` it annotates drivers on the node they originated.
+#' @param add_driver_label If `TRUE` and if `drivers` is `TRUE` it annotates the driver name.
 #'
 #' @return A `ggraph` tree plot.
 #' @export
@@ -27,7 +29,8 @@
 #' tree_plot = plot_forest(forest)
 #' annotate_forest(tree_plot, forest)
 annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE, 
-                            exposures = FALSE, facet_signatures = TRUE) {
+                            exposures = FALSE, facet_signatures = TRUE, 
+                            drivers = TRUE, add_driver_label = TRUE) {
   
   samples_info <- forest$get_samples_info()
   
@@ -94,11 +97,12 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
       )
   }
   
-  if(exposures){
-    if(inherits(forest, "Rcpp_PhylogeneticForest")){
+  if(exposures) {
+    if(inherits(forest, "Rcpp_PhylogeneticForest")) {
       max_Y <- max(tree_plot$data$y, na.rm = TRUE)
       # Get exposures table
       exposures <- forest$get_exposures()
+      
       # Add exposures start and end times for each signature
       times <- exposures$time %>%  unique() %>%  sort()
       
@@ -111,6 +115,7 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
                                   levels = exposures %>% 
                                     dplyr::arrange(time) %>% 
                                     dplyr::pull(signature)))
+
       # Annotate exposures on tree
       tree_plot <- tree_plot +
         ggplot2::geom_rect(
@@ -124,10 +129,11 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
             alpha = exposure
           )
         ) +
-        ggplot2::scale_fill_manual(values = COSMIC_color_palette()) +
-        ggplot2::scale_alpha_continuous(range = c(0.25, 0.75))+
-        ggplot2::guides(fill = ggplot2::guide_legend(title = 'Signature'),
-                        alpha = ggplot2::guide_legend(title = 'Exposure'))
+        ggplot2::scale_fill_manual(values = get_signatures_colors()) +
+        ggplot2::scale_alpha_continuous(range = c(0.25, 0.75),
+                                        breaks = sort(unique(exposures$exposure))) +
+        ggplot2::guides(fill = ggplot2::guide_legend(title = "Signature"),
+                        alpha = ggplot2::guide_legend(title = "Exposure"))
       
       if(facet_signatures) tree_plot <- tree_plot + ggplot2::facet_wrap( ~ signature)
       # Push exposure rectangles to the back
@@ -139,15 +145,70 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
     else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
   }
   
+  if(drivers) {
+    if(inherits(forest, "Rcpp_PhylogeneticForest")) {
+      drivers_SNVs = drivers_CNAs = data.frame()
+      try(expr = {
+        drivers_SNVs <- forest$get_sampled_cell_SNVs() %>% 
+          dplyr::filter(class == "driver") %>% 
+          dplyr::mutate(driver_id = paste0(chromosome, ":", chr_pos, ":", ref, ">", alt),
+                        driver_type = "SNV") %>% 
+          dplyr::select(cell_id, driver_id, driver_type)
+      })
+      try(expr = {
+        drivers_CNAs <- forest$get_sampled_cell_CNAs() %>% 
+          dplyr::mutate(driver_id = paste0(chromosome, ":", begin, "-", end, ":", allele),
+                        driver_type = "CNA") %>% 
+          dplyr::select(cell_id, driver_id, driver_type)
+      })
+      
+      drivers <- dplyr::bind_rows(drivers_SNVs, drivers_CNAs)
+      
+      drivers_start_nodes <- lapply(unique(drivers$driver_id), function(d) {
+        nodes_with_driver = drivers %>% dplyr::filter(driver_id==d) %>% dplyr::pull(cell_id)
+        d_type = drivers %>% dplyr::filter(driver_id==d) %>% dplyr::pull(driver_type) %>% unique()
+        
+        forest$get_coalescent_cells(nodes_with_driver) %>% 
+          dplyr::mutate(driver_id=d, driver_type=d_type)
+      }) %>% 
+        dplyr::bind_rows() %>% 
+        dplyr::mutate(cell_id = as.character(cell_id)) %>% 
+        dplyr::group_by(cell_id) %>% 
+        dplyr::summarise(driver_id = paste0(driver_id, collapse = "\n"))
+      
+      layout <- tree_plot$data %>%
+        dplyr::select(x, y, name) %>%
+        dplyr::mutate(cell_id = paste(name), has_driver=TRUE) %>%
+        dplyr::filter(name %in% drivers_start_nodes$cell_id) %>%
+        dplyr::left_join(drivers_start_nodes, by = "cell_id")
+      
+      tree_plot <- tree_plot +
+        ggplot2::geom_point(
+          data = layout,
+          ggplot2::aes(x = .data$x, y = .data$y),
+          fill = "#d68910",
+          color = "#FF000000",
+          size = 2,
+          pch = 21
+        )
+      
+      if(add_driver_label) {
+        nudge_x = (max(tree_plot$data$x) - min(tree_plot$data$x)) * .15
+        tree_plot <- tree_plot +
+          ggrepel::geom_label_repel(
+            data = layout,
+            ggplot2::aes(x = .data$x, y = .data$y,
+                         label = .data$driver_id),
+            color = "#d68910",
+            size = 2.5,
+            hjust = 0,
+            nudge_x = -nudge_x,
+            direction = "x"
+          )
+      } 
+    } 
+    else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
+  }
+  
   tree_plot
-}
-
-#' @import Polychrome
-COSMIC_color_palette <-  function(seed = 1999) {
-  set.seed(seed)
-  sigs = c('SBS1', 'SBS2', 'SBS3', 'SBS4', 'SBS6', 'SBS7a', 'SBS7b', 'SBS7c', 'SBS7d', 'SBS10a', 'SBS10b', 'SBS11', 'SBS13', 'SBS14', 'SBS15', 'SBS17b', 'SBS18', 'SBS20', 'SBS21', 'SBS22a', 'SBS22b', 'SBS24', 'SBS25', 'SBS26', 'SBS28', 'SBS30', 'SBS31', 'SBS35', 'SBS36', 'SBS40a', 'SBS40b', 'SBS40c', 'SBS42', 'SBS87', 'SBS88', 'SBS90', 'SBS96', 'SBS97', 'SBS98', 'SBS99', 'SBS5', 'DBS1', 'DBS2', 'DBS3', 'DBS4', 'DBS5', 'DBS6', 'DBS7', 'DBS8', 'DBS9', 'DBS10', 'DBS11', 'DBS12', 'DBS13', 'DBS14', 'DBS15', 'DBS16', 'DBS17', 'DBS18', 'DBS19', 'DBS20', 'CN1', 'CN2', 'CN3', 'CN4', 'CN5', 'CN6', 'CN7', 'CN8', 'CN9', 'CN10', 'CN11', 'CN12', 'CN13', 'CN14', 'CN15', 'CN16', 'CN17', 'CN18', 'CN19', 'CN20', 'CN21', 'CN22', 'CN23', 'CN24', 'ID1', 'ID2', 'ID3', 'ID4', 'ID5', 'ID6', 'ID7', 'ID8', 'ID9', 'ID10', 'ID11', 'ID12', 'ID13', 'ID14', 'ID15', 'ID16', 'ID17', 'ID18', 'SBS8', 'SBS9', 'SBS10c', 'SBS10d', 'SBS12', 'SBS16', 'SBS17a', 'SBS19', 'SBS23', 'SBS27', 'SBS29', 'SBS32', 'SBS33', 'SBS34', 'SBS37', 'SBS38', 'SBS39', 'SBS41', 'SBS43', 'SBS44', 'SBS45', 'SBS46', 'SBS47', 'SBS48', 'SBS49', 'SBS50', 'SBS51', 'SBS52', 'SBS53', 'SBS54', 'SBS55', 'SBS56', 'SBS57', 'SBS58', 'SBS59', 'SBS60', 'SBS84', 'SBS85', 'SBS86', 'SBS89', 'SBS91', 'SBS92', 'SBS93', 'SBS94', 'SBS95') 
-  return(Polychrome::createPalette(length(sigs), c("#6B8E23","#4169E1"), 
-                                   M = 1000,
-                                   target = "normal", range = c(15,80)) %>%
-           setNames(sigs))
 }
