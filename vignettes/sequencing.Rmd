@@ -73,6 +73,28 @@ and the ratio between these two last columns
 (columns "`<sample name> occurrences`", "`<sample name> coverage`", 
 and "`<sample name> VAF`", respectively).
 
+### Sample Purity and Normal Cell Sequencing
+
+The _sample purity_ represents the concentration of tumor cells in a 
+sample. More formally, it is the ratio between the number of tumor 
+cells in the sample and that of all the sample cells, being either tumor
+or normal cells. 
+
+rRACES can simulate different sample purity in sequencing
+simulations.
+
+```{r}
+# simulate the sequencing of a sample in which 70% of the cells are
+# tumor cells
+seq_results <- simulate_seq(phylo_forest, coverage = 2.5, purity = 0.7)
+```
+
+The default value of the parameter `purity` is 1, i.e., `simulate_seq` 
+assumes all the cells in the sample to be neoplastic by default.
+
+The sequencing of a sample exclusively containing wild-type cells can 
+be simulated by setting the parameter `purity` to 0.
+
 ### Cell Partition by Epigenetic State (Epi-FACS)
 
 The sequencing simulation supports cell partition by epigenetic state (epi-FACS) by 

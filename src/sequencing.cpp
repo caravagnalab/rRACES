@@ -28,7 +28,7 @@ RCPP_MODULE(Sequencing){
 //' @name simulate_seq
 //' @title Simulate the sequencing of the samples in a phylogenetic forest
 //' @param phylo_forest A phylogenetic forest.
-//' @param coverage The sequencing coverage (default value: 1).
+//' @param coverage The sequencing coverage (default value: 10).
 //' @param read_size The read size (default value: 150).
 //' @param insert_size The insert size. Use 0 for single read sequencing 
 //'              and any value greater than 0 for pair read sequencing 
@@ -38,6 +38,10 @@ RCPP_MODULE(Sequencing){
 //' @param write_SAM A Boolean flag to enable/disable SAM generation 
 //'              (default: FALSE).
 //' @param epi_FACS Perform an epigenetic FACS analysis (default: FALSE).
+//' @param purity The ratio between the number of sample tumeral cell 
+//'              and that of all the cells, i.e., tumoral and normal
+//'              ones. This value must belong to the interval [0,1] 
+//'              (default value: 1).
 //' @param rnd_seed The random seed for the internal random generator 
 //'              (default value: 0).
 //' @return A data frame representing, for each of the observed
@@ -54,10 +58,10 @@ RCPP_MODULE(Sequencing){
 //'         corresponding VAF (column `<sample name>.VAF`).
 //' @seealso `vignette("sequencing")` for usage examples
   function("simulate_seq", &simulate_seq,
-           List::create(_["phylo_forest"], _["coverage"]=1,
+           List::create(_["phylo_forest"], _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_SAM",
                         _["write_SAM"] = false, _["epi_FACS"] = false, 
-                        _["rnd_seed"] = 0),
+                        _["purity"] = 1, _["rnd_seed"] = 0),
            "Simulate the sequencing of the samples in a phylogenetic forest");
 }

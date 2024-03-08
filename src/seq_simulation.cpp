@@ -198,7 +198,7 @@ split_by_epigenetic_status(const std::list<Races::Mutations::SampleGenomeMutatio
 Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage, 
                         const int& read_size, const int& insert_size,
                         const std::string& output_dir, const bool& write_SAM,
-                        const bool& FACS, const int& rnd_seed)
+                        const bool& FACS, const double& purity, const int& rnd_seed)
 {
   using namespace Races::Mutations::SequencingSimulations;
 
@@ -234,7 +234,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage
     mutations_list = split_by_epigenetic_status(mutations_list, forest);
   }
 
-  auto result = simulator(mutations_list, coverage);
+  auto result = simulator(mutations_list, coverage, purity);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);

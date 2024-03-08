@@ -109,6 +109,9 @@ tumour cell in the sampled region.
 sim$get_cells(c(400, 400), c(400 + bbox_width, 400 + bbox_width)) %>% head
 ```
 
+It should also be remarked that the sampling process exclusively collects 
+tumor cells, while it excludes wild-type cells.
+
 ### Cell division tree for sampled cells
 
 Every sampled cell is linked, at the evolutionary level, to the other
