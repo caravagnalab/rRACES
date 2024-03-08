@@ -739,7 +739,8 @@ PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
 
   progress_bar.set_message("Mutations placed");
 
-  return {std::move(phylo_forest), storage.get_reference_path(), m_engine.get_timed_exposures()};
+  return {std::move(phylo_forest), germline_subject, storage.get_reference_path(),
+          m_engine.get_timed_exposures()};
 }
 
 Rcpp::List MutationEngine::get_SBS_dataframe()

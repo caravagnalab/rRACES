@@ -22,15 +22,19 @@ PhylogeneticForest::PhylogeneticForest():
 {}
 
 PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
+                                       const std::string& germline_subject,
                                        const std::filesystem::path& reference_path,
                                        const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures):
-   Races::Mutations::PhylogeneticForest(orig), reference_path(reference_path), timed_exposures(timed_exposures)
+   Races::Mutations::PhylogeneticForest(orig), germline_subject(germline_subject),
+   reference_path(reference_path), timed_exposures(timed_exposures)
 {}
 
 PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
+                                       const std::string& germline_subject,
                                        const std::filesystem::path& reference_path,
                                        const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures):
-   Races::Mutations::PhylogeneticForest(std::move(orig)), reference_path(reference_path), timed_exposures(timed_exposures)
+   Races::Mutations::PhylogeneticForest(std::move(orig)), germline_subject(germline_subject),
+   reference_path(reference_path), timed_exposures(timed_exposures)
 {}
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const

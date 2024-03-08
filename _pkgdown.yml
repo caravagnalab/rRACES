@@ -110,6 +110,7 @@ reference:
   - PhylogeneticForest$get_coalescent_cells
   - PhylogeneticForest$get_exposures
   - PhylogeneticForest$get_first_occurrences
+  - PhylogeneticForest$get_germline_subject
   - PhylogeneticForest$get_nodes
   - PhylogeneticForest$get_samples_info
   - PhylogeneticForest$get_sampled_cell_CNAs

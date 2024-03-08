@@ -729,7 +729,10 @@ RCPP_MODULE(Mutations){
 //' \item \emph{Parameter:} \code{mutation} - A mutation being either a 
 //'              SNV or a CNA.
 //' \item \emph{Return:} The identifier of the cell in which a mutation 
-//'              occurs for the first time
+//'              occurs for the first time.
+//' }
+//' @field get_germline_subject Gets the germline subject name\itemize{
+//' \item \emph{Return:} The name of the subject whose germline is used.
 //' }
 //' @field get_nodes Get the forest nodes \itemize{
 //' \item \emph{Return:} A data frame representing, for each node
@@ -848,6 +851,12 @@ RCPP_MODULE(Mutations){
 //'            for each registered species.
     .method("get_species_info", &PhylogeneticForest::get_species_info,
             "Get the recorded species")
+
+//' @name PhylogeneticForest$get_germline_subject
+//' @title Gets the germline subject name
+//' @return The name of the subject whose germline is used.
+    .method("get_germline_subject", &PhylogeneticForest::get_germline_subject,
+            "Get the germline subject name")
 
 //' @name PhylogeneticForest$get_sampled_cell_CNAs
 //' @title Gets a the CNAs of the sampled cells

@@ -34,15 +34,18 @@ class MutationEngine;
 
 class PhylogeneticForest : public Races::Mutations::PhylogeneticForest
 {
+  std::string germline_subject;
   std::filesystem::path reference_path;
 
   std::map<Races::Time, Races::Mutations::Exposure> timed_exposures;
 
-  PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig, 
+  PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
+                     const std::string& germline_subject,
                      const std::filesystem::path& reference_path,
                      const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures);
 
   PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
+                     const std::string& germline_subject,
                      const std::filesystem::path& reference_path,
                      const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures);
 public:
@@ -91,6 +94,11 @@ public:
   inline std::filesystem::path get_reference_path() const
   {
     return reference_path;
+  }
+
+  inline const std::string& get_germline_subject() const
+  {
+    return germline_subject; 
   }
 
   void save(const std::string& filename) const;

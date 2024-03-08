@@ -415,6 +415,14 @@ by using the method `MutationEngine$get_SBSs()`.
 m_engine$get_SBSs()[1:6, 1:5]
 ```
 
+The name of the subject whose germline corresponds to 
+wild-type genome in the phylogenetic forest can be 
+obtained by the method `Phylogenetic$get_germline_subject`.
+
+```{r}
+phylo_forest$get_germline_subject()
+```
+
 ### Infinite Sites Model
 
 The mutation engine places mutation on the sampled cell genome according to the 
