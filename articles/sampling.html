@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -180,6 +180,8 @@ find any tumour cell in the sampled region.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span>, <span class="fl">400</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">400</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">400</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="va">head</span></span>
 <span><span class="co">#&gt; [1] cell_id    mutant     epistate   position_x position_y</span></span>
 <span><span class="co">#&gt; &lt;0 rows&gt; (or 0-length row.names)</span></span></code></pre></div>
+<p>It should also be remarked that the sampling process exclusively
+collects tumor cells, while it excludes wild-type cells.</p>
 <div class="section level3">
 <h3 id="cell-division-tree-for-sampled-cells">Cell division tree for sampled cells<a class="anchor" aria-label="anchor" href="#cell-division-tree-for-sampled-cells"></a>
 </h3>
@@ -262,6 +264,7 @@ as the sampling times, and the MRCAs of each sample in the tree.</p>
 <code class="sourceCode R"><span><span class="co"># Full plot</span></span>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
@@ -270,6 +273,7 @@ as the sampling times, and the MRCAs of each sample in the tree.</p>
 <code class="sourceCode R"><span><span class="co"># S_1_1 plot</span></span>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">S_1_1_forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">S_1_1_forest</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-14-2.png" width="1056"></p>
@@ -352,6 +356,7 @@ tissue conformation.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
@@ -485,6 +490,7 @@ complicated</p>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
@@ -589,6 +595,7 @@ sample.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
 <span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: The shape palette can deal with a maximum of 6 discrete values because more</span></span>

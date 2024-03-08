@@ -24,7 +24,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,19 @@
        mutation occurs for the first time</p><ul><li><p><em>Parameter:</em> <code>mutation</code> - A mutation being either a 
              SNV or a CNA.</p></li>
 <li><p><em>Return:</em> The identifier of the cell in which a mutation 
-             occurs for the first time</p></li>
+             occurs for the first time.</p></li>
+</ul></dd>
+
+
+<dt><code>get_germline_SNVs</code></dt>
+<dd><p>Gets the SNVs of the germline</p><ul><li><p><em>Return:</em> A data frame reporting `chromosome`, `chr_pos` (i.e., 
+         the position in the chromosome), `allele` (in which the SNV
+         occurs), `ref`, `alt`, and `cause`.</p></li>
+</ul></dd>
+
+
+<dt><code>get_germline_subject</code></dt>
+<dd><p>Gets the germline subject name</p><ul><li><p><em>Return:</em> The name of the subject whose germline is used.</p></li>
 </ul></dd>
 
 
@@ -122,7 +134,7 @@
 
 
 <dt><code>get_sampled_cell_CNAs</code></dt>
-<dd><p>Gets a the CNAs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting `cell_id`, `type` (`"A"` for 
+<dd><p>Gets the CNAs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting `cell_id`, `type` (`"A"` for 
          amplifications and `"D"` for deletions), `chromosome`, `begin`
          (i.e., the first CNA locus in the chromosome), `end` (i.e., the
          last CNA locus in the chromosome), `allele`, and `src allele` 
@@ -131,7 +143,7 @@
 
 
 <dt><code>get_sampled_cell_SNVs</code></dt>
-<dd><p>Gets a the SNVs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting `cell_id`, `chromosome`, 
+<dd><p>Gets the SNVs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting `cell_id`, `chromosome`, 
          `chr_pos` (i.e., position in the chromosome), `allele` (in which
          the SNV occurs), `ref`, `alt`, and `cause` for each
          SNV in the sampled cell genomes.</p></li>

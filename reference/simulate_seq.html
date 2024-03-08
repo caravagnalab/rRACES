@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@
 
 
 <dt>coverage</dt>
-<dd><p>The sequencing coverage (default value: 1).</p></dd>
+<dd><p>The sequencing coverage (default value: 10).</p></dd>
 
 
 <dt>read_size</dt>
@@ -92,6 +92,13 @@ and any value greater than 0 for pair read sequencing
 
 <dt>epi_FACS</dt>
 <dd><p>Perform an epigenetic FACS analysis (default: FALSE).</p></dd>
+
+
+<dt>purity</dt>
+<dd><p>The ratio between the number of sample tumeral cell 
+and that of all the cells, i.e., tumoral and normal
+ones. This value must belong to the interval [0,1] 
+(default value: 1).</p></dd>
 
 
 <dt>rnd_seed</dt>
