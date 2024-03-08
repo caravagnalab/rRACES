@@ -731,6 +731,11 @@ RCPP_MODULE(Mutations){
 //' \item \emph{Return:} The identifier of the cell in which a mutation 
 //'              occurs for the first time.
 //' }
+//' @field get_germline_SNVs Gets the SNVs of the germline\itemize{
+//' \item \emph{Return:} A data frame reporting `chromosome`, `chr_pos` (i.e., 
+//'          the position in the chromosome), `allele` (in which the SNV
+//'          occurs), `ref`, `alt`, and `cause`.
+//' }
 //' @field get_germline_subject Gets the germline subject name\itemize{
 //' \item \emph{Return:} The name of the subject whose germline is used.
 //' }
@@ -745,14 +750,14 @@ RCPP_MODULE(Mutations){
 //'              "mutant"), the epistate (column "epistate"),
 //'              and the birth time (column "birth_time").
 //' }
-//' @field get_sampled_cell_CNAs Gets a the CNAs of the sampled cells \itemize{
+//' @field get_sampled_cell_CNAs Gets the CNAs of the sampled cells \itemize{
 //' \item \emph{Returns:} A data frame reporting `cell_id`, `type` (`"A"` for 
 //'          amplifications and `"D"` for deletions), `chromosome`, `begin`
 //'          (i.e., the first CNA locus in the chromosome), `end` (i.e., the
 //'          last CNA locus in the chromosome), `allele`, and `src allele` 
 //'          (the allele origin for amplifications, `NA` for deletions).
 //' }
-//' @field get_sampled_cell_SNVs Gets a the SNVs of the sampled cells \itemize{
+//' @field get_sampled_cell_SNVs Gets the SNVs of the sampled cells \itemize{
 //' \item \emph{Returns:} A data frame reporting `cell_id`, `chromosome`, 
 //'          `chr_pos` (i.e., position in the chromosome), `allele` (in which
 //'          the SNV occurs), `ref`, `alt`, and `cause` for each
@@ -859,7 +864,7 @@ RCPP_MODULE(Mutations){
             "Get the germline subject name")
 
 //' @name PhylogeneticForest$get_sampled_cell_CNAs
-//' @title Gets a the CNAs of the sampled cells
+//' @title Gets the CNAs of the sampled cells
 //' @description This method returns a data frame representing all the CNAs 
 //'          in the cells sampled during the simulation and represented by 
 //'          the leaves of the phylogenetic forest.
@@ -878,7 +883,7 @@ RCPP_MODULE(Mutations){
             "Get the CNAs of all the sampled cells")
 
 //' @name PhylogeneticForest$get_sampled_cell_SNVs
-//' @title Gets a the SNVs of the sampled cells
+//' @title Gets the SNVs of the sampled cells
 //' @description This method returns a data frame representing all the SNVs 
 //'          in the cells sampled during the simulation and represented by 
 //'          the leaves of the phylogenetic forest.
@@ -896,6 +901,19 @@ RCPP_MODULE(Mutations){
     .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)() const)
                 (&PhylogeneticForest::get_sampled_cell_SNVs),
             "Get the SNVs of all the sampled cells")
+
+//' @name PhylogeneticForest$get_germline_SNVs
+//' @title Gets the SNVs of the germline
+//' @description This method returns a data frame representing all the germinal 
+//'          SNVs of the cells represented in the phylogenetic forest.
+//'          The data frame also reports the allele in which SNVs occur to 
+//'          support double occurrencies due to CNAs.
+//' @return A data frame reporting `chromosome`, `chr_pos` (i.e., 
+//'          the position in the chromosome), `allele` (in which the SNV
+//'          occurs), `ref`, `alt`, and `cause`.
+//' @seealso `vignette("mutations")` for usage examples
+    .method("get_germline_SNVs", &PhylogeneticForest::get_germline_SNVs,
+            "Get the SNVs of the germline")
 
 //' @name PhylogeneticForest$get_exposures
 //' @title Gets the timed exposure data frame

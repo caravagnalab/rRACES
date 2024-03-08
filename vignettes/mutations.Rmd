@@ -380,6 +380,15 @@ phylo_forest$get_sampled_cell_SNVs(cell_id) %>% head()
 phylo_forest$get_sampled_cell_CNAs(cell_id) %>% head()
 ```
 
+The method `PhylogeneticForest$get_germline_SNVs` returns 
+the SNVs in the germline.
+
+```{r}
+# extract the SNVs in the germline
+phylo_forest$get_germline_SNVs() %>% head()
+```
+
+
 Users can also identify the cell in which a mutation emerged 
 even when the cell was not sampled.
 
