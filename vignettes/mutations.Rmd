@@ -44,14 +44,14 @@ reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/current/",
                         "fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.",
                         "dna.chromosome.22.fa.gz")
 
-SBS_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
+sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
                   "COSMIC_v3.4_SBS_GRCh37.txt")
 
 drivers_url <- paste0("https://raw.githubusercontent.com/",
                       "caravagnalab/rRACES/main/inst/extdata/",
                       "driver_mutations_hg19.csv")
 
-passenger_CNAs_url <- paste0("https://raw.githubusercontent.com/",
+passenger_cnas_url <- paste0("https://raw.githubusercontent.com/",
                              "caravagnalab/rRACES/main/inst/extdata/",
                              "passenger_CNAs_hg19.csv")
 
@@ -62,9 +62,9 @@ germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
 # build a mutation engine and place all the files in the directory "Test"
 m_engine <- build_mutation_engine(directory = "Test",
                                   reference_src = reference_url,
-                                  SBS_src = SBS_url,
+                                  SBS_src = sbs_url,
                                   drivers_src = drivers_url,
-                                  passenger_CNAs_src = passenger_CNAs_url,
+                                  passenger_CNAs_src = passenger_cnas_url,
                                   germline_src = germline_url)
 
 m_engine
@@ -88,8 +88,8 @@ needed and, if this is not the case, avoids to performs them.
 ```{r}
 # build a new mutation engine and use all the data stored into the
 # directory "Test"
-m_engine <- build_mutation_engine("Test", reference_url, SBS_url,
-                                  passenger_CNAs_url, drivers_url,
+m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
+                                  passenger_cnas_url, drivers_url,
                                   germline_url)
 
 m_engine
@@ -113,8 +113,8 @@ be specified during the `MutationEngine` call as the last parameter.
 
 ```{r}
 # set-up the data and build the context index with `context_sampling` is 50
-m_engine <- build_mutation_engine("Test", reference_url, SBS_url,
-                                  passenger_CNAs_url, drivers_url,
+m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
+                                  passenger_cnas_url, drivers_url,
                                   germline_url, context_sampling = 50)
 
 # get the size of the context index when `context_sampling` is 100
@@ -203,16 +203,16 @@ driver mutation on chromosome 22, while `B` has two driver mutations on
 the same chromosome.
 
 ```{r}
-# add the mutant "A" characterized by one driver SNV on chromosome 22 and 
-# two CNAs: an amplification and a deletion. The mutant has two epigenetic 
-# states and its species "A+" and "A-" have passenger SNV rates 1e-9 and 
+# add the mutant "A" characterized by one driver SNV on chromosome 22 and
+# two CNAs: an amplification and a deletion. The mutant has two epigenetic
+# states and its species "A+" and "A-" have passenger SNV rates 1e-9 and
 # 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.
 m_engine$add_mutant(mutant_name = "A",
                     passenger_rates = list("+" = c(SNV = 1e-9),
                                            "-" = c(SNV = 3e-8, CNA = 1e-11)),
                     driver_SNVs = c(SNV("22", 10510210, "C")),
-                    driver_CNAs = c(CNA(type = "A", "22", pos_in_chr = 10303470,
-                                        len = 200000),
+                    driver_CNAs = c(CNA(type = "A", "22",
+                                        pos_in_chr = 10303470, len = 200000),
                                     CNA("D", "22", 5010000, 200000)))
 
 # add the mutant "B" characterized by two driver SNVs on chromosome 22 (no
@@ -385,13 +385,13 @@ even when the cell was not sampled.
 
 ```{r}
 # select one of the mutations
-mutation_row <- phylo_forest$get_sampled_cell_SNVs(cell_id)[2,]
+mutation_row <- phylo_forest$get_sampled_cell_SNVs(cell_id)[2, ]
 
 # rebuild the corresponding SNV
 snv <- SNV(mutation_row["chromosome"][1, ],
            mutation_row["chr_pos"][1, ],
            mutation_row["alt"][1, ],
-           mutation_row["ref"][1, ],)
+           mutation_row["ref"][1, ])
 
 # get the identifier of the oldest cells in which the SNV occurs
 phylo_forest$get_first_occurrences(snv)
@@ -427,36 +427,37 @@ In particular, any new mutations is placed on a locus whose context is mutation-
 test_infinite_sites_model <- function(phylo_forest) {
   # extract non-germinal SNVs that appear multiple times either
   # in the same cell or different cells
-  SNVs <- phylo_forest$get_sampled_cell_SNVs() %>% 
-    filter(class != "germinal") %>% 
-    count(chromosome, chr_pos, ref, alt) %>% filter(n>1)
-  
+  snvs <- phylo_forest$get_sampled_cell_SNVs() %>%
+    filter(class != "germinal") %>%
+    count(.data$chromosome, .data$chr_pos, .data$ref, .data$alt) %>%
+    filter(n > 1)
+
   # search for an SNV that independently occurred in two unrelated cells
   first_occurrences <- c()
   row <- 1
-  while (length(first_occurrences)<2 && row <= nrow(SNVs)) {
-    snv <- SNV(SNVs[row,"chromosome"], SNVs[row,"chr_pos"],
-               ref=SNVs[row,"ref"], alt=SNVs[row,"alt"])
-    
+  while (length(first_occurrences)<2 && row <= nrow(snvs)) {
+    snv <- SNV(snvs[row, "chromosome"], snvs[row, "chr_pos"],
+               ref = snvs[row, "ref"], alt = snvs[row, "alt"])
+
     first_occurrences <- phylo_forest$get_first_occurrences(snv)
-    row <- row+1
+    row <- row + 1
   }
-  
-  # if the last handled SNV independently occurred in two unrelated 
+
+  # if the last handled SNV independently occurred in two unrelated
   # cells at least
-  if (length(first_occurrences)>=2) {
-    
+  if (length(first_occurrences) >= 2) {
+
     # print a message containing the two cells 
-    paste0("SNV('",snv$get_chromosome(),"'',",snv$get_position_in_chromosome(),
-     ",'",snv$get_ref_base(),"','",snv$get_alt_base(),
-     "') independently arises in cells ", first_occurrences[1], " and ",
-     first_occurrences[2])
+    paste0("SNV('",snv$get_chromosome(), "'',",snv$get_position_in_chromosome(),
+           ",'", snv$get_ref_base(), "','", snv$get_alt_base(),
+           "') independently arises in cells ", first_occurrences[1], " and ",
+           first_occurrences[2])
   } else {
     print("Every mutation arises exclusively in one cell")
   }
 }
 
-# test whether the infinite sites conditions hold 
+# test whether the infinite sites conditions hold
 # in the built phylogenetic forest
 test_infinite_sites_model(phylo_forest)
 ```
@@ -483,7 +484,7 @@ of the genomes of two cells that are not each other ancestors.
 # test whether the infinite sites model is enable
 m_engine$infinite_sites_model
 
-# place the mutations on the same samples forest 
+# place the mutations on the same samples forest
 # used above
 phylo_forest2 <- m_engine$place_mutations(samples_forest, 1000)
 
