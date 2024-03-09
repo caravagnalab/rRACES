@@ -775,6 +775,11 @@ RCPP_MODULE(Mutations){
 //' \item \emph{Returns:} A data frame reporting "mutant" and "epistate"
 //'            for each registered species.
 //' }
+//' @field get_sticks Compute the forest sticks \itemize{
+//' \item \emph{Returns:} The list of the forest sticks. Each stick is represented as 
+//'          the list of cell identifiers labelling the nodes in the stick
+//'          from the higher to the deeper in the forest.
+//' }
 //' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
 //' \item \emph{Parameter:} \code{sample_names} - The names of the samples whose cells will be used
 //'         as leaves of the new forest.
@@ -914,6 +919,25 @@ RCPP_MODULE(Mutations){
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_germline_SNVs", &PhylogeneticForest::get_germline_SNVs,
             "Get the SNVs of the germline")
+
+//' @name PhylogeneticForest$get_sticks
+//' @title Compute the forest sticks
+//' @description A _crucial node_ of a forest is a root of the forest, a node
+//'          whose parent belongs to a different mutant, or the most recent 
+//'          common ancestor of two crucial nodes.
+//'
+//'          A _stick_ is a path of the forest in which the only crucial 
+//'          nodes are the first and the last.
+//'
+//'          This method return the list of the forest sticks. Each stick is
+//'          represented by the sequence of cell identifiers labelling the
+//'          nodes in the stick.
+//' @return The list of the forest sticks. Each stick is represented as 
+//'          the list of cell identifiers labelling the nodes in the stick
+//'          from the higher to the deeper in the forest.
+//' @seealso `SamplesForest$get_sticks` for examples
+    .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (PhylogeneticForest::*)() const)(&PhylogeneticForest::get_sticks),
+            "Get the forest sticks")
 
 //' @name PhylogeneticForest$get_exposures
 //' @title Gets the timed exposure data frame

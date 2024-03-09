@@ -63,6 +63,11 @@ public:
                                             cell_ids);
   }
 
+  inline std::list<std::list<Races::Mutants::CellId>> get_sticks() const
+  {
+    return Races::Mutants::DescendantsForest::get_sticks();
+  }
+
   SamplesForest get_subforest_for(const std::vector<std::string>& sample_names) const;
 
   void save(const std::string& filename) const;

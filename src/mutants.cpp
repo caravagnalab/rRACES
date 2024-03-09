@@ -422,7 +422,7 @@ RCPP_MODULE(Mutants){
 //' @title Get the samples forest
 //' @return The samples forest having as leaves the sampled cells
 //' @examples
-//' sim <- new(Simulation, "get_samples_forest")
+//' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                  growth_rate = 0.2,
 //'                  death_rate = 0.01)
@@ -1064,6 +1064,11 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Returns:} A data frame reporting "mutant" and "epistate"
 //'            for each registered species.
 //' }
+//' @field get_sticks Compute the forest sticks \itemize{
+//' \item \emph{Returns:} The list of the forest sticks. Each stick is represented as 
+//'          the list of cell identifiers labelling the nodes in the stick
+//'          from the higher to the deeper in the forest.
+//' }
 //' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
 //' \item \emph{Parameter:} \code{sample_names} - The names of the samples whose cells will be used
 //'         as leaves of the new forest.
@@ -1216,6 +1221,47 @@ RCPP_MODULE(Mutants){
 //'            for each registered species.
     .method("get_species_info", &SamplesForest::get_species_info,
             "Get the recorded species")
+
+//' @name SamplesForest$get_sticks
+//' @title Compute the forest sticks
+//' @description A _crucial node_ of a forest is a root of the forest, a node
+//'          whose parent belongs to a different mutant, or the most recent 
+//'          common ancestor of two crucial nodes.
+//'
+//'          A _stick_ is a path of the forest in which the only crucial 
+//'          nodes are the first and the last.
+//'
+//'          This method return the list of the forest sticks. Each stick is
+//'          represented by the sequence of cell identifiers labelling the
+//'          nodes in the stick.
+//' @return The list of the forest sticks. Each stick is represented as 
+//'          the list of cell identifiers labelling the nodes in the stick
+//'          from the higher to the deeper in the forest.
+//' @examples
+//' sim <- new(Simulation)
+//' sim$add_mutant(name = "A", growth_rate = 0.2,
+//'                death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A", num_of_cells = 5000)
+//'
+//' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
+//' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+//' sim$run_up_to_size(species = "B", num_of_cells = 1000)
+//' 
+//' # search for a 33x33 region containing 50 cells in A and 
+//' # 50 cells in B at least and sample it
+//' region <- sim$search_sample(c(A = 50, B = 50), 33, 33)
+//' sim$sample_cells("S1", region$lower_corner, region$upper_corner)
+//'
+//' # build the samples forest
+//' forest <- sim$get_samples_forest()
+//' 
+//' # search for the forest sticks
+//' forest$get_sticks()
+    .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (SamplesForest::*)() const)(&SamplesForest::get_sticks),
+            "Get the forest sticks")
 
 //' @name SamplesForest$save
 //' @title Save a samples forest in a file
