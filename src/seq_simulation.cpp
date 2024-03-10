@@ -15,6 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <utils.hpp>
+
 #include "seq_simulation.hpp"
 
 #include "utility.hpp"
@@ -205,8 +207,10 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage
   ReadSimulator<> simulator;
   
   if (!std::filesystem::exists(forest.get_reference_path())) {
-    throw std::runtime_error("The reference genome file \"" + std::string(forest.get_reference_path())
-                             + "\" does not exists anymore. Please, re-build the mutation engine.");
+    throw std::runtime_error("The reference genome file \""
+                             + to_string(forest.get_reference_path())
+                             + "\" does not exists anymore. Please, re-build "
+                             + "the mutation engine.");
   }
 
   std::filesystem::path output_path = output_dir;

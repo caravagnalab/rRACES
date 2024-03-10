@@ -113,7 +113,7 @@ class GenomicDataStorage
   bool germline_downloaded;
   std::string germline_src;
 
-  std::string get_destination_path(const std::string& url) const;
+  std::filesystem::path get_destination_path(const std::string& url) const;
 
   std::filesystem::path download_file(const std::string& url) const;
 

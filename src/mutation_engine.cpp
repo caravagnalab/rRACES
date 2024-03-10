@@ -29,6 +29,8 @@
 
 #include <progress_bar.hpp>
 
+#include <utils.hpp>
+
 #include "mutation_engine.hpp"
 
 #include "genomic_data_storage.hpp"
@@ -126,7 +128,9 @@ GenomicDataStorage setup_storage(const std::string& setup_code)
     throw std::domain_error(oss.str());
   }
 
-  return setup_storage(code_it->second.directory, 
+  auto directory = to_string(code_it->second.directory);
+
+  return setup_storage(directory,
                        code_it->second.reference_url,
                        code_it->second.SBS_url,
                        code_it->second.drivers_url,
@@ -456,8 +460,8 @@ MutationEngine::build_MutationEngine(const std::string& directory,
 
 }
 
-template<typename OUT, typename VALUE>
-OUT& show_map(OUT& os, const std::map<std::string, VALUE>& c_map)
+template<typename VALUE>
+std::ostream& show_map(std::ostream& os, const std::map<std::string, VALUE>& c_map)
 {
   os << "{";
   std::string sep = "";
@@ -747,11 +751,11 @@ Rcpp::List MutationEngine::get_SBS_dataframe()
 {
   Rcpp::Function read_delim("read.delim");
 
-  return read_delim(std::string(storage.get_SBS_path()), Rcpp::_["quote"]="");
+  return read_delim(to_string(storage.get_SBS_path()), Rcpp::_["quote"]="");
 }
 
-template<typename OUT, typename ITERATOR>
-OUT& show_list(OUT& os, ITERATOR it, ITERATOR last, const std::string& front="")
+template<typename ITERATOR>
+std::ostream& show_list(std::ostream& os, ITERATOR it, ITERATOR last, const std::string& front="")
 {
   for (; it != last; ++it) {
     os << front << *it << std::endl;

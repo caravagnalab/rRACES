@@ -15,6 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <utils.hpp>
+
 #include "phylogenetic_forest.hpp"
 
 PhylogeneticForest::PhylogeneticForest():
@@ -394,7 +396,9 @@ void PhylogeneticForest::save(const std::string& filename) const
 {
   Races::Archive::Binary::Out out_archive(filename);
 
-  out_archive & reference_path
+  auto ref_str = to_string(reference_path);
+
+  out_archive & ref_str
               & timed_exposures;
 
   out_archive.save(static_cast<const Races::Mutations::PhylogeneticForest&>(*this), "forest");

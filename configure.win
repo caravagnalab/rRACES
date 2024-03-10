@@ -1,1 +1,15 @@
-## TODO: Fill this file to support MS Windows
+set -x
+set -e
+
+which cmake
+
+
+if [ ! -d RACES ]; then
+
+    git clone https://github.com/albertocasagrande/RACES.git
+
+    (cd RACES; git checkout 54c35dd && rm -rf .git )
+
+fi
+
+${R_HOME}/bin/R --vanilla --silent -e 'Rcpp::compileAttributes()'

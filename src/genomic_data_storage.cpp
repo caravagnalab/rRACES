@@ -26,6 +26,8 @@
 #include <csv_reader.hpp>
 #include <context_index.hpp>
 #include <progress_bar.hpp>
+#include <utils.hpp>
+
 
 #include "genomic_data_storage.hpp"
 
@@ -43,32 +45,32 @@ GermlineStorage::GermlineStorage(const std::filesystem::path& directory):
 {
   if (!std::filesystem::exists(directory)) {
     throw std::runtime_error("Designed germline mutations directory \""
-                             + std::string(directory) + "\" does not exist.");
+                             + to_string(directory) + "\" does not exist.");
   }
   if (!std::filesystem::is_directory(directory)) {
     throw std::runtime_error("Designed germline mutations directory \""
-                             + std::string(directory) + "\" is not a "
+                             + to_string(directory) + "\" is not a "
                              + "directory.");
   }
   if (!std::filesystem::exists(get_file())) {
     throw std::runtime_error("Designed germline mutations directory \""
-                             + std::string(directory) + "\" does not "
+                             + to_string(directory) + "\" does not "
                              + "contains the file \"germline.csv\".");
   }
   if (!std::filesystem::exists(get_population_file())) {
     throw std::runtime_error("Designed germline mutations directory \""
-                             + std::string(directory) + "\" does not "
+                             + to_string(directory) + "\" does not "
                              + "contains the file \"population.csv\".");
   }
   if (!std::filesystem::exists(get_population_descriptions_file())) {
     throw std::runtime_error("Designed germline mutations directory \""
-                             + std::string(directory) + "\" does not "
+                             + to_string(directory) + "\" does not "
                              + "contains the file \"population_descr"
                              + "iptions.csv\".");
   }
   if (!std::filesystem::exists(get_alleles_file())) {
     throw std::runtime_error("Designed germline mutations directory \""
-                             + std::string(directory) + "\" does not "
+                             + to_string(directory) + "\" does not "
                              + "contains the file \"alleles_per_chr."
                              + "csv\".");
   }
@@ -94,7 +96,7 @@ Rcpp::List GermlineStorage::get_population_df() const
 
   Function read_csv("read.csv");
 
-  return read_csv(_["file"]=std::string(get_population_file()), 
+  return read_csv(_["file"]=to_string(get_population_file()),
                   _["quote"]="", _["header"]=true, _["sep"] = "\t");
 }
 
@@ -104,7 +106,7 @@ Rcpp::List GermlineStorage::get_population_descritions_df() const
 
   Function read_csv("read.csv");
 
-  return read_csv(_["file"]=std::string(get_population_descriptions_file()),
+  return read_csv(_["file"]=get_population_descriptions_file(),
                   _["quote"]="", _["header"]=true, _["sep"] = "\t");
 }
 
@@ -253,7 +255,7 @@ GenomicDataStorage::GenomicDataStorage(const std::string& directory,
   germline_storage = GermlineStorage(germline_path);
 }
 
-std::string GenomicDataStorage::get_destination_path(const std::string& url) const
+std::filesystem::path GenomicDataStorage::get_destination_path(const std::string& url) const
 {
   try {
     auto name_occurrence = url.find_last_of('/')+1;
@@ -281,7 +283,7 @@ std::filesystem::path GenomicDataStorage::download_file(const std::string& url) 
 
   using namespace Rcpp;
 
-  std::string dest_filename = get_destination_path(url);
+  auto dest_filename = to_string(get_destination_path(url));
 
   // get default timeout option
   Function getOption_f("getOption");
@@ -293,7 +295,8 @@ std::filesystem::path GenomicDataStorage::download_file(const std::string& url) 
 
   // download the file
   Function download_f("download.file");
-  download_f(_["url"] = url, _["destfile"] = dest_filename);
+  download_f(_["url"] = url, _["destfile"] = dest_filename,
+             _["mode"]="wb");
 
   // revert to the default timeout
   options_f(_["timeout"] = timeout);
@@ -324,7 +327,7 @@ std::filesystem::path GenomicDataStorage::retrieve_reference()
 
   Rcout << "Downloading reference genome..." << std::endl << std::flush;
 
-  std::string downloaded_file = download_file(reference_src);
+  auto downloaded_file = to_string(download_file(reference_src));
 
   Rcout << "Reference genome downloaded" << std::endl;
 
@@ -344,7 +347,7 @@ std::filesystem::path GenomicDataStorage::retrieve_reference()
     Function decompress_f = pkg[decomp_found->second];
 
     decompress_f(_["filename"] = downloaded_file, 
-                 _["destname"] = std::string(reference_filename));
+                 _["destname"] = to_string(reference_filename));
 
     Rcout << "done" << std::endl;
   }
@@ -370,7 +373,7 @@ std::filesystem::path GenomicDataStorage::retrieve_SBS()
 
   Rcout << "Downloading SBS file..." << std::endl << std::flush;
 
-  std::string downloaded_file = download_file(SBS_src);
+  auto downloaded_file = download_file(SBS_src);
 
   Rcout << "SBS file downloaded" << std::endl;
 
@@ -401,7 +404,7 @@ std::filesystem::path GenomicDataStorage::retrieve_drivers()
 
   Rcout << "Downloading driver mutation file..." << std::endl << std::flush;
 
-  std::string downloaded_file = download_file(drivers_src);
+  auto downloaded_file = download_file(drivers_src);
 
   Rcout << "Driver mutation file downloaded" << std::endl;
 
@@ -429,7 +432,7 @@ std::filesystem::path GenomicDataStorage::retrieve_passenger_CNAs()
 
   Rcout << "Downloading passenger CNAs file..." << std::endl << std::flush;
 
-  std::string downloaded_file = download_file(passenger_CNAs_src);
+  auto downloaded_file = download_file(passenger_CNAs_src);
 
   Rcout << "Passenger CNAs file downloaded" << std::endl;
 
@@ -449,9 +452,9 @@ std::filesystem::path GenomicDataStorage::retrieve_germline()
     return germline_src;
   }
 
-  const std::string germline_path = directory/"germline_data";
+  const auto germline_path = directory/"germline_data";
 
-  if (std::filesystem::exists(germline_path)) {
+  if (std::filesystem::exists(germline_path/"germlines.csv")) {
     return germline_path;
   }
 
@@ -459,14 +462,13 @@ std::filesystem::path GenomicDataStorage::retrieve_germline()
 
   Rcout << "Downloading germline mutations..." << std::endl << std::flush;
 
-  std::string downloaded_file = download_file(germline_src);
+  auto downloaded_file = download_file(germline_src);
 
   Rcout << "Germline mutations downloaded" << std::endl;
 
   Function untar("untar");
-
-  untar(_["tarfile"] = downloaded_file, 
-        _["exdir"] = std::string(directory));
+  untar(_["tarfile"] = to_string(downloaded_file),
+        _["exdir"] = to_string(directory));
 
   return germline_path;
 }

@@ -21,11 +21,14 @@
 #include <random>
 #include <cstdint>
 
+#include <utils.hpp>
+
+
 #if defined (__unix__) || (defined (__APPLE__) && defined (__MACH__))
 #include <unistd.h>
 #include <pwd.h>
-#elif defined (_WIN32)  
-#include<Windows.h>  
+#elif defined (__WIN32__) || defined(__WIN64__)
+#include <Windows.h>
 #endif
 
 #include "utility.hpp"
@@ -38,7 +41,7 @@ std::string get_user_name()
     auto pwd = getpwuid(userid);
     return pwd->pw_name;
 
-#elif defined (_WIN32)
+#elif defined (__WIN32__) || defined(__WIN64__)
 
     const int MAX_LEN = 100;
     char szBuffer[MAX_LEN];
@@ -74,8 +77,9 @@ std::filesystem::path get_tmp_dir_path(const std::string& base_name)
 
   std::uniform_int_distribution<uint32_t> dist;
 
-  std::string base_path = std::filesystem::temp_directory_path()/(base_name + "_" 
-                                                                  + get_user_name());
+  auto base_path = to_string(std::filesystem::temp_directory_path()/
+                               (base_name + "_" + get_user_name()));
+
   std::filesystem::path output_path = base_path + "_" + int2hex(dist(r_gen));
 
   while (std::filesystem::exists(output_path)) {
