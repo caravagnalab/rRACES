@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,56 +109,69 @@ call.</p>
 specifing the name of the set-up directory, the path or URL of the
 reference sequence, the SBS file, the driver SNVs file, the passenger
 CNAs file, and the germline data directory.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rRACES</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">reference_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://ftp.ensembl.org/pub/grch37/current/"</span>,</span>
-<span>                        <span class="st">"fasta/homo_sapiens/dna/Homo_sapiens.GRCh37."</span>,</span>
-<span>                        <span class="st">"dna.chromosome.22.fa.gz"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sbs_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://cancer.sanger.ac.uk/signatures/documents/2123/"</span>,</span>
-<span>                  <span class="st">"COSMIC_v3.4_SBS_GRCh37.txt"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">drivers_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/"</span>,</span>
-<span>                      <span class="st">"caravagnalab/rRACES/main/inst/extdata/"</span>,</span>
-<span>                      <span class="st">"driver_mutations_hg19.csv"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">passenger_cnas_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/"</span>,</span>
-<span>                             <span class="st">"caravagnalab/rRACES/main/inst/extdata/"</span>,</span>
-<span>                             <span class="st">"passenger_CNAs_hg19.csv"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">germline_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"https://www.dropbox.com/scl/fi/g9oloxkip18tr1r"</span>,</span>
-<span>                       <span class="st">"m6wjve/germline_data_demo.tar.gz?rlkey=15jshul"</span>,</span>
-<span>                       <span class="st">"d3bqgyfcs7fa0bzqeo&amp;dl=1"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># build a mutation engine and place all the files in the directory "Test"</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>directory <span class="op">=</span> <span class="st">"Test"</span>,</span>
-<span>                                  reference_src <span class="op">=</span> <span class="va">reference_url</span>,</span>
-<span>                                  SBS_src <span class="op">=</span> <span class="va">sbs_url</span>,</span>
-<span>                                  drivers_src <span class="op">=</span> <span class="va">drivers_url</span>,</span>
-<span>                                  passenger_CNAs_src <span class="op">=</span> <span class="va">passenger_cnas_url</span>,</span>
-<span>                                  germline_src <span class="op">=</span> <span class="va">germline_url</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Downloading reference genome...</span></span>
-<span><span class="co">#&gt; Reference genome downloaded</span></span>
-<span><span class="co">#&gt; Decompressing reference file...done</span></span>
-<span><span class="co">#&gt; Downloading SBS file...</span></span>
-<span><span class="co">#&gt; SBS file downloaded</span></span>
-<span><span class="co">#&gt; Downloading driver mutation file...</span></span>
-<span><span class="co">#&gt; Driver mutation file downloaded</span></span>
-<span><span class="co">#&gt; Downloading passenger CNAs file...</span></span>
-<span><span class="co">#&gt; Passenger CNAs file downloaded</span></span>
-<span><span class="co">#&gt; Downloading germline mutations...</span></span>
-<span><span class="co">#&gt; Germline mutations downloaded</span></span>
-<span><span class="co">#&gt; Building context index...</span></span>
-<span><span class="co">#&gt; done</span></span>
-<span></span>
-<span><span class="va">m_engine</span></span>
-<span><span class="co">#&gt; MutationEngine</span></span>
-<span><span class="co">#&gt;  Passenger rates</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Driver mutations</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Timed Exposure</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(rRACES)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>reference_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://ftp.ensembl.org/pub/grch37/current/"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>                        <span class="st">"fasta/homo_sapiens/dna/Homo_sapiens.GRCh37."</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>                        <span class="st">"dna.chromosome.22.fa.gz"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>sbs_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://cancer.sanger.ac.uk/signatures/documents/2123/"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>                  <span class="st">"COSMIC_v3.4_SBS_GRCh37.txt"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>drivers_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>                      <span class="st">"caravagnalab/rRACES/main/inst/extdata/"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>                      <span class="st">"driver_mutations_hg19.csv"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>passenger_cnas_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://raw.githubusercontent.com/"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>                             <span class="st">"caravagnalab/rRACES/main/inst/extdata/"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>                             <span class="st">"passenger_CNAs_hg19.csv"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>germline_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://www.dropbox.com/scl/fi/g9oloxkip18tr1r"</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>                       <span class="st">"m6wjve/germline_data_demo.tar.gz?rlkey=15jshul"</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>                       <span class="st">"d3bqgyfcs7fa0bzqeo&amp;dl=1"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a><span class="co"># build a mutation engine and place all the files in the directory "Test"</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>m_engine <span class="ot">&lt;-</span> <span class="fu">build_mutation_engine</span>(<span class="at">directory =</span> <span class="st">"Test"</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>                                  <span class="at">reference_src =</span> reference_url,</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>                                  <span class="at">SBS_src =</span> sbs_url,</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>                                  <span class="at">drivers_src =</span> drivers_url,</span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>                                  <span class="at">passenger_CNAs_src =</span> passenger_cnas_url,</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>                                  <span class="at">germline_src =</span> germline_url)</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a><span class="co">#&gt; Downloading reference genome...</span></span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a><span class="co">#&gt; Reference genome downloaded</span></span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a><span class="co">#&gt; Decompressing reference file...done</span></span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a><span class="co">#&gt; Downloading SBS file...</span></span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a><span class="co">#&gt; SBS file downloaded</span></span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a><span class="co">#&gt; Downloading driver mutation file...</span></span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a><span class="co">#&gt; Driver mutation file downloaded</span></span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a><span class="co">#&gt; Downloading passenger CNAs file...</span></span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a><span class="co">#&gt; Passenger CNAs file downloaded</span></span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a><span class="co">#&gt; Downloading germline mutations...</span></span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a><span class="co">#&gt; Germline mutations downloaded</span></span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a><span class="co">#&gt; Building context index...</span></span>
+<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">49</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">89</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Context index built</span>
+<span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving context index</span>
+<span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Context index saved</span>
+<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a><span class="co">#&gt; done</span></span>
+<span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading germline</span>
+<span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline loaded</span>
+<span id="cb1-53"><a href="#cb1-53" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-54"><a href="#cb1-54" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving germline</span>
+<span id="cb1-55"><a href="#cb1-55" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline saved</span>
+<span id="cb1-56"><a href="#cb1-56" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" tabindex="-1"></a>m_engine</span>
+<span id="cb1-58"><a href="#cb1-58" tabindex="-1"></a><span class="co">#&gt; MutationEngine</span></span>
+<span id="cb1-59"><a href="#cb1-59" tabindex="-1"></a><span class="co">#&gt;  Passenger rates</span></span>
+<span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a><span class="co">#&gt;  Driver mutations</span></span>
+<span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-63"><a href="#cb1-63" tabindex="-1"></a><span class="co">#&gt;  Timed Exposure</span></span></code></pre></div>
 <p>The above call creates the directory <code>Test</code>, fills it with
 all the data required to build a mutation engine, and build it.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -176,20 +189,22 @@ change the reference genome or the SBS file, it is no more required. In
 this spirit, any call to the function <code>MutationEngine</code> checks
 whether all the building process sub-tasks are really needed and, if
 this is not the case, avoids to performs them.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># build a new mutation engine and use all the data stored into the</span></span>
-<span><span class="co"># directory "Test"</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>, <span class="va">sbs_url</span>,</span>
-<span>                                  <span class="va">passenger_cnas_url</span>, <span class="va">drivers_url</span>,</span>
-<span>                                  <span class="va">germline_url</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">m_engine</span></span>
-<span><span class="co">#&gt; MutationEngine</span></span>
-<span><span class="co">#&gt;  Passenger rates</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Driver mutations</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Timed Exposure</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># build a new mutation engine and use all the data stored into the</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># directory "Test"</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>m_engine <span class="ot">&lt;-</span> <span class="fu">build_mutation_engine</span>(<span class="st">"Test"</span>, reference_url, sbs_url,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>                                  passenger_cnas_url, drivers_url,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>                                  germline_url)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading germline</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline loaded</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>m_engine</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; MutationEngine</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;  Passenger rates</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;  Driver mutations</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;  Timed Exposure</span></span></code></pre></div>
 <p>The <code>MutationEngine</code> function also builds a context index
 of the reference sequence. The complete context index of a sequence
 whose size is up to 4Gbps takes 4 times the length of the sequence
@@ -206,21 +221,31 @@ lower the number of sites in the refernce genome that can be affected by
 simulated mutations. The <code>context_sampling</code> is set to 100 by
 default, but it can be specified during the <code>MutationEngine</code>
 call as the last parameter.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># set-up the data and build the context index with `context_sampling` is 50</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>, <span class="va">sbs_url</span>,</span>
-<span>                                  <span class="va">passenger_cnas_url</span>, <span class="va">drivers_url</span>,</span>
-<span>                                  <span class="va">germline_url</span>, context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building context index...</span></span>
-<span><span class="co">#&gt; done</span></span>
-<span></span>
-<span><span class="co"># get the size of the context index when `context_sampling` is 100</span></span>
-<span><span class="fu">utils</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">format.object_size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="st">"Test/context_index_100.cif"</span><span class="op">)</span>, <span class="st">"auto"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "1.3 Mb"</span></span>
-<span></span>
-<span><span class="co"># get the size of the context index when `context_sampling` is 50</span></span>
-<span><span class="fu">utils</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">format.object_size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="st">"Test/context_index_50.cif"</span><span class="op">)</span>, <span class="st">"auto"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "2.7 Mb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># set-up the data and build the context index with `context_sampling` is 50</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>m_engine <span class="ot">&lt;-</span> <span class="fu">build_mutation_engine</span>(<span class="st">"Test"</span>, reference_url, sbs_url,</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>                                  passenger_cnas_url, drivers_url,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                                  germline_url, <span class="at">context_sampling =</span> <span class="dv">50</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; Building context index...</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">49</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">89</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Context index built</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving context index</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Context index saved</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; done</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading germline</span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline loaded</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co"># get the size of the context index when `context_sampling` is 100</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>utils<span class="sc">:::</span><span class="fu">format.object_size</span>(<span class="fu">file.size</span>(<span class="st">"Test/context_index_100.cif"</span>), <span class="st">"auto"</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt; [1] "1.3 Mb"</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co"># get the size of the context index when `context_sampling` is 50</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a>utils<span class="sc">:::</span><span class="fu">format.object_size</span>(<span class="fu">file.size</span>(<span class="st">"Test/context_index_50.cif"</span>), <span class="st">"auto"</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; [1] "2.7 Mb"</span></span></code></pre></div>
 <p>The function <code>MutationEngine</code> is quite flexible and it
 allows to specify any possible reference genome and any SBS file.
 However, the vast majority of rRACES users aim a standard set-up for
@@ -237,25 +262,38 @@ predefined set-ups can be obtained by invoking the function
 <span><span class="co">#&gt; 3   demo  A demostative set-up</span></span></code></pre></div>
 <p>Let us build a <code>MutationEngine</code> by using the “demo”
 configuration.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Downloading reference genome...</span></span>
-<span><span class="co">#&gt; Reference genome downloaded</span></span>
-<span><span class="co">#&gt; Decompressing reference file...done</span></span>
-<span><span class="co">#&gt; Downloading SBS file...</span></span>
-<span><span class="co">#&gt; SBS file downloaded</span></span>
-<span><span class="co">#&gt; Downloading driver mutation file...</span></span>
-<span><span class="co">#&gt; Driver mutation file downloaded</span></span>
-<span><span class="co">#&gt; Downloading passenger CNAs file...</span></span>
-<span><span class="co">#&gt; Passenger CNAs file downloaded</span></span>
-<span><span class="co">#&gt; Downloading germline mutations...</span></span>
-<span><span class="co">#&gt; Germline mutations downloaded</span></span>
-<span><span class="co">#&gt; Building context index...</span></span>
-<span><span class="co">#&gt; done</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.exists</a></span><span class="op">(</span><span class="st">"demo"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>m_engine <span class="ot">&lt;-</span> <span class="fu">build_mutation_engine</span>(<span class="at">setup_code =</span> <span class="st">"demo"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt; Downloading reference genome...</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; Reference genome downloaded</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; Decompressing reference file...done</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; Downloading SBS file...</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; SBS file downloaded</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; Downloading driver mutation file...</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; Driver mutation file downloaded</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; Downloading passenger CNAs file...</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; Passenger CNAs file downloaded</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; Downloading germline mutations...</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; Germline mutations downloaded</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; Building context index...</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">49</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">89</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Context index built</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving context index</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Context index saved</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; done</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading germline</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline loaded</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving germline</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline saved</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="fu">dir.exists</span>(<span class="st">"demo"</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>We can figure out the size of the context index as done above.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the size of the context index when `context_sampling` is 100</span></span>
@@ -263,16 +301,26 @@ configuration.</p>
 <span><span class="co">#&gt; [1] "1.3 Mb"</span></span></code></pre></div>
 <p>We can remove the set-up and rebuild it decreasing the
 <code>context_sampling</code> parameter.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
-<span><span class="co"># and setting context_sampling to 50</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>, context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Building context index...</span></span>
-<span><span class="co">#&gt; done</span></span>
-<span></span>
-<span><span class="co"># get the size of the context index when `context_sampling` is 50</span></span>
-<span><span class="fu">utils</span><span class="fu">:::</span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">format.object_size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="st">"demo/context_index_50.cif"</span><span class="op">)</span>, <span class="st">"auto"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "2.7 Mb"</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co"># and setting context_sampling to 50</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>m_engine <span class="ot">&lt;-</span> <span class="fu">build_mutation_engine</span>(<span class="at">setup_code =</span> <span class="st">"demo"</span>, <span class="at">context_sampling =</span> <span class="dv">50</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; Building context index...</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">49</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">89</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Context index built</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving context index</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Context index saved</span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co">#&gt; done</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading germline</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline loaded</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co"># get the size of the context index when `context_sampling` is 50</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>utils<span class="sc">:::</span><span class="fu">format.object_size</span>(<span class="fu">file.size</span>(<span class="st">"demo/context_index_50.cif"</span>), <span class="st">"auto"</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a><span class="co">#&gt; [1] "2.7 Mb"</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="mutant-genetic-characterization">Mutant Genetic Characterization<a class="anchor" aria-label="anchor" href="#mutant-genetic-characterization"></a>
 </h4>
@@ -298,45 +346,56 @@ these declarations.</p>
 <p>For the sake of example, let us assume that <code>A</code> is
 characterized by one driver mutation on chromosome 22, while
 <code>B</code> has two driver mutations on the same chromosome.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># add the mutant "A" characterized by one driver SNV on chromosome 22 and</span></span>
-<span><span class="co"># two CNAs: an amplification and a deletion. The mutant has two epigenetic</span></span>
-<span><span class="co"># states and its species "A+" and "A-" have passenger SNV rates 1e-9 and</span></span>
-<span><span class="co"># 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.</span></span>
-<span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>mutant_name <span class="op">=</span> <span class="st">"A"</span>,</span>
-<span>                    passenger_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">1e-9</span><span class="op">)</span>,</span>
-<span>                                           <span class="st">"-"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">3e-8</span>, CNA <span class="op">=</span> <span class="fl">1e-11</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    driver_SNVs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">10510210</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    driver_CNAs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="../reference/CNA.html">CNA</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"A"</span>, <span class="st">"22"</span>,</span>
-<span>                                        pos_in_chr <span class="op">=</span> <span class="fl">10303470</span>, len <span class="op">=</span> <span class="fl">200000</span><span class="op">)</span>,</span>
-<span>                                    <span class="fu"><a href="../reference/CNA.html">CNA</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"22"</span>, <span class="fl">5010000</span>, <span class="fl">200000</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># add the mutant "B" characterized by two driver SNVs on chromosome 22 (no</span></span>
-<span><span class="co"># CNA) and two epigenetic states. Its species "B+" and "B-" have passenger</span></span>
-<span><span class="co"># SNV rates 8e-7 and 5e-8, respectively, and CNA rates 0 for both species.</span></span>
-<span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span><span class="st">"B"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">8e-7</span><span class="op">)</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">12028576</span>, <span class="st">"G"</span><span class="op">)</span>,</span>
-<span>                      <span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">12029660</span>, <span class="st">"A"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">m_engine</span></span>
-<span><span class="co">#&gt; MutationEngine</span></span>
-<span><span class="co">#&gt;  Passenger rates</span></span>
-<span><span class="co">#&gt;    "A+": {SNV: 1e-09}</span></span>
-<span><span class="co">#&gt;    "A-": {SNV: 3e-08, CNA: 1e-11}</span></span>
-<span><span class="co">#&gt;    "B+": {SNV: 8e-07}</span></span>
-<span><span class="co">#&gt;    "B-": {SNV: 5e-08}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Driver mutations</span></span>
-<span><span class="co">#&gt;    "A" SNVs: </span></span>
-<span><span class="co">#&gt;        chr22(10510210)[N&gt;C]</span></span>
-<span><span class="co">#&gt;    "A" CNAs: </span></span>
-<span><span class="co">#&gt;        CNA("D",GenomicRegion(chr: 22, begin: 5010000, length: 200000))</span></span>
-<span><span class="co">#&gt;        CNA("A",GenomicRegion(chr: 22, begin: 10303470, length: 200000))</span></span>
-<span><span class="co">#&gt;    "B" SNVs: </span></span>
-<span><span class="co">#&gt;        chr22(12028576)[N&gt;G]</span></span>
-<span><span class="co">#&gt;        chr22(12029660)[N&gt;A]</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  Timed Exposure</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># add the mutant "A" characterized by one driver SNV on chromosome 22 and</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co"># two CNAs: an amplification and a deletion. The mutant has two epigenetic</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co"># states and its species "A+" and "A-" have passenger SNV rates 1e-9 and</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co"># 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>m_engine<span class="sc">$</span><span class="fu">add_mutant</span>(<span class="at">mutant_name =</span> <span class="st">"A"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>                    <span class="at">passenger_rates =</span> <span class="fu">list</span>(<span class="st">"+"</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="at">SNV =</span> <span class="fl">1e-9</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>                                           <span class="st">"-"</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="at">SNV =</span> <span class="fl">3e-8</span>, <span class="at">CNA =</span> <span class="fl">1e-11</span>)),</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>                    <span class="at">driver_SNVs =</span> <span class="fu">c</span>(<span class="fu">SNV</span>(<span class="st">"22"</span>, <span class="dv">10510210</span>, <span class="st">"C"</span>)),</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>                    <span class="at">driver_CNAs =</span> <span class="fu">c</span>(<span class="fu">CNA</span>(<span class="at">type =</span> <span class="st">"A"</span>, <span class="st">"22"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>                                        <span class="at">pos_in_chr =</span> <span class="dv">10303470</span>, <span class="at">len =</span> <span class="dv">200000</span>),</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>                                    <span class="fu">CNA</span>(<span class="st">"D"</span>, <span class="st">"22"</span>, <span class="dv">5010000</span>, <span class="dv">200000</span>)))</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Retrieving <span class="st">"A"</span> SNVs</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Found <span class="dv">22</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Reading <span class="dv">22</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] <span class="st">"A"</span> SNVs retrieved</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co"># add the mutant "B" characterized by two driver SNVs on chromosome 22 (no</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co"># CNA) and two epigenetic states. Its species "B+" and "B-" have passenger</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co"># SNV rates 8e-7 and 5e-8, respectively, and CNA rates 0 for both species.</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>m_engine<span class="sc">$</span><span class="fu">add_mutant</span>(<span class="st">"B"</span>, <span class="fu">list</span>(<span class="st">"+"</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="at">SNV =</span> <span class="fl">8e-7</span>), <span class="st">"-"</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="at">SNV =</span> <span class="fl">5e-8</span>)),</span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>                    <span class="fu">c</span>(<span class="fu">SNV</span>(<span class="st">"22"</span>, <span class="dv">12028576</span>, <span class="st">"G"</span>),</span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>                      <span class="fu">SNV</span>(<span class="st">"22"</span>, <span class="dv">12029660</span>, <span class="st">"A"</span>)))</span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Retrieving <span class="st">"B"</span> SNVs</span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Found <span class="dv">22</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Reading <span class="dv">22</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] <span class="st">"B"</span> SNVs retrieved</span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>m_engine</span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a><span class="co">#&gt; MutationEngine</span></span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a><span class="co">#&gt;  Passenger rates</span></span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a><span class="co">#&gt;    "A+": {SNV: 1e-09}</span></span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a><span class="co">#&gt;    "A-": {SNV: 3e-08, CNA: 1e-11}</span></span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a><span class="co">#&gt;    "B+": {SNV: 8e-07}</span></span>
+<span id="cb9-38"><a href="#cb9-38" tabindex="-1"></a><span class="co">#&gt;    "B-": {SNV: 5e-08}</span></span>
+<span id="cb9-39"><a href="#cb9-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-40"><a href="#cb9-40" tabindex="-1"></a><span class="co">#&gt;  Driver mutations</span></span>
+<span id="cb9-41"><a href="#cb9-41" tabindex="-1"></a><span class="co">#&gt;    "A" SNVs: </span></span>
+<span id="cb9-42"><a href="#cb9-42" tabindex="-1"></a><span class="co">#&gt;        chr22(10510210)[N&gt;C]</span></span>
+<span id="cb9-43"><a href="#cb9-43" tabindex="-1"></a><span class="co">#&gt;    "A" CNAs: </span></span>
+<span id="cb9-44"><a href="#cb9-44" tabindex="-1"></a><span class="co">#&gt;        CNA("D",GenomicRegion(chr: 22, begin: 5010000, length: 200000))</span></span>
+<span id="cb9-45"><a href="#cb9-45" tabindex="-1"></a><span class="co">#&gt;        CNA("A",GenomicRegion(chr: 22, begin: 10303470, length: 200000))</span></span>
+<span id="cb9-46"><a href="#cb9-46" tabindex="-1"></a><span class="co">#&gt;    "B" SNVs: </span></span>
+<span id="cb9-47"><a href="#cb9-47" tabindex="-1"></a><span class="co">#&gt;        chr22(12028576)[N&gt;G]</span></span>
+<span id="cb9-48"><a href="#cb9-48" tabindex="-1"></a><span class="co">#&gt;        chr22(12029660)[N&gt;A]</span></span>
+<span id="cb9-49"><a href="#cb9-49" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-50"><a href="#cb9-50" tabindex="-1"></a><span class="co">#&gt;  Timed Exposure</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="mutational-exposures">Mutational Exposures<a class="anchor" aria-label="anchor" href="#mutational-exposures"></a>
@@ -495,12 +554,17 @@ the active germline subject.</p>
 representation of the subject genome, saving it for future use. This
 step may take a few minutes. However, all the successive selections of
 the same subject directly load the binary file.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">set_germline_subject</span><span class="op">(</span><span class="va">subjects</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"sample"</span><span class="op">]</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_active_germline</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    sample pop super_pop gender</span></span>
-<span><span class="co">#&gt; 1 NA20513 TSI       EUR   male</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>m_engine<span class="sc">$</span><span class="fu">set_germline_subject</span>(subjects[<span class="dv">2</span>, <span class="st">"sample"</span>])</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading germline</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline loaded</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving germline</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline saved</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>m_engine<span class="sc">$</span><span class="fu">get_active_germline</span>()</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt;    sample pop super_pop gender</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; 1 NA20513 TSI       EUR   male</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -512,22 +576,26 @@ samples forest by mutations.</p>
 simulation peformed in <code><a href="../articles/growth_models.html">vignette("growth_models")</a></code>, we can
 use the samples forest saved in the file
 <code>"samples_forest.sff"</code> in that article.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">samples_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_samples_forest.html">load_samples_forest</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># place mutations on the sample forest assuming 1000</span></span>
-<span><span class="co"># pre-neoplastic mutations</span></span>
-<span><span class="va">phylo_forest</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">phylo_forest</span></span>
-<span><span class="co">#&gt; PhylogeneticForest</span></span>
-<span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 4773</span></span>
-<span><span class="co">#&gt;   # of leaves: 953</span></span>
-<span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs: 70051</span></span>
-<span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>samples_forest <span class="ot">&lt;-</span> <span class="fu">load_samples_forest</span>(<span class="st">"samples_forest.sff"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co"># place mutations on the sample forest assuming 1000</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co"># pre-neoplastic mutations</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>phylo_forest <span class="ot">&lt;-</span> m_engine<span class="sc">$</span><span class="fu">place_mutations</span>(samples_forest, <span class="dv">1000</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Placing mutations</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">63</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">84</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Mutations placed</span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>phylo_forest</span>
+<span id="cb17-13"><a href="#cb17-13" tabindex="-1"></a><span class="co">#&gt; PhylogeneticForest</span></span>
+<span id="cb17-14"><a href="#cb17-14" tabindex="-1"></a><span class="co">#&gt;   # of trees: 1</span></span>
+<span id="cb17-15"><a href="#cb17-15" tabindex="-1"></a><span class="co">#&gt;   # of nodes: 4773</span></span>
+<span id="cb17-16"><a href="#cb17-16" tabindex="-1"></a><span class="co">#&gt;   # of leaves: 953</span></span>
+<span id="cb17-17"><a href="#cb17-17" tabindex="-1"></a><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
+<span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a><span class="co">#&gt;   # of emerged SNVs: 70051</span></span>
+<span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The phylogenetic forest stores all the mutations labeling the sampled
 cells which are represented by the forest leaves. Users can retrieve
 such data by using the methods
@@ -720,19 +788,23 @@ Boolean flag that enable/disable the infinite sites model.</p>
 the same locus of different alleles of the same genome or the same
 mutation in the same locus of one allele of the genomes of two cells
 that are not each other ancestors.</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># test whether the infinite sites model is enable</span></span>
-<span><span class="va">m_engine</span><span class="op">$</span><span class="va">infinite_sites_model</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span>
-<span></span>
-<span><span class="co"># place the mutations on the same samples forest</span></span>
-<span><span class="co"># used above</span></span>
-<span><span class="va">phylo_forest2</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># test whether the infinite sites conditions hold</span></span>
-<span><span class="co"># in the new phylogenetic forest</span></span>
-<span><span class="fu">test_infinite_sites_model</span><span class="op">(</span><span class="va">phylo_forest2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "SNV('22'',16062018,'T','C') independently arises in cells 199420 and 249418"</span></span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># test whether the infinite sites model is enable</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>m_engine<span class="sc">$</span>infinite_sites_model</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#&gt; [1] FALSE</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co"># place the mutations on the same samples forest</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co"># used above</span></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>phylo_forest2 <span class="ot">&lt;-</span> m_engine<span class="sc">$</span><span class="fu">place_mutations</span>(samples_forest, <span class="dv">1000</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Placing mutations</span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">63</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">84</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Mutations placed</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a><span class="co"># test whether the infinite sites conditions hold</span></span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a><span class="co"># in the new phylogenetic forest</span></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a><span class="fu">test_infinite_sites_model</span>(phylo_forest2)</span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a><span class="co">#&gt; [1] "SNV('22'',16062018,'T','C') independently arises in cells 199420 and 249418"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="storing-phylogenetic-forests">Storing Phylogenetic Forests<a class="anchor" aria-label="anchor" href="#storing-phylogenetic-forests"></a>

@@ -24,7 +24,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -163,6 +163,13 @@
 <dt><code>get_species_info</code></dt>
 <dd><p>Gets the species data</p><ul><li><p><em>Returns:</em> A data frame reporting "mutant" and "epistate"
            for each registered species.</p></li>
+</ul></dd>
+
+
+<dt><code>get_sticks</code></dt>
+<dd><p>Compute the forest sticks</p><ul><li><p><em>Returns:</em> The list of the forest sticks. Each stick is represented as 
+         the list of cell identifiers labelling the nodes in the stick
+         from the higher to the deeper in the forest.</p></li>
 </ul></dd>
 
 
