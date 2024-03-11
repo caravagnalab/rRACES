@@ -106,7 +106,7 @@ Rcpp::List GermlineStorage::get_population_descritions_df() const
 
   Function read_csv("read.csv");
 
-  return read_csv(_["file"]=get_population_descriptions_file(),
+  return read_csv(_["file"]=to_string(get_population_descriptions_file()),
                   _["quote"]="", _["header"]=true, _["sep"] = "\t");
 }
 
