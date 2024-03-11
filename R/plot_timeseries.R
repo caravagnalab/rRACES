@@ -27,7 +27,7 @@
 #'
 #' @examples
 #' sim <- new(Simulation)
-#' sim$history_delta <- 1 
+#' sim$history_delta <- 1
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 #'                growth_rates = c("+" = 0.2, "-" = 0.08),

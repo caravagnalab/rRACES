@@ -22,13 +22,13 @@ knitr::opts_chunk$set(
 unlink("rRACES_SAM", recursive = TRUE)
 ```
 
-Once a phylogenetic forest has been computed (see `vignette("mutations")`)
-for the details), rRACES/RACES can simulate the sequencing of the 
+Once a phylogenetic forest has been computed as detailed in 
+`vignette("mutations")`, rRACES can simulate the sequencing of the 
 samples in the forest and return the observed data.
 
 ### Sequencing Simulation
 
-Let us consider the phylogenetic forest produced in 
+Let us reload the phylogenetic forest produced in 
 `vignette("mutations")`.
 
 ```{r}
@@ -55,23 +55,23 @@ library(dplyr)
 seq_results %>% head
 ```
 
-The function `simulate_seq` returns a data frame whose rows 
+The function `simulate_seq()` returns a data frame whose rows 
 represent the mutations observed in the simulated reads
 (currently, only SNVs are supported).
 
 The number of columns in the data frame depends on the number 
 of samples in the phygenetic forest. The first 4 columns 
 describe the mutation and report the chromosome and the position 
-in the chromosome of the mutation (columns "`chromosome`" and 
-"`chr_pos`", respectively), the genetic context in which the 
-mutation occurs (column "`context`"), and the new base (column 
-"`alt_base`").
+in the chromosome of the mutation (columns `chromosome` and 
+`chr_pos`, respectively), the genetic context in which the 
+mutation occurs (column `context`), and the new base (column 
+`alt_base`).
 Then, there are 3 columns for each of the samples: they 
 contain the number of simulated reads affected by the 
 mutation, the sequencing coverage of the mutation locus, 
 and the ratio between these two last columns 
-(columns "`<sample name> occurrences`", "`<sample name> coverage`", 
-and "`<sample name> VAF`", respectively).
+(columns `<sample name> occurrences`, `<sample name> coverage`, 
+and `<sample name> VAF`, respectively).
 
 ### Sample Purity and Normal Cell Sequencing
 
@@ -89,7 +89,7 @@ simulations.
 seq_results <- simulate_seq(phylo_forest, coverage = 2.5, purity = 0.7)
 ```
 
-The default value of the parameter `purity` is 1, i.e., `simulate_seq` 
+The default value of the parameter `purity` is 1, i.e., `simulate_seq()` 
 assumes all the cells in the sample to be neoplastic by default.
 
 The sequencing of a sample exclusively containing wild-type cells can 
@@ -98,7 +98,7 @@ be simulated by setting the parameter `purity` to 0.
 ### Cell Partition by Epigenetic State (Epi-FACS)
 
 The sequencing simulation supports cell partition by epigenetic state (epi-FACS) by 
-using the `simualate_seq` parameter `epi_FACS`.
+using the `simualate_seq()` parameter `epi_FACS`.
 At the beginning of the sequencing simulation process, each sample in the phylogenetic 
 forest is splitted in two distinct samples: `<sample name>_P`, that contains 
 all the cells in the original sample having epigenetic state `+`, and 
@@ -117,7 +117,7 @@ seq_results %>% head
 rRACES/RACE can also save the simulated reads in the SAM format 
 (see [@10.1093/bioinformatics/btp352]). By setting the 
 optional parameter `write_SAM` to `TRUE`, 
-the function `simulate_seq` creates the directory `rRACES_SAM`
+the function `simulate_seq()` creates the directory `rRACES_SAM`
 and saves the SAM files in it. Each file is named after one the 
 reference genome chromosomes and it contains the reads simulated 
 for it. 
@@ -125,17 +125,17 @@ for it.
 ```{r}
 seq_results <- simulate_seq(phylo_forest, coverage = 2.5, write_SAM = TRUE)
 
-SAM_files <- list.files("rRACES_SAM/")
+sam_files <- list.files("rRACES_SAM/")
 
-ex_file <- paste("rRACES_SAM/", SAM_files[1], sep="")
+ex_file <- paste("rRACES_SAM/", sam_files[1], sep = "")
 for (line in readLines(ex_file, n = 10)) {
-    cat(paste(line,"\n"))
+  cat(paste(line, "\n"))
 }
 ```
 
 Each SAM file contains the reads produced by simulating the sequencing 
-of *all* the samples. The command line tools `samtools` can be used to
-split the reads by sample (see [here](http://www.htslib.org)).
+of *all* the samples. The command line tools [`samtools`](http://www.htslib.org) can be used to
+split the reads by sample.
 
 ```{bash, eval = FALSE}
 foo@bar % samtools split  -f "%*_%\!.sam" rRACES_SAM/chr_22.sam

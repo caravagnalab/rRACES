@@ -37,9 +37,6 @@
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
 #' plot_tissue(sim)
-#'
-#' # delete the simulation dump directory
-#' unlink(sim$get_name(), recursive = TRUE)
 plot_tissue <- function(simulation, num_of_bins = 100) {
   stopifnot(inherits(simulation, "Rcpp_Simulation"))
 

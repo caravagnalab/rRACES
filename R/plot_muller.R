@@ -36,7 +36,7 @@ collapse_loops <- function(df_edges) {
 #' Plot a muller plot
 #'
 #' @description
-#' Plots a muller plot of the simulation, using the store time-series data 
+#' Plots a muller plot of the simulation, using the store time-series data
 #' and package ggmuller.
 #'
 #' @param simulation A simulation object.

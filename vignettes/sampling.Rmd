@@ -24,9 +24,10 @@ library(ggplot2)
 ```
 
 Once one has familiarised on how a tumour evolution simulation can be
-programmed using rRACES, the next step is to augment the simulation with
-sampling of tumour cells. This mimics a realistic experimental design
-where we gather tumour sequencing data.
+programmed using rRACES (see `vignette("tissue_simulation")), the next 
+step is to augment the simulation with sampling of tumour cells. 
+This mimics a realistic experimental design where we gather tumour
+sequencing data.
 
 This vignette introduces sampling using different type of models;
 starting from simpler up to more complex simulation scenarios we
@@ -91,17 +92,17 @@ sim$sample_cells("S_1_2", bottom_left = bbox2_p, top_right = bbox2_q)
 
 > *Note:* Sampling removes cells from the tissue, as if the tissue was
 > surgically resected. Therefore, cells that are mapped to the bounding
-> box after application of `sample_cells` are no longer part of the
+> box after application of `Simulation$sample_cells()` are no longer part of the
 > simulation.
 
-A new call to `plot_tissue` will show the box where the cells have been
+A new call to `plot_tissue()` will show the box where the cells have been
 removed to be white.
 
 ```{r,  fig.height=4, fig.width=3}
 plot_tissue(sim)
 ```
 
-This is also reflected by `get_cells`, which now will not find any
+This is also reflected by `Simulation$get_cells()`, which now will not find any
 tumour cell in the sampled region.
 
 ```{r}
@@ -213,17 +214,17 @@ current <- plot_tissue(sim)
 current
 ```
 
-Since mutant start has been randomised by `choose_cell_in`, we have no
+Since mutant start has been randomised by `Simulation$choose_cell_in()`, we have no
 exact idea of where to sample to obtain for example, $100$ of its cells.
 We can look visually at the simulation, but this is slow.
 
-rRACES provides a `bbox_sampler` function to sample bounding boxes that
+rRACES provides a `Simulation$search_sample()` function to sample bounding boxes that
 contain a desired number of cells. The function takes in input:
 
 -   a bounding box size;
 -   the number $n$ of cells to sample for a species of interest.
 
-`bbox_sampler` will attempt a fixed number of times to sample the box,
+`Simulation$search_sample()` will attempt a fixed number of times to sample the box,
 starting from positions occupied by the species of interest. If a box
 that contains at least $n$ cells is not found within a number of
 attempts, then the one with the largest number of samples is returned.
@@ -291,9 +292,9 @@ sim$death_activation_level <- 20
 
 # First mutant
 sim$add_mutant(name = "A",
-                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                 growth_rates = c("+" = 0.1, "-" = 0.08),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.1, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$place_cell("A+", 500, 500)
 sim$run_up_to_size("A+", 1000)
@@ -329,9 +330,9 @@ Add a new submutant.
 cell <- sim$choose_cell_in("A")
 
 sim$add_mutant(name = "B",
-                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
-                 growth_rates = c("+" = 0.5, "-" = 0.3),
-                 death_rates = c("+" = 0.05, "-" = 0.05))
+               epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
+               growth_rates = c("+" = 0.5, "-" = 0.3),
+               death_rates = c("+" = 0.05, "-" = 0.05))
 
 sim$mutate_progeny(cell, "B")
 

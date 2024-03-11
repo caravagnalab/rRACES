@@ -253,7 +253,7 @@ the sample `S_2_1` is selected near the external tumor border.
 
 ### Storing Samples Forests
 
-A samples forest can be saved in a file by using the method `SamplesForest$save`.
+A samples forest can be saved in a file by using the method `SamplesForest$save()`.
 
 ```{r, echo=FALSE,  results='hide', message=FALSE}
 unlink("samples_forest.sff")
@@ -271,7 +271,7 @@ file.exists("samples_forest.sff")
 ```
 
 The saved samples forest can successively be load by using the function
-`load_samples_forest`.
+`load_samples_forest()`.
 
 ```{r}
 # load the samples forest from "samples_forest.sff" and store it in `forest2`

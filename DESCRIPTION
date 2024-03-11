@@ -1,11 +1,11 @@
 Package: rRACES
 Type: Package
-Title: rRACES: An R Wrapper for RACES
+Title: An R Wrapper for RACES
 Version: 0.4.6
 Date: 2024-03-11
 Authors@R: c(
-    person("Giulio", "Caravagna", email = "gcaravagna@units.it", role = c("aut", "cre")),
-    person("Alberto", "Casagrande", role = "aut"))
+    person("Giulio", "Caravagna", role = c("aut")),
+    person("Alberto", "Casagrande", email = "alberto.casagrande@uniud.it", role = c("aut", "cre")))
 Maintainer: Giulio Caravagna <gcaravagna@units.it>
 Description: A wrapper for RACES. This package supports 
         spacial evolution of different mutants, different 
@@ -29,9 +29,11 @@ Imports:
     ggraph,
     tidygraph,
     Polychrome
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests: 
-    rmarkdown
+    rmarkdown,
+    hexbin
 VignetteBuilder: knitr
 Depends: 
     methods,

@@ -9,11 +9,14 @@
 #'        `plot_forest`
 #' has been derived.
 #' @param samples If `TRUE` it annotates samples.
-#' @param MRCAs If `TRUE` it annotates MRCAs
-#' @param exposures If `TRUE` it annotates exposures to mutational signatures
-#' @param facet_signatures If `TRUE` and if `exposures` is `TRUE` it creates a faceted forest plot where the exposure to each signature is annotated on a separated plot 
+#' @param MRCAs If `TRUE` it annotates MRCAs.
+#' @param exposures If `TRUE` it annotates exposures to mutational signatures.
+#' @param facet_signatures If `TRUE` and if `exposures` is `TRUE` it creates a
+#'   faceted forest plot where the exposure to each signature is annotated on
+#'   a separated plot.
 #' @param drivers If `TRUE` it annotates drivers on the node they originated.
-#' @param add_driver_label If `TRUE` and if `drivers` is `TRUE` it annotates the driver name.
+#' @param add_driver_label If `TRUE` and if `drivers` is `TRUE` it annotates
+#'   the driver name.
 #'
 #' @return A `ggraph` tree plot.
 #' @export

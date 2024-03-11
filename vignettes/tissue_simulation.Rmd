@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 library(rRACES)
 ```
 
-**Synopsis.** To simulate a tissue the following steps are required:
+To simulate a tissue the following steps are required:
 
 1.  creation of a tissue;
 
@@ -70,7 +70,7 @@ sim <- new(Simulation, "Test", save_snapshots = TRUE)
 sim$death_activation_level <- 50
 ```
 
-Class `Simulation` exports a `show` method to get information on the
+Class `Simulation` exports a `Simulation$show()` method to get information on the
 current object.
 
 ```{r, eval}
@@ -88,7 +88,9 @@ sim$get_name()
 sim$get_tissue_size()
 ```
 
-**Custom tissue.** We can change the tissue size and label it with a
+### Custom tissue
+
+We can change the tissue size and label it with a
 name that might appear in some plots.
 
 ```{r}
@@ -129,7 +131,7 @@ For example, if we define two mutants `A` and `B` with their epistates
 Hybrid models can be obtained, e.g., a mutant `A` (with no epistates),
 together with `B+` and `B-`.
 
-### **Evolutionary parameters**
+### Evolutionary parameters
 
 We use a notation common in linear birth-death processes. If a species
 `A` has no epistates then its stochastic behaviour is defined by the
@@ -168,9 +170,9 @@ duplicate and flip the epigenetic marker of one of the progeny.
 
 ```{r, eval=TRUE}
 sim$add_mutant(name = "A",
-                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                 growth_rates = c("+" = 0.2, "-" = 0.08),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.2, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 # updated object (counts refer to number of cells of each species)
 sim
@@ -198,7 +200,7 @@ sim$place_cell("A+", 500, 500)
 ### Visualisations
 
 We can query the current state of the simulation, and extract the
-position of each cell in the tissue
+position of each cell in the tissue.
 
 ```{r}
 # Counts per species
@@ -294,7 +296,7 @@ sim$get_clock()
 plot_tissue(sim)
 ```
 
-##### **Getting cells (Advanced)**
+##### Getting cells (Advanced)
 
 At this point, if we query the simulation we will find more cells (we
 use `dplyr` to process query results). For convenience, the getters
@@ -345,7 +347,7 @@ therefore new species `B+` and `B-` - as descending from `A,`we need to:
 -   locate one cell of mutant `A` in the tissue, which is where we
     will inject the new mutant;
 
--   add the specifics of mutant `B` (via `add_mutant`, as we did for
+-   add the specifics of mutant `B` (via `Simulation$add_mutant()`, as we did for
     `A`);
 
 -   implement the change of the cell of mutant `A` to a cell of
@@ -358,9 +360,9 @@ cell
 
 # Add mutant
 sim$add_mutant(name = "B",
-                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
-                 growth_rates = c("+" = 0.3, "-" = 0.3),
-                 death_rates = c("+" = 0.05, "-" = 0.1))
+               epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
+               growth_rates = c("+" = 0.3, "-" = 0.3),
+               death_rates = c("+" = 0.05, "-" = 0.1))
 ```
 
 Then we inject the cell, and simulate a little bit.
@@ -398,9 +400,9 @@ If, at this point in the simulation, we generate a new mutant `C` from
 ```{r}
 # Define evolutionary parameters
 sim$add_mutant(name = "C",
-                 epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
-                 growth_rates = c("+" = 0.2, "-" = 0.4),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+               growth_rates = c("+" = 0.2, "-" = 0.4),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 # Choose and mutate
 sim$mutate_progeny(sim$choose_cell_in("A",  c(450, 550), c(500, 600)), "C")
@@ -463,16 +465,16 @@ that of event firings. These data can be extracted.
 # The firings
 sim$get_firing_history() %>% head()
 
-# For example, total number of the deaths on `B+` at the end of the 
+# For example, total number of the deaths on `B+` at the end of the
 # previous calls of the `run_to_*` methods
 sim$get_firing_history() %>%
-  filter(event == "death", mutant == "B", epistate == "-") 
+  filter(event == "death", mutant == "B", epistate == "-")
 
 # The counts
 sim$get_count_history() %>% head()
 ```
 
-The time-series can be plot using `plot_timeseries`
+The time-series can be plot using `plot_timeseries()`
 
 ```{r,  fig.height=4, fig.width=4}
 # Time-series plot
@@ -481,9 +483,9 @@ plot_timeseries(sim)
 
 ### Custom time-series
 
-If the default time-series is not enough coarse-grained, one can set the
-`Simulation` property `history_delta` to increase the sampling rate of
-the state (by default, `history_delta` is set to $0$).
+If the default time-series is not enough coarse-grained, one can set
+`Simulation$history_delta` to increase the sampling rate of
+the state (by default, `Simulation$history_delta` is set to $0$).
 
 We show this by re-simulating a tumour with two submutants.
 
@@ -496,18 +498,18 @@ sim$death_activation_level <- 100
 
 # A
 sim$add_mutant(name = "A",
-                 epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
-                 growth_rates = c("+" = 0.2, "-" = 0.08),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.2, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$place_cell("A+", 500, 500)
 sim$run_up_to_size("A+", 400)
 
 # B (linear inside A)
 sim$add_mutant(name = "B",
-                 epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
-                 growth_rates = c("+" = 0.3, "-" = 0.3),
-                 death_rates = c("+" = 0.05, "-" = 0.1))
+               epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
+               growth_rates = c("+" = 0.3, "-" = 0.3),
+               death_rates = c("+" = 0.05, "-" = 0.1))
 
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 
@@ -515,24 +517,24 @@ sim$run_up_to_size("B-", 300)
 
 # C (linear inside B)
 sim$add_mutant(name = "C",
-                 epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
-                 growth_rates = c("+" = 0.2, "-" = 0.4),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+               growth_rates = c("+" = 0.2, "-" = 0.4),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$mutate_progeny(sim$choose_cell_in("B"), "C")
 
 # D (linear inside A, so branching with C) - same parameters of C
 sim$add_mutant(name = "D",
-                 epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
-                 growth_rates = c("+" = 0.2, "-" = 0.4),
-                 death_rates = c("+" = 0.1, "-" = 0.01))
+               epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+               growth_rates = c("+" = 0.2, "-" = 0.4),
+               death_rates = c("+" = 0.1, "-" = 0.01))
 
 sim$mutate_progeny(sim$choose_cell_in("A"), "D")
 
 sim$run_up_to_size("D+", 1000)
 ```
 
-The time-series can be plot using `plot_timeseries`.
+The time-series can be plot using `plot_timeseries()`.
 
 ```{r,  fig.height=4, fig.width=4}
 # Time-series plot
@@ -556,7 +558,7 @@ In this case every population is annotated as a descendant of the
 ancestor mutant. Note however that reversible espistates do not fit a
 traditional Muller plot because they violate the no-back mutation model.
 
-In this case, rRACES will show first the epistate that was randomly
+In this case, _rRACES_ will show first the epistate that was randomly
 injected in the simulation, and the second will result by linear. This
 is not a completely correct perspective of the simulation time-series;
 still, it help understand trends.

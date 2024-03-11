@@ -29,10 +29,10 @@ chance to dynamically change the SBS signature.
 
 The creation of an object of the type `MutationEngine` requires to download
 the reference sequence and the corresponding SBS file and to build the
-corresponding context index. The function `build_mutation_engine` performs
+corresponding context index. The function `build_mutation_engine()` performs
 all these steps in a single call.
 
-The function `build_mutation_engine` can be called by specifing the name
+The function `build_mutation_engine()` can be called by specifing the name
 of the set-up directory, the path or URL of the reference sequence, the 
 SBS file, the driver SNVs file, the passenger CNAs file, and the germline 
 data directory.
@@ -134,7 +134,7 @@ rRACES users aim a standard set-up for instance involving the human genome.
 Because of this, rRACES provides some predefined set-ups that can be used
 when building a `MutationEngine` object.
 A complete list of the supported predefined set-ups can be obtained by invoking
-the function `get_mutation_engine_codes`.
+the function `get_mutation_engine_codes()`.
 
 ```{r}
 get_mutation_engine_codes()
@@ -195,7 +195,7 @@ The driver mutations associated with each of the mutants must occur
 in any cell belonging to the mutant itself. Hence, they must be 
 declared to the mutant engine before the labeling.
 
-The method `MutationEngine$add_mutant` takes care of all these 
+The method `MutationEngine$add_mutant()` takes care of all these 
 declarations.
 
 For the sake of example, let us assume that `A` is characterized by one
@@ -349,8 +349,8 @@ phylo_forest
 The phylogenetic forest stores all the mutations labeling the 
 sampled cells which are represented by the forest leaves.
 Users can retrieve such data by using the methods 
-`PhylogeneticForest$get_sampled_cell_SNVs` and 
-`PhylogeneticForest$get_sampled_cell_CNAs`.
+`PhylogeneticForest$get_sampled_cell_SNVs()` and 
+`PhylogeneticForest$get_sampled_cell_CNAs()`.
 
 ```{r}
 library(dplyr)
@@ -380,7 +380,7 @@ phylo_forest$get_sampled_cell_SNVs(cell_id) %>% head()
 phylo_forest$get_sampled_cell_CNAs(cell_id) %>% head()
 ```
 
-The method `PhylogeneticForest$get_germline_SNVs` returns 
+The method `PhylogeneticForest$get_germline_SNVs()` returns 
 the SNVs in the germline.
 
 ```{r}
@@ -426,7 +426,7 @@ m_engine$get_SBSs()[1:6, 1:5]
 
 The name of the subject whose germline corresponds to 
 wild-type genome in the phylogenetic forest can be 
-obtained by the method `Phylogenetic$get_germline_subject`.
+obtained by the method `Phylogenetic$get_germline_subject()`.
 
 ```{r}
 phylo_forest$get_germline_subject()
@@ -480,7 +480,7 @@ test_infinite_sites_model(phylo_forest)
 ```
 
 This behavior can be changed by using the mutation engine property
-`MutationEngine$infinite_sites_model`. This property is a Boolean flag 
+`MutationEngine$infinite_sites_model()`. This property is a Boolean flag 
 that enable/disable the infinite sites model. 
 
 ```{r}
@@ -492,7 +492,7 @@ m_engine$infinite_sites_model <- FALSE
 ```
 
 When the infinite sites model is disabled, 
-`MutationEngine$place_mutations` may place two mutations 
+`MutationEngine$place_mutations()` may place two mutations 
 in the same locus of different alleles of the same genome 
 or the same mutation in the same locus of one allele 
 of the genomes of two cells that are not each other ancestors.
@@ -513,8 +513,8 @@ test_infinite_sites_model(phylo_forest2)
 ### Storing Phylogenetic Forests
 
 As in the case of the samples forests, the phylogenetic forests 
-can be saved by using the method `PhylogeneticForest$save` and 
-load by the function `load_phylogenetic_forest`.
+can be saved by using the method `PhylogeneticForest$save()` and 
+load by the function `load_phylogenetic_forest()`.
 
 ```{r}
 # save the phylogenetic forest in the file "phylo_forest.sff"

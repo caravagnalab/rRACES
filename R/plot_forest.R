@@ -23,7 +23,8 @@
 #'
 #' @param forest The samples forest to be plot.
 #' @param highlight_sample If a sample name, the path from root to the sampled
-#' cells in the sample is highlighted. If `NULL` (default), nothing is highlighted.
+#'   cells in the sample is highlighted. If `NULL` (default), nothing is
+#'   highlighted.
 #'
 #' @return A `ggraph` tree plot.
 #' @export
