@@ -192,11 +192,11 @@ GermlineStorage::build_germline(const std::string& subject_name) const
   auto num_of_alleles = get_alleles_per_chromosome(subject.gender);
 
   auto germline = GermlineMutations::load(get_file(), num_of_alleles,
-                                          subject.name);
+                                          subject.name, Rcpp::Rcout);
 
   Races::Archive::Binary::Out oarchive(bin_path);
 
-  oarchive.save(germline, "germline");
+  oarchive.save(germline, "germline", Rcpp::Rcout);
 
   return germline;
 }
@@ -216,7 +216,7 @@ GermlineStorage::get_germline(const std::string& subject_name) const
 
   GenomeMutations germline;
 
-  iarchive.load(germline, "germline");
+  iarchive.load(germline, "germline", Rcpp::Rcout);
 
   return germline;
 }

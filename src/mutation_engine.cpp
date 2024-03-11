@@ -177,7 +177,7 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
 
   if (std::filesystem::exists(contex_index_filename)) {
     Archive::Binary::In archive(contex_index_filename);
-    archive.load(context_index, "context index");
+    archive.load(context_index, "context index", Rcpp::Rcout);
 
     return context_index;
   }
@@ -199,7 +199,7 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
 
   std::list<GenomicRegion> chr_regions;
   {
-    UI::ProgressBar progress_bar;
+    UI::ProgressBar progress_bar(Rcpp::Rcout);
     const auto reference_path = storage.get_reference_path();
     context_index = Index::build_index(reference_path, regions_to_avoid,
                                        context_sampling, &progress_bar);
@@ -209,7 +209,7 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
   if (chr_regions.size() > 0) {
     Archive::Binary::Out archive(contex_index_filename);
 
-    archive.save(context_index, "context index");
+    archive.save(context_index, "context index", Rcpp::Rcout);
   }
 
   Rcout << "done" << std::endl;
@@ -658,7 +658,7 @@ void retrieve_missing_references(const std::string& mutant_name,
                                  const std::filesystem::path& fasta_filename,
                                  std::list<Races::Mutations::SNV>& SNVs)
 {
-  Races::UI::ProgressBar progress_bar;
+  Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
 
   std::map<Races::Mutations::ChromosomeId, SNV_iterator> SNV_partition;
 
@@ -735,7 +735,7 @@ PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
                                                    const size_t& num_of_preneoplatic_mutations,
                                                    const int seed)
 {
-  Races::UI::ProgressBar progress_bar;
+  Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
 
   progress_bar.set_message("Placing mutations");
 

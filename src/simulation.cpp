@@ -849,7 +849,7 @@ void Simulation::run_up_to_time(const Races::Time& time)
 {
   validate_non_empty_tissue(sim_ptr->tissue());
 
-  Races::UI::ProgressBar bar;
+  Races::UI::ProgressBar bar(Rcpp::Rcout);
 
   RTest<Races::Mutants::Evolutions::TimeTest> ending_test{time};
 
@@ -858,7 +858,7 @@ void Simulation::run_up_to_time(const Races::Time& time)
 
 void Simulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
 {
-  Races::UI::ProgressBar bar;
+  Races::UI::ProgressBar bar(Rcpp::Rcout);
 
   validate_non_empty_tissue(sim_ptr->tissue());
 
@@ -872,7 +872,7 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 void Simulation::run_up_to_event(const std::string& event, const std::string& species_name,
                                  const size_t& num_of_events)
 {
-  Races::UI::ProgressBar bar;
+  Races::UI::ProgressBar bar(Rcpp::Rcout);
 
   validate_non_empty_tissue(sim_ptr->tissue());
 

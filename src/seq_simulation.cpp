@@ -238,7 +238,8 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage
     mutations_list = split_by_epigenetic_status(mutations_list, forest);
   }
 
-  auto result = simulator(mutations_list, coverage, purity);
+  auto result = simulator(mutations_list, coverage, purity, "chr_",
+                          true, Rcpp::Rcout);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);

@@ -401,7 +401,8 @@ void PhylogeneticForest::save(const std::string& filename) const
   out_archive & ref_str
               & timed_exposures;
 
-  out_archive.save(static_cast<const Races::Mutations::PhylogeneticForest&>(*this), "forest");
+  out_archive.save(static_cast<const Races::Mutations::PhylogeneticForest&>(*this),
+                   "forest", Rcpp::Rcout);
 }
 
 PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
@@ -417,7 +418,8 @@ PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
 
   in_archive & forest.timed_exposures;
 
-  in_archive.load(static_cast<Races::Mutations::PhylogeneticForest&>(forest), "forest");
+  in_archive.load(static_cast<Races::Mutations::PhylogeneticForest&>(forest),
+                  "forest", Rcpp::Rcout);
 
   return forest;
 }
