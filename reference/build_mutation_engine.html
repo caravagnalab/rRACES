@@ -63,35 +63,35 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>setup_code</dt>
-<dd><p>The set-up code (alternative to `directory`).</p></dd>
+<dd><p>The set-up code (alternative to <code>directory</code>).</p></dd>
 
 
 <dt>directory</dt>
-<dd><p>The set-up directory (alternative to `setup_code`).</p></dd>
+<dd><p>The set-up directory (alternative to <code>setup_code</code>).</p></dd>
 
 
 <dt>reference_src</dt>
-<dd><p>The reference genome path or URL (mandatory when `directory`
+<dd><p>The reference genome path or URL (mandatory when <code>directory</code>
 is provided).</p></dd>
 
 
 <dt>SBS_src</dt>
-<dd><p>The SBS file path or URL (mandatory when `directory` is provided).</p></dd>
+<dd><p>The SBS file path or URL (mandatory when <code>directory</code> is provided).</p></dd>
 
 
 <dt>drivers_src</dt>
-<dd><p>The driver mutation file path or URL (mandatory when 
-`directory` is provided).</p></dd>
+<dd><p>The driver mutation file path or URL (mandatory when
+<code>directory</code> is provided).</p></dd>
 
 
 <dt>passenger_CNAs_src</dt>
-<dd><p>The passenger CNAs file path or URL (mandatory when 
-`directory` is provided).</p></dd>
+<dd><p>The passenger CNAs file path or URL (mandatory when
+<code>directory</code> is provided).</p></dd>
 
 
 <dt>germline_src</dt>
-<dd><p>The germline directory path or URL (mandatory when 
-`directory` is provided).</p></dd>
+<dd><p>The germline directory path or URL (mandatory when
+<code>directory</code> is provided).</p></dd>
 
 
 <dt>germline_subject</dt>
@@ -106,8 +106,8 @@ index (optional: default value is 100).</p></dd>
 <dt>tumor_type</dt>
 <dd><p>The type of tumor. This is currently used to select the
 admissible passenger CNAs. If any passenger CNA in the dataset is
-admissible, use the the empty string `""` (optional: default value is
-"").</p></dd>
+admissible, use the the empty string <code>""</code> (optional: default value is
+<code>""</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -119,43 +119,43 @@ admissible, use the the empty string `""` (optional: default value is
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This function downloads and sets up the data requires by
-      by a mutation engine object and build it.</p>      
-<p>There are two building modalities: the first one is more general, 
-      but it requires to specify all the data sources; the second one  
-      adopts some pre-set configurations, but it is more convient than
-      the former in many cases.</p>
+by a mutation engine object and build it.</p>
+<p>There are two building modalities: the first one is more general,
+but it requires to specify all the data sources; the second one
+adopts some pre-set configurations, but it is more convient than
+the former in many cases.</p>
 <p>The first building modality requires to specify the directory in
-      which the data must be saved, the path or URL of the reference 
-      sequence, the SBS file, the driver SNVs file, the passenger CNAs
-      file, and the germline data directory through the parameters 
-      `directory`, `reference_src`, `SBS_src`, `drivers_src`, 
-      `passenger_CNAs_src`, and `germline_src`, respectively.</p>
-<p>The second building modality exclusively requires a set-up code 
-      (parameter `setup_code`). The list of supported set-up codes can 
-      be obtained by using the function `get_mutation_engine_codes()`.</p>
+which the data must be saved, the path or URL of the reference
+sequence, the SBS file, the driver SNVs file, the passenger CNAs
+file, and the germline data directory through the parameters
+<code>directory</code>, <code>reference_src</code>, <code>SBS_src</code>, <code>drivers_src</code>,
+<code>passenger_CNAs_src</code>, and <code>germline_src</code>, respectively.</p>
+<p>The second building modality exclusively requires a set-up code
+(parameter <code>setup_code</code>). The list of supported set-up codes can
+be obtained by using the function <code><a href="get_mutation_engine_codes.html">get_mutation_engine_codes()</a></code>.</p>
 <p>The number of context sampling is an optional parameter that allows
-      sampling the reference contexts while building the context index.
-      This parameter, which is set to 100 by default, specifies how many
-      occurences of the same context must be identified before adding 
-      one of them to the context index. The larger the number of context
-      sampling, the larger the context index. On the other side, the
-      lower the number of context sampling, the lower the number of sites
-      in the reference genome that can be affected by simulated
-      mutations.</p>
-<p>If the parameters of a mutation engine construction match those 
-      of a previous construction, then the corresponding reference
-      sequence, the SBS file, and the previously built context index
-      are loaded from the set-up directory avoiding further 
-      computations.</p>
+sampling the reference contexts while building the context index.
+This parameter, which is set to 100 by default, specifies how many
+occurences of the same context must be identified before adding
+one of them to the context index. The larger the number of context
+sampling, the larger the context index. On the other side, the
+lower the number of context sampling, the lower the number of sites
+in the reference genome that can be affected by simulated
+mutations.</p>
+<p>If the parameters of a mutation engine construction match those
+of a previous construction, then the corresponding reference
+sequence, the SBS file, and the previously built context index
+are loaded from the set-up directory avoiding further
+computations.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>`get_mutation_engine_codes` provides a list of the supported 
-        set-up codes.</p>
-<p>`MutationEngine$get_germline_subjects()` to get the available
-    germline subjects; `MutationEngine$set_germline_subject()` to set the
-    active germline subject; `MutationEngine$get_active_germline()` to get
-    the active germline subject.</p></div>
+    <div class="dont-index"><p><code><a href="get_mutation_engine_codes.html">get_mutation_engine_codes()</a></code> provides a list of the supported
+set-up codes.</p>
+<p><code><a href="MutationEngine-cash-get_germline_subjects.html">MutationEngine$get_germline_subjects()</a></code> to get the available
+germline subjects; <code><a href="MutationEngine-cash-set_germline_subject.html">MutationEngine$set_germline_subject()</a></code> to set the
+active germline subject; <code><a href="MutationEngine-cash-get_active_germline.html">MutationEngine$get_active_germline()</a></code> to get
+the active germline subject.</p></div>
     </div>
 
     <div class="section level2">
@@ -197,11 +197,11 @@ admissible, use the the empty string `""` (optional: default value is
 <span class="r-out co"><span class="r-pr">#&gt;</span> Downloading germline mutations...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Germline mutations downloaded</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Building context index...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Processing chr. 22                                                                                                                                      [█████████████████-----------------------] 40% [00m:01s] Processing chr. 22                                                                                                                                     [█████████████████████████████████-------] 81% [00m:02s] Processing chr. 22                                                                                                                                     [████████████████████████████████████████] 100% [00m:02s] Context index built                                                                                                                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving context index                                                                                                                                    [████████████████████████████████████████] 100% [00m:00s] Context index saved                                                                                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Processing chr. 22                                      [██████████------------------------------] 24% [00m:01s] Processing chr. 22                                     [████████████████████--------------------] 49% [00m:02s] Processing chr. 22                                     [██████████████████████████████----------] 73% [00m:03s] Processing chr. 22                                     [████████████████████████████████████████] 100% [00m:04s] Context index built                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving context index                                    [████████████████████████████████████████] 100% [00m:00s] Context index saved                                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                                                                                                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                                                                                                                      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving germline                                                                                                                                         [████████████████████████████████████████] 100% [00m:00s] Germline saved                                                                                                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving germline                                         [████████████████████████████████████████] 100% [00m:00s] Germline saved                                       </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># if the parameters of a mutation engine construction match those of a</span></span></span>
 <span class="r-in"><span><span class="co"># previous construction, then the corresponding reference sequence,</span></span></span>
@@ -210,7 +210,8 @@ admissible, use the the empty string `""` (optional: default value is
 <span class="r-in"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu">build_mutation_engine</span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>, <span class="va">sbs_url</span>,</span></span>
 <span class="r-in"><span>                                  <span class="va">drivers_url</span>, <span class="va">passenger_CNAs_url</span>,</span></span>
 <span class="r-in"><span>                                  <span class="va">germline_url</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                                                                                                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                                                                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading context index                                   [████████████████████████████████████████] 100% [00m:00s] Context index loaded                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># if the `context_sampling` parameter changes, a new context index is</span></span></span>
 <span class="r-in"><span><span class="co"># built, while neither the reference sequence nor the SBS file are </span></span></span>
@@ -219,17 +220,18 @@ admissible, use the the empty string `""` (optional: default value is
 <span class="r-in"><span>                                  <span class="va">drivers_url</span>, <span class="va">passenger_CNAs_url</span>,</span></span>
 <span class="r-in"><span>                                  <span class="va">germline_url</span>, context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Building context index...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Processing chr. 22                                                                                                                                      [████████████████████--------------------] 49% [00m:01s] Processing chr. 22                                                                                                                                     [█████████████████████████████████-------] 81% [00m:02s] Processing chr. 22                                                                                                                                     [████████████████████████████████████████] 100% [00m:03s] Context index built                                                                                                                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving context index                                                                                                                                    [████████████████████████████████████████] 100% [00m:00s] Context index saved                                                                                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Processing chr. 22                                      [█████████████---------------------------] 32% [00m:01s] Processing chr. 22                                     [███████████████████████-----------------] 57% [00m:02s] Processing chr. 22                                     [████████████████████████████████████----] 89% [00m:03s] Processing chr. 22                                     [████████████████████████████████████████] 100% [00m:04s] Context index built                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving context index                                    [████████████████████████████████████████] 100% [00m:00s] Context index saved                                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                                                                                                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                                                                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># a futher contruction with the same parameters avoids both downloads</span></span></span>
 <span class="r-in"><span><span class="co"># and context index construction.</span></span></span>
 <span class="r-in"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu">build_mutation_engine</span><span class="op">(</span><span class="st">"Test"</span>, <span class="va">reference_url</span>, <span class="va">sbs_url</span>,</span></span>
 <span class="r-in"><span>                                  <span class="va">drivers_url</span>, <span class="va">passenger_CNAs_url</span>,</span></span>
 <span class="r-in"><span>                                  <span class="va">germline_url</span>, context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                                                                                                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                                                                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading context index                                   [████████████████████████████████████████] 100% [00m:00s] Context index loaded                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m_engine</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MutationEngine</span>
@@ -245,17 +247,18 @@ admissible, use the the empty string `""` (optional: default value is
 <span class="r-in"><span><span class="co"># the `setup_code` parameter. The set-up code `demo` is provided among </span></span></span>
 <span class="r-in"><span><span class="co"># those available for testing purpose.</span></span></span>
 <span class="r-in"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu">build_mutation_engine</span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                                                                                                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                                                                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading context index                                   [████████████████████████████████████████] 100% [00m:00s] Context index loaded                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the `context_sampling` can be used also when a pre-defined set-up</span></span></span>
 <span class="r-in"><span><span class="co"># configuration is adopted.</span></span></span>
 <span class="r-in"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu">build_mutation_engine</span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>,</span></span>
 <span class="r-in"><span>                                  context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Building context index...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Processing chr. 22                                                                                                                                      [█████████████████-----------------------] 40% [00m:01s] Processing chr. 22                                                                                                                                     [█████████████████████████████████-------] 81% [00m:02s] Processing chr. 22                                                                                                                                     [████████████████████████████████████████] 100% [00m:02s] Context index built                                                                                                                                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving context index                                                                                                                                    [████████████████████████████████████████] 100% [00m:00s] Context index saved                                                                                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Processing chr. 22                                      [█████████████---------------------------] 32% [00m:01s] Processing chr. 22                                     [███████████████████████-----------------] 57% [00m:02s] Processing chr. 22                                     [████████████████████████████████████----] 89% [00m:03s] Processing chr. 22                                     [████████████████████████████████████████] 100% [00m:04s] Context index built                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Saving context index                                    [████████████████████████████████████████] 100% [00m:00s] Context index saved                                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> done</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                                                                                                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                                                                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Loading germline                                        [████████████████████████████████████████] 100% [00m:00s] Germline loaded                                      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">m_engine</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> MutationEngine</span>

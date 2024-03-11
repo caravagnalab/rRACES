@@ -67,43 +67,43 @@
 
 
 <dt>coverage</dt>
-<dd><p>The sequencing coverage (default value: 10).</p></dd>
+<dd><p>The sequencing coverage (default value: <code>10</code>).</p></dd>
 
 
 <dt>read_size</dt>
-<dd><p>The read size (default value: 150).</p></dd>
+<dd><p>The read size (default value: <code>150</code>).</p></dd>
 
 
 <dt>insert_size</dt>
-<dd><p>The insert size. Use 0 for single read sequencing 
-and any value greater than 0 for pair read sequencing 
-(default value: 0).</p></dd>
+<dd><p>The insert size. Use 0 for single read sequencing
+and any value greater than 0 for pair read sequencing
+(default value: <code>0</code>).</p></dd>
 
 
 <dt>output_dir</dt>
-<dd><p>The SAM output directory (default value: 
-"rRACES_SAM").</p></dd>
+<dd><p>The SAM output directory (default value:
+<code>"rRACES_SAM"</code>).</p></dd>
 
 
 <dt>write_SAM</dt>
-<dd><p>A Boolean flag to enable/disable SAM generation 
-(default: FALSE).</p></dd>
+<dd><p>A Boolean flag to enable/disable SAM generation
+(default: <code>FALSE</code>).</p></dd>
 
 
 <dt>epi_FACS</dt>
-<dd><p>Perform an epigenetic FACS analysis (default: FALSE).</p></dd>
+<dd><p>Perform an epigenetic FACS analysis (default: <code>FALSE</code>).</p></dd>
 
 
 <dt>purity</dt>
-<dd><p>The ratio between the number of sample tumeral cell 
+<dd><p>The ratio between the number of sample tumeral cell
 and that of all the cells, i.e., tumoral and normal
-ones. This value must belong to the interval [0,1] 
-(default value: 1).</p></dd>
+ones. This value must belong to the interval 0,1
+(default value: <code>1</code>).</p></dd>
 
 
 <dt>rnd_seed</dt>
-<dd><p>The random seed for the internal random generator 
-(default value: 0).</p></dd>
+<dd><p>The random seed for the internal random generator
+(default value: <code>0</code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -111,21 +111,21 @@ ones. This value must belong to the interval [0,1]
     
 
 <p>A data frame representing, for each of the observed
-        SNVs, the chromosome and the position in which
-        it occurs (columns `chromosome` and `chr_pos`),
-        the SNV reference base, the alterate base, the causes, 
-        and the classes of the SNV (columns `ref_base`, `alt_base`,
-        `causes`, and `classes`, respectively). Moreover, for each
-        of the sequencied samples `&lt;sample name&gt;`, the returned
-        data frame contains three columns: the number of reads in
-        which the corresponding SNV occurs (column 
-        `&lt;sample name&gt;.occurrences`), the coverage of the SNV
-        locus (column `&lt;sample name&gt;.coverage`), and the
-        corresponding VAF (column `&lt;sample name&gt;.VAF`).</p>
+SNVs, the chromosome and the position in which
+it occurs (columns <code>chromosome</code> and <code>chr_pos</code>),
+the SNV reference base, the alterate base, the causes,
+and the classes of the SNV (columns <code>ref_base</code>, <code>alt_base</code>,
+<code>causes</code>, and <code>classes</code>, respectively). Moreover, for each
+of the sequencied samples <code>&lt;sample name&gt;</code>, the returned
+data frame contains three columns: the number of reads in
+which the corresponding SNV occurs (column
+<code>&lt;sample name&gt;.occurrences</code>), the coverage of the SNV
+locus (column <code>&lt;sample name&gt;.coverage</code>), and the
+corresponding VAF (column <code>&lt;sample name&gt;.VAF</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>`vignette("sequencing")` for usage examples</p></div>
+    <div class="dont-index"><p><code><a href="../articles/sequencing.html">vignette("sequencing")</a></code> for usage examples</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

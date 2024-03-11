@@ -422,7 +422,7 @@ features can be easily spotted in the forest plots when the sample
 <h3 id="storing-samples-forests">Storing Samples Forests<a class="anchor" aria-label="anchor" href="#storing-samples-forests"></a>
 </h3>
 <p>A samples forest can be saved in a file by using the method
-<code>SamplesForest$save</code>.</p>
+<code>SamplesForest$save()</code>.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># check the file existence. It should not exists.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
@@ -435,7 +435,7 @@ features can be easily spotted in the forest plots when the sample
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>The saved samples forest can successively be load by using the
-function <code>load_samples_forest</code>.</p>
+function <code><a href="../reference/load_samples_forest.html">load_samples_forest()</a></code>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load the samples forest from "samples_forest.sff" and store it in `forest2`</span></span>
 <span><span class="va">forest2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_samples_forest.html">load_samples_forest</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
