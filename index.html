@@ -107,15 +107,11 @@
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>You can install the released version of <code>rRACES</code> by using <code>devtools</code> package with:</p>
+<p>In order to install the development version of <code>rRACES</code>, you need: - <a href="https://cran.r-project.org" class="external-link">R and Rtools</a> - the R package <a href="https://devtools.r-lib.org" class="external-link"><code>devtools</code></a> - <a href="https://git-scm.com/downloads" class="external-link">git</a></p>
+<p>When the requirements have been satisfied, issue the R command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"caravagnalab/rRACES"</span><span class="op">)</span></span></code></pre></div>
-<p>or clone the repository, build <code>rRACES</code> package, and install it:</p>
-<pre class="shell"><code>git clone https://github.com/caravagnalab/rRACES.git
-R CMD build rRACES
-R CMD install rRACES_*.tar.gz</code></pre>
-<p>Please, notice that plotting may require the R package <code>hexbin</code> under GNU/Linux.</p>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"caravagnalab/rRACES"</span><span class="op">)</span></span></code></pre></div>
+<p>Tissue plotting requires the R package <a href="https://cran.r-project.org/web/packages/hexbin/index.html" class="external-link"><code>hexbin</code></a> under GNU/Linux and Windows.</p>
 <hr>
 <div class="section level4">
 <h4 id="copyright-and-contacts">Copyright and contacts<a class="anchor" aria-label="anchor" href="#copyright-and-contacts"></a>
