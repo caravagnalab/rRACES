@@ -750,14 +750,17 @@ RCPP_MODULE(Mutations){
 //' \item \emph{Returns:} A data frame reporting `cell_id`, `type` (`"A"` for 
 //'   amplifications and `"D"` for deletions), `chromosome`, `begin`
 //'   (i.e., the first CNA locus in the chromosome), `end` (i.e., the
-//'   last CNA locus in the chromosome), `allele`, and `src allele` 
-//'   (the allele origin for amplifications, `NA` for deletions).
+//'   last CNA locus in the chromosome), `allele`, `src allele`
+//'   (the allele origin for amplifications, `NA` for deletions), and
+//'   `class` (i.e., `"driver"`, `"passenger"`, `"germinal"` or
+//'   `"preneoplastic"`).
 //' }
 //' @field get_sampled_cell_SNVs Gets the SNVs of the sampled cells \itemize{
 //' \item \emph{Returns:} A data frame reporting `cell_id`, `chromosome`, 
 //'   `chr_pos` (i.e., position in the chromosome), `allele` (in which
-//'   the SNV occurs), `ref`, `alt`, and `cause` for each
-//'   SNV in the sampled cell genomes.
+//'   the SNV occurs), `ref`, `alt`, `cause`, and `class` (i.e., `"driver"`,
+//'   `"passenger"`, `"germinal"` or `"preneoplastic"`) for each SNV in the
+//'   sampled cell genomes.
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected
@@ -871,10 +874,11 @@ RCPP_MODULE(Mutations){
 //'   the leaves of the phylogenetic forest.
 //' @param cell_id The identifier of the cell whose CNAs are aimed (optional).
 //' @return A data frame reporting `cell_id`, `type` (`"A"` for amplifications
-//'   and `"D"` for deletions), `chromosome`, `begin` (i.e., the first
-//'   CNA locus in the chromosome), `end` (i.e., last CNA locus in the
-//'   chromosome), `allele`, and `src allele` (the allele origin for
-//'   amplifications, `NA` for deletions).
+//'   and `"D"` for deletions), `chromosome`, `begin` (i.e., the first CNA
+//'   locus in the chromosome), `end` (i.e., last CNA locus in the chromosome),
+//'   `allele`, `src allele` (the allele origin for amplifications, `NA` for
+//'   deletions), and `class` (i.e., `"driver"`, `"passenger"`, `"germinal"`
+//'   or `"preneoplastic"`).
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_sampled_cell_CNAs", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
                 (&PhylogeneticForest::get_sampled_cell_CNAs),
@@ -892,9 +896,10 @@ RCPP_MODULE(Mutations){
 //'   support double occurrencies due to CNAs.
 //' @param cell_id The identifier of the cell whose SNVs are aimed (optional).
 //' @return A data frame reporting `cell_id`, `chromosome`, `chr_pos` (i.e., 
-//'   the position in the chromosome), `allele` (in which the SNV
-//'   occurs), `ref`, `alt`, and `cause` for each SNV in the sampled
-//'   cell genomes.
+//'   the position in the chromosome), `allele` (in which the SNV occurs),
+//'   `ref`, `alt`, `cause`, and `class` (i.e., `"driver"`, `"passenger"`, 
+//'   `"germinal"` or `"preneoplastic"`) for each SNV in the genomes of
+//'   the sampled cells.
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
                 (&PhylogeneticForest::get_sampled_cell_SNVs),
@@ -911,7 +916,8 @@ RCPP_MODULE(Mutations){
 //'   support double occurrencies due to CNAs.
 //' @return A data frame reporting `chromosome`, `chr_pos` (i.e., 
 //'   the position in the chromosome), `allele` (in which the SNV
-//'   occurs), `ref`, `alt`, and `cause`.
+//'   occurs), `ref`, `alt`, `cause`, and `class` (i.e., `"driver"`,
+//'   `"passenger"`, `"germinal"` or `"preneoplastic"`) .
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_germline_SNVs", &PhylogeneticForest::get_germline_SNVs,
             "Get the SNVs of the germline")
@@ -923,7 +929,7 @@ RCPP_MODULE(Mutations){
 //'   common ancestor of two crucial nodes.
 //'
 //'   A _stick_ is a path of the forest in which the only crucial 
-//'   nodes are the first and the last.
+//'   nodes are the first and the last one.
 //'
 //'   This method return the list of the forest sticks. Each stick is
 //'   represented by the sequence of cell identifiers labelling the

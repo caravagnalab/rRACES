@@ -294,12 +294,10 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
 }
 
 
-std::vector<Races::Mutations::CopyNumberAlteration> load_passenger_CNAs(const std::filesystem::path& CNAs_csv,
+std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::path& CNAs_csv,
                                                                         const std::string& tumor_type)
 {
-  using namespace Races::Mutations;
-
-  std::vector<CopyNumberAlteration> CNAs;
+  std::vector<Races::Mutations::CNA> CNAs;
 
   Races::IO::CSVReader csv_reader(CNAs_csv);
 
@@ -314,7 +312,8 @@ std::vector<Races::Mutations::CopyNumberAlteration> load_passenger_CNAs(const st
       const auto major = row.get_field(3);
       try {
         if (major=="NA" || (stoi(major)>1)) {
-          CNAs.emplace_back(region, CopyNumberAlteration::Type::AMPLIFICATION);
+          CNAs.emplace_back(region.get_begin(), region.size(),
+                            CNA::Type::AMPLIFICATION);
         }
       } catch (std::invalid_argument const&) {
         throw std::domain_error("Unknown major specification " + major 
@@ -325,7 +324,8 @@ std::vector<Races::Mutations::CopyNumberAlteration> load_passenger_CNAs(const st
       const auto minor = row.get_field(4);
       try {
         if (minor=="NA" || (stoi(minor)<1)) {
-          CNAs.emplace_back(region, CopyNumberAlteration::Type::DELETION);
+          CNAs.emplace_back(region.get_begin(), region.size(),
+                            CNA::Type::DELETION);
         }
       } catch (std::invalid_argument const&) {
         throw std::domain_error("Unknown minor specification " + major 
@@ -716,7 +716,7 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
                                 const Rcpp::List& driver_CNAs)
 {
   auto c_snvs = get_super_object_list<Races::Mutations::SNV, SNV>(driver_SNVs);
-  auto c_cnas = get_super_object_list<Races::Mutations::CopyNumberAlteration, CNA>(driver_CNAs);
+  auto c_cnas = get_super_object_list<Races::Mutations::CNA, CNA>(driver_CNAs);
 
   retrieve_missing_references(mutant_name, storage.get_reference_path(), c_snvs);
 

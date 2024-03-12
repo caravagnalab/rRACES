@@ -115,7 +115,7 @@ void fill_SNV_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
           ref_bases[index] = std::string(1,snv.ref_base);
           alt_bases[index] = std::string(1,snv.alt_base);
           causes[index] = snv.cause;
-          classes[index] = snv.get_type_description();
+          classes[index] = snv.get_nature_description();
 
           ++index;
         }
@@ -128,19 +128,19 @@ void fill_CNA_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
                     Rcpp::IntegerVector& cell_ids, Rcpp::CharacterVector& chr_names, 
                     Rcpp::IntegerVector& CNA_begins, Rcpp::IntegerVector& CNA_ends,
                     Rcpp::IntegerVector& src_alleles, Rcpp::IntegerVector& dst_alleles,
-                    Rcpp::CharacterVector& types, size_t& index)
+                    Rcpp::CharacterVector& types, Rcpp::CharacterVector& classes,
+                    size_t& index)
 {
-  using namespace Races::Mutations;
-
   for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
-    for (const auto& CNA: chromosome.get_CNAs()) {
+    for (const auto& cna: chromosome.get_CNAs()) {
       cell_ids[index] = cell_mutations.get_id();
-      chr_names[index] = GenomicPosition::chrtos(chr_id);
-      CNA_begins[index] = CNA.region.get_initial_position();
-      CNA_ends[index] = CNA.region.get_final_position();
-      bool is_amp = CNA.type == CopyNumberAlteration::Type::AMPLIFICATION;
-      src_alleles[index] = (is_amp? CNA.source: NA_INTEGER);
-      dst_alleles[index] = CNA.dest;
+      chr_names[index] = Races::Mutations::GenomicPosition::chrtos(chr_id);
+      CNA_begins[index] = cna.get_initial_position();
+      CNA_ends[index] = cna.get_final_position();
+      bool is_amp = cna.type == Races::Mutations::CNA::Type::AMPLIFICATION;
+      src_alleles[index] = (is_amp? cna.source: NA_INTEGER);
+      dst_alleles[index] = cna.dest;
+      classes[index] = cna.get_nature_description();
 
       types[index] = (is_amp?"A":"D");
 
@@ -179,7 +179,7 @@ Rcpp::List PhylogeneticForest::get_germline_SNVs() const
           ref_bases[index] = std::string(1,snv.ref_base);
           alt_bases[index] = std::string(1,snv.alt_base);
           causes[index] = snv.cause;
-          classes[index] = snv.get_type_description();
+          classes[index] = snv.get_nature_description();
 
           ++index;
         }
@@ -256,18 +256,20 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_CNAs() const
   IntegerVector cell_ids(num_of_mutations), CNA_begins(num_of_mutations),
                 CNA_ends(num_of_mutations),
                 src_alleles(num_of_mutations), dst_alleles(num_of_mutations);
-  CharacterVector chr_names(num_of_mutations), types(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), types(num_of_mutations),
+                  classes(num_of_mutations);
 
   size_t index{0};
   for (const auto& [cell_id, mutations_ptr]: get_leaves_mutations()) {
     fill_CNA_lists(*mutations_ptr, cell_ids, chr_names, CNA_begins, CNA_ends,
-                   src_alleles, dst_alleles, types, index);
+                   src_alleles, dst_alleles, types, classes, index);
   }
 
   return DataFrame::create(_["cell_id"]=cell_ids, _["type"]=types, 
                            _["chromosome"]=chr_names,
                            _["begin"]=CNA_begins, _["end"]=CNA_ends, 
-                           _["allele"]=dst_alleles, _["src allele"]=src_alleles);
+                           _["allele"]=dst_alleles, _["src allele"]=src_alleles,
+                           _["class"]=classes);
 }
 
 Rcpp::List PhylogeneticForest::get_sampled_cell_CNAs(const Races::Mutants::CellId& cell_id) const
@@ -286,16 +288,18 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_CNAs(const Races::Mutants::CellI
   IntegerVector cell_ids(num_of_mutations), CNA_begins(num_of_mutations),
                 CNA_ends(num_of_mutations),
                 src_alleles(num_of_mutations), dst_alleles(num_of_mutations);
-  CharacterVector chr_names(num_of_mutations), types(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), types(num_of_mutations),
+                  classes(num_of_mutations);
   
   size_t index{0};
   fill_CNA_lists(cell_mutations, cell_ids, chr_names, CNA_begins, CNA_ends,
-                 src_alleles, dst_alleles, types, index);
+                 src_alleles, dst_alleles, types, classes, index);
 
   return DataFrame::create(_["cell_id"]=cell_ids, _["type"]=types, 
                            _["chromosome"]=chr_names,
                            _["begin"]=CNA_begins, _["end"]=CNA_ends, 
-                           _["allele"]=dst_alleles, _["src allele"]=src_alleles);
+                           _["allele"]=dst_alleles, _["src allele"]=src_alleles,
+                           _["class"]=classes);
 }
 
 template<typename MUTATION_TYPE, typename R_MUTATION> 

@@ -18,16 +18,22 @@
 #include "cna.hpp"
 
 // amplification
-CNA::CNA(const Races::Mutations::GenomicRegion& region, const Races::Mutations::AlleleId& allele,
+CNA::CNA(const Races::Mutations::GenomicPosition& initial_position,
+         const Races::Mutations::CNA::Length& length,
+         const Races::Mutations::AlleleId& allele,
          const Races::Mutations::AlleleId& src_allele):
-    Races::Mutations::CopyNumberAlteration(region, Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION,
-                                           src_allele, allele)
+    Races::Mutations::CNA(initial_position, length,
+                          Races::Mutations::CNA::Type::AMPLIFICATION,
+                          src_allele, allele)
 {}
 
 // deleletion
-CNA::CNA(const Races::Mutations::GenomicRegion& region, const Races::Mutations::AlleleId& allele):
-    Races::Mutations::CopyNumberAlteration(region, Races::Mutations::CopyNumberAlteration::Type::DELETION,
-                                           allele, allele)
+CNA::CNA(const Races::Mutations::GenomicPosition& initial_position,
+         const Races::Mutations::CNA::Length& length,
+         const Races::Mutations::AlleleId& allele):
+    Races::Mutations::CNA(initial_position, length,
+                          Races::Mutations::CNA::Type::DELETION,
+                          allele, allele)
 {}
 
 CNA::CNA()
@@ -43,7 +49,7 @@ SEXP wrap_allele_id(const Races::Mutations::AlleleId& allele_id)
 
 SEXP CNA::get_src_allele() const
 {
-    if (type == Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION) {
+    if (type == Races::Mutations::CNA::Type::AMPLIFICATION) {
         return wrap_allele_id(source);
     }
     return Rcpp::wrap(NA_INTEGER);
@@ -135,17 +141,15 @@ CNA CNA::build_CNA(const std::string type, const SEXP chromosome, const SEXP pos
                                 "non-negative numbers");
     }
 
-    GenomicRegion region(gen_pos, len);
-
     AlleleId allele_id = cast_to_allele(allele, "allele");
     if (type == "D") {
-        return CNA(region, allele_id);
+        return CNA(gen_pos, len, allele_id);
     } 
 
     if (type == "A") {
         AlleleId src_allele_id = cast_to_allele(src_allele, "src_allele");
 
-        return CNA(region, allele_id, src_allele_id);
+        return CNA(gen_pos, len, allele_id, src_allele_id);
     }
 
     throw std::domain_error("Unknown CNA type \"" + type 

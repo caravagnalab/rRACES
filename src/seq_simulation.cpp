@@ -36,15 +36,15 @@ std::string join(const std::set<std::string>& S, const char& sep=';')
   return oss.str();
 }
 
-std::set<std::string> get_descriptions(const std::set<SNV::Type>& types)
+std::set<std::string> get_descriptions(const std::set<Races::Mutations::Mutation::Nature>& nature_set)
 {
-  std::set<std::string> string_types;
+  std::set<std::string> nature_strings;
 
-  for (const auto& type: types) {
-    string_types.insert(SNV::get_type_description(type));
+  for (const auto& nature: nature_set) {
+    nature_strings.insert(Races::Mutations::Mutation::get_nature_description(nature));
   }
 
-  return string_types;
+  return nature_strings;
 }
 
 void add_SNV_data(Rcpp::DataFrame& df,
@@ -75,7 +75,7 @@ void add_SNV_data(Rcpp::DataFrame& df,
       causes[index] = full_causes;
     }
 
-    auto descr = get_descriptions(data.types);
+    auto descr = get_descriptions(data.nature_set);
     classes[index] = join(descr, ';');
   
     ++index;

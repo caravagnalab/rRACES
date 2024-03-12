@@ -1226,7 +1226,7 @@ RCPP_MODULE(Mutants){
 //'   common ancestor of two crucial nodes.
 //'
 //'   A _stick_ is a path of the forest in which the only crucial 
-//'   nodes are the first and the last.
+//'   nodes are the first and the last one.
 //'
 //'   This method return the list of the forest sticks. Each stick is
 //'   represented by the sequence of cell identifiers labelling the
@@ -1234,6 +1234,7 @@ RCPP_MODULE(Mutants){
 //' @return The list of the forest sticks. Each stick is represented as 
 //'   the list of cell identifiers labelling the nodes in the stick
 //'   from the higher to the deeper in the forest.
+//' @seealso [PhylogeneticForest$get_sticks()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A", growth_rate = 0.2,

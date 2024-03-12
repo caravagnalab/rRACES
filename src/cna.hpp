@@ -25,32 +25,34 @@
 #include <Rcpp.h>
 
 
-class CNA : public Races::Mutations::CopyNumberAlteration
+class CNA : public Races::Mutations::CNA
 {
     // amplification
-    CNA(const Races::Mutations::GenomicRegion& region,
+    CNA(const Races::Mutations::GenomicPosition& initial_position,
+        const Races::Mutations::CNA::Length& length,
         const Races::Mutations::AlleleId& allele,
         const Races::Mutations::AlleleId& src_allele);
 
     // deleletion
-    CNA(const Races::Mutations::GenomicRegion& region,
+    CNA(const Races::Mutations::GenomicPosition& initial_position,
+        const Races::Mutations::CNA::Length& length,
         const Races::Mutations::AlleleId& allele);
 public:
     CNA();
 
     inline std::string get_chromosome() const
     {
-        return Races::Mutations::GenomicPosition::chrtos(region.get_chromosome_id());
+        return Races::Mutations::GenomicPosition::chrtos(chr_id);
     }
 
     inline const Races::Mutations::ChrPosition& get_position_in_chromosome() const
     {
-        return region.get_initial_position();
+        return get_initial_position();
     }
 
     inline size_t get_length() const
     {
-        return region.size();
+        return length;
     }
 
     SEXP get_src_allele() const;
@@ -59,7 +61,7 @@ public:
 
     inline std::string get_type() const
     {
-        if (type == Races::Mutations::CopyNumberAlteration::Type::AMPLIFICATION) {
+        if (type == Races::Mutations::CNA::Type::AMPLIFICATION) {
             return "A";
         }
         return "D";
@@ -76,17 +78,15 @@ public:
                   const SEXP src_allele);
 
     static
-    inline CNA
-    build_amplification(const SEXP chr, const SEXP pos_in_chr,
-                        const SEXP length, const SEXP allele,
-                        const SEXP src_allele)
+    inline CNA build_amplification(const SEXP chr, const SEXP pos_in_chr,
+                                   const SEXP length, const SEXP allele,
+                                   const SEXP src_allele)
     {
         return build_CNA("A", chr, pos_in_chr, length, allele, src_allele);
     }
     static
-    inline CNA
-    build_deletion(const SEXP chr, const SEXP pos_in_chr,
-                   const SEXP length, const SEXP allele)
+    inline CNA build_deletion(const SEXP chr, const SEXP pos_in_chr,
+                              const SEXP length, const SEXP allele)
     {
         return build_CNA("D", chr, pos_in_chr, length, allele, allele);
     }
