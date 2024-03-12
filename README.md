@@ -18,23 +18,21 @@ evolution simulator.
 
 ### Installation
 
-You can install the released version of `rRACES` by using `devtools` package with:
+In order to install the development version of `rRACES`, you need:
+- [R and Rtools](https://cran.r-project.org)
+- the R package [`devtools`](https://devtools.r-lib.org)
+- [git](https://git-scm.com/downloads)
+
+When the requirements have been satisfied, issue the R command:
 
 ``` r
-# install.packages("devtools")
 devtools::install_github("caravagnalab/rRACES")
 ```
 
-or clone the repository, build `rRACES` package, and install it:
 
-``` shell
-git clone https://github.com/caravagnalab/rRACES.git
-R CMD build rRACES
-R CMD install rRACES_*.tar.gz
-```
-
-Please, notice that plotting may require the R package 
-`hexbin` under GNU/Linux.
+Tissue plotting requires the R package 
+[`hexbin`](https://cran.r-project.org/web/packages/hexbin/index.html)
+under GNU/Linux and Windows.
 
 ------------------------------------------------------------------------
 
