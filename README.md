@@ -19,9 +19,12 @@ evolution simulator.
 ### Installation
 
 In order to install the development version of `rRACES`, you need:
-- [R and Rtools](https://cran.r-project.org)
-- the R package [`devtools`](https://devtools.r-lib.org)
-- [git](https://git-scm.com/downloads)
+
+* [R and Rtools](https://cran.r-project.org)
+
+* the R package [`devtools`](https://devtools.r-lib.org)
+
+* [git](https://git-scm.com/downloads)
 
 When the requirements have been satisfied, issue the R command:
 
