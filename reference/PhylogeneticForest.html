@@ -137,16 +137,19 @@ and the birth time (column <code>birth_time</code>).</p></li>
 <dd><p>Gets the CNAs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting <code>cell_id</code>, <code>type</code> (<code>"A"</code> for
 amplifications and <code>"D"</code> for deletions), <code>chromosome</code>, <code>begin</code>
 (i.e., the first CNA locus in the chromosome), <code>end</code> (i.e., the
-last CNA locus in the chromosome), <code>allele</code>, and <code>src allele</code>
-(the allele origin for amplifications, <code>NA</code> for deletions).</p></li>
+last CNA locus in the chromosome), <code>allele</code>, <code>src allele</code>
+(the allele origin for amplifications, <code>NA</code> for deletions), and
+<code>class</code> (i.e., <code>"driver"</code>, <code>"passenger"</code>, <code>"germinal"</code> or
+<code>"preneoplastic"</code>).</p></li>
 </ul></dd>
 
 
 <dt><code>get_sampled_cell_SNVs</code></dt>
 <dd><p>Gets the SNVs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting <code>cell_id</code>, <code>chromosome</code>,
 <code>chr_pos</code> (i.e., position in the chromosome), <code>allele</code> (in which
-the SNV occurs), <code>ref</code>, <code>alt</code>, and <code>cause</code> for each
-SNV in the sampled cell genomes.</p></li>
+the SNV occurs), <code>ref</code>, <code>alt</code>, <code>cause</code>, and <code>class</code> (i.e., <code>"driver"</code>,
+<code>"passenger"</code>, <code>"germinal"</code> or <code>"preneoplastic"</code>) for each SNV in the
+sampled cell genomes.</p></li>
 </ul></dd>
 
 

@@ -300,11 +300,10 @@ higher growth rates than its ancestor.</p>
 <span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a></span>
 <span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"B"</span>, <span class="dv">10000</span>)</span>
 <span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [██████████████████████████████████████<span class="sc">--</span>] <span class="dv">94</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">172145</span></span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
-<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>current <span class="ot">&lt;-</span> <span class="fu">plot_tissue</span>(sim)</span>
-<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>current</span></code></pre></div>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>current <span class="ot">&lt;-</span> <span class="fu">plot_tissue</span>(sim)</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>current</span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-16-1.png" width="288"></p>
 <p>Since mutant start has been randomised by
 <code>Simulation$choose_cell_in()</code>, we have no exact idea of where
@@ -422,14 +421,14 @@ subclonal expansions.</p>
 <span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a><span class="co"># let it grow more time units</span></span>
 <span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_time</span>(sim<span class="sc">$</span><span class="fu">get_clock</span>() <span class="sc">+</span> <span class="dv">25</span>)</span>
 <span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">125544</span></span>
-<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">199987</span></span>
-<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">256468</span></span>
-<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">302982</span></span>
-<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">343981</span></span>
-<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">380335</span></span>
-<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">409404</span></span>
-<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">433466</span></span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">118410</span></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">186163</span></span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">240767</span></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">290282</span></span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">328701</span></span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">365371</span></span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">400582</span></span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">428910</span></span>
 <span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Saving snapshot</span>
 <span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a></span>
 <span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span>
