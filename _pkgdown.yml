@@ -133,6 +133,7 @@ reference:
   desc:  "Sequencing simulation methods"
   contents:
   - simulate_seq
+  - simulate_normal_seq
 
 
 

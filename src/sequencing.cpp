@@ -64,4 +64,38 @@ RCPP_MODULE(Sequencing){
                         _["write_SAM"] = false, _["epi_FACS"] = false, 
                         _["purity"] = 1, _["rnd_seed"] = 0),
            "Simulate the sequencing of the samples in a phylogenetic forest");
+
+//' @name simulate_normal_seq
+//' @title Simulate the sequencing of the samples in a phylogenetic forest
+//' @param phylo_forest A phylogenetic forest.
+//' @param coverage The sequencing coverage (default value: `10`).
+//' @param read_size The read size (default value: `150`).
+//' @param insert_size The insert size. Use 0 for single read sequencing 
+//'   and any value greater than 0 for pair read sequencing 
+//'   (default value: `0`).
+//' @param output_dir The SAM output directory (default value: 
+//'   `"rRACES_normal_SAM"`).
+//' @param write_SAM A Boolean flag to enable/disable SAM generation 
+//'   (default: `TRUE`).
+//' @param rnd_seed The random seed for the internal random generator 
+//'   (default value: `0`).
+//' @return A data frame representing, for each of the observed
+//'   SNVs, the chromosome and the position in which
+//'   it occurs (columns `chromosome` and `chr_pos`),
+//'   the SNV reference base, the alterate base, the causes, 
+//'   and the classes of the SNV (columns `ref_base`, `alt_base`,
+//'   `causes`, and `classes`, respectively). Moreover, for each
+//'   of the sequencied samples `<sample name>`, the returned
+//'   data frame contains three columns: the number of reads in
+//'   which the corresponding SNV occurs (column 
+//'   `<sample name>.occurrences`), the coverage of the SNV
+//'   locus (column `<sample name>.coverage`), and the
+//'   corresponding VAF (column `<sample name>.VAF`).
+//' @seealso `vignette("sequencing")` for usage examples
+  function("simulate_normal_seq", &simulate_normal_seq,
+           List::create(_["phylo_forest"], _["coverage"] = 10,
+                        _["read_size"] = 150, _["insert_size"] = 0,
+                        _["output_dir"] = "rRACES_normal_SAM",
+                        _["write_SAM"] = true, _["rnd_seed"] = 0),
+           "Simulate the sequencing of a normal sample");
 }

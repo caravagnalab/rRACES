@@ -29,4 +29,9 @@ Rcpp::List  simulate_seq(const PhylogeneticForest& forest, const double& coverag
                          const std::string& output_dir, const bool& write_SAM,
                          const bool& FACS, const double& purity, const int& rnd_seed);
 
+Rcpp::List  simulate_normal_seq(const PhylogeneticForest& forest, const double& coverage, 
+                                const int& read_size, const int& insert_size,
+                                const std::string& output_dir, const bool& write_SAM,
+                                const int& rnd_seed);
+
 #endif // __RRACES_SEQ_SIMULATION__

@@ -247,3 +247,55 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage
 
   return get_result_dataframe(result);
 }
+
+Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, const double& coverage, 
+                               const int& read_size, const int& insert_size,
+                               const std::string& output_dir, const bool& write_SAM,
+                               const int& rnd_seed)
+{
+  using namespace Races::Mutations::SequencingSimulations;
+
+  ReadSimulator<> simulator;
+  
+  if (!std::filesystem::exists(forest.get_reference_path())) {
+    throw std::runtime_error("The reference genome file \""
+                             + to_string(forest.get_reference_path())
+                             + "\" does not exists anymore. Please, re-build "
+                             + "the mutation engine.");
+  }
+
+  std::filesystem::path output_path = output_dir;
+
+  bool remove_output_path = false;
+
+  if (!write_SAM) {
+    remove_output_path = true;
+    output_path = get_tmp_dir_path(output_dir);
+  }
+
+  if (insert_size==0) {
+    simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
+                                ReadSimulator<>::Mode::CREATE, rnd_seed);
+  } else {
+    simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
+                                insert_size, ReadSimulator<>::Mode::CREATE, rnd_seed);
+  }
+
+  simulator.enable_SAM_writing(write_SAM);
+
+  const auto& germline = forest.get_germline_mutations();
+
+  std::list<Races::Mutations::SampleGenomeMutations> mutations_list;
+  mutations_list.emplace_back("Normal sample", germline);
+  auto germline_structure_ptr = std::make_shared<Races::Mutations::CellGenomeMutations>(germline.duplicate_structure());
+  mutations_list.front().mutations.push_back(germline_structure_ptr);
+
+  auto result = simulator(mutations_list, coverage, 0, "chr_",
+                          true, Rcpp::Rcout);
+
+  if (remove_output_path) {
+    std::filesystem::remove_all(output_path);
+  }
+
+  return get_result_dataframe(result);
+}

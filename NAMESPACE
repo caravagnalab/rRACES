@@ -29,3 +29,4 @@ export(Amplification)
 export(Deletion)
 
 export(simulate_seq)
+export(simulate_normal_seq)
