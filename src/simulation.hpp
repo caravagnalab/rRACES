@@ -98,13 +98,17 @@ public:
                             const Races::Mutants::Evolutions::AxisSize& width,
                             const Races::Mutants::Evolutions::AxisSize& height)
   {
+    auto history_delta = get_history_delta();
+  
     sim_ptr->set_tissue(name, {width, height});
+
+    set_history_delta(history_delta);
   }
 
   inline void update_tissue(const Races::Mutants::Evolutions::AxisSize& width,
                             const Races::Mutants::Evolutions::AxisSize& height)
   {
-    sim_ptr->set_tissue("A tissue", {width, height});
+    update_tissue(get_tissue_name(), width, height);
   }
 
   void add_mutant(const std::string& mutant, const Rcpp::List& epigenetic_rates,
