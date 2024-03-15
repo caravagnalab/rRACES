@@ -54,6 +54,8 @@ preprocess <- function(phylo_forest) {
 #'
 #' @param phylogenetic_forest A phylogenetic forest.
 #' @param linewidth The width of the lines in the plot.
+#' @param emphatize_switches A Boolean flag to emphatize the
+#'   exposure switches.
 #'
 #' @return An editable ggplot plot.
 #' @examples
@@ -89,7 +91,14 @@ preprocess <- function(phylo_forest) {
 #'                       c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
 #' phylo_forest <- m_engine$place_mutations(forest, 500)
 #'
+#' # plotting the phylogenetic forest
 #' plot_exposure_timeline(phylo_forest)
+#'
+#' # plotting the phylogenetic forest emphatizing the exposure switches
+#' plot_exposure_timeline(phylo_forest, emphatize_switches=TRUE)
+#'
+#' # deleting the mutation engine directory
+#' unlink("demo", recursive=TRUE)
 #' @export
 plot_exposure_timeline <- function(phylogenetic_forest, linewidth = 0.8,
                                    emphatize_switches = FALSE) {
