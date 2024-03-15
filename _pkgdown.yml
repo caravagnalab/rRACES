@@ -76,9 +76,10 @@ reference:
   - Simulation$update_tissue
   - Simulation$update_rates
   - Simulation
+  - plot_exposure_timeline
   - plot_firings
-  - plot_muller
   - plot_forest
+  - plot_muller
   - plot_state
   - plot_tissue
   - plot_timeseries
