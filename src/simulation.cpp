@@ -502,6 +502,11 @@ void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& ep
   using namespace Rcpp;
   using namespace Races::Mutants;
 
+  if (mutant_name.find('+')!=std::string::npos
+      || mutant_name.find('-')!=std::string::npos) {
+    ::Rf_error("Mutant name cannot contains '-' or '+'.");
+  }
+
   if (mutant_name == "Wild-type") {
     ::Rf_error("\"Wild-type\" is a reserved mutant name.");
   }
@@ -1152,6 +1157,10 @@ void Simulation::sample_cells(const std::string& sample_name,
                               const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const
 {
   using namespace Races::Mutants;
+
+  if (sample_name == "normal_sample") {
+    ::Rf_error("Sample name \"normal_sample\" is reserved.");
+  }
 
   auto rectangle = get_rectangle(lower_corner, upper_corner);
 

@@ -42,6 +42,8 @@ RCPP_MODULE(Sequencing){
 //'   and that of all the cells, i.e., tumoral and normal
 //'   ones. This value must belong to the interval [0,1] 
 //'   (default value: `1`).
+//' @param with_normal_sample A Boolean flag to enable/disable the
+//'   analysis of a normal sample (default value: `TRUE`).
 //' @param rnd_seed The random seed for the internal random generator 
 //'   (default value: `0`).
 //' @return A data frame representing, for each of the observed
@@ -62,7 +64,8 @@ RCPP_MODULE(Sequencing){
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_SAM",
                         _["write_SAM"] = false, _["epi_FACS"] = false, 
-                        _["purity"] = 1, _["rnd_seed"] = 0),
+                        _["purity"] = 1, _["with_normal_sample"] = true,
+                        _["rnd_seed"] = 0),
            "Simulate the sequencing of the samples in a phylogenetic forest");
 
 //' @name simulate_normal_seq

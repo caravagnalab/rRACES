@@ -97,7 +97,13 @@ optional parameter `write_SAM` to `TRUE`,
 the function `simulate_seq()` creates the directory `rRACES_SAM`
 and saves the SAM files in it. Each file is named after one the 
 reference genome chromosomes and it contains the reads simulated 
-for it. 
+for it. The reads are split in reads groups corresponding to the
+collected samples.
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+unlink("SAM_0.7", recursive = TRUE)
+unlink("rRACES_SAM", recursive = TRUE)
+```
 
 ```{r}
 seq_results <- simulate_seq(phylo_forest, coverage = 2.5, write_SAM = TRUE)
@@ -118,9 +124,10 @@ split the reads by sample.
 foo@bar % samtools split  -f "%*_%\!.sam" rRACES_SAM/chr_22.sam
 foo@bar % ls chr_22_*
 chr_22_S_1_1.sam        chr_22_S_1_2.sam        chr_22_S_2_1.sam        chr_22_S_2_2.sam
+chr_22_normal_sample.sam
 ```
 
-The resulting files are named after the phylogenetic forest samples and each of them 
+The resulting files are named after the samples and each of them 
 contains the reads of only one sample.
 
 Please, refer to the [`samtools split` manual](http://www.htslib.org/doc/samtools-split.html)
@@ -153,14 +160,23 @@ for (line in readLines(ex_file, n = 10)) {
 }
 ```
 
-The default value of the parameter `purity` is 1, i.e., `simulate_seq()` 
+The default value of the parameter `purity` is 1, i.e., `simulate_seq()`
 assumes all the cells in the sample to be neoplastic by default.
 
 ### Normal Cell Sequencing
 
-The sequencing of a sample exclusively containing wild-type cells can 
-be simulated by using the function `simulate_normal_seq()`.
+The function `simulate_seq()` adds a normal cell sample, named
+`normal_sample`, to the samples collected during the simulation. In this 
+way, rRACES automatically collects information about
+wild-type cells and, when the SAM writing is enabled, it 
+also simulates the sequencing of normal cells. 
 
+This default behaviour can be disabled by setting the 
+`simulate_seq()` parameter `with_normal_sample` to 
+`FALSE`. 
+
+The function `simulate_normal_seq()` simulates the normal cell sample
+sequencing *avoiding* tumor sequencing. 
 
 ```{r, echo=FALSE, results='hide', message=FALSE}
 unlink("SAM_0.7", recursive = TRUE)
