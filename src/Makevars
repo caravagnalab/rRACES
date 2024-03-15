@@ -1,4 +1,5 @@
 #PKG_LIBS = `$(R_HOME)/bin/Rscript -e \ "RcppClassic:::LdFlags()"` 
+CXX_STD=CXX17
 
 BUILD_DIR =     ../_builds
 INSTALL_DIR =   ../_install
