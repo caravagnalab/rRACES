@@ -132,7 +132,9 @@ multiple time-points.</p></li>
 <span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="va">current</span></span></code></pre></div>
+<span><span class="va">current</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-3-1.png" width="288"></p>
 <p>A sample is defined by a name and a bounding box, which has a <span class="math inline">\((x,y)\)</span> coordinate for the bottom left
 point, and for the top right point.</p>
@@ -157,7 +159,9 @@ point, and for the top right point.</p>
 <span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">bbox2_p</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xmax <span class="op">=</span> <span class="va">bbox2_q</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
 <span>            ymin <span class="op">=</span> <span class="va">bbox2_p</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, ymax <span class="op">=</span> <span class="va">bbox2_q</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
-<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
+<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-4-1.png" width="288"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -173,7 +177,9 @@ are no longer part of the simulation.</p>
 <p>A new call to <code><a href="../reference/plot_tissue.html">plot_tissue()</a></code> will show the box where the
 cells have been removed to be white.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-5-1.png" width="288"></p>
 <p>This is also reflected by <code>Simulation$get_cells()</code>, which
 now will not find any tumour cell in the sampled region.</p>
@@ -243,9 +249,10 @@ internal nodes, and reports the sample name otherwise.</p>
 y-axis, their time of birth.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing non-finite outside the scale range</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-12-1.png" width="1056"></p>
 <p>The plot shows also samples annotations and species but, for a large
 number of cells, it might be complicated to view the full tree, unless a
@@ -256,9 +263,10 @@ the tree.</p>
 <span><span class="va">S_1_1_forest</span> <span class="op">&lt;-</span> <span class="va">forest</span><span class="op">$</span><span class="fu">get_subforest_for</span><span class="op">(</span><span class="st">"S_1_1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">S_1_1_forest</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing non-finite outside the scale range</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-13-1.png" width="1056"></p>
 <p>In general, these plots can be annotated with extra information, such
 as the sampling times, and the MRCAs of each sample in the tree.</p>
@@ -267,17 +275,20 @@ as the sampling times, and the MRCAs of each sample in the tree.</p>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing non-finite outside the scale range</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-14-1.png" width="1056"></p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># S_1_1 plot</span></span>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">S_1_1_forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">S_1_1_forest</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values (`stat_edge_link()`).</span></span>
-<span><span class="co">#&gt; Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 row containing non-finite outside the scale range</span></span>
+<span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
+<span><span class="co">#&gt; Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-14-2.png" width="1056"></p>
 </div>
 </div>
@@ -300,10 +311,13 @@ higher growth rates than its ancestor.</p>
 <span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a></span>
 <span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"B"</span>, <span class="dv">10000</span>)</span>
 <span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a></span>
-<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>current <span class="ot">&lt;-</span> <span class="fu">plot_tissue</span>(sim)</span>
-<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>current</span></code></pre></div>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">7</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">129868</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>current <span class="ot">&lt;-</span> <span class="fu">plot_tissue</span>(sim)</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>current</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-16-1.png" width="288"></p>
 <p>Since mutant start has been randomised by
 <code>Simulation$choose_cell_in()</code>, we have no exact idea of where
@@ -335,7 +349,9 @@ tissue conformation.</p>
 <span><span class="va">current</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xmax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>            ymin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, ymax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
-<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
+<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-17-1.png" width="288"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
@@ -346,13 +362,17 @@ tissue conformation.</p>
 <span><span class="va">current</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xmax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>            ymin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, ymax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
-<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
+<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-19-1.png" width="288"></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
 <p>The two samples have been extracted.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-21-1.png" width="288"></p>
 <p>Cell division tree.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -361,9 +381,10 @@ tissue conformation.</p>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing non-finite outside the scale range</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-22-1.png" width="1056"></p>
 </div>
 <div class="section level2">
@@ -385,7 +406,9 @@ subclonal expansions.</p>
 <span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"A+"</span>, <span class="dv">1000</span>)</span>
 <span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
-<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span></code></pre></div>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-23-1.png" width="288"></p>
 <p>We sample before introducing a new mutant.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
@@ -399,14 +422,18 @@ subclonal expansions.</p>
 <span>                 bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>,</span>
 <span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-24-1.png" width="288"></p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># Let it grow a bit more</span></span>
 <span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_time</span>(sim<span class="sc">$</span><span class="fu">get_clock</span>() <span class="sc">+</span> <span class="dv">15</span>)</span>
 <span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
 <span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span></code></pre></div>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-25-1.png" width="288"></p>
 <p>Add a new submutant.</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>cell <span class="ot">&lt;-</span> sim<span class="sc">$</span><span class="fu">choose_cell_in</span>(<span class="st">"A"</span>)</span>
@@ -421,18 +448,26 @@ subclonal expansions.</p>
 <span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a><span class="co"># let it grow more time units</span></span>
 <span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_time</span>(sim<span class="sc">$</span><span class="fu">get_clock</span>() <span class="sc">+</span> <span class="dv">25</span>)</span>
 <span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">118410</span></span>
-<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">186163</span></span>
-<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">240767</span></span>
-<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">290282</span></span>
-<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">328701</span></span>
-<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">365371</span></span>
-<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">400582</span></span>
-<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">428910</span></span>
-<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Saving snapshot</span>
-<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a></span>
-<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span>
-<span id="cb28-24"><a href="#cb28-24" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mRemoved 26 rows containing missing values (`geom_hex()`).</span></span></code></pre></div>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">88373</span></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">143479</span></span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">179875</span></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">209816</span></span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">237930</span></span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">267343</span></span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">300984</span></span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">329685</span></span>
+<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">358040</span></span>
+<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Cells<span class="sc">:</span> <span class="dv">380787</span></span>
+<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Cells<span class="sc">:</span> <span class="dv">403372</span></span>
+<span id="cb28-24"><a href="#cb28-24" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Cells<span class="sc">:</span> <span class="dv">422485</span></span>
+<span id="cb28-25"><a href="#cb28-25" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Cells<span class="sc">:</span> <span class="dv">440291</span></span>
+<span id="cb28-26"><a href="#cb28-26" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Saving snapshot</span>
+<span id="cb28-27"><a href="#cb28-27" tabindex="-1"></a></span>
+<span id="cb28-28"><a href="#cb28-28" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span>
+<span id="cb28-29"><a href="#cb28-29" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
+<span id="cb28-30"><a href="#cb28-30" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span>
+<span id="cb28-31"><a href="#cb28-31" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mRemoved 26 rows containing missing values or values outside the scale range</span></span>
+<span id="cb28-32"><a href="#cb28-32" tabindex="-1"></a><span class="co">#&gt; (`geom_hex()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-26-1.png" width="288"></p>
 <p>Sample again and plot the tissue</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
@@ -446,7 +481,10 @@ subclonal expansions.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 26 rows containing missing values (`geom_hex()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span>
+<span><span class="co">#&gt; Warning: Removed 26 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_hex()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-27-1.png" width="288"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
@@ -506,9 +544,10 @@ complicated</p>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing non-finite outside the scale range</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1 row containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-28-1.png" width="1632"></p>
 </div>
 <div class="section level2">
@@ -529,7 +568,9 @@ visualisation.</p>
 <span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
 <span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a></span>
-<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span></code></pre></div>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-29-1.png" width="288"></p>
 <p>We sample</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
@@ -543,7 +584,9 @@ visualisation.</p>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_1_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-30-1.png" width="288"></p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
@@ -555,7 +598,9 @@ visualisation.</p>
 <span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
 <span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span></code></pre></div>
+<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span>
+<span id="cb35-9"><a href="#cb35-9" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
+<span id="cb35-10"><a href="#cb35-10" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-32-1.png" width="288"></p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
@@ -572,7 +617,9 @@ visualisation.</p>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-33-1.png" width="288"></p>
 <p>Finally, a third mutant branching from <code>A</code>.</p>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="co"># New submutant</span></span>
@@ -582,7 +629,9 @@ visualisation.</p>
 <span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"C"</span>, <span class="dv">1000</span>)</span>
 <span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
-<span id="cb38-8"><a href="#cb38-8" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span></code></pre></div>
+<span id="cb38-8"><a href="#cb38-8" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span>
+<span id="cb38-9"><a href="#cb38-9" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
+<span id="cb38-10"><a href="#cb38-10" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-34-1.png" width="288"></p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
@@ -598,7 +647,9 @@ visualisation.</p>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_3_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
+<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-35-1.png" width="288"></p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
@@ -614,13 +665,14 @@ sample.</p>
 <span><span class="fu"><a href="../reference/plot_forest.html">plot_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/annotate_forest.html">annotate_forest</a></span><span class="op">(</span><span class="va">forest</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The input forest is not a PhylogeneticForest: cannot annotate signature exposures!</span></span>
-<span><span class="co">#&gt; Warning: Removed 1 rows containing non-finite values</span></span>
+<span><span class="co">#&gt; Warning: Removed 1 row containing non-finite outside the scale range</span></span>
 <span><span class="co">#&gt; (`stat_edge_link()`).</span></span>
 <span><span class="co">#&gt; Warning: The shape palette can deal with a maximum of 6 discrete values because more</span></span>
 <span><span class="co">#&gt; than 6 becomes difficult to discriminate</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> you have requested 7 values. Consider specifying shapes manually if you need</span></span>
 <span><span class="co">#&gt;   that many have them.</span></span>
-<span><span class="co">#&gt; Warning: Removed 43 rows containing missing values (`geom_point()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 43 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_point()`).</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-36-1.png" width="1632"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

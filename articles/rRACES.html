@@ -92,49 +92,141 @@
     
     
 <p>rRACES wraps the <a href="https://github.com/albertocasagrande/RACES" class="external-link">RACES</a> simulation
-and data-generation engine by using the <a href="https://www.rcpp.org/" class="external-link">R/C++ Rcpp interface</a>. In practice,
-rRACES allows to “program” stochastic tumour evolution.</p>
-<p>The engine has a number of features, the most relevant are:</p>
+and data-generation engine by using the <a href="https://www.rcpp.org/" class="external-link">R/C++ Rcpp interface</a>, making it easy to
+“program” stochastic tumour evolution.</p>
+<div class="section level2">
+<h2 id="pipeline-overview">Pipeline overview<a class="anchor" aria-label="anchor" href="#pipeline-overview"></a>
+</h2>
+<p><img src="banner.png" alt="High-level pipeline" width="850"><br></p>
+<p>The high-level overview of pipeline of rRACES is a three-steps
+process, where:</p>
 <ol style="list-style-type: decimal">
-<li>cells are associated with <em>species</em>, proliferate in a
-stochastic fashion on a spatial 2D lattice;</li>
-<li>every species is defined by <em>(i)</em> a <em>custom mutant</em>
-and <em>(ii)</em> a <em>binary epistate</em>. Following a no-back
-mutations model, at every cell division the mutant heritable, while the
-epistate is instead reversible;</li>
-<li>the evolutionary parameters of each species can change over time,
-mimicking treatment-related evolutionary pressures;</li>
-<li>at the molecular level, the genome of tumour cells are moulded by
-realistic mutational processes, both at the level of simple mutations
-and more complex copy number alterations;</li>
+<li><p>a discrete tissue is first simulated, with distinct clones
+defined by stochastic rates of growth and death. These compete to
+colonise the tissue in a standard stochastic birth-death process, which
+in rRACES is empowered by a time-varying structure that allows weasily
+modelling of complex evolutionary forces that vary over time (e.g.,
+therapy-induced negative selection). The tissue can be sampled at
+multiple time-points and in multiple spatially-separated
+positions.</p></li>
+<li><p>from the sampled cells, the simulated phylogenetic history of the
+tumour can be extracted. The distance among the involved cells will
+represent the lineage history of the simulated clones, and mutational
+processes can be used to attach genomes to each simulated cells. rRACES
+supports standard germline and somatic mutations, including
+single-nucleotide variants (SNVs), insertion-deletions (indels) and copy
+number alterations (CNAs). For SNVs and indels time-varying mutational
+signatures can also be included.</p></li>
+<li><p>from the simulated phylogenetic history of the tumour it is
+possible to generate tumour-matched-normal synthetic data for
+benchmarking bioinformatics tools, or to infer parameters against real
+sequencing data. rRACES output include common VCF formats, as well as
+low-level SAM/FASTq outputs that can be used for aligment and downstream
+analysis. Every simulated sample can be assigned custom coverage and
+purity.</p></li>
+</ol>
+<div class="section level3">
+<h3 id="main-features">Main features<a class="anchor" aria-label="anchor" href="#main-features"></a>
+</h3>
+<p>The rRACES engine has a number of features, the most relevant
+are:</p>
+<ol style="list-style-type: decimal">
+<li>cells are associated with species that proliferate in a stochastic
+fashion on a 2D lattice ;</li>
+<li>every species is defined by <em>(i)</em> an abstract “mutant” and
+<em>(ii)</em> a epi-state; the epi-state is binary (0/1, on-off). The
+combination of the mutant and the epi-state determine the evolutionary
+parameters of each species, which can can change over time mimicking
+treatment-related evolutionary pressures, for instance.</li>
+<li>Species evolution is stochastic and follows a no-back mutations
+model, where at every cell division the mutant status heritable, while
+the epistate can be stochastically reversible;</li>
+<li>at the molecular level, the genome of tumour cells are mutated by
+simple mutations (SNVs and indels) and more complex CNAs. Mutations - in
+the broad sense - can be either passengers or drivers ones, and can be
+linked to realistic mutational processes. All their rates of
+accumulation can change over time, mimicking the emergence of
+time-varying mutational forces (e.g., to model treatment). Moreover,
+realistic germline samples can be simulated by interfacing with the UK
+biobank database.</li>
 <li>arbitrary tissue sampling schema can be simulated, including
 multi-region and longitudinal datasets with any number of samples and
 time-points;</li>
 <li>realistic read-counts based bulk sequencing data can be generated,
-both at the level of whole-genome, whole-exome and targeted panels;</li>
-<li>full access to the evolutionary process and its phylogeny
-information (cell coalescence) is available.</li>
+both at the level of whole-genome, whole-exome and targeted panels, as
+well as at the level of pre-processed outputs (VCFs) or low-level
+sequencing outputs (SAM/FASTq);</li>
+<li>full access to the evolutionary process and its output is available,
+allowing easy testing of complex clonal architecture identification
+methods, mutation callers, etc.</li>
 </ol>
-<p>The best way to learn to use rRACES is to go thorough three vignettes
-that define the standard workflow:</p>
-<ul>
-<li>
-<a href="tissue_simulation.html"><em>tissue simulation:</em></a>
-simulate the spatio-temporal stochastic process of tumour evolution to
-define a tissue;</li>
-<li>
-<a href="sampling.html"><em>sampling:</em></a> determine the
-sampling strategy for the simulated tissue;</li>
-<li>
-<a href="growth_models.html"><em>growth models:</em></a> select one
-the supported growth models;</li>
-<li>
-<a href="mutations.html"><em>mutation simulation:</em></a> simulate
-mutations on samples forests;</li>
-<li>
-<em>molecular data genereation</em>: generating realistic sequencing
-data based on sampling and simulation.</li>
-</ul></main>
+</div>
+</div>
+<div class="section level2">
+<h2 id="detailed-pipeline">Detailed pipeline<a class="anchor" aria-label="anchor" href="#detailed-pipeline"></a>
+</h2>
+<p><img src="short.png" alt="High-level pipeline" width="850"><br></p>
+<p>A rRACES simulation follows the steps (some required, some optional)
+that we disucssd below. The state of the simulation can be saved (and
+resumed) at several time-points.</p>
+<div class="section level3">
+<h3 id="tissue-simulation">Tissue simulation<a class="anchor" aria-label="anchor" href="#tissue-simulation"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>Initialise: a squared tissue is initialised, a species is defined
+and a single cell placed onto it;</li>
+<li>Evolve tissue: all the cells on the tissue are left to grow
+stochastically;</li>
+<li>Sample cells: cells can be sampled from the tissue to mimic a
+measurement;</li>
+<li>Updates/add species: the parameters of each species can be modified,
+and cells from new species can be defined and added to the tissue
+(subclones).</li>
+</ol>
+<p>Steps 2-4 represent an iterative interface for “programmable tumour
+dynamics” that gives the user the flexibility to code a custom
+evolutionary process.</p>
+</div>
+<div class="section level3">
+<h3 id="mutations-generation">Mutations generation<a class="anchor" aria-label="anchor" href="#mutations-generation"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>Phylogeny: from sampled cells, a phylogeny is built that reflects
+the evolutionary history of the simulated tumour.</li>
+<li>Mutational processes: mutational processes can be mapped onto the
+temporal-evolution of the process.</li>
+<li>Mutational engine: an engine to simulate mutations is built using a
+real reference genome.</li>
+<li>Map mutations: mutations are stochatically attached to the simulated
+phylogeny.</li>
+</ol>
+</div>
+<div class="section level3">
+<h3 id="sequencing-data-generation">Sequencing data generation<a class="anchor" aria-label="anchor" href="#sequencing-data-generation"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li>VCF: given mutations on the phylogenetic tree, custom coverage and
+sample purity, a VCF can be simulated to mimic variant-calling with
+Beta-Binomial noise.</li>
+<li>SAM/FASTq: from the same mutations it is possible to generate reads
+for a tumour matched-normal assay, and fed that data to a custom
+biorinformatics pipeline.</li>
+</ol>
+</div>
+<div class="section level3">
+<h3 id="cheatsheet">Cheatsheet<a class="anchor" aria-label="anchor" href="#cheatsheet"></a>
+</h3>
+<p><a href="https://github.com/caravagnalab/rRACES/blob/06e28114d5db423fac2a4c42d1b5a04bf44091d0/vignettes/cheatsheet.pdf?raw=true" class="external-link"><img src="https://github.com/caravagnalab/rRACES/blob/434f364bcfdff4bbfa612ac67b6557b9d872d71b/vignettes/cheatsheet.png?raw=true" height="252" alt="thumbnail of rRACES cheatsheet"></a></p>
+<!-- The best way to learn to use rRACES is to go thorough three  vignettes that define the standard workflow: -->
+<!-- -   [*tissue simulation:*](tissue_simulation.html) simulate the spatio-temporal stochastic process of tumour evolution to define a tissue; -->
+<!-- -   [*sampling:*](sampling.html) determine the sampling strategy for the simulated tissue; -->
+<!-- -   [*growth models:*](growth_models.html) select one the supported growth models;  -->
+<!-- -   [*mutation simulation:*](mutations.html) simulate mutations on samples forests;  -->
+<!-- -   *molecular data genereation*: generating realistic sequencing data based on sampling and simulation. -->
+</div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

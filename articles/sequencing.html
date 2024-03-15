@@ -104,7 +104,7 @@ of the samples in the forest and return the observed data.</p>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>phylo_forest <span class="ot">&lt;-</span> <span class="fu">load_phylogenetic_forest</span>(<span class="st">"phylo_forest.sff"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading forest</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">87</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Loading forest</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">54</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Loading forest</span>
 <span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Forest loaded</span>
 <span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>phylo_forest</span>
@@ -127,46 +127,59 @@ by as it follows.</p>
 <span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Found <span class="dv">22</span></span>
 <span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Reading <span class="dv">22</span></span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">6</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">32</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a> [████████████████████████<span class="sc">----------------</span>] <span class="dv">58</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Read simulated</span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co"># let us load the dplyr library to filter the `simulate_seq` output</span></span>
-<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co">#&gt;     filter, lag</span></span>
-<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Reading <span class="dv">22</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Reading <span class="dv">22</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a> [██████<span class="sc">----------------------------------</span>] <span class="dv">14</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">30</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a> [██████████████████<span class="sc">----------------------</span>] <span class="dv">44</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a> [███████████████████████<span class="sc">-----------------</span>] <span class="dv">55</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a> [███████████████████████████<span class="sc">-------------</span>] <span class="dv">65</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a> [██████████████████████████████████████<span class="sc">--</span>] <span class="dv">93</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">14</span>s] Read simulated</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co"># let us load the dplyr library to filter the `simulate_seq` output</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
 <span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>seq_results <span class="sc">%&gt;%</span> head</span>
-<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt;   chromosome  chr_pos ref alt causes  classes S_1_1.occurrences S_1_1.coverage</span></span>
-<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; 1         22 10510210   N   C      A   driver                 1              4</span></span>
-<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; 2         22 16051493   G   A   &lt;NA&gt; germinal                 1              1</span></span>
-<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt; 3         22 16052080   G   A   &lt;NA&gt; germinal                 1              1</span></span>
-<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt; 4         22 16053659   A   C   &lt;NA&gt; germinal                 3              3</span></span>
-<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt; 5         22 16053863   G   A   &lt;NA&gt; germinal                 1              1</span></span>
-<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt; 6         22 16054740   A   G   &lt;NA&gt; germinal                 3              3</span></span>
-<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt;   S_1_1.VAF S_1_2.occurrences S_1_2.coverage S_1_2.VAF S_2_1.occurrences</span></span>
-<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt; 1      0.25                 2              2 1.0000000                 1</span></span>
-<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt; 2      1.00                 2              6 0.3333333                 3</span></span>
-<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt; 3      1.00                 3              3 1.0000000                 3</span></span>
-<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt; 4      1.00                 2              2 1.0000000                 4</span></span>
-<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co">#&gt; 5      1.00                 0              2 0.0000000                 2</span></span>
-<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt; 6      1.00                 1              1 1.0000000                 3</span></span>
-<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="co">#&gt;   S_2_1.coverage S_2_1.VAF S_2_2.occurrences S_2_2.coverage S_2_2.VAF</span></span>
-<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt; 1              3 0.3333333                 1              2       0.5</span></span>
-<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="co">#&gt; 2              6 0.5000000                 2              4       0.5</span></span>
-<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt; 3              4 0.7500000                 3              5       0.6</span></span>
-<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a><span class="co">#&gt; 4              4 1.0000000                 3              3       1.0</span></span>
-<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a><span class="co">#&gt; 5              5 0.4000000                 0              1       0.0</span></span>
-<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a><span class="co">#&gt; 6              3 1.0000000                 6              6       1.0</span></span></code></pre></div>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>seq_results <span class="sc">%&gt;%</span> head</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt;   chromosome  chr_pos ref alt causes  classes S_1_1.occurrences S_1_1.coverage</span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt; 1         22 10510210   N   C      A   driver                 1              4</span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt; 2         22 16051493   G   A   &lt;NA&gt; germinal                 1              1</span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt; 3         22 16052080   G   A   &lt;NA&gt; germinal                 1              1</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt; 4         22 16053659   A   C   &lt;NA&gt; germinal                 3              3</span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt; 5         22 16053863   G   A   &lt;NA&gt; germinal                 1              1</span></span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a><span class="co">#&gt; 6         22 16054740   A   G   &lt;NA&gt; germinal                 3              3</span></span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a><span class="co">#&gt;   S_1_1.VAF S_1_2.occurrences S_1_2.coverage S_1_2.VAF S_2_1.occurrences</span></span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a><span class="co">#&gt; 1      0.25                 2              2 1.0000000                 1</span></span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a><span class="co">#&gt; 2      1.00                 2              6 0.3333333                 3</span></span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a><span class="co">#&gt; 3      1.00                 3              3 1.0000000                 3</span></span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a><span class="co">#&gt; 4      1.00                 2              2 1.0000000                 4</span></span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a><span class="co">#&gt; 5      1.00                 0              2 0.0000000                 2</span></span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a><span class="co">#&gt; 6      1.00                 1              1 1.0000000                 3</span></span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a><span class="co">#&gt;   S_2_1.coverage S_2_1.VAF S_2_2.occurrences S_2_2.coverage S_2_2.VAF</span></span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a><span class="co">#&gt; 1              3 0.3333333                 1              2       0.5</span></span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a><span class="co">#&gt; 2              6 0.5000000                 2              4       0.5</span></span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a><span class="co">#&gt; 3              4 0.7500000                 3              5       0.6</span></span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a><span class="co">#&gt; 4              4 1.0000000                 3              3       1.0</span></span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a><span class="co">#&gt; 5              5 0.4000000                 0              1       0.0</span></span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a><span class="co">#&gt; 6              3 1.0000000                 6              6       1.0</span></span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a><span class="co">#&gt;   normal_sample.occurrences normal_sample.coverage normal_sample.VAF</span></span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a><span class="co">#&gt; 1                         0                      4                 0</span></span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a><span class="co">#&gt; 2                         0                      2                 0</span></span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a><span class="co">#&gt; 3                         0                      0               NaN</span></span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a><span class="co">#&gt; 4                         0                      0               NaN</span></span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a><span class="co">#&gt; 5                         0                      3                 0</span></span>
+<span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a><span class="co">#&gt; 6                         3                      3                 1</span></span></code></pre></div>
 <p>The function <code><a href="../reference/simulate_seq.html">simulate_seq()</a></code> returns a data frame whose
 rows represent the mutations observed in the simulated reads (currently,
 only SNVs are supported).</p>
@@ -200,60 +213,75 @@ reports the data for the splitted samples.</p>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Found <span class="dv">22</span></span>
 <span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Reading <span class="dv">22</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">5</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a> [███████████<span class="sc">-----------------------------</span>] <span class="dv">26</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">31</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a> [████████████████████████<span class="sc">----------------</span>] <span class="dv">58</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">78</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Read simulated</span>
-<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>seq_results <span class="sc">%&gt;%</span> head</span>
-<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;   chromosome  chr_pos ref alt causes  classes S_1_1_N.occurrences</span></span>
-<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt; 1         22 10510210   N   C      A   driver                   2</span></span>
-<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 2         22 16051493   G   A   &lt;NA&gt; germinal                   1</span></span>
-<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 3         22 16052080   G   A   &lt;NA&gt; germinal                   0</span></span>
-<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; 4         22 16053659   A   C   &lt;NA&gt; germinal                   3</span></span>
-<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 5         22 16053863   G   A   &lt;NA&gt; germinal                   0</span></span>
-<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; 6         22 16054740   A   G   &lt;NA&gt; germinal                   4</span></span>
-<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt;   S_1_1_N.coverage S_1_1_N.VAF S_1_1_P.occurrences S_1_1_P.coverage S_1_1_P.VAF</span></span>
-<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; 1                2           1                   1                1         1.0</span></span>
-<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; 2                1           1                   3                6         0.5</span></span>
-<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; 3                1           0                   1                1         1.0</span></span>
-<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; 4                3           1                   2                2         1.0</span></span>
-<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; 5                0         NaN                   0                2         0.0</span></span>
-<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; 6                4           1                   2                2         1.0</span></span>
-<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt;   S_1_2_N.occurrences S_1_2_N.coverage S_1_2_N.VAF S_1_2_P.occurrences</span></span>
-<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt; 1                   1                3   0.3333333                   0</span></span>
-<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; 2                   1                2   0.5000000                   1</span></span>
-<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; 3                   2                2   1.0000000                   3</span></span>
-<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; 4                   3                3   1.0000000                   2</span></span>
-<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; 5                   3                6   0.5000000                   0</span></span>
-<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; 6                   1                1   1.0000000                   4</span></span>
-<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt;   S_1_2_P.coverage S_1_2_P.VAF S_2_1_N.occurrences S_2_1_N.coverage S_2_1_N.VAF</span></span>
-<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt; 1                0         NaN                   1                1         1.0</span></span>
-<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; 2                3   0.3333333                   2                5         0.4</span></span>
-<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; 3                5   0.6000000                   2                2         1.0</span></span>
-<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; 4                2   1.0000000                   2                2         1.0</span></span>
-<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; 5                3   0.0000000                   0                2         0.0</span></span>
-<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; 6                4   1.0000000                   8                8         1.0</span></span>
-<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt;   S_2_1_P.occurrences S_2_1_P.coverage S_2_1_P.VAF S_2_2_N.occurrences</span></span>
-<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt; 1                   2                4         0.5                   0</span></span>
-<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; 2                   0                1         0.0                   2</span></span>
-<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; 3                   0                0         NaN                   0</span></span>
-<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt; 4                   1                1         1.0                   2</span></span>
-<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt; 5                   0                0         NaN                   3</span></span>
-<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt; 6                   3                3         1.0                   2</span></span>
-<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt;   S_2_2_N.coverage S_2_2_N.VAF S_2_2_P.occurrences S_2_2_P.coverage S_2_2_P.VAF</span></span>
-<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt; 1                2           0                   1                1         1.0</span></span>
-<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt; 2                2           1                   0                2         0.0</span></span>
-<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a><span class="co">#&gt; 3                0         NaN                   1                1         1.0</span></span>
-<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt; 4                2           1                   3                3         1.0</span></span>
-<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a><span class="co">#&gt; 5                3           1                   1                2         0.5</span></span>
-<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a><span class="co">#&gt; 6                2           1                   3                3         1.0</span></span></code></pre></div>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Reading <span class="dv">22</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">2</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">17</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a> [███████████<span class="sc">-----------------------------</span>] <span class="dv">26</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a> [███████████<span class="sc">-----------------------------</span>] <span class="dv">26</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a> [████████████████<span class="sc">------------------------</span>] <span class="dv">38</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">54</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a> [███████████████████████████<span class="sc">-------------</span>] <span class="dv">65</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">77</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">13</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">91</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">14</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">15</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">16</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">17</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">22</span>s] Read simulated</span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>seq_results <span class="sc">%&gt;%</span> head</span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt;   chromosome  chr_pos ref alt causes  classes S_1_1_N.occurrences</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; 1         22 10510210   N   C      A   driver                   2</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; 2         22 16051493   G   A   &lt;NA&gt; germinal                   1</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; 3         22 16052080   G   A   &lt;NA&gt; germinal                   0</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; 4         22 16053659   A   C   &lt;NA&gt; germinal                   3</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; 5         22 16053863   G   A   &lt;NA&gt; germinal                   0</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="co">#&gt; 6         22 16054740   A   G   &lt;NA&gt; germinal                   4</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt;   S_1_1_N.coverage S_1_1_N.VAF S_1_1_P.occurrences S_1_1_P.coverage S_1_1_P.VAF</span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; 1                2           1                   1                1         1.0</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt; 2                1           1                   3                6         0.5</span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt; 3                1           0                   1                1         1.0</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt; 4                3           1                   2                2         1.0</span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt; 5                0         NaN                   0                2         0.0</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt; 6                4           1                   2                2         1.0</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt;   S_1_2_N.occurrences S_1_2_N.coverage S_1_2_N.VAF S_1_2_P.occurrences</span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt; 1                   1                3   0.3333333                   0</span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt; 2                   1                2   0.5000000                   1</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt; 3                   2                2   1.0000000                   3</span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt; 4                   3                3   1.0000000                   2</span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt; 5                   3                6   0.5000000                   0</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt; 6                   1                1   1.0000000                   4</span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt;   S_1_2_P.coverage S_1_2_P.VAF S_2_1_N.occurrences S_2_1_N.coverage S_2_1_N.VAF</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt; 1                0         NaN                   1                1         1.0</span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt; 2                3   0.3333333                   2                5         0.4</span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt; 3                5   0.6000000                   2                2         1.0</span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt; 4                2   1.0000000                   2                2         1.0</span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt; 5                3   0.0000000                   0                2         0.0</span></span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt; 6                4   1.0000000                   8                8         1.0</span></span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt;   S_2_1_P.occurrences S_2_1_P.coverage S_2_1_P.VAF S_2_2_N.occurrences</span></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt; 1                   2                4         0.5                   0</span></span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a><span class="co">#&gt; 2                   0                1         0.0                   2</span></span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt; 3                   0                0         NaN                   0</span></span>
+<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a><span class="co">#&gt; 4                   1                1         1.0                   2</span></span>
+<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a><span class="co">#&gt; 5                   0                0         NaN                   3</span></span>
+<span id="cb3-60"><a href="#cb3-60" tabindex="-1"></a><span class="co">#&gt; 6                   3                3         1.0                   2</span></span>
+<span id="cb3-61"><a href="#cb3-61" tabindex="-1"></a><span class="co">#&gt;   S_2_2_N.coverage S_2_2_N.VAF S_2_2_P.occurrences S_2_2_P.coverage S_2_2_P.VAF</span></span>
+<span id="cb3-62"><a href="#cb3-62" tabindex="-1"></a><span class="co">#&gt; 1                2           0                   1                1         1.0</span></span>
+<span id="cb3-63"><a href="#cb3-63" tabindex="-1"></a><span class="co">#&gt; 2                2           1                   0                2         0.0</span></span>
+<span id="cb3-64"><a href="#cb3-64" tabindex="-1"></a><span class="co">#&gt; 3                0         NaN                   1                1         1.0</span></span>
+<span id="cb3-65"><a href="#cb3-65" tabindex="-1"></a><span class="co">#&gt; 4                2           1                   3                3         1.0</span></span>
+<span id="cb3-66"><a href="#cb3-66" tabindex="-1"></a><span class="co">#&gt; 5                3           1                   1                2         0.5</span></span>
+<span id="cb3-67"><a href="#cb3-67" tabindex="-1"></a><span class="co">#&gt; 6                2           1                   3                3         1.0</span></span>
+<span id="cb3-68"><a href="#cb3-68" tabindex="-1"></a><span class="co">#&gt;   normal_sample.occurrences normal_sample.coverage normal_sample.VAF</span></span>
+<span id="cb3-69"><a href="#cb3-69" tabindex="-1"></a><span class="co">#&gt; 1                         0                      0               NaN</span></span>
+<span id="cb3-70"><a href="#cb3-70" tabindex="-1"></a><span class="co">#&gt; 2                         1                      1         1.0000000</span></span>
+<span id="cb3-71"><a href="#cb3-71" tabindex="-1"></a><span class="co">#&gt; 3                         0                      0               NaN</span></span>
+<span id="cb3-72"><a href="#cb3-72" tabindex="-1"></a><span class="co">#&gt; 4                         1                      1         1.0000000</span></span>
+<span id="cb3-73"><a href="#cb3-73" tabindex="-1"></a><span class="co">#&gt; 5                         2                      3         0.6666667</span></span>
+<span id="cb3-74"><a href="#cb3-74" tabindex="-1"></a><span class="co">#&gt; 6                         3                      3         1.0000000</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="saving-the-simulated-reads">Saving the Simulated Reads<a class="anchor" aria-label="anchor" href="#saving-the-simulated-reads"></a>
@@ -264,63 +292,91 @@ parameter <code>write_SAM</code> to <code>TRUE</code>, the function
 <code><a href="../reference/simulate_seq.html">simulate_seq()</a></code> creates the directory
 <code>rRACES_SAM</code> and saves the SAM files in it. Each file is
 named after one the reference genome chromosomes and it contains the
-reads simulated for it.</p>
+reads simulated for it. The reads are split in reads groups
+corresponding to the collected samples.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>seq_results <span class="ot">&lt;-</span> <span class="fu">simulate_seq</span>(phylo_forest, <span class="at">coverage =</span> <span class="fl">2.5</span>, <span class="at">write_SAM =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Found <span class="dv">22</span></span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Reading <span class="dv">22</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">1</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">5</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a> [█████<span class="sc">-----------------------------------</span>] <span class="dv">10</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">15</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a> [████████<span class="sc">--------------------------------</span>] <span class="dv">19</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a> [██████████<span class="sc">------------------------------</span>] <span class="dv">24</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a> [████████████<span class="sc">----------------------------</span>] <span class="dv">29</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a> [██████████████<span class="sc">--------------------------</span>] <span class="dv">33</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a> [████████████████<span class="sc">------------------------</span>] <span class="dv">38</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a> [█████████████████<span class="sc">-----------------------</span>] <span class="dv">42</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a> [███████████████████<span class="sc">---------------------</span>] <span class="dv">46</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">50</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">13</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a> [███████████████████████<span class="sc">-----------------</span>] <span class="dv">55</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">14</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a> [████████████████████████<span class="sc">----------------</span>] <span class="dv">58</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">15</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">63</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">16</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a> [███████████████████████████<span class="sc">-------------</span>] <span class="dv">67</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">17</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a> [█████████████████████████████<span class="sc">-----------</span>] <span class="dv">71</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">18</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a> [██████████████████████████████<span class="sc">----------</span>] <span class="dv">74</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">19</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">20</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">83</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">21</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">87</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">22</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">91</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">23</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">95</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">24</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">25</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">26</span>s] Read simulated</span>
-<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a></span>
-<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a>sam_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"rRACES_SAM/"</span>)</span>
-<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a></span>
-<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a>ex_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"rRACES_SAM/"</span>, sam_files[<span class="dv">1</span>], <span class="at">sep =</span> <span class="st">""</span>)</span>
-<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="cf">for</span> (line <span class="cf">in</span> <span class="fu">readLines</span>(ex_file, <span class="at">n =</span> <span class="dv">10</span>)) {</span>
-<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(line, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
-<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a>}</span>
-<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt; @HD  VN:1.6  SO:unknown </span></span>
-<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt; @SQ  SN:22   LN:51304566 AN:chromosome22,chr22,chromosome_22,chr_22 </span></span>
-<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_1 </span></span>
-<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_2 </span></span>
-<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_1 </span></span>
-<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_2 </span></span>
-<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co">#&gt; r00000000000 0   22  37812620    33  65M1X84M    *   0   0   GAAGTGGGAGGGAAGGGCTGGGTGGAGGCACTGGGAGGAAGCAAGCGCTGGTGCAGCAGGGTCTCTGGTCTGTCCACAGGGGCAGGCAGGATAAGTGCAGACCCGCCCACTGTGCCTCACTCCCCAGCCCTCCACCACCAAGAACCCCCA  *   RG:Z:S_1_1 </span></span>
-<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a><span class="co">#&gt; r00000000001 16  22  50800045    33  150M    *   0   0   CTTGCCTTCAGCTATTTTTCCTTCAACAGTCTCAGCCCAGAGTATGCCCTGCTTGTCTTCCTTTGACCCAGGACCCAGAGTATGCCCTGCTCGTCTGCCTTTGACTCTTTGTTCTGGTACTTGTTTTCCCAGGATTATATTATTGACAAC  *   RG:Z:S_1_1 </span></span>
-<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a><span class="co">#&gt; r00000000002 16  22  25315049    33  150M    *   0   0   TCTGTCACCCAGGCTGGAGTGCAGTGGTGCAATCTCGGCTTACTGCAGCCTCCACTTCCTGGGTTCAAGCAATTCTCTGCCTCAGCCTCTTGAGTAGCTGGGATTACAGGCACCTGCCACCATGCCTGACTAATTTTTTTTGTATTTTTA  *   RG:Z:S_1_1 </span></span>
-<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a><span class="co">#&gt; r00000000003 16  22  17642772    33  150M    *   0   0   AAAAGAAAAAAAAAAAACCTGGAGTCTAATTCTAATTCCCCTCCCATTGAGTGTGGGCTGGACTTCACTGACTTTTTAATAAATAACATGGGACAGAAGTGAGTGTAGTTGATTTCCAAGGCTAGGTCATAAAAGATACTGTGACTTCCA  *   RG:Z:S_1_1</span></span></code></pre></div>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Reading <span class="dv">22</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a> [██<span class="sc">--------------------------------------</span>] <span class="dv">3</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">6</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a> [████<span class="sc">------------------------------------</span>] <span class="dv">9</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a> [█████<span class="sc">-----------------------------------</span>] <span class="dv">12</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a> [██████<span class="sc">----------------------------------</span>] <span class="dv">14</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">17</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a> [█████████<span class="sc">-------------------------------</span>] <span class="dv">20</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a> [██████████<span class="sc">------------------------------</span>] <span class="dv">23</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a> [███████████<span class="sc">-----------------------------</span>] <span class="dv">26</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a> [████████████<span class="sc">----------------------------</span>] <span class="dv">29</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">13</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">31</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">14</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a> [██████████████<span class="sc">--------------------------</span>] <span class="dv">34</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">15</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a> [███████████████<span class="sc">-------------------------</span>] <span class="dv">37</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">16</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a> [█████████████████<span class="sc">-----------------------</span>] <span class="dv">40</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">17</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a> [██████████████████<span class="sc">----------------------</span>] <span class="dv">43</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">18</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a> [███████████████████<span class="sc">---------------------</span>] <span class="dv">45</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">19</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">48</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">20</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">51</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">21</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">54</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">22</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a> [███████████████████████<span class="sc">-----------------</span>] <span class="dv">56</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">23</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a> [████████████████████████<span class="sc">----------------</span>] <span class="dv">58</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">24</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a> [█████████████████████████<span class="sc">---------------</span>] <span class="dv">61</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">25</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">63</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">26</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a> [███████████████████████████<span class="sc">-------------</span>] <span class="dv">65</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">27</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a> [████████████████████████████<span class="sc">------------</span>] <span class="dv">68</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">28</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a> [█████████████████████████████<span class="sc">-----------</span>] <span class="dv">70</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">29</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a> [█████████████████████████████<span class="sc">-----------</span>] <span class="dv">72</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">30</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">75</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">31</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">77</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">32</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">33</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a> [█████████████████████████████████<span class="sc">-------</span>] <span class="dv">81</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">34</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">84</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">35</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">86</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">36</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">88</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">37</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">91</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">38</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a> [██████████████████████████████████████<span class="sc">--</span>] <span class="dv">93</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">39</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">95</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">40</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">41</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">42</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">43</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-49"><a href="#cb4-49" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">44</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-50"><a href="#cb4-50" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">45</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-51"><a href="#cb4-51" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">46</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-52"><a href="#cb4-52" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">47</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-53"><a href="#cb4-53" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">48</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-54"><a href="#cb4-54" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">49</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-55"><a href="#cb4-55" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">50</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-56"><a href="#cb4-56" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">51</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb4-57"><a href="#cb4-57" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">53</span>s] Read simulated</span>
+<span id="cb4-58"><a href="#cb4-58" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" tabindex="-1"></a>sam_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"rRACES_SAM/"</span>)</span>
+<span id="cb4-60"><a href="#cb4-60" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" tabindex="-1"></a>ex_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"rRACES_SAM/"</span>, sam_files[<span class="dv">1</span>], <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb4-62"><a href="#cb4-62" tabindex="-1"></a><span class="cf">for</span> (line <span class="cf">in</span> <span class="fu">readLines</span>(ex_file, <span class="at">n =</span> <span class="dv">10</span>)) {</span>
+<span id="cb4-63"><a href="#cb4-63" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(line, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
+<span id="cb4-64"><a href="#cb4-64" tabindex="-1"></a>}</span>
+<span id="cb4-65"><a href="#cb4-65" tabindex="-1"></a><span class="co">#&gt; @HD  VN:1.6  SO:unknown </span></span>
+<span id="cb4-66"><a href="#cb4-66" tabindex="-1"></a><span class="co">#&gt; @SQ  SN:22   LN:51304566 AN:chromosome22,chr22,chromosome_22,chr_22 </span></span>
+<span id="cb4-67"><a href="#cb4-67" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_1 </span></span>
+<span id="cb4-68"><a href="#cb4-68" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_2 </span></span>
+<span id="cb4-69"><a href="#cb4-69" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_1 </span></span>
+<span id="cb4-70"><a href="#cb4-70" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_2 </span></span>
+<span id="cb4-71"><a href="#cb4-71" tabindex="-1"></a><span class="co">#&gt; @RG  ID:normal_sample </span></span>
+<span id="cb4-72"><a href="#cb4-72" tabindex="-1"></a><span class="co">#&gt; r00000000000 0   22  37812620    33  65M1X84M    *   0   0   GAAGTGGGAGGGAAGGGCTGGGTGGAGGCACTGGGAGGAAGCAAGCGCTGGTGCAGCAGGGTCTCTGGTCTGTCCACAGGGGCAGGCAGGATAAGTGCAGACCCGCCCACTGTGCCTCACTCCCCAGCCCTCCACCACCAAGAACCCCCA  *   RG:Z:S_1_1 </span></span>
+<span id="cb4-73"><a href="#cb4-73" tabindex="-1"></a><span class="co">#&gt; r00000000001 16  22  50800045    33  150M    *   0   0   CTTGCCTTCAGCTATTTTTCCTTCAACAGTCTCAGCCCAGAGTATGCCCTGCTTGTCTTCCTTTGACCCAGGACCCAGAGTATGCCCTGCTCGTCTGCCTTTGACTCTTTGTTCTGGTACTTGTTTTCCCAGGATTATATTATTGACAAC  *   RG:Z:S_1_1 </span></span>
+<span id="cb4-74"><a href="#cb4-74" tabindex="-1"></a><span class="co">#&gt; r00000000002 16  22  25315049    33  150M    *   0   0   TCTGTCACCCAGGCTGGAGTGCAGTGGTGCAATCTCGGCTTACTGCAGCCTCCACTTCCTGGGTTCAAGCAATTCTCTGCCTCAGCCTCTTGAGTAGCTGGGATTACAGGCACCTGCCACCATGCCTGACTAATTTTTTTTGTATTTTTA  *   RG:Z:S_1_1</span></span></code></pre></div>
 <p>Each SAM file contains the reads produced by simulating the
 sequencing of <em>all</em> the samples. The command line tools <a href="http://www.htslib.org" class="external-link"><code>samtools</code></a> can be used to
 split the reads by sample.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">foo@bar</span> % samtools split  <span class="at">-f</span> <span class="st">"%*_%\!.sam"</span> rRACES_SAM/chr_22.sam</span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="ex">foo@bar</span> % ls chr_22_<span class="pp">*</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="ex">chr_22_S_1_1.sam</span>        chr_22_S_1_2.sam        chr_22_S_2_1.sam        chr_22_S_2_2.sam</span></code></pre></div>
-<p>The resulting files are named after the phylogenetic forest samples
-and each of them contains the reads of only one sample.</p>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="ex">chr_22_S_1_1.sam</span>        chr_22_S_1_2.sam        chr_22_S_2_1.sam        chr_22_S_2_2.sam</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="ex">chr_22_normal_sample.sam</span></span></code></pre></div>
+<p>The resulting files are named after the samples and each of them
+contains the reads of only one sample.</p>
 <p>Please, refer to the <a href="http://www.htslib.org/doc/samtools-split.html" class="external-link"><code>samtools split</code>
 manual</a> for more details.</p>
 <p>The <code><a href="../reference/simulate_seq.html">simulate_seq()</a></code> parameter <code>output_dir</code> set
@@ -344,48 +400,66 @@ simulations.</p>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Found <span class="dv">22</span></span>
 <span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
 <span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Reading <span class="dv">22</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">1</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">6</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a> [█████<span class="sc">-----------------------------------</span>] <span class="dv">10</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">15</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a> [█████████<span class="sc">-------------------------------</span>] <span class="dv">20</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a> [██████████<span class="sc">------------------------------</span>] <span class="dv">24</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a> [████████████<span class="sc">----------------------------</span>] <span class="dv">29</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a> [██████████████<span class="sc">--------------------------</span>] <span class="dv">34</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a> [████████████████<span class="sc">------------------------</span>] <span class="dv">39</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a> [██████████████████<span class="sc">----------------------</span>] <span class="dv">43</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">48</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">13</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a> [███████████████████████<span class="sc">-----------------</span>] <span class="dv">56</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">14</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a> [█████████████████████████<span class="sc">---------------</span>] <span class="dv">60</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">15</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">63</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">16</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a> [███████████████████████████<span class="sc">-------------</span>] <span class="dv">67</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">17</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a> [█████████████████████████████<span class="sc">-----------</span>] <span class="dv">71</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">18</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">76</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">19</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a> [█████████████████████████████████<span class="sc">-------</span>] <span class="dv">80</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">20</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">84</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">21</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">88</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">22</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">92</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">23</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">24</span>s] Processing chr. <span class="dv">22</span></span>
-<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">25</span>s] Read simulated</span>
-<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a></span>
-<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>sam_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"SAM_0.7/"</span>)</span>
-<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a></span>
-<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>ex_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"SAM_0.7/"</span>, sam_files[<span class="dv">1</span>], <span class="at">sep =</span> <span class="st">""</span>)</span>
-<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a><span class="cf">for</span> (line <span class="cf">in</span> <span class="fu">readLines</span>(ex_file, <span class="at">n =</span> <span class="dv">10</span>)) {</span>
-<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(line, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
-<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>}</span>
-<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a><span class="co">#&gt; @HD  VN:1.6  SO:unknown </span></span>
-<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a><span class="co">#&gt; @SQ  SN:22   LN:51304566 AN:chromosome22,chr22,chromosome_22,chr_22 </span></span>
-<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_1 </span></span>
-<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_2 </span></span>
-<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_1 </span></span>
-<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_2 </span></span>
-<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a><span class="co">#&gt; r00000000000 0   22  37812620    33  65M1X84M    *   0   0   GAAGTGGGAGGGAAGGGCTGGGTGGAGGCACTGGGAGGAAGCAAGCGCTGGTGCAGCAGGGTCTCTGGTCTGTCCACAGGGGCAGGCAGGATAAGTGCAGACCCGCCCACTGTGCCTCACTCCCCAGCCCTCCACCACCAAGAACCCCCA  *   RG:Z:S_1_1 </span></span>
-<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a><span class="co">#&gt; r00000000001 16  22  50800045    33  150M    *   0   0   CTTGCCTTCAGCTATTTTTCCTTCAACAGTCTCAGCCCAGAGTATGCCCTGCTTGTCTTCCTTTGACCCAGGACCCAGAGTATGCCCTGCTCGTCTGCCTTTGACTCTTTGTTCTGGTACTTGTTTTCCCAGGATTATATTATTGACAAC  *   RG:Z:S_1_1 </span></span>
-<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a><span class="co">#&gt; r00000000002 16  22  25315049    33  150M    *   0   0   TCTGTCACCCAGGCTGGAGTGCAGTGGTGCAATCTCGGCTTACTGCAGCCTCCACTTCCTGGGTTCAAGCAATTCTCTGCCTCAGCCTCTTGAGTAGCTGGGATTACAGGCACCTGCCACCATGCCTGACTAATTTTTTTTGTATTTTTA  *   RG:Z:S_1_1 </span></span>
-<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a><span class="co">#&gt; r00000000003 16  22  17642772    33  150M    *   0   0   AAAAGAAAAAAAAAAAACCTGGAGTCTAATTCTAATTCCCCTCCCATTGAGTGTGGGCTGGACTTCACTGACTTTTTAATAAATAACATGGGACAGAAGTGAGTGTAGTTGATTTCCAAGGCTAGGTCATAAAAGATACTGTGACTTCCA  *   RG:Z:S_1_1</span></span></code></pre></div>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Reading <span class="dv">22</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a> [██<span class="sc">--------------------------------------</span>] <span class="dv">3</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">6</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a> [████<span class="sc">------------------------------------</span>] <span class="dv">9</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a> [█████<span class="sc">-----------------------------------</span>] <span class="dv">12</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a> [██████<span class="sc">----------------------------------</span>] <span class="dv">14</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">17</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a> [█████████<span class="sc">-------------------------------</span>] <span class="dv">20</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a> [██████████<span class="sc">------------------------------</span>] <span class="dv">23</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a> [███████████<span class="sc">-----------------------------</span>] <span class="dv">26</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a> [████████████<span class="sc">----------------------------</span>] <span class="dv">29</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">13</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">32</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">14</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a> [███████████████<span class="sc">-------------------------</span>] <span class="dv">35</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">15</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a> [███████████████<span class="sc">-------------------------</span>] <span class="dv">37</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">16</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a> [█████████████████<span class="sc">-----------------------</span>] <span class="dv">40</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">17</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a> [██████████████████<span class="sc">----------------------</span>] <span class="dv">43</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">18</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a> [███████████████████<span class="sc">---------------------</span>] <span class="dv">46</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">19</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">49</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">20</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">21</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a> [███████████████████████<span class="sc">-----------------</span>] <span class="dv">55</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">22</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a> [███████████████████████<span class="sc">-----------------</span>] <span class="dv">57</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">23</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a> [█████████████████████████<span class="sc">---------------</span>] <span class="dv">60</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">24</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">63</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">25</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">64</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">26</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">64</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">27</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a> [████████████████████████████<span class="sc">------------</span>] <span class="dv">68</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">28</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a> [█████████████████████████████<span class="sc">-----------</span>] <span class="dv">72</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">29</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">75</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">30</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">31</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">83</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">32</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">87</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">33</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">90</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">34</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a> [██████████████████████████████████████<span class="sc">--</span>] <span class="dv">94</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">35</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">36</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">37</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">38</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">39</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">40</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">41</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">42</span>s] Processing chr. <span class="dv">22</span></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">44</span>s] Read simulated</span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a>sam_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"SAM_0.7/"</span>)</span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a></span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a>ex_file <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"SAM_0.7/"</span>, sam_files[<span class="dv">1</span>], <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb6-56"><a href="#cb6-56" tabindex="-1"></a><span class="cf">for</span> (line <span class="cf">in</span> <span class="fu">readLines</span>(ex_file, <span class="at">n =</span> <span class="dv">10</span>)) {</span>
+<span id="cb6-57"><a href="#cb6-57" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">paste</span>(line, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
+<span id="cb6-58"><a href="#cb6-58" tabindex="-1"></a>}</span>
+<span id="cb6-59"><a href="#cb6-59" tabindex="-1"></a><span class="co">#&gt; @HD  VN:1.6  SO:unknown </span></span>
+<span id="cb6-60"><a href="#cb6-60" tabindex="-1"></a><span class="co">#&gt; @SQ  SN:22   LN:51304566 AN:chromosome22,chr22,chromosome_22,chr_22 </span></span>
+<span id="cb6-61"><a href="#cb6-61" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_1 </span></span>
+<span id="cb6-62"><a href="#cb6-62" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_1_2 </span></span>
+<span id="cb6-63"><a href="#cb6-63" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_1 </span></span>
+<span id="cb6-64"><a href="#cb6-64" tabindex="-1"></a><span class="co">#&gt; @RG  ID:S_2_2 </span></span>
+<span id="cb6-65"><a href="#cb6-65" tabindex="-1"></a><span class="co">#&gt; @RG  ID:normal_sample </span></span>
+<span id="cb6-66"><a href="#cb6-66" tabindex="-1"></a><span class="co">#&gt; r00000000000 0   22  37812620    33  65M1X84M    *   0   0   GAAGTGGGAGGGAAGGGCTGGGTGGAGGCACTGGGAGGAAGCAAGCGCTGGTGCAGCAGGGTCTCTGGTCTGTCCACAGGGGCAGGCAGGATAAGTGCAGACCCGCCCACTGTGCCTCACTCCCCAGCCCTCCACCACCAAGAACCCCCA  *   RG:Z:S_1_1 </span></span>
+<span id="cb6-67"><a href="#cb6-67" tabindex="-1"></a><span class="co">#&gt; r00000000001 16  22  50800045    33  150M    *   0   0   CTTGCCTTCAGCTATTTTTCCTTCAACAGTCTCAGCCCAGAGTATGCCCTGCTTGTCTTCCTTTGACCCAGGACCCAGAGTATGCCCTGCTCGTCTGCCTTTGACTCTTTGTTCTGGTACTTGTTTTCCCAGGATTATATTATTGACAAC  *   RG:Z:S_1_1 </span></span>
+<span id="cb6-68"><a href="#cb6-68" tabindex="-1"></a><span class="co">#&gt; r00000000002 16  22  25315049    33  150M    *   0   0   TCTGTCACCCAGGCTGGAGTGCAGTGGTGCAATCTCGGCTTACTGCAGCCTCCACTTCCTGGGTTCAAGCAATTCTCTGCCTCAGCCTCTTGAGTAGCTGGGATTACAGGCACCTGCCACCATGCCTGACTAATTTTTTTTGTATTTTTA  *   RG:Z:S_1_1</span></span></code></pre></div>
 <p>The default value of the parameter <code>purity</code> is 1, i.e.,
 <code><a href="../reference/simulate_seq.html">simulate_seq()</a></code> assumes all the cells in the sample to be
 neoplastic by default.</p>
@@ -393,9 +467,16 @@ neoplastic by default.</p>
 <div class="section level3">
 <h3 id="normal-cell-sequencing">Normal Cell Sequencing<a class="anchor" aria-label="anchor" href="#normal-cell-sequencing"></a>
 </h3>
-<p>The sequencing of a sample exclusively containing wild-type cells can
-be simulated by using the function
-<code><a href="../reference/simulate_normal_seq.html">simulate_normal_seq()</a></code>.</p>
+<p>The function <code><a href="../reference/simulate_seq.html">simulate_seq()</a></code> adds a normal cell sample,
+named <code>normal_sample</code>, to the samples collected during the
+simulation. In this way, rRACES automatically collects information about
+wild-type cells and, when the SAM writing is enabled, it also simulates
+the sequencing of normal cells.</p>
+<p>This default behaviour can be disabled by setting the
+<code><a href="../reference/simulate_seq.html">simulate_seq()</a></code> parameter <code>with_normal_sample</code> to
+<code>FALSE</code>.</p>
+<p>The function <code><a href="../reference/simulate_normal_seq.html">simulate_normal_seq()</a></code> simulates the normal
+cell sample sequencing <em>avoiding</em> tumor sequencing.</p>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-10.1093/bioinformatics/btp352" class="csl-entry">
 Li, Heng, Bob Handsaker, Alec Wysoker, Tim Fennell, Jue Ruan, Nils
