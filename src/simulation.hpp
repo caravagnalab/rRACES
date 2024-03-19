@@ -26,9 +26,9 @@
 
 #include <simulation.hpp>
 
+#include "logics_impl.hpp"
 #include "tissue_rectangle.hpp"
 #include "samples_forest.hpp"
-
 
 struct PlainChooser
 {
@@ -179,6 +179,8 @@ public:
   void run_up_to_event(const std::string& event, const std::string& species_name,
                        const size_t& num_of_events);
 
+  void run_until(const Logics::Formula& formula);
+
   void sample_cells(const std::string& sample_name,
                     const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
                     const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const;
@@ -298,6 +300,8 @@ public:
 
   TissueRectangle search_sample(const Rcpp::IntegerVector& minimum_cell_vector,
                                 const uint16_t& width, const uint16_t& height);
+
+  Logics::Variable get_var(const std::string& name) const;
 };
 
 RCPP_EXPOSED_CLASS(Simulation)

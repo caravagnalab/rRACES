@@ -29,5 +29,9 @@ export(CNA)
 export(Amplification)
 export(Deletion)
 
+export(Variable)
+export(Expression)
+export(Formula)
+
 export(simulate_seq)
 export(simulate_normal_seq)

@@ -68,6 +68,7 @@ reference:
   - Simulation$mutate_progeny
   - Simulation$new
   - Simulation$place_cell
+  - Simulation$run_until
   - Simulation$run_up_to_event
   - Simulation$run_up_to_size
   - Simulation$run_up_to_time
@@ -75,6 +76,7 @@ reference:
   - Simulation$search_sample
   - Simulation$update_tissue
   - Simulation$update_rates
+  - Simulation$var
   - Simulation
   - plot_exposure_timeline
   - plot_firings
@@ -135,6 +137,12 @@ reference:
   contents:
   - simulate_seq
   - simulate_normal_seq
+- title: "Simulation Logics"
+  desc:  "Simulation Logics"
+  contents:
+  - Expression
+  - Formula
+  - Variable
 
 
 

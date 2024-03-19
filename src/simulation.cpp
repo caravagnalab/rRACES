@@ -504,7 +504,11 @@ void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& ep
 
   if (mutant_name.find('+')!=std::string::npos
       || mutant_name.find('-')!=std::string::npos) {
-    ::Rf_error("Mutant name cannot contains '-' or '+'.");
+    ::Rf_error("Mutant name cannot contains a '-' or a '+'.");
+  }
+
+  if (mutant_name.find('.')!=std::string::npos) {
+    ::Rf_error("Mutant name cannot contains a '.'.");
   }
 
   if (mutant_name == "Wild-type") {
@@ -890,6 +894,17 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
   const auto& species_id = sim_ptr->tissue().get_species(species_name).get_id();
 
   RTest<RS::EventCountTest> ending_test{event_names.at(event), species_id, num_of_events};
+
+  sim_ptr->run(ending_test, bar);
+}
+
+void Simulation::run_until(const Logics::Formula& formula)
+{
+  validate_non_empty_tissue(sim_ptr->tissue());
+
+  Races::UI::ProgressBar bar(Rcpp::Rcout);
+
+  RTest<Races::Mutants::Evolutions::FormulaTest> ending_test{formula};
 
   sim_ptr->run(ending_test, bar);
 }
@@ -1552,3 +1567,23 @@ TissueRectangle Simulation::search_sample(const Rcpp::IntegerVector& minimum_cel
   throw std::runtime_error("No bounding box found!");
 }
 
+Logics::Variable Simulation::get_var(const std::string& name) const
+{
+
+  if ( name == "Time") {
+    return Logics::Variable(sim_ptr->get_time_variable());
+  }
+
+  auto dot_pos = name.find('.');
+
+  if (dot_pos == std::string::npos) {
+    return Logics::Variable(sim_ptr->get_cardinality_variable(name));
+  }
+  
+  std::string event_name(name.substr(dot_pos+1));
+  std::string species_name{name.substr(0, dot_pos)};
+
+  const auto event_id = Races::Mutants::Evolutions::CellEvent::get_event_id(event_name);
+
+  return Logics::Variable(sim_ptr->get_event_variable(species_name, event_id));
+}

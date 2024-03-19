@@ -113,7 +113,7 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Parameter:} \code{num_of_cells} - The number of cells in the searched sample.
 //' \item \emph{Parameter:} \code{width} - The width of the searched sample.
 //' \item \emph{Parameter:} \code{height} - The height of the searched sample.
-//' \item \emph{Returns:} If a rectangular sample satisfying the provided constraints can 
+//' \item \emph{Returns:} If a rectangular sample satisfying the provided constraints can
 //'   be found, the corresponding rectangle.
 //' }
 //' @field get_cell Gets one the tissue cells \itemize{
@@ -229,16 +229,22 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Parameter:} \code{width} - The width of the new tissue.
 //' \item \emph{Parameter:} \code{height} - The height of the new tissue.
 //' }
+//' @field var Builds a variable representing a simulation quantity \itemize{
+//' \item \emph{Parameter:} \code{variable_description} - The description of
+//'    the variable to be built.
+//' \item \emph{Returns:} A variable representing the simulation quantity
+//'   according to the parameter `variable_description`.
+//' }
   class_<Simulation>("Simulation")
 
 //' @name Simulation$new
 //' @title Constructs a new Simulation
 //' @param simulation_name The name of the simulation (optional).
 //' @param seed The seed for the pseudo-random generator (optional).
-//' @param save_snapshots A flag to save simulation snapshots on disk (optional, 
+//' @param save_snapshots A flag to save simulation snapshots on disk (optional,
 //'   default `FALSE`).
 //' @examples
-//' # create a Simulation object storing binary dump in a temporary directory. 
+//' # create a Simulation object storing binary dump in a temporary directory.
 //' # The data are deleted from the disk as soon as the object is destroyed.
 //' sim <- new(Simulation, "test")
 //'
@@ -249,20 +255,20 @@ RCPP_MODULE(Mutants){
 //'
 //' # no directory "test" has been created
 //' "test" %in% list.files(".")
-//' 
-//' # By using the optional parameter `save_snapshots`, we force the 
-//' # simulation to save its progresses in a local directory whose name 
-//' # is the name of the simulation, i.e., "test". This data will be 
+//'
+//' # By using the optional parameter `save_snapshots`, we force the
+//' # simulation to save its progresses in a local directory whose name
+//' # is the name of the simulation, i.e., "test". This data will be
 //' # preserved when the simulation object will be destroyed.
 //' sim <- new(Simulation, "test", save_snapshots=TRUE)
 //'
-//' # as done above, we add a new species, place a cell in the tissue, and let the 
+//' # as done above, we add a new species, place a cell in the tissue, and let the
 //' # simulation evolve.
 //' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
 //' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_time(30)
 //'
-//' # the directory "test" exists and contains a binary dump of 
+//' # the directory "test" exists and contains a binary dump of
 //' # sthe simulation.
 //' "test" %in% list.files(".")
 //'
@@ -272,7 +278,7 @@ RCPP_MODULE(Mutants){
 //' # we can also provide a random seed to the simulation...
 //' sim <- new(Simulation, "test", 13)
 //'
-//' # ...or creating a simulation without providing any name. By default, the 
+//' # ...or creating a simulation without providing any name. By default, the
 //' # simulation name will have the following format `races_<date>_<hour>`.
 //' sim <- new(Simulation, 13)
   .constructor("Create a simulation whose name is \"races_<year>_<hour><minute><second>\"")
@@ -896,6 +902,63 @@ RCPP_MODULE(Mutants){
   .method("run_up_to_size", &Simulation::run_up_to_size,
           "Simulate the system up to the specified number of cells in the species")
 
+//' @name Simulation$run_until
+//' @title Simulates cell evolution until a formula does not hold
+//' @description This method simulates cell evolution until a formula does not
+//'    hold.
+//' @param formula The formula that will be satisfied at the end of the
+//'    simulation.
+//' @seealso `Simulation$var()`
+//' @examples
+//' sim <- new(Simulation)
+//' sim$add_mutant(name = "A",
+//'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                death_rates = c("+" = 0.1, "-" = 0.01))
+//' sim$place_cell("A+", 500, 500)
+//'
+//' # get the variable representing the simulation time
+//' v_time <- sim$var("Time")
+//'
+//' # get the variable representing the cardinality of A+
+//' va_p <- sim$var("A+")
+//'
+//' # get the variable representing the cardinality of A-
+//' va_m <- sim$var("A-")
+//'
+//' # get the variable representing the number of epigenetic
+//' # switches from A+
+//' va_ps <- sim$var("A+.switches")
+//'
+//' # build a condition stating that the cardinality of A+ doubles
+//' # that of A-
+//' c1 <- va_p >= 2*va_m
+//' 
+//' # build a condition that holds when there are more than
+//' # 100000 live cells of mutant A
+//' c2 <- va_p + va_m > 1e5
+//' 
+//' # build a condition that holds when less than 4000 switched
+//' # from A+ have occured
+//' c3 <- va_ps < 4000
+//' 
+//' # build a condition that holds when 40 time unit have been
+//' # simulated at least
+//' c4 <- v_time >= 40
+//' 
+//' # build a condition that holds when c4 and at least one
+//' # among c1, c2, and c3 hold
+//' c5 <- c4 & (c1 | c2 | c3)
+//' c5
+//' 
+//' # run the simulation while c5 does not hold
+//' sim$run_until(c5)
+//' 
+//' sim
+//' sim$get_clock()
+  .method("run_until", &Simulation::run_until,
+          "Simulate the system until a formula is *not* satisfied")
+
 //' @name Simulation$sample_cells
 //' @title Sample a tissue rectangle region.
 //' @description This method removes a rectangular region from the simulated
@@ -954,16 +1017,16 @@ RCPP_MODULE(Mutants){
 
 //' @name Simulation$search_sample
 //' @title Search a rectangular sample containing a minimum number of cells
-//' @description This method searches a rectangular tissue sample containing 
+//' @description This method searches a rectangular tissue sample containing
 //'   the provided number of cells. The sizes of the sample are also
-//'   provided a parameter of the method. 
+//'   provided a parameter of the method.
 //'   The complexity of this method is O(|tissue rows|*|tissue cols|).
-//' @param min_num_of_cells A named integer vector reporting the minimum number 
+//' @param min_num_of_cells A named integer vector reporting the minimum number
 //'   of cells per species or mutant.
 //' @param num_of_cells The number of cells in the searched sample.
 //' @param width The width of the searched sample.
 //' @param height The height of the searched sample.
-//' @return If a rectangular sample satisfying the provided constraints can 
+//' @return If a rectangular sample satisfying the provided constraints can
 //'   be found, the corresponding rectangle.
 //' @examples
 //' sim <- new(Simulation)
@@ -978,8 +1041,56 @@ RCPP_MODULE(Mutants){
 //'
 //' # find a 10x10 sample containing 80 "B" cells and 10 "A" cells at least
 //' sim$search_sample(c("A" = 10, "B" = 80),50,50)
-  .method("search_sample", &Simulation::search_sample, 
-          "Search a rectangular sample containing a given number of cells");
+  .method("search_sample", &Simulation::search_sample,
+          "Search a rectangular sample containing a given number of cells")
+
+//' @name Simulation$var
+//' @title Builds a variable representing a simulation quantity
+//' @description This method build a logic variable representing one of the
+//'   simulation quantities among:
+//'   -  cardinality of a species
+//'   -  number of event among duplications, deaths, and epigenetic switches
+//'   -  elapsed evolution time
+//' @param variable_description The description of the variable to be built.
+//'   When `variable_description` is the string `"Time"`, the elapsed
+//'   simulation time variable is returned. If `variable_description` is
+//'   set to a species name, then the variable representing the cardinality
+//'   of the species is built. Finally, when the parameter is a species name
+//'   followed by `.` and one among `duplications`, `deaths`, or `switches`,
+//'   the variable representing the number of event of the specified type
+//'   occurred since the computation beginning in the species.
+//' @return A variable representing the simulation quantity according to
+//'   the parameter `variable_description`.
+//' @seealso `Simulation$run_until()`
+//' @examples
+//' # build a simulation and add two species to it
+//' sim <- new(Simulation)
+//' sim$add_mutant(name = "A",
+//'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                death_rates = c("+" = 0.1, "-" = 0.01))
+//'
+//' # get the variable representing the simulation time
+//' sim$var("Time")
+//'
+//' # get the variable representing the cardinality of A+
+//' sim$var("A+")
+//'
+//' # get the variable representing the cardinality of A-
+//' sim$var("A-")
+//'
+//' # get the variable representing the number of epigenetic
+//' # switches from A+
+//' sim$var("A+.switches")
+//'
+//' # get the variable representing the number of duplications
+//' # in A+
+//' sim$var("A+.duplications")
+//'
+//' # get the variable representing the number of deaths in A+
+//' sim$var("A+.deaths")
+  .method("var", &Simulation::get_var,
+          "Get a variable representing a simulation quantity");
 
 //' @name recover_simulation
 //' @title Load a simulation
@@ -1062,7 +1173,7 @@ RCPP_MODULE(Mutants){
 //'   for each registered species.
 //' }
 //' @field get_sticks Compute the forest sticks \itemize{
-//' \item \emph{Returns:} The list of the forest sticks. Each stick is represented as 
+//' \item \emph{Returns:} The list of the forest sticks. Each stick is represented as
 //'   the list of cell identifiers labelling the nodes in the stick
 //'   from the higher to the deeper in the forest.
 //' }
@@ -1072,7 +1183,7 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
 //' }
 //' @field save Save a samples forest in a file \itemize{
-//' \item \emph{Parameter:} \code{filename} - The path of the file in which the samples 
+//' \item \emph{Parameter:} \code{filename} - The path of the file in which the samples
 //'   forest must be saved.
 //' }
   class_<SamplesForest>("SamplesForest")
@@ -1222,16 +1333,16 @@ RCPP_MODULE(Mutants){
 //' @name SamplesForest$get_sticks
 //' @title Compute the forest sticks
 //' @description A _crucial node_ of a forest is a root of the forest, a node
-//'   whose parent belongs to a different mutant, or the most recent 
+//'   whose parent belongs to a different mutant, or the most recent
 //'   common ancestor of two crucial nodes.
 //'
-//'   A _stick_ is a path of the forest in which the only crucial 
+//'   A _stick_ is a path of the forest in which the only crucial
 //'   nodes are the first and the last one.
 //'
 //'   This method return the list of the forest sticks. Each stick is
 //'   represented by the sequence of cell identifiers labelling the
 //'   nodes in the stick.
-//' @return The list of the forest sticks. Each stick is represented as 
+//' @return The list of the forest sticks. Each stick is represented as
 //'   the list of cell identifiers labelling the nodes in the stick
 //'   from the higher to the deeper in the forest.
 //' @seealso [PhylogeneticForest$get_sticks()]
@@ -1247,15 +1358,15 @@ RCPP_MODULE(Mutants){
 //' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 //' sim$run_up_to_size(species = "B", num_of_cells = 1000)
-//' 
-//' # search for a 33x33 region containing 50 cells in A and 
+//'
+//' # search for a 33x33 region containing 50 cells in A and
 //' # 50 cells in B at least and sample it
 //' region <- sim$search_sample(c(A = 50, B = 50), 33, 33)
 //' sim$sample_cells("S1", region$lower_corner, region$upper_corner)
 //'
 //' # build the samples forest
 //' forest <- sim$get_samples_forest()
-//' 
+//'
 //' # search for the forest sticks
 //' forest$get_sticks()
     .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (SamplesForest::*)() const)(&SamplesForest::get_sticks),
@@ -1263,7 +1374,7 @@ RCPP_MODULE(Mutants){
 
 //' @name SamplesForest$save
 //' @title Save a samples forest in a file
-//' @param filename The path of the file in which the samples 
+//' @param filename The path of the file in which the samples
 //'   forest must be saved.
     .method("save", &SamplesForest::save,
             "Save a samples forest")
@@ -1273,7 +1384,7 @@ RCPP_MODULE(Mutants){
 
 //' @name load_samples_forest
 //' @title Load a samples forest from a file
-//' @param filename The path of the file from which the samples 
+//' @param filename The path of the file from which the samples
 //'   forest must be load.
 //' @return The load samples forest
   function("load_samples_forest", &SamplesForest::load,

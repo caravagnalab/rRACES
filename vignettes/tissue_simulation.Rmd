@@ -5,8 +5,8 @@ vignette: >
   %\VignetteIndexEntry{Tissue simulation}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -111,17 +111,17 @@ to `sim`. This process defines the evolutionary parameters of the
 species.
 
 A *mutant* is a set of cells having the same (potentially unknown) driver
-mutations. Cells in the same mutant can have different liveness rates 
+mutations. Cells in the same mutant can have different liveness rates
 due to different epigenetic states.
 
-A *species* is a mutant with an optional epigenetic state. At this point in the 
-simulation the mutant is just a name (`A`, `B`, ..) that at later stage 
-could be linked to mutations of interest. The epigenome is a binary 
-feature of a species that is represented by epistates `+`/`-` (positive 
-and negative status). This is an abstraction, and could represent an 
-active/inactive state linked to a promoter methylation or, more broadly, 
-a phenotype. The evolution of mutants is non-reversible (no-back 
-mutations model), while the evolution among epistates is potentially 
+A *species* is a mutant with an optional epigenetic state. At this point in the
+simulation the mutant is just a name (`A`, `B`, ..) that at later stage
+could be linked to mutations of interest. The epigenome is a binary
+feature of a species that is represented by epistates `+`/`-` (positive
+and negative status). This is an abstraction, and could represent an
+active/inactive state linked to a promoter methylation or, more broadly,
+a phenotype. The evolution of mutants is non-reversible (no-back
+mutations model), while the evolution among epistates is potentially
 reversible.
 
 For example, if we define two mutants `A` and `B` with their epistates
@@ -177,7 +177,7 @@ sim$add_mutant(name = "A",
 # updated object (counts refer to number of cells of each species)
 sim
 
-# Get the simulation species and their rates 
+# Get the simulation species and their rates
 sim$get_species()
 ```
 
@@ -225,17 +225,19 @@ plot_tissue(sim)
 > **Note:** since the plots are done with `ggplot` they can be assembled
 > and customised.
 
-## Species evolution
+## Species Evolution
 
-There are 3 ways to let the simulation evolve:
+There are 4 ways to let the simulation evolve:
 
 -   advancing until the number of cells in a species reaches a given
     threshold $\theta > 0$;
 -   advancing until a new time $t>0$ is reached;
 -   advancing until a desired number of firings (of one particular
-    event) has occurred.
+    event) has occurred;
+-   advancing until a formula is not satisfied by the simulation
+    status.
 
-### Size-based simulation
+### Size-Based Simulation
 
 We can run the simulation up to when we have $\theta > 0$; cells of
 species `A+`
@@ -252,7 +254,7 @@ sim$get_counts()
 plot_tissue(sim)
 ```
 
-### Firing-based simulation
+### Firing-Based Simulation
 
 The number of times each event has fired is accessible
 
@@ -276,7 +278,7 @@ sim$get_firings()
 plot_tissue(sim, num_of_bins = 200)
 ```
 
-### Clock-based simulation
+### Clock-Based Simulation
 
 It is also possible to take the current simulation clock as reference,
 and simulate further.
@@ -296,7 +298,144 @@ sim$get_clock()
 plot_tissue(sim)
 ```
 
-##### Getting cells (Advanced)
+### Formula-Based Simulation (Advanced)
+
+rRACES implements a first order unquantified logic having variables
+representing the cardinality of the species, the number of events
+fired in a species (being duplications, deaths, or switches), and
+the simulation time. These variables and reals values are summed by
+`+`, subtracted by `-`, and multiplied by `*` and form expressions.
+The expressions are then compared with the standard semantics by
+`>`, `>=`, `==`, `!=`, `<=`, and `<` to form relations.
+A formula in this language is either a relation, the conjunction
+of two formulas (`&`), or the disjunction of two formulas (`|`).
+
+Any formula in above language expresses a condition on the simulation
+status and it can used as the parameter of the method
+`Simulation$run_until()` to let the simulation evolve until
+the condition does not hold.
+
+#### Variables
+
+The variables represent one among the following quantities:
+
+-  the cardinality of a species;
+-  the number fired event among deaths, duplications and switches in a species;
+-  the elapse simulation time.
+
+All above variables can be built by using the method `Simulation$var()`.
+When the parameter is the string `"Time"`, the elapsed simulation time
+variable is returned.
+
+```{r}
+# build a simulation and add two species to it
+sim2 <- new(Simulation)
+sim2$add_mutant(name = "A",
+                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+                growth_rates = c("+" = 0.2, "-" = 0.08),
+                death_rates = c("+" = 0.1, "-" = 0.01))
+
+# get the variable representing the simulation time
+v_time <- sim2$var("Time")
+
+v_time
+```
+
+When the parameter is the name of a species,
+a variable representing the cardinality of the species is built.
+
+```{r}
+# get the variable representing the cardinality of A+ in sim2
+va_p <- sim2$var("A+")
+va_p
+
+# get the variable representing the cardinality of A- in sim2
+va_m <- sim2$var("A-")
+va_m
+```
+
+
+Finally, when the parameter is the name of a species followed by
+a `.` and the name of an event among `deaths`, `duplications`,
+or `switches`, `Simulation$var()` returns
+the variable associated with the number of
+the corresponding event in the specified species.
+
+```{r}
+# get the variable representing the number of epigenetic
+# switches from A+
+va_ps <- sim2$var("A+.switches")
+va_ps
+
+# get the variable representing the number of duplications
+# in A+
+sim2$var("A+.duplications")
+
+# get the variable representing the number of deaths in A+
+sim2$var("A+.deaths")
+```
+
+##### Expressions and Formulas
+
+An expression is one of the following object:
+
+-  a variable, e.g., `sim2$var("A+")`;
+-  a numeric value, e.g., `3.4`;
+-  the sum of two expressions, e.g., `sim2$var("A+") + 3.4`;
+-  the subtraction of two expressions, e.g., `sim2$var("A+") - 3.4`;
+-  the multiplication of two expressions, e.g., `sim2$var("A+") * 3.4`.
+
+Two expression can be related by `<=`, `<`, `==`, `!=`, `>` and
+`>=`.
+
+A formula is:
+
+-  a relation among two expressions, e.g., `sim2$var("A+")>=2`;
+-  the conjunction of two formulas, e.g., `sim2$var("A+")>=2 & sim2$var("A+")<=500`;
+-  the disjunction of two formulas, e.g., `sim2$var("A+")>=2 | sim2$var("A+")<=500`.
+
+
+The method `Simulation$run_until()` takes as the parameter a formula and
+lets the simulation evolve until
+the formula does not hold.
+
+```{r}
+# build a condition stating that the cardinality of A+ doubles
+# that of A-
+c1 <- va_p >= 2*va_m
+c1
+
+# build a condition that holds when there are more than
+# 100000 live cells of mutant A
+c2 <- va_p + va_m > 1e5
+c2
+
+# build a condition that holds when less than 4000 
+# epigenetic switches from the species A+ have occured
+c3 <- va_ps < 4000
+c3
+
+# build a condition that holds when 40 time unit have been
+# simulated at least
+c4 <- v_time >= 40
+c4
+
+# build a condition that holds when c4 and at least one
+# among c1, c2, and c3 hold
+c5 <- c4 & (c1 | c2 | c3)
+c5
+
+# place the initial cell
+sim2$place_cell("A+", 500, 500)
+
+# run the simulation while c5 does not hold
+sim2$run_until(c5)
+
+sim2
+sim2$get_clock()
+```
+
+##### Getting Cells (Advanced)
 
 At this point, if we query the simulation we will find more cells (we
 use `dplyr` to process query results). For convenience, the getters
@@ -334,7 +473,7 @@ sim$choose_cell_in("A")
 # Calling it again may result in a different cell
 sim$choose_cell_in("A")
 
-# Constrain sampling in the tissue rectangular selection [500,550]x[350,450] 
+# Constrain sampling in the tissue rectangular selection [500,550]x[350,450]
 sim$choose_cell_in("A",  c(500, 350), c(550, 450))
 ```
 
@@ -371,7 +510,7 @@ Then we inject the cell, and simulate a little bit.
 # Mutant injection
 sim$mutate_progeny(cell, "B")
 
-# Generated event A -> B either in + or - epistates is now recorded 
+# Generated event A -> B either in + or - epistates is now recorded
 sim$get_counts()
 
 # New evolution
@@ -415,9 +554,9 @@ plot_state(sim)
 plot_tissue(sim, num_of_bins = 250)
 ```
 
-### Other operations
+### Other Operations
 
-##### Injection of cells over a tissue
+##### Injection of Cells over a Tissue
 
 On the tissue, we can inject multiple cells manually; all injected cells
 can be retrieved.
@@ -427,7 +566,7 @@ can be retrieved.
 sim$get_added_cells()
 ```
 
-##### Avoiding drift
+##### Avoiding Drift
 
 Any species that has a non-zero death rate can become extinct
 stochastically by *drift*.
@@ -448,14 +587,14 @@ sim$death_activation_level
 sim$death_activation_level <- 50
 ```
 
-## Time series data
+## Time Series Data
 
 It is convenient sometimes to plot a time series of a simulation,
 reporting species or firing counts over time. Since rRACES is
 programmable, it is immediate to make a for-loop algorithm and collect
 the simulation data over time.
 
-### Default history-based data
+### Default History-Based Data
 
 However, this is not required because at the end of any `run_to_*`
 methods, RACES stores the data about the number of species cells, and
@@ -481,7 +620,7 @@ The time-series can be plot using `plot_timeseries()`
 plot_timeseries(sim)
 ```
 
-### Custom time-series
+### Custom Time-Series
 
 If the default time-series is not enough coarse-grained, one can set
 `Simulation$history_delta` to increase the sampling rate of
@@ -544,7 +683,7 @@ plot_timeseries(sim)
 plot_timeseries(sim) + ggplot2::scale_y_log10()
 ```
 
-### Muller plot
+### Muller Plot
 
 We can also get a Muller plot of the evolution using
 [ggmuller](https://CRAN.R-project.org/package=ggmuller).
@@ -574,7 +713,7 @@ plot_muller(sim) +
   ggplot2::scale_y_log10()
 ```
 
-## Time-varying evolutionary rates
+## Time-Varying Evolutionary Rates
 
 You can model the fact that the rates of one species. For instance, this
 happens when a population is subject to a targeted treatment.
@@ -608,4 +747,4 @@ plot_muller(sim) +
   ggplot2::scale_y_log10()
 ```
 
-##### 
+#####
