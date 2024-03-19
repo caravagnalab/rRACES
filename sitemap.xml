@@ -61,6 +61,12 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Deletion.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Expression.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Formula.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_exposure.html</loc>
   </url>
   <url>
@@ -250,6 +256,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-place_cell.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_until.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_up_to_event.html</loc>
   </url>
   <url>
@@ -274,6 +283,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-update_tissue.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-var.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation.html</loc>
   </url>
   <url>
@@ -287,6 +299,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Variable.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/annotate_forest.html</loc>
