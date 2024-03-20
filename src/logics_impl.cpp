@@ -34,25 +34,13 @@ Expression to_expression(const SEXP& exp)
   switch (TYPEOF(exp)) {
     case REALSXP:
     {
-      auto e_value = Rcpp::as<double>(exp);
-      auto value = static_cast<size_t>(e_value);
-
-      if (e_value<0 || value!=e_value) {
-        ::Rf_error("Constant expression must be non-negative interger");
-      }
-
-      return Expression(value);
+      return Expression(Rcpp::as<double>(exp));
     }
     case INTSXP:
     {
-      auto e_value = Rcpp::as<int>(exp);
-      auto value = static_cast<size_t>(e_value);
+      double e_value = Rcpp::as<int>(exp);
 
-      if (e_value<0) {
-        ::Rf_error("Constant expression must be non-negative interger");
-      }
-
-      return Expression(value);
+      return Expression(e_value);
     }
     case S4SXP:
     {
