@@ -799,6 +799,7 @@ RCPP_MODULE(Mutants){
 //' @title The delta time between time series samples
 //' @description This value is the maximum time between two successive
 //'   time series data samples.
+//' @seealso [Simulation]
 //' @examples
 //' sim <- new(Simulation)
 //'
@@ -819,6 +820,7 @@ RCPP_MODULE(Mutants){
 //'   The mutated cell will be located in the position of its parent.
 //' @param cell_position The position of the cell whose offspring will mutate.
 //' @param mutated_mutant The mutant of the mutated cell.
+//' @seealso [Simulation], [Simulation$choose_cell_in()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -851,6 +853,8 @@ RCPP_MODULE(Mutants){
 //' @name Simulation$run_up_to_time
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
+//' @seealso [Simulation], [Simulation$run_up_to_event()],
+//'    [Simulation$run_up_to_size()], [Simulation$run_until()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
@@ -868,6 +872,8 @@ RCPP_MODULE(Mutants){
 //' @param event The considered event, i.e., `growth`, `death`, or `switch`.
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
+//' @seealso [Simulation], [Simulation$run_up_to_time()],
+//'    [Simulation$run_up_to_size()], [Simulation$run_until()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -888,6 +894,8 @@ RCPP_MODULE(Mutants){
 //'   a species reaches a specified threshold.
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
+//' @seealso [Simulation], [Simulation$run_up_to_time()],
+//'    [Simulation$run_up_to_event()], [Simulation$run_until()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -908,7 +916,8 @@ RCPP_MODULE(Mutants){
 //'    hold.
 //' @param formula The formula that will be satisfied at the end of the
 //'    simulation.
-//' @seealso `Simulation$var()`
+//' @seealso [Simulation], [Simulation$var()], [Simulation$run_up_to_time()],
+//'    [Simulation$run_up_to_event()], [Simulation$run_up_to_size()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -933,27 +942,27 @@ RCPP_MODULE(Mutants){
 //' # build a condition stating that the cardinality of A+ doubles
 //' # that of A-
 //' c1 <- va_p >= 2*va_m
-//' 
+//'
 //' # build a condition that holds when there are more than
 //' # 100000 live cells of mutant A
 //' c2 <- va_p + va_m > 1e5
-//' 
+//'
 //' # build a condition that holds when less than 4000 switched
 //' # from A+ have occured
 //' c3 <- va_ps < 4000
-//' 
+//'
 //' # build a condition that holds when 40 time unit have been
 //' # simulated at least
 //' c4 <- v_time >= 40
-//' 
+//'
 //' # build a condition that holds when c4 and at least one
 //' # among c1, c2, and c3 hold
 //' c5 <- c4 & (c1 | c2 | c3)
 //' c5
-//' 
+//'
 //' # run the simulation while c5 does not hold
 //' sim$run_until(c5)
-//' 
+//'
 //' sim
 //' sim$get_clock()
   .method("run_until", &Simulation::run_until,
@@ -964,6 +973,8 @@ RCPP_MODULE(Mutants){
 //' @description This method removes a rectangular region from the simulated
 //'   tissue and stores its cells in a sample that can subsequently
 //'   retrieved to build a samples forest.
+//' @seealso [Simulation], [Simulation$var()], [Simulation$run_up_to_time()],
+//'    [Simulation$run_up_to_event()], [Simulation$run_up_to_size()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -1028,6 +1039,7 @@ RCPP_MODULE(Mutants){
 //' @param height The height of the searched sample.
 //' @return If a rectangular sample satisfying the provided constraints can
 //'   be found, the corresponding rectangle.
+//' @seealso [Simulation]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$death_activation_level <- 50
@@ -1061,7 +1073,7 @@ RCPP_MODULE(Mutants){
 //'   occurred since the computation beginning in the species.
 //' @return A variable representing the simulation quantity according to
 //'   the parameter `variable_description`.
-//' @seealso `Simulation$run_until()`
+//' @seealso [Simulation], [Simulation$run_until()]
 //' @examples
 //' # build a simulation and add two species to it
 //' sim <- new(Simulation)

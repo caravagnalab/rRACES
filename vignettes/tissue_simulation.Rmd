@@ -311,7 +311,7 @@ A formula in this language is either a relation, the conjunction
 of two formulas (`&`), or the disjunction of two formulas (`|`).
 
 Any formula in above language expresses a condition on the simulation
-status and it can used as the parameter of the method
+status and it can be used as the parameter of the method
 `Simulation$run_until()` to let the simulation evolve until
 the condition does not hold.
 
@@ -367,8 +367,7 @@ the corresponding event in the specified species.
 va_ps <- sim2$var("A+.switches")
 va_ps
 
-# get the variable representing the number of duplications
-# in A+
+# get the variable representing the number of duplications in A+
 sim2$var("A+.duplications")
 
 # get the variable representing the number of deaths in A+
@@ -402,7 +401,7 @@ the formula does not hold.
 ```{r}
 # build a condition stating that the cardinality of A+ doubles
 # that of A-
-c1 <- va_p >= 2*va_m
+c1 <- va_p >= 2 * va_m
 c1
 
 # build a condition that holds when there are more than
@@ -410,7 +409,7 @@ c1
 c2 <- va_p + va_m > 1e5
 c2
 
-# build a condition that holds when less than 4000 
+# build a condition that holds when less than 4000
 # epigenetic switches from the species A+ have occured
 c3 <- va_ps < 4000
 c3

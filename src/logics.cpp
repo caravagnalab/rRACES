@@ -34,7 +34,27 @@ RCPP_MODULE(Logics){
 //'   -  the number fired event among deaths, duplications and switches in a species;
 //'   -  the elapse simulation time.
 //'
-//' @seealso `Simulation$var()` to build a variable
+//' @examples
+//' # build a simulation and add two species to it
+//' sim <- new(Simulation)
+//' sim$add_mutant(name = "A",
+//'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                death_rates = c("+" = 0.1, "-" = 0.01))
+//'
+//' # get the variable representing the cardinality of A+ in sim
+//' sim$var("A+")
+//'
+//' # get the variable representing the number of duplications in A+
+//' sim$var("A+.duplications")
+//'
+//' # get the variable representing the simulation time
+//' sim$var("Time")
+//'
+//' # the logic variables can be stored in an R variable
+//' va_p <- sim$var("A+")
+//' va_p
+//' @seealso [Simulation$var()] to build a variable
   class_<Logics::Variable>("Variable")
     .method("show", &Logics::Variable::show,
             "Show a variable");
@@ -42,7 +62,7 @@ RCPP_MODULE(Logics){
 //' @name Expression
 //' @title Represent an expression of value and variable
 //' @description The objects of this class are polynomial expression of variables
-//'   and values built by using the binary operators `+`, `-`, and `*` with the 
+//'   and values built by using the binary operators `+`, `-`, and `*` with the
 //'   usual semantics.
 //'
 //'   An expression is one of the following object:
@@ -53,7 +73,24 @@ RCPP_MODULE(Logics){
 //'   -  the subtraction of two expressions;
 //'   -  the multiplication of two expressions.
 //'
-//' @seealso `Variable`
+//' @examples
+//' # build a simulation and add two species to it
+//' sim <- new(Simulation)
+//' sim$add_mutant(name = "A",
+//'                growth_rates = 0.2,
+//'                death_rates = 0.1)
+//'
+//' # build an expression
+//' sim$var("A") - 2 * sim$var("Time") * sim$var("A.duplications") + 3.4
+//'
+//' # R variables storing logic variables can also be used in expressions
+//' v_time <- sim$var("Time")
+//' sim$var("A") - 2 * v_time * sim$var("A.duplications") + 3.4
+//'
+//' # the logic expression can be stored in an R variable
+//' v_exp <- sim$var("A") - 2 * v_time * sim$var("A.duplications") + 3.4
+//' v_exp
+//' @seealso [Variable]
   class_<Logics::Expression>("Expression")
     .method("show", &Logics::Expression::show,
             "Show an expression");
@@ -64,12 +101,6 @@ RCPP_MODULE(Logics){
            "Sums two expressions");
   function("logics_multiply", (SEXP (*)(const SEXP&, const SEXP&))&Logics::multiply,
            "Multiplies two expressions");
-
-/*
-  class_<Logics::Relation>("Relation")
-    .method("show", &Logics::Relation::show,
-            "Show a relation");
-*/
 
   function("logics_lt", (SEXP (*)(const SEXP&, const SEXP&))&Logics::lt,
            "Builds a \"less than\" relation");
@@ -86,7 +117,7 @@ RCPP_MODULE(Logics){
 
 //' @name Formula
 //' @title First order formulas about simulations
-//' @description The objects of this class describes properties of the 
+//' @description The objects of this class describes properties of the
 //'   simulation status.
 //'
 //'   A formula is:
@@ -96,7 +127,28 @@ RCPP_MODULE(Logics){
 //'   -  the conjunction of two formulas (operator `&`);
 //'   -  the disjunction of two formulas (operator `|`).
 //'
-//' @seealso `Variable`, `Simulation$var()`, `vignette("tissue_simulation")`
+//' @examples
+//' # build a simulation and add two species to it
+//' sim <- new(Simulation)
+//' sim$add_mutant(name = "A",
+//'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                death_rates = c("+" = 0.1, "-" = 0.01))
+//'
+//' # get a formula that holds when the cardinality of the mutant A
+//' # is greater than 1000
+//' f1 <- sim$var("A+") + sim$var("A-") > 1000
+//'
+//' # get a formula that holds when the simulated time is 10 at least
+//' f2 <- sim$var("Time") >= 40
+//'
+//' # get a formula that holds when the number of duplications doubles
+//' # the switch from A+
+//' f3 <- sim$var("A+.duplications") > 2 * sim$var("A+.switches")
+//'
+//' # combine above formulas by using Boolean operators `&` and `|`
+//' f1 & (f2 | f3)
+//' @seealso [Variable], [Simulation$var()], [vignette("tissue_simulation")]
   class_<Logics::Formula>("Formula")
     .method("show", &Logics::Formula::show,
             "Show a formula");
