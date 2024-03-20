@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -560,14 +560,15 @@ the same subject directly load the binary file.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>m_engine<span class="sc">$</span><span class="fu">set_germline_subject</span>(subjects[<span class="dv">2</span>, <span class="st">"sample"</span>])</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading germline</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline loaded</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving germline</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline saved</span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>m_engine<span class="sc">$</span><span class="fu">get_active_germline</span>()</span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co">#&gt;    sample pop super_pop gender</span></span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt; 1 NA20513 TSI       EUR   male</span></span></code></pre></div>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">31</span>% [<span class="dv">04</span>m<span class="sc">:</span><span class="dv">22</span>s] Loading germline</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">04</span>m<span class="sc">:</span><span class="dv">22</span>s] Germline loaded</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving germline</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Germline saved</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>m_engine<span class="sc">$</span><span class="fu">get_active_germline</span>()</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt;    sample pop super_pop gender</span></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt; 1 NA20513 TSI       EUR   male</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -586,8 +587,8 @@ use the samples forest saved in the file
 <span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>phylo_forest <span class="ot">&lt;-</span> m_engine<span class="sc">$</span><span class="fu">place_mutations</span>(samples_forest, <span class="dv">1000</span>)</span>
 <span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Placing mutations</span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a> [█████████████████████████<span class="sc">---------------</span>] <span class="dv">62</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a> [█████████████████████████████████<span class="sc">-------</span>] <span class="dv">82</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">49</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
 <span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Mutations placed</span>
 <span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a></span>
 <span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>phylo_forest</span>
@@ -800,8 +801,8 @@ that are not each other ancestors.</p>
 <span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>phylo_forest2 <span class="ot">&lt;-</span> m_engine<span class="sc">$</span><span class="fu">place_mutations</span>(samples_forest, <span class="dv">1000</span>)</span>
 <span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Placing mutations</span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a> [█████████████████████████<span class="sc">---------------</span>] <span class="dv">61</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">83</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">64</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">88</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
 <span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Mutations placed</span>
 <span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a></span>
 <span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a><span class="co"># test whether the infinite sites conditions hold</span></span>
@@ -825,7 +826,7 @@ load by the function <code><a href="../reference/load_phylogenetic_forest.html">
 <span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a>loaded_phylo_forest <span class="ot">&lt;-</span> <span class="fu">load_phylogenetic_forest</span>(<span class="st">"phylo_forest.sff"</span>)</span>
 <span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading forest</span>
-<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">75</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Loading forest</span>
+<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">87</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Loading forest</span>
 <span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Forest loaded</span>
 <span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a></span>
 <span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a>loaded_phylo_forest</span>

@@ -16,7 +16,7 @@ phylogenetic forest."><meta property="og:image" content="https://caravagnalab.gi
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -123,7 +123,7 @@ mutations.</p></dd>
 <span class="r-in"><span><span class="co"># add the default set of SBS coefficients</span></span></span>
 <span class="r-in"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_exposure</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SBS13 <span class="op">=</span> <span class="fl">0.3</span>, SBS1 <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># place the mutations on the samples forest assuming </span></span></span>
+<span class="r-in"><span><span class="co"># place the mutations on the samples forest assuming</span></span></span>
 <span class="r-in"><span><span class="co"># 1000 pre-neoplastic mutations</span></span></span>
 <span class="r-in"><span><span class="va">phylogenetic_forest</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [█---------------------------------------] 0% [00m:00s] Placing mutations                                                                                                                                       [██████████████--------------------------] 34% [00m:01s] Placing mutations                                                                                                                                      [████████████████████████████------------] 69% [00m:02s] Placing mutations                                                                                                                                      [████████████████████████████████████████] 100% [00m:02s] Mutations placed                                                                                                                                     </span>
