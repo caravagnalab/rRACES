@@ -1046,6 +1046,23 @@ Rcpp::IntegerVector Simulation::get_tissue_size() const
   return {size_vect[0], size_vect[1]};
 }
 
+
+Races::Mutants::SpeciesId
+get_switched_species(const Races::Mutants::Evolutions::Tissue& tissue,
+                     const Races::Mutants::Evolutions::Species& species)
+{
+  auto mutant = tissue.get_mutant_species(species.get_mutant_id());
+
+  for (const auto& mutant_species : mutant) {
+    if (mutant_species.get_id() != species.get_id()) {
+      return mutant_species.get_id();
+    }
+  }
+
+  throw std::domain_error("The species \"" + species.get_name()
+                          + "\" does not have an epigenetic status.");
+}
+
 Rcpp::List Simulation::get_rates(const std::string& species_name) const
 {
   using namespace Rcpp;
@@ -1056,7 +1073,11 @@ Rcpp::List Simulation::get_rates(const std::string& species_name) const
                             _["death"] = species.get_rate(event_names.at("death")));
 
   if (species.get_methylation_signature().size()>0) {
-    rates.push_back(species.get_rate(event_names.at("switch")),"switch");
+    auto switched_id = get_switched_species(sim_ptr->tissue(), species);
+
+    species.get_epigenetic_rate_to(switched_id);
+
+    rates.push_back(species.get_epigenetic_rate_to(switched_id),"switch");
   }
 
   return rates;
@@ -1081,7 +1102,13 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
     if (event_it == event_names.end()) {
       handle_unknown_event(event_name);
     }
-    species.set_rate(event_it->second, as<double>(rates[i]));
+    if (event_it->second == Races::Mutants::CellEventType::EPIGENETIC_SWITCH) {
+      auto switched_id = get_switched_species(sim_ptr->tissue(), species);
+
+      species.set_epigenetic_rate_to(switched_id, as<double>(rates[i]));
+    } else {
+      species.set_rate(event_it->second, as<double>(rates[i]));
+    }
   }
 }
 
