@@ -151,20 +151,20 @@ split_by_epigenetic_status(std::list<Races::Mutations::SampleGenomeMutations>& F
     using namespace Races::Mutants::Evolutions;
     using namespace Races::Mutations;
 
-    std::map<SpeciesId, SampleGenomeMutations*> meth_samples;
+    std::map<std::string, SampleGenomeMutations*> meth_samples;
 
     for (const auto& cell_mutations : sample_mutations.mutations) {
-        auto found = meth_samples.find(cell_mutations->get_species_id());
+        const auto& meth_status = methylation_map.at(cell_mutations->get_species_id());
+        auto found = meth_samples.find(meth_status);
 
         if (found == meth_samples.end()) {
-            auto new_name = sample_mutations.name+"_"+
-                                methylation_map.at(cell_mutations->get_species_id());
+            const auto new_name = sample_mutations.name + "_" + meth_status;
 
             FACS_samples.emplace_back(new_name, sample_mutations.germline_mutations);
 
             FACS_samples.back().mutations.push_back(cell_mutations);
 
-            meth_samples.insert({cell_mutations->get_species_id(), &(FACS_samples.back())});
+            meth_samples.insert({meth_status, &(FACS_samples.back())});
         } else {
             (found->second)->mutations.push_back(cell_mutations);
         }
