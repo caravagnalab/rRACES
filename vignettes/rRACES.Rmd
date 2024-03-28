@@ -22,7 +22,7 @@ rRACES wraps the [RACES](https://github.com/albertocasagrande/RACES) simulation 
 
 # Pipeline overview
 
-<img src="banner.png" alt="High-level pipeline" width="850"/><br>
+<img src="img/banner.png" alt="High-level pipeline" width="850"/><br>
 
 The high-level overview of pipeline of rRACES is a three-steps process, where:
 
@@ -48,7 +48,7 @@ The rRACES engine has a number of features, the most relevant are:
 
 # Detailed pipeline
 
-<img src="short.png" alt="High-level pipeline" width="850"/><br>
+<img src="img/short.png" alt="High-level pipeline" width="850"/><br>
 
 A rRACES simulation follows the steps (some required, some optional) that we disucssd below. The state of the simulation can be saved (and resumed) at several time-points.
 
@@ -78,7 +78,7 @@ evolutionary process.
 
 ## Cheatsheet
 
-<a href="https://github.com/caravagnalab/rRACES/blob/06e28114d5db423fac2a4c42d1b5a04bf44091d0/vignettes/cheatsheet.pdf?raw=true"><img src="https://github.com/caravagnalab/rRACES/blob/434f364bcfdff4bbfa612ac67b6557b9d872d71b/vignettes/cheatsheet.png?raw=true" height="252" alt="thumbnail of rRACES cheatsheet"/></a>
+<a href="https://github.com/caravagnalab/rRACES/blob/06e28114d5db423fac2a4c42d1b5a04bf44091d0/vignettes/img/cheatsheet.pdf?raw=true"><img src="https://github.com/caravagnalab/rRACES/blob/434f364bcfdff4bbfa612ac67b6557b9d872d71b/img/vignettes/cheatsheet.png?raw=true" height="252" alt="thumbnail of rRACES cheatsheet"/></a>
 
 
 <!-- The best way to learn to use rRACES is to go thorough three  vignettes that define the standard workflow: -->

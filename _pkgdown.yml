@@ -23,6 +23,7 @@ articles:
   - growth_models
   - mutations
   - sequencing
+  - SCOUT
 
 reference:
 - title: "Spacial simulation interface"
