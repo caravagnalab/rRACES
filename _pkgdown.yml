@@ -32,107 +32,23 @@ reference:
   - annotate_forest
   - bbox_sampler
   - load_samples_forest
-  - TissueRectangle$new
-  - TissueRectangle$lower_corner
-  - TissueRectangle$upper_corner
-  - TissueRectangle
-  - SamplesForest$get_coalescent_cells
-  - SamplesForest$get_nodes
-  - SamplesForest$get_samples_info
-  - SamplesForest$get_species_info
-  - SamplesForest$get_sticks
-  - SamplesForest$get_subforest_for
-  - SamplesForest$save
-  - SamplesForest
-  - Simulation$add_mutant
-  - Simulation$schedule_mutation
-  - Simulation$choose_cell_in
-  - Simulation$death_activation_level
-  - Simulation$duplicate_internal_cells
-  - Simulation$history_delta
-  - Simulation$get_added_cells
-  - Simulation$get_cell
-  - Simulation$get_cells
-  - Simulation$get_clock
-  - Simulation$get_count_history
-  - Simulation$get_counts
-  - Simulation$get_firings
-  - Simulation$get_firing_history
-  - Simulation$get_lineage_graph
-  - Simulation$get_name
-  - Simulation$get_rates
-  - Simulation$get_samples_forest
-  - Simulation$get_samples_info
-  - Simulation$get_species
-  - Simulation$get_tissue_name
-  - Simulation$get_tissue_size
-  - Simulation$mutate_progeny
-  - Simulation$new
-  - Simulation$place_cell
-  - Simulation$run_until
-  - Simulation$run_up_to_event
-  - Simulation$run_up_to_size
-  - Simulation$run_up_to_time
-  - Simulation$sample_cells
-  - Simulation$search_sample
-  - Simulation$update_tissue
-  - Simulation$update_rates
-  - Simulation$var
-  - Simulation
-  - plot_exposure_timeline
-  - plot_firings
-  - plot_forest
-  - plot_muller
-  - plot_state
-  - plot_tissue
-  - plot_timeseries
+  - starts_with("TissueRectangle")
+  - starts_with("SamplesForest")
+  - starts_with("Simulation")
+  - starts_with("plot_")
   - recover_simulation
 - title: "Mutation simulation interface"
   desc:  "Mutation simulation classes and methods"
   contents:
   - Amplification
   - build_mutation_engine
-  - CNA$get_allele
-  - CNA$get_chromosome
-  - CNA$get_dataframe
-  - CNA$get_length
-  - CNA$get_position_in_chromosome
-  - CNA$get_src_allele
-  - CNA
+  - starts_with("CNA")
   - Deletion
   - get_mutation_engine_codes
   - load_phylogenetic_forest
-  - MutationEngine$add_exposure
-  - MutationEngine$add_mutant
-  - MutationEngine$get_active_germline
-  - MutationEngine$get_germline_subjects
-  - MutationEngine$get_population_descritions
-  - MutationEngine$get_SBSs
-  - MutationEngine$infinite_sites_model
-  - MutationEngine$place_mutations
-  - MutationEngine$set_germline_subject
-  - MutationEngine
-  - PhylogeneticForest$get_coalescent_cells
-  - PhylogeneticForest$get_exposures
-  - PhylogeneticForest$get_first_occurrences
-  - PhylogeneticForest$get_germline_subject
-  - PhylogeneticForest$get_germline_SNVs
-  - PhylogeneticForest$get_nodes
-  - PhylogeneticForest$get_samples_info
-  - PhylogeneticForest$get_sampled_cell_CNAs
-  - PhylogeneticForest$get_sampled_cell_SNVs
-  - PhylogeneticForest$get_species_info
-  - PhylogeneticForest$get_sticks
-  - PhylogeneticForest$get_subforest_for
-  - PhylogeneticForest$save
-  - PhylogeneticForest
-  - SNV$get_alt_base
-  - SNV$get_cause
-  - SNV$get_chromosome
-  - SNV$get_dataframe
-  - SNV$get_ref_base
-  - SNV$get_position_in_chromosome
-  - SNV
+  - starts_with("MutationEngine")
+  - starts_with("PhylogeneticForest")
+  - starts_with("SNV")
 - title: "Sequencing simulation interface"
   desc:  "Sequencing simulation methods"
   contents:

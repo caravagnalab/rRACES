@@ -24,7 +24,7 @@ library(ggplot2)
 ```
 
 Once one has familiarised on how a tumour evolution simulation can be
-programmed using rRACES (see `vignette("tissue_simulation")), the next 
+programmed using rRACES (see `vignette("tissue_simulation")`), the next 
 step is to augment the simulation with sampling of tumour cells. 
 This mimics a realistic experimental design where we gather tumour
 sequencing data.
