@@ -32,6 +32,7 @@
     <a class="dropdown-item" href="../articles/growth_models.html">Growth Models</a>
     <a class="dropdown-item" href="../articles/mutations.html">Simulating Mutations</a>
     <a class="dropdown-item" href="../articles/sequencing.html">Sequencing Simulation</a>
+    <a class="dropdown-item" href="../articles/SCOUT.html">SCOUT</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -81,14 +82,14 @@
         <dd>Load a samples forest from a file</dd>
       </dl><dl><dt>
           
-          <code><a href="TissueRectangle-cash-new.html">TissueRectangle$new</a></code> 
-        </dt>
-        <dd>Build a new rectangle of tissue.</dd>
-      </dl><dl><dt>
-          
           <code><a href="TissueRectangle-cash-lower_corner.html">TissueRectangle$lower_corner</a></code> 
         </dt>
         <dd>The lower corner of the tissue rectangle.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="TissueRectangle-cash-new.html">TissueRectangle$new</a></code> 
+        </dt>
+        <dd>Build a new rectangle of tissue.</dd>
       </dl><dl><dt>
           
           <code><a href="TissueRectangle-cash-upper_corner.html">TissueRectangle$upper_corner</a></code> 
@@ -146,11 +147,6 @@
         <dd>Adds a mutant and its species</dd>
       </dl><dl><dt>
           
-          <code><a href="Simulation-cash-schedule_mutation.html">Simulation$schedule_mutation</a></code> 
-        </dt>
-        <dd>Schedules a mutant mutation</dd>
-      </dl><dl><dt>
-          
           <code><a href="Simulation-cash-choose_cell_in.html">Simulation$choose_cell_in</a></code> 
         </dt>
         <dd>Chooses one cell in a mutant</dd>
@@ -164,11 +160,6 @@
           <code><a href="Simulation-cash-duplicate_internal_cells.html">Simulation$duplicate_internal_cells</a></code> 
         </dt>
         <dd>Enable/disable duplication for internal cells.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="Simulation-cash-history_delta.html">Simulation$history_delta</a></code> 
-        </dt>
-        <dd>The delta time between time series samples</dd>
       </dl><dl><dt>
           
           <code><a href="Simulation-cash-get_added_cells.html">Simulation$get_added_cells</a></code> 
@@ -201,14 +192,14 @@
         <dd>Counts the number of cells</dd>
       </dl><dl><dt>
           
-          <code><a href="Simulation-cash-get_firings.html">Simulation$get_firings</a></code> 
-        </dt>
-        <dd>Gets the number of fired events</dd>
-      </dl><dl><dt>
-          
           <code><a href="Simulation-cash-get_firing_history.html">Simulation$get_firing_history</a></code> 
         </dt>
         <dd>Gets the history of the number of fired events</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Simulation-cash-get_firings.html">Simulation$get_firings</a></code> 
+        </dt>
+        <dd>Gets the number of fired events</dd>
       </dl><dl><dt>
           
           <code><a href="Simulation-cash-get_lineage_graph.html">Simulation$get_lineage_graph</a></code> 
@@ -251,6 +242,11 @@
         <dd>Gets the size of the simulated tissue</dd>
       </dl><dl><dt>
           
+          <code><a href="Simulation-cash-history_delta.html">Simulation$history_delta</a></code> 
+        </dt>
+        <dd>The delta time between time series samples</dd>
+      </dl><dl><dt>
+          
           <code><a href="Simulation-cash-mutate_progeny.html">Simulation$mutate_progeny</a></code> 
         </dt>
         <dd>Generate a mutated progeny</dd>
@@ -291,19 +287,24 @@
         <dd>Sample a tissue rectangle region.</dd>
       </dl><dl><dt>
           
+          <code><a href="Simulation-cash-schedule_mutation.html">Simulation$schedule_mutation</a></code> 
+        </dt>
+        <dd>Schedules a mutant mutation</dd>
+      </dl><dl><dt>
+          
           <code><a href="Simulation-cash-search_sample.html">Simulation$search_sample</a></code> 
         </dt>
         <dd>Search a rectangular sample containing a minimum number of cells</dd>
       </dl><dl><dt>
           
-          <code><a href="Simulation-cash-update_tissue.html">Simulation$update_tissue</a></code> 
-        </dt>
-        <dd>Update tissue name and size</dd>
-      </dl><dl><dt>
-          
           <code><a href="Simulation-cash-update_rates.html">Simulation$update_rates</a></code> 
         </dt>
         <dd>Update the rates of a species</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Simulation-cash-update_tissue.html">Simulation$update_tissue</a></code> 
+        </dt>
+        <dd>Update tissue name and size</dd>
       </dl><dl><dt>
           
           <code><a href="Simulation-cash-var.html">Simulation$var</a></code> 
@@ -341,14 +342,14 @@
         <dd>Plot the current state of the simulation.</dd>
       </dl><dl><dt>
           
-          <code><a href="plot_tissue.html">plot_tissue()</a></code> 
-        </dt>
-        <dd>Plot a tissue</dd>
-      </dl><dl><dt>
-          
           <code><a href="plot_timeseries.html">plot_timeseries()</a></code> 
         </dt>
         <dd>Plot the current state of the simulation.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_tissue.html">plot_tissue()</a></code> 
+        </dt>
+        <dd>Plot a tissue</dd>
       </dl><dl><dt>
           
           <code><a href="recover_simulation.html">recover_simulation</a></code> 
@@ -437,6 +438,11 @@
         <dd>Add a mutant specification to the mutation engine.</dd>
       </dl><dl><dt>
           
+          <code><a href="MutationEngine-cash-get_SBSs.html">MutationEngine$get_SBSs</a></code> 
+        </dt>
+        <dd>Get a data frame containing the available SBSs</dd>
+      </dl><dl><dt>
+          
           <code><a href="MutationEngine-cash-get_active_germline.html">MutationEngine$get_active_germline</a></code> 
         </dt>
         <dd>Get a data frame describing the active germline subject</dd>
@@ -450,11 +456,6 @@
           <code><a href="MutationEngine-cash-get_population_descritions.html">MutationEngine$get_population_descritions</a></code> 
         </dt>
         <dd>Get a data frame containing the population descriptions</dd>
-      </dl><dl><dt>
-          
-          <code><a href="MutationEngine-cash-get_SBSs.html">MutationEngine$get_SBSs</a></code> 
-        </dt>
-        <dd>Get a data frame containing the available SBSs</dd>
       </dl><dl><dt>
           
           <code><a href="MutationEngine-cash-infinite_sites_model.html">MutationEngine$infinite_sites_model</a></code> 
@@ -492,24 +493,19 @@
         <dd>Gets the identifier of the cell in which a mutation occurs for the first time</dd>
       </dl><dl><dt>
           
-          <code><a href="PhylogeneticForest-cash-get_germline_subject.html">PhylogeneticForest$get_germline_subject</a></code> 
-        </dt>
-        <dd>Gets the germline subject name</dd>
-      </dl><dl><dt>
-          
           <code><a href="PhylogeneticForest-cash-get_germline_SNVs.html">PhylogeneticForest$get_germline_SNVs</a></code> 
         </dt>
         <dd>Gets the SNVs of the germline</dd>
       </dl><dl><dt>
           
+          <code><a href="PhylogeneticForest-cash-get_germline_subject.html">PhylogeneticForest$get_germline_subject</a></code> 
+        </dt>
+        <dd>Gets the germline subject name</dd>
+      </dl><dl><dt>
+          
           <code><a href="PhylogeneticForest-cash-get_nodes.html">PhylogeneticForest$get_nodes</a></code> 
         </dt>
         <dd>Get the nodes of the forest</dd>
-      </dl><dl><dt>
-          
-          <code><a href="PhylogeneticForest-cash-get_samples_info.html">PhylogeneticForest$get_samples_info</a></code> 
-        </dt>
-        <dd>Retrieve information about the samples</dd>
       </dl><dl><dt>
           
           <code><a href="PhylogeneticForest-cash-get_sampled_cell_CNAs.html">PhylogeneticForest$get_sampled_cell_CNAs</a></code> 
@@ -520,6 +516,11 @@
           <code><a href="PhylogeneticForest-cash-get_sampled_cell_SNVs.html">PhylogeneticForest$get_sampled_cell_SNVs</a></code> 
         </dt>
         <dd>Gets the SNVs of the sampled cells</dd>
+      </dl><dl><dt>
+          
+          <code><a href="PhylogeneticForest-cash-get_samples_info.html">PhylogeneticForest$get_samples_info</a></code> 
+        </dt>
+        <dd>Retrieve information about the samples</dd>
       </dl><dl><dt>
           
           <code><a href="PhylogeneticForest-cash-get_species_info.html">PhylogeneticForest$get_species_info</a></code> 
@@ -567,14 +568,14 @@
         <dd>Get a data frame representing the SNV.</dd>
       </dl><dl><dt>
           
-          <code><a href="SNV-cash-get_ref_base.html">SNV$get_ref_base</a></code> 
-        </dt>
-        <dd>Get the reference base in which the SNV occurs.</dd>
-      </dl><dl><dt>
-          
           <code><a href="SNV-cash-get_position_in_chromosome.html">SNV$get_position_in_chromosome</a></code> 
         </dt>
         <dd>Get the position in chromosome where the SNV occurs.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="SNV-cash-get_ref_base.html">SNV$get_ref_base</a></code> 
+        </dt>
+        <dd>Get the reference base in which the SNV occurs.</dd>
       </dl><dl><dt>
           
           <code><a href="SNV.html">SNV</a></code> 

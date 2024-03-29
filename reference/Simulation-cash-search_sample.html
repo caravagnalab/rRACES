@@ -38,6 +38,7 @@ The complexity of this method is O(|tissue rows|*|tissue cols|)."><meta property
     <a class="dropdown-item" href="../articles/growth_models.html">Growth Models</a>
     <a class="dropdown-item" href="../articles/mutations.html">Simulating Mutations</a>
     <a class="dropdown-item" href="../articles/sequencing.html">Sequencing Simulation</a>
+    <a class="dropdown-item" href="../articles/SCOUT.html">SCOUT</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -107,16 +108,16 @@ be found, the corresponding rectangle.</p>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"A"</span>, growth_rate <span class="op">=</span> <span class="fl">0.2</span>, death_rate <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"A"</span>, num_of_cells <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                                                                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                                                                            </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"B"</span>, growth_rate <span class="op">=</span> <span class="fl">0.3</span>, death_rate <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"B"</span>, num_of_cells <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                                                                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                                                                            </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># find a 10x10 sample containing 80 "B" cells and 10 "A" cells at least</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span> <span class="op">=</span> <span class="fl">10</span>, <span class="st">"B"</span> <span class="op">=</span> <span class="fl">80</span><span class="op">)</span>,<span class="fl">50</span>,<span class="fl">50</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TissueRectangle((484,435),(533,484))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TissueRectangle((385,484),(434,533))</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
