@@ -40,6 +40,15 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Amplification.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer-cash-get_error_rate.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer-cash-new.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_allele.html</loc>
   </url>
   <url>
@@ -62,6 +71,12 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Deletion.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/ErrorlessIlluminaSequencer-cash-new.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/ErrorlessIlluminaSequencer.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Expression.html</loc>
