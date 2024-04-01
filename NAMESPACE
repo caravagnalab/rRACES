@@ -33,5 +33,7 @@ export(Variable)
 export(Expression)
 export(Formula)
 
+export(ErrorlessIlluminaSequencer)
+export(BasicIlluminaSequencer)
 export(simulate_seq)
 export(simulate_normal_seq)

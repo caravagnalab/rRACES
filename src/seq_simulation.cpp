@@ -18,6 +18,7 @@
 #include <utils.hpp>
 
 #include "seq_simulation.hpp"
+#include "sequencers.hpp"
 
 #include "utility.hpp"
 
@@ -197,11 +198,54 @@ split_by_epigenetic_status(const std::list<Races::Mutations::SampleGenomeMutatio
     return FACS_samples;
 }
 
-Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage, 
-                        const int& read_size, const int& insert_size,
-                        const std::string& output_dir, const bool& write_SAM,
-                        const bool& FACS, const double& purity,
-                        const bool& with_normal_sample, const int& rnd_seed)
+Races::Mutations::SequencingSimulations::SampleSetStatistics
+simulate_seq(Races::Mutations::SequencingSimulations::ReadSimulator<>& simulator, SEXP& sequencer,
+             std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
+             const double& coverage, const double purity,
+             const std::string& base_name, std::ostream& progress_bar_stream)
+{
+  switch (TYPEOF(sequencer)) {
+    case S4SXP:
+    {
+      Rcpp::S4 s4obj( sequencer );
+      if ( s4obj.is("Rcpp_BasicIlluminaSequencer")) {
+        Rcpp::Environment env( s4obj );
+
+        Rcpp::XPtr<BasicIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
+
+        return simulator(*sequencer_ptr, mutations_list, coverage, purity,
+                         base_name, progress_bar_stream);
+      }
+      if ( s4obj.is("Rcpp_ErrorlessIlluminaSequencer")) {
+        Rcpp::Environment env( s4obj );
+
+        Rcpp::XPtr<ErrorlessIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
+
+        return simulator(*sequencer_ptr, mutations_list, coverage, purity,
+                         base_name, progress_bar_stream);
+      }
+    }
+    case REALSXP:
+    {
+        // if the sequencer is set to be 0, use the error-less Illumina sequencer
+        if (Rcpp::as<double>(sequencer) == 0) {
+            ErrorlessIlluminaSequencer sequencer;
+
+            return simulator(sequencer, mutations_list, coverage, purity,
+                            base_name, progress_bar_stream);
+        }
+    }
+    default:
+        throw std::domain_error("Unsupported sequencer type");
+  }
+}
+
+Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
+                        const double& coverage, const int& read_size,
+                        const int& insert_size, const std::string& output_dir,
+                        const bool& write_SAM, const bool& FACS,
+                        const double& purity, const bool& with_normal_sample,
+                        const int& rnd_seed)
 {
   using namespace Races::Mutations::SequencingSimulations;
 
@@ -246,8 +290,8 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage
     mutations_list.back().mutations.push_back(germline_structure_ptr);
   }
 
-  auto result = simulator(mutations_list, coverage, purity, "chr_",
-                          true, Rcpp::Rcout);
+  auto result = simulate_seq(simulator, sequencer, mutations_list, coverage, 
+                             purity, "chr_", Rcpp::Rcout);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);
@@ -256,7 +300,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, const double& coverage
   return get_result_dataframe(result);
 }
 
-Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, const double& coverage, 
+Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer, const double& coverage, 
                                const int& read_size, const int& insert_size,
                                const std::string& output_dir, const bool& write_SAM,
                                const int& rnd_seed)
@@ -298,8 +342,8 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, const double& c
   auto germline_structure_ptr = std::make_shared<Races::Mutations::CellGenomeMutations>(germline.duplicate_structure());
   mutations_list.front().mutations.push_back(germline_structure_ptr);
 
-  auto result = simulator(mutations_list, coverage, 0, "chr_",
-                          true, Rcpp::Rcout);
+  auto result = simulate_seq(simulator, sequencer, mutations_list, coverage, 
+                             0, "chr_", Rcpp::Rcout);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);

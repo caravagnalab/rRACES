@@ -19,14 +19,68 @@
 
 #include <Rcpp.h>
 
+#include "sequencers.hpp"
 #include "seq_simulation.hpp"
 
 using namespace Rcpp;
 
 RCPP_MODULE(Sequencing){
 
+//' @name ErrorlessIlluminaSequencer
+//' @title An error-less Illumina sequencer class
+//' @description This class implements a perferct Illumina sequencers that
+//'   does not commit errors.
+//' @seealso ` simulate_seq`, `simulate_normal_seq`, and `vignette("sequencing")`
+//'   for usage examples
+  class_<ErrorlessIlluminaSequencer>("ErrorlessIlluminaSequencer")
+//' @name ErrorlessIlluminaSequencer$new
+//' @title Build a new error-less Illumina sequencer model.
+//' @examples
+//' # build an error-less Illumina sequencer
+//' sequencer <- new(ErrorlessIlluminaSequencer)
+//'
+//' sequencer
+    .constructor("Build a new error-less Illumina sequencer")
+    .method("show", &ErrorlessIlluminaSequencer::show,
+            "Show a description for the sequencer");
+
+//' @name BasicIlluminaSequencer
+//' @title A basic Illumina sequencer class
+//' @description This class implements a basic model for Illumina sequencers.
+//'   It specifies a simulated sequencing error rate and the simulated sequencing 
+//'   errors will occurs according to that rate.
+//' @seealso ` simulate_seq`, `simulate_normal_seq`, and `vignette("sequencing")`
+//'   for usage examples
+  class_<BasicIlluminaSequencer>("BasicIlluminaSequencer")
+//' @name BasicIlluminaSequencer$new
+//' @title Build a new basic Illumina sequencer model.
+//' @param error_rate The error rate per base.
+//' @param seed The seed for the internal random generator 
+//'   (default: `0`).
+//' @examples
+//' # build a basic Illumina sequencer model in which errors occur
+//' # at rate 4e-3
+//' sequencer <- new(BasicIlluminaSequencer, 4e-3)
+//'
+//' sequencer
+    .constructor<double>("Build a new Illumina sequencer")
+    .method("show", &BasicIlluminaSequencer::show,
+            "Show a description for the sequencer")
+
+//' @name BasicIlluminaSequencer$get_error_rate
+//' @title Get basic illumina sequencer 
+//' @examples
+//' # build a basic Illumina sequencer model in which errors occur
+//' # at rate 4e-3
+//' sequencer <- new(BasicIlluminaSequencer, 4e-3)
+//'
+//' sequencer$get_error_rate()
+    .method("get_error_rate", (const double& (BasicIlluminaSequencer::*)())(&BasicIlluminaSequencer::get_error_rate),
+            "Get the sequencer error rate");
+
 //' @name simulate_seq
 //' @title Simulate the sequencing of the samples in a phylogenetic forest
+//' @param sequencer The sequencer that performs the sequencing simulation.
 //' @param phylo_forest A phylogenetic forest.
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
@@ -58,9 +112,10 @@ RCPP_MODULE(Sequencing){
 //'   `<sample name>.occurrences`), the coverage of the SNV
 //'   locus (column `<sample name>.coverage`), and the
 //'   corresponding VAF (column `<sample name>.VAF`).
-//' @seealso `vignette("sequencing")` for usage examples
+//' @seealso `BasicIlluminaSequencer` as sequencer type, and 
+//'   `vignette("sequencing")` for usage examples
   function("simulate_seq", &simulate_seq,
-           List::create(_["phylo_forest"], _["coverage"] = 10,
+           List::create(_["phylo_forest"], _["sequencer"] = NULL, _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_SAM",
                         _["write_SAM"] = false, _["epi_FACS"] = false, 
@@ -70,6 +125,7 @@ RCPP_MODULE(Sequencing){
 
 //' @name simulate_normal_seq
 //' @title Simulate the sequencing of the samples in a phylogenetic forest
+//' @param sequencer The sequencer that performs the sequencing simulation.
 //' @param phylo_forest A phylogenetic forest.
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
@@ -94,9 +150,11 @@ RCPP_MODULE(Sequencing){
 //'   `<sample name>.occurrences`), the coverage of the SNV
 //'   locus (column `<sample name>.coverage`), and the
 //'   corresponding VAF (column `<sample name>.VAF`).
-//' @seealso `vignette("sequencing")` for usage examples
+//' @seealso `BasicIlluminaSequencer` as sequencer type, and 
+//'   `vignette("sequencing")` for usage examples
   function("simulate_normal_seq", &simulate_normal_seq,
-           List::create(_["phylo_forest"], _["coverage"] = 10,
+           List::create(_["phylo_forest"], _["sequencer"] = NULL, 
+                        _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_normal_SAM",
                         _["write_SAM"] = true, _["rnd_seed"] = 0),

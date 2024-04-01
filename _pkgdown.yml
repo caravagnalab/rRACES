@@ -52,6 +52,8 @@ reference:
 - title: "Sequencing simulation interface"
   desc:  "Sequencing simulation methods"
   contents:
+  - starts_with("BasicIlluminaSequencer")
+  - starts_with("ErrorlessIlluminaSequencer")
   - simulate_seq
   - simulate_normal_seq
 - title: "Simulation Logics"

@@ -178,6 +178,51 @@ This default behaviour can be disabled by setting the
 The function `simulate_normal_seq()` simulates the normal cell sample
 sequencing *avoiding* tumor sequencing. 
 
+### Simulating Sequencing Errors
+
+In order to simulate sequencing errors, users need specify 
+a sequencer to the function `simulate_seq()`.
+
+At the moment, there are only two classes implementing 
+sequencers: the `ErrorlessIlluminaSequencer` class and 
+the `BasicIlluminaSequencer` classes.
+
+#### The `ErrorlessIlluminaSequencer` Class
+
+This class model a perfect Illumina sequencer. No sequencing
+errors are produced and all the bases have the maximum 
+quality.
+
+The following code simulates the sequencing by using this 
+kind of sequencer.
+
+```{r, eval=FALSE}
+# build an error-less Illumina sequencer
+no_error_seq <- new(ErrorlessIlluminaSequencer)
+
+# let us simulate a 2.5x sequencing of the four sample
+# on the error-less sequencer
+seq_results <- simulate_seq(phylo_forest, sequencer = no_error_seq,
+                            coverage = 2.5)
+```
+
+#### The `BasicIlluminaSequencer` Class
+
+This class sets a sequencing error rate independent from the 
+base in which the error occur, from the position of the base
+in the read, and from the position of the read on the genome.
+
+```{r, eval=FALSE}
+# build a basic Illumina sequencer model in which errors occur
+# at rate 4e-3 per base
+basic_seq <- new(BasicIlluminaSequencer, 4e-3)
+
+# let us simulate a 2.5x sequencing of the four sample
+# on the error-less sequencer
+seq_results <- simulate_seq(phylo_forest, sequencer = basic_seq,
+                            coverage = 2.5, write_SAM = TRUE)
+```
+
 ```{r, echo=FALSE, results='hide', message=FALSE}
 unlink("SAM_0.7", recursive = TRUE)
 unlink("rRACES_SAM", recursive = TRUE)

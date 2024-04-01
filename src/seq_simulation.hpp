@@ -22,15 +22,16 @@
 
 #include <read_simulator.hpp>
 
+#include "sequencers.hpp"
 #include "phylogenetic_forest.hpp"
 
-Rcpp::List  simulate_seq(const PhylogeneticForest& forest, const double& coverage, 
+Rcpp::List  simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer, const double& coverage, 
                          const int& read_size, const int& insert_size,
                          const std::string& output_dir, const bool& write_SAM,
                          const bool& FACS, const double& purity,
                          const bool& with_normal_sample, const int& rnd_seed);
 
-Rcpp::List  simulate_normal_seq(const PhylogeneticForest& forest, const double& coverage, 
+Rcpp::List  simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer, const double& coverage, 
                                 const int& read_size, const int& insert_size,
                                 const std::string& output_dir, const bool& write_SAM,
                                 const int& rnd_seed);
