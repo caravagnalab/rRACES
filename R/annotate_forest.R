@@ -110,14 +110,16 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
       times <- exposures$time %>%  unique() %>%  sort()
       
       exposures <- exposures %>% 
-        mutate(t_end = case_when(
+        dplyr::rowwise() %>% 
+        dplyr::mutate(t_end = dplyr::case_when(
           time == max(times) ~ Inf,
-          TRUE ~ min(times[times > time]))
+          .default = min(times[times > time]))
         ) %>% 
-        mutate(signature = factor(signature, 
+        dplyr::mutate(signature = factor(signature, 
                                   levels = exposures %>% 
                                     dplyr::arrange(time) %>% 
-                                    dplyr::pull(signature)))
+                                    dplyr::pull(signature) %>% 
+                                    unique()))
 
       # Annotate exposures on tree
       tree_plot <- tree_plot +
