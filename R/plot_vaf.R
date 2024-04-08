@@ -5,7 +5,6 @@
 #' Plot a vaf spectrum where clusters are colored by stick membership or mutation SBS cause
 #'
 #' @param muts Mutation table where causes and/or stick membership of mutations are annotated.
-#' @param labels Table annotating the sticks (output of get_events_table).
 #' @param vaf_cut Lower bound on vaf
 #' @param color_by Specify whether to color mutations by stick membership or SBS cause. It can be "stick" or "SBS".
 #'
