@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,12 +63,18 @@
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>sequencer</dt>
-<dd><p>The sequencer that performs the sequencing simulation.</p></dd>
-
-
-<dt>phylo_forest</dt>
+    <dl><dt>phylo_forest</dt>
 <dd><p>A phylogenetic forest.</p></dd>
+
+
+<dt>sequencer</dt>
+<dd><p>The sequencer that performs the sequencing simulation
+(default: an <code>ErrorlessIlluminaSequencer</code>).</p></dd>
+
+
+<dt>chromosomes</dt>
+<dd><p>The chromosomes that must be considered (default:
+all the reference chromosomes).</p></dd>
 
 
 <dt>coverage</dt>
@@ -93,6 +99,10 @@ and any value greater than 0 for pair read sequencing
 <dt>write_SAM</dt>
 <dd><p>A Boolean flag to enable/disable SAM generation
 (default: <code>FALSE</code>).</p></dd>
+
+
+<dt>update_SAM</dt>
+<dd><p>Update the output directory (default: <code>FALSE</code>).</p></dd>
 
 
 <dt>epi_FACS</dt>
@@ -135,7 +145,8 @@ corresponding VAF (column <code>&lt;sample name&gt;.VAF</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>BasicIlluminaSequencer</code> as sequencer type, and
+    <div class="dont-index"><p><code>BasicIlluminaSequencer</code> and
+<code>ErrorlessIlluminaSequencer</code> as sequencer types, and
 <code><a href="../articles/sequencing.html">vignette("sequencing")</a></code> for usage examples</p></div>
     </div>
 

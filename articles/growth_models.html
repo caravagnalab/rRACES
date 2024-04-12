@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -352,15 +352,16 @@ example.</p>
 <span id="cb12-40"><a href="#cb12-40" tabindex="-1"></a><span class="co"># Let the simulation evolve until "B+" consists of 5000 cells</span></span>
 <span id="cb12-41"><a href="#cb12-41" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"B+"</span>, <span class="dv">5000</span>)</span>
 <span id="cb12-42"><a href="#cb12-42" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb12-43"><a href="#cb12-43" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
-<span id="cb12-44"><a href="#cb12-44" tabindex="-1"></a></span>
-<span id="cb12-45"><a href="#cb12-45" tabindex="-1"></a>ncells <span class="ot">&lt;-</span> <span class="fl">0.9</span> <span class="sc">*</span> bbox_width <span class="sc">*</span> bbox_width</span>
-<span id="cb12-46"><a href="#cb12-46" tabindex="-1"></a></span>
-<span id="cb12-47"><a href="#cb12-47" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> sim<span class="sc">$</span><span class="fu">search_sample</span>(<span class="fu">c</span>(<span class="st">"B"</span> <span class="ot">=</span> ncells), bbox_width, bbox_width)</span>
-<span id="cb12-48"><a href="#cb12-48" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">sample_cells</span>(<span class="st">"S_2_1"</span>, bbox<span class="sc">$</span>lower_corner, bbox<span class="sc">$</span>upper_corner)</span>
-<span id="cb12-49"><a href="#cb12-49" tabindex="-1"></a></span>
-<span id="cb12-50"><a href="#cb12-50" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> sim<span class="sc">$</span><span class="fu">search_sample</span>(<span class="fu">c</span>(<span class="st">"A"</span> <span class="ot">=</span> ncells), bbox_width, bbox_width)</span>
-<span id="cb12-51"><a href="#cb12-51" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">sample_cells</span>(<span class="st">"S_2_2"</span>, bbox<span class="sc">$</span>lower_corner, bbox<span class="sc">$</span>upper_corner)</span></code></pre></div>
+<span id="cb12-43"><a href="#cb12-43" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">49631</span></span>
+<span id="cb12-44"><a href="#cb12-44" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
+<span id="cb12-45"><a href="#cb12-45" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="#cb12-46" tabindex="-1"></a>ncells <span class="ot">&lt;-</span> <span class="fl">0.9</span> <span class="sc">*</span> bbox_width <span class="sc">*</span> bbox_width</span>
+<span id="cb12-47"><a href="#cb12-47" tabindex="-1"></a></span>
+<span id="cb12-48"><a href="#cb12-48" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> sim<span class="sc">$</span><span class="fu">search_sample</span>(<span class="fu">c</span>(<span class="st">"B"</span> <span class="ot">=</span> ncells), bbox_width, bbox_width)</span>
+<span id="cb12-49"><a href="#cb12-49" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">sample_cells</span>(<span class="st">"S_2_1"</span>, bbox<span class="sc">$</span>lower_corner, bbox<span class="sc">$</span>upper_corner)</span>
+<span id="cb12-50"><a href="#cb12-50" tabindex="-1"></a></span>
+<span id="cb12-51"><a href="#cb12-51" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> sim<span class="sc">$</span><span class="fu">search_sample</span>(<span class="fu">c</span>(<span class="st">"A"</span> <span class="ot">=</span> ncells), bbox_width, bbox_width)</span>
+<span id="cb12-52"><a href="#cb12-52" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">sample_cells</span>(<span class="st">"S_2_2"</span>, bbox<span class="sc">$</span>lower_corner, bbox<span class="sc">$</span>upper_corner)</span></code></pre></div>
 <p>Let us have a look at the simulated tissue and plot the simulation
 Muller plot.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">

@@ -331,6 +331,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/build_mutation_engine.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/get_events_table.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/get_mutation_engine_codes.html</loc>
   </url>
   <url>
@@ -341,6 +344,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/load_samples_forest.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/muts_to_sticks.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_exposure_timeline.html</loc>
@@ -358,10 +364,16 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_state.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_sticks.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_timeseries.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_tissue.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_vaf.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc>
