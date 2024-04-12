@@ -67,7 +67,7 @@ void add_SNV_data(Rcpp::DataFrame& df,
     chr_pos[index] = snv.position;
     ref_bases[index] = std::string(1,snv.ref_base);
     alt_bases[index] = std::string(1,snv.alt_base);
-  
+
     auto full_causes = join(data.causes, ';');
 
     if (full_causes == "") {
@@ -78,7 +78,7 @@ void add_SNV_data(Rcpp::DataFrame& df,
 
     auto descr = get_descriptions(data.nature_set);
     classes[index] = join(descr, ';');
-  
+
     ++index;
   }
 
@@ -111,17 +111,17 @@ void add_sample_statistics(Rcpp::DataFrame& df,
 
   size_t index{0};
   auto coverage_it = sample_statistics.get_SNV_coverage().begin();
-  std::less<GenomicPosition> come_before; 
+  std::less<GenomicPosition> come_before;
   for (const auto& [snv, snv_data] : sample_statistics.get_SNV_data()) {
     occurrences[index] = snv_data.num_of_occurrences;
-  
+
     if (come_before(coverage_it->first, snv)) {
       ++coverage_it;
     }
-  
+
     coverages[index] = coverage_it->second;
     VAF[index] = static_cast<double>(snv_data.num_of_occurrences)/coverage_it->second;
-  
+
     ++index;
   }
 
@@ -198,9 +198,101 @@ split_by_epigenetic_status(const std::list<Races::Mutations::SampleGenomeMutatio
     return FACS_samples;
 }
 
+std::set<Races::Mutations::ChromosomeId>
+get_genome_chromosome_ids(const std::list<Races::Mutations::SampleGenomeMutations>& mutations_list)
+{
+    for (const auto& sample_mutations : mutations_list) {
+        for (const auto& mutations : sample_mutations.mutations) {
+            std::set<Races::Mutations::ChromosomeId> ids;
+            for (const auto& [chr_id, chr_mutations] : mutations->get_chromosomes()) {
+                ids.insert(chr_id);
+            }
+
+            return ids;
+        }
+    }
+
+    return {};
+}
+
+std::string ordinal_suffix(const size_t& ord)
+{
+    if (ord%100==10) {
+        return "th";
+    }
+    switch(ord%10) {
+        case 1:
+            return "st";
+        case 2:
+            return "nd";
+        case 3:
+            return "rd";
+        default:
+            return "th";
+    }
+}
+
+std::set<Races::Mutations::ChromosomeId>
+get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
+                     SEXP& chromosome_ids)
+{
+  using namespace Rcpp;
+ using namespace Races::Mutations;
+
+  switch (TYPEOF(chromosome_ids)) {
+    case NILSXP:
+    {
+        return get_genome_chromosome_ids(mutations_list);
+    }
+    case STRSXP:
+    {
+        std::set<ChromosomeId> chr_ids;
+
+        CharacterVector chr_names{chromosome_ids};
+
+        for (const auto& chr_name : chr_names) {
+            chr_ids.insert(GenomicPosition::stochr(as<std::string>(chr_name)));
+        }
+        return chr_ids;
+    }
+    case VECSXP:
+    {
+        std::set<ChromosomeId> chr_ids;
+        List chr_names = Rcpp::as<List>(chromosome_ids);
+
+        size_t i{0};
+        for (const auto& chr_name : chr_names) {
+            ++i;
+            if (TYPEOF(chr_name) != STRSXP) {
+                throw std::domain_error("Expected a list of string: the "
+                                        + std::to_string(i)
+                                        + ordinal_suffix(i)
+                                        + " element of the list is not "
+                                        + "a string.");
+            }
+
+            Rcpp::CharacterVector name{chr_name};
+            if (name.length()>1) {
+                throw std::domain_error("Expected a list of string: the "
+                                        + std::to_string(i)
+                                        + ordinal_suffix(i)
+                                        + " element of the list is not "
+                                        + "a string.");
+            }
+
+            chr_ids.insert(GenomicPosition::stochr(as<std::string>(name)));
+        }
+        return chr_ids;
+    }
+    default:
+        throw std::domain_error("Unsupported sequencer type");
+  }
+}
+
 Races::Mutations::SequencingSimulations::SampleSetStatistics
 simulate_seq(Races::Mutations::SequencingSimulations::ReadSimulator<>& simulator, SEXP& sequencer,
              std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
+             const std::set<Races::Mutations::ChromosomeId>& chromosome_ids,
              const double& coverage, const double purity,
              const std::string& base_name, std::ostream& progress_bar_stream)
 {
@@ -213,27 +305,24 @@ simulate_seq(Races::Mutations::SequencingSimulations::ReadSimulator<>& simulator
 
         Rcpp::XPtr<BasicIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
 
-        return simulator(*sequencer_ptr, mutations_list, coverage, purity,
-                         base_name, progress_bar_stream);
+        return simulator(*sequencer_ptr, mutations_list, chromosome_ids,
+                         coverage, purity, base_name, progress_bar_stream);
       }
       if ( s4obj.is("Rcpp_ErrorlessIlluminaSequencer")) {
         Rcpp::Environment env( s4obj );
 
         Rcpp::XPtr<ErrorlessIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
 
-        return simulator(*sequencer_ptr, mutations_list, coverage, purity,
-                         base_name, progress_bar_stream);
+        return simulator(*sequencer_ptr, mutations_list, chromosome_ids,
+                         coverage, purity, base_name, progress_bar_stream);
       }
     }
-    case REALSXP:
+    case NILSXP:
     {
-        // if the sequencer is set to be 0, use the error-less Illumina sequencer
-        if (Rcpp::as<double>(sequencer) == 0) {
-            ErrorlessIlluminaSequencer sequencer;
+        ErrorlessIlluminaSequencer sequencer;
 
-            return simulator(sequencer, mutations_list, coverage, purity,
-                            base_name, progress_bar_stream);
-        }
+        return simulator(sequencer, mutations_list, chromosome_ids, coverage,
+                         purity, base_name, progress_bar_stream);
     }
     default:
         throw std::domain_error("Unsupported sequencer type");
@@ -241,16 +330,17 @@ simulate_seq(Races::Mutations::SequencingSimulations::ReadSimulator<>& simulator
 }
 
 Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
-                        const double& coverage, const int& read_size,
-                        const int& insert_size, const std::string& output_dir,
-                        const bool& write_SAM, const bool& FACS,
+                        SEXP& chromosome_ids, const double& coverage,
+                        const int& read_size, const int& insert_size,
+                        const std::string& output_dir, const bool& write_SAM,
+                        const bool& update_SAM_dir, const bool& FACS,
                         const double& purity, const bool& with_normal_sample,
                         const int& rnd_seed)
 {
   using namespace Races::Mutations::SequencingSimulations;
 
   ReadSimulator<> simulator;
-  
+
   if (!std::filesystem::exists(forest.get_reference_path())) {
     throw std::runtime_error("The reference genome file \""
                              + to_string(forest.get_reference_path())
@@ -267,12 +357,18 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
     output_path = get_tmp_dir_path(output_dir);
   }
 
+  ReadSimulator<>::Mode SAM_mode = ReadSimulator<>::Mode::CREATE;
+
+  if (update_SAM_dir) {
+    SAM_mode = ReadSimulator<>::Mode::UPDATE;
+  }
+
   if (insert_size==0) {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                ReadSimulator<>::Mode::CREATE, rnd_seed);
+                                SAM_mode, rnd_seed);
   } else {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                insert_size, ReadSimulator<>::Mode::CREATE, rnd_seed);
+                                insert_size, SAM_mode, rnd_seed);
   }
 
   simulator.enable_SAM_writing(write_SAM);
@@ -290,7 +386,9 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
     mutations_list.back().mutations.push_back(germline_structure_ptr);
   }
 
-  auto result = simulate_seq(simulator, sequencer, mutations_list, coverage, 
+  const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
+
+  auto result = simulate_seq(simulator, sequencer, mutations_list, chr_ids, coverage,
                              purity, "chr_", Rcpp::Rcout);
 
   if (remove_output_path) {
@@ -300,15 +398,16 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
   return get_result_dataframe(result);
 }
 
-Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer, const double& coverage, 
+Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer,
+                               SEXP& chromosome_ids, const double& coverage,
                                const int& read_size, const int& insert_size,
                                const std::string& output_dir, const bool& write_SAM,
-                               const int& rnd_seed)
+                               const bool& update_SAM_dir, const int& rnd_seed)
 {
   using namespace Races::Mutations::SequencingSimulations;
 
   ReadSimulator<> simulator;
-  
+
   if (!std::filesystem::exists(forest.get_reference_path())) {
     throw std::runtime_error("The reference genome file \""
                              + to_string(forest.get_reference_path())
@@ -325,12 +424,18 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
     output_path = get_tmp_dir_path(output_dir);
   }
 
+  ReadSimulator<>::Mode SAM_mode = ReadSimulator<>::Mode::CREATE;
+
+  if (update_SAM_dir) {
+    SAM_mode = ReadSimulator<>::Mode::UPDATE;
+  }
+
   if (insert_size==0) {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                ReadSimulator<>::Mode::CREATE, rnd_seed);
+                                SAM_mode, rnd_seed);
   } else {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                insert_size, ReadSimulator<>::Mode::CREATE, rnd_seed);
+                                insert_size, SAM_mode, rnd_seed);
   }
 
   simulator.enable_SAM_writing(write_SAM);
@@ -342,7 +447,9 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
   auto germline_structure_ptr = std::make_shared<Races::Mutations::CellGenomeMutations>(germline.duplicate_structure());
   mutations_list.front().mutations.push_back(germline_structure_ptr);
 
-  auto result = simulate_seq(simulator, sequencer, mutations_list, coverage, 
+  const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
+
+  auto result = simulate_seq(simulator, sequencer, mutations_list,  chr_ids, coverage,
                              0, "chr_", Rcpp::Rcout);
 
   if (remove_output_path) {

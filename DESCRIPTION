@@ -1,8 +1,8 @@
 Package: rRACES
 Type: Package
 Title: An R Wrapper for RACES
-Version: 0.6.2
-Date: 2024-04-04
+Version: 0.6.3
+Date: 2024-04-12
 Authors@R: c(
     person("Giulio", "Caravagna", role = c("aut")),
     person("Alberto", "Casagrande", email = "alberto.casagrande@uniud.it", role = c("aut", "cre")))

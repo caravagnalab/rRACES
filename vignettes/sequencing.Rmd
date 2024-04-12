@@ -22,13 +22,13 @@ knitr::opts_chunk$set(
 unlink("rRACES_SAM", recursive = TRUE)
 ```
 
-Once a phylogenetic forest has been computed as detailed in 
-`vignette("mutations")`, rRACES can simulate the sequencing of the 
+Once a phylogenetic forest has been computed, as detailed in
+`vignette("mutations")`, rRACES can simulate the sequencing of the
 samples in the forest and return the observed data.
 
 ### Sequencing Simulation
 
-Let us reload the phylogenetic forest produced in 
+Let us reload the phylogenetic forest produced in
 `vignette("mutations")`.
 
 ```{r}
@@ -39,11 +39,11 @@ phylo_forest <- load_phylogenetic_forest("phylo_forest.sff")
 phylo_forest
 ```
 
-The loaded phylogenetic forest models the cell evolution of 
-4 different samples: `S_1_1`, `S_1_2`, `S_2_1`, and `S_2_2`. 
+The loaded phylogenetic forest models the cell evolution of
+4 different samples: `S_1_1`, `S_1_2`, `S_2_1`, and `S_2_2`.
 
-We can simulate the sequencing of these samples with coverage 
-of 2.5X by as it follows. 
+We can simulate the sequencing of these samples with coverage
+of 2.5X by as it follows.
 
 ```{r}
 # let us simulate a 2.5x sequencing of the four sample
@@ -55,33 +55,34 @@ library(dplyr)
 seq_results %>% head
 ```
 
-The function `simulate_seq()` returns a data frame whose rows 
+The function `simulate_seq()` returns a data frame whose rows
 represent the mutations observed in the simulated reads
 (currently, only SNVs are supported).
 
-The number of columns in the data frame depends on the number 
-of samples in the phygenetic forest. The first 4 columns 
-describe the mutation and report the chromosome and the position 
-in the chromosome of the mutation (columns `chromosome` and 
-`chr_pos`, respectively), the genetic context in which the 
-mutation occurs (column `context`), and the new base (column 
+The number of columns in the data frame depends on the number
+of samples in the phylogenetic forest. The first four columns
+describe the mutation and report the chromosome and the position
+in the chromosome of the mutation (columns `chromosome` and
+`chr_pos`, respectively), the genetic context in which the
+mutation occurs (column `context`), and the new base (column
 `alt_base`).
-Then, there are 3 columns for each of the samples: they 
-contain the number of simulated reads affected by the 
-mutation, the sequencing coverage of the mutation locus, 
-and the ratio between these two last columns 
-(columns `<sample name> occurrences`, `<sample name> coverage`, 
+Then, there are three columns for each of the samples: they
+contain the number of simulated reads affected by the
+mutation, the sequencing coverage of the mutation locus,
+and the ratio between these two last columns
+(columns `<sample name> occurrences`, `<sample name> coverage`,
 and `<sample name> VAF`, respectively).
 
 ### Cell Partition by Epigenetic State (Epi-FACS)
 
-The sequencing simulation supports cell partition by epigenetic state (epi-FACS) by 
-using the `simualate_seq()` parameter `epi_FACS`.
-At the beginning of the sequencing simulation process, each sample in the phylogenetic 
-forest is splitted in two distinct samples: `<sample name>_P`, that contains 
-all the cells in the original sample having epigenetic state `+`, and 
-`<sample name>_N`, that consists in the cells having epigenetic state `-`.
-The results of the simulation reports the data for the splitted samples.
+The sequencing simulation supports cell partition by epigenetic
+state (epi-FACS) using the `simualate_seq()` parameter `epi_FACS`.
+At the beginning of the sequencing simulation process, each
+sample in the phylogenetic forest is split into two distinct
+samples: `<sample name>_P`, which contains all the cells in the
+original sample having epigenetic state `+`, and `<sample name>_N`,
+that consists in the cells having epigenetic state `-`.
+The result of the simulation reports the data for the split samples.
 
 ```{r}
 seq_results <- simulate_seq(phylo_forest, coverage = 2.5, epi_FACS = TRUE)
@@ -91,14 +92,13 @@ seq_results %>% head
 
 ### Saving the Simulated Reads
 
-rRACES/RACE can also save the simulated reads in the SAM format 
-(see [@10.1093/bioinformatics/btp352]). By setting the 
-optional parameter `write_SAM` to `TRUE`, 
-the function `simulate_seq()` creates the directory `rRACES_SAM`
-and saves the SAM files in it. Each file is named after one the 
-reference genome chromosomes and it contains the reads simulated 
-for it. The reads are split in reads groups corresponding to the
-collected samples.
+rRACES/RACE can also save the simulated reads in the SAM format
+(see [@10.1093/bioinformatics/btp352]). By setting the optional
+parameter `write_SAM` to `TRUE`, the function `simulate_seq()`
+creates the directory `rRACES_SAM` and saves the SAM files in it.
+Each file is named after one of the reference genome chromosomes
+and contains the simulated reads. The reads are split into read
+groups corresponding to the collected samples.
 
 ```{r, echo=FALSE, results='hide', message=FALSE}
 unlink("SAM_0.7", recursive = TRUE)
@@ -116,8 +116,8 @@ for (line in readLines(ex_file, n = 10)) {
 }
 ```
 
-Each SAM file contains the reads produced by simulating the sequencing 
-of *all* the samples. The command line tools [`samtools`](http://www.htslib.org) can be used to
+Each SAM file contains the reads produced by simulating the sequencing
+of *all* the samples. The command-line tools [`samtools`](http://www.htslib.org) can be used to
 split the reads by sample.
 
 ```{bash, eval = FALSE}
@@ -127,21 +127,20 @@ chr_22_S_1_1.sam        chr_22_S_1_2.sam        chr_22_S_2_1.sam        chr_22_S
 chr_22_normal_sample.sam
 ```
 
-The resulting files are named after the samples and each of them 
-contains the reads of only one sample.
+The resulting files are named after the samples, each
+containing the reads of only one sample.
 
-Please, refer to the [`samtools split` manual](http://www.htslib.org/doc/samtools-split.html)
+Please refer to the [`samtools split` manual](http://www.htslib.org/doc/samtools-split.html)
 for more details.
 
-The `simulate_seq()` parameter `output_dir` set the SAM output directory. See the following 
-section for an usage example of this parameter.
+The `simulate_seq()` parameter `output_dir` set the SAM output directory. See the following
+section for usage examples of this parameter.
 
 ### Sample Purity
 
-The _sample purity_ represents the concentration of tumor cells in a 
-sample. More formally, it is the ratio between the number of tumor 
-cells in the sample and that of all the sample cells, being either tumor
-or normal cells. 
+The _sample purity_ represents the concentration of tumour cells in a sample.
+More formally, it is the ratio between the number of tumour cells in the sample
+and that of all the sample cells, either tumour or normal.
 
 rRACES can simulate different sample purity in sequencing
 simulations.
@@ -166,34 +165,34 @@ assumes all the cells in the sample to be neoplastic by default.
 ### Normal Cell Sequencing
 
 The function `simulate_seq()` adds a normal cell sample, named
-`normal_sample`, to the samples collected during the simulation. In this 
-way, rRACES automatically collects information about
-wild-type cells and, when the SAM writing is enabled, it 
-also simulates the sequencing of normal cells. 
+`normal_sample` to the samples collected during the simulation. In this
+way, rRACES automatically gathers information about wild-type cells,
+and it also simulates the sequencing of normal cells when the SAM
+writing is enabled.
 
-This default behaviour can be disabled by setting the 
-`simulate_seq()` parameter `with_normal_sample` to 
-`FALSE`. 
+This default behaviour can be turned off by setting the
+`simulate_seq()` parameter `with_normal_sample` to
+`FALSE`.
 
 The function `simulate_normal_seq()` simulates the normal cell sample
-sequencing *avoiding* tumor sequencing. 
+sequencing *avoiding* tumor sequencing.
 
 ### Simulating Sequencing Errors
 
-In order to simulate sequencing errors, users need specify 
+To simulate sequencing errors, users need to specify
 a sequencer to the function `simulate_seq()`.
 
-At the moment, there are only two classes implementing 
-sequencers: the `ErrorlessIlluminaSequencer` class and 
+At the moment, there are only two classes implementing
+sequencers: the `ErrorlessIlluminaSequencer` class and
 the `BasicIlluminaSequencer` classes.
 
 #### The `ErrorlessIlluminaSequencer` Class
 
-This class model a perfect Illumina sequencer. No sequencing
-errors are produced and all the bases have the maximum 
+This class models a perfect Illumina sequencer. No sequencing
+errors are produced, and all the bases have the maximum
 quality.
 
-The following code simulates the sequencing by using this 
+The following code simulates the sequencing by using this
 kind of sequencer.
 
 ```{r, eval=FALSE}
@@ -208,9 +207,9 @@ seq_results <- simulate_seq(phylo_forest, sequencer = no_error_seq,
 
 #### The `BasicIlluminaSequencer` Class
 
-This class sets a sequencing error rate independent from the 
-base in which the error occur, from the position of the base
-in the read, and from the position of the read on the genome.
+This class sets a sequencing error rate independent of the
+base in which the error occurs, from the position of the base
+in the read and from the position of the read on the genome.
 
 ```{r, eval=FALSE}
 # build a basic Illumina sequencer model in which errors occur
@@ -221,6 +220,62 @@ basic_seq <- new(BasicIlluminaSequencer, 4e-3)
 # on the error-less sequencer
 seq_results <- simulate_seq(phylo_forest, sequencer = basic_seq,
                             coverage = 2.5, write_SAM = TRUE)
+```
+
+### Chromosome Sequencing
+
+The function `simulate_seq()` allows users to simulate the
+sequencing of a selection of the reference chromosomes by using
+the parameter `chromosomes`.
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+unlink("rRACES_SAM", recursive = TRUE)
+```
+
+```{r}
+# let us simulate a 2.5x sequencing of the chromosomes 22 and
+# X of the four sample
+seq_results <- simulate_seq(phylo_forest, chromosomes = c("22", "X"),
+                            coverage = 2.5, write_SAM = TRUE)
+```
+
+### Updating the SAM Output Directory
+
+Users may want to simulate sequencing in multiple steps,
+for instance, by splitting it by chromosome or reaching
+the aimed coverage with different simulations.
+However, rRACES prevents successive writing in the same
+directory by default. The Boolean parameter `update_SAM`
+allows multiple writing in the same directory.
+
+```{r}
+# the default SAM directory already exists
+sam_files <- list.files("rRACES_SAM/")
+
+# since the default save directory already exists, any call to
+# `simulate_seq` throws an error
+tryCatch(
+  {
+    simulate_seq(phylo_forest, coverage = 2.5, write_SAM = TRUE)
+  },
+  error = function(e) {
+    print(e)
+  }
+)
+
+# setting `update_SAM` to TRUE enables successive writing in
+# the output directory
+seq_results <- simulate_seq(phylo_forest, coverage = 2.5,
+                            write_SAM = TRUE, update_SAM = TRUE)
+```
+
+When the output directory already contains a SAM file associated
+with a chromosome, the alignments on that chromosome are saved
+in a file whose name is the first available, having the format
+`"chr_{chromosome name}_{natural number}.sam"`.
+
+```{r}
+list.files("rRACES_SAM/")
 ```
 
 ```{r, echo=FALSE, results='hide', message=FALSE}

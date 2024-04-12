@@ -47,7 +47,7 @@ RCPP_MODULE(Sequencing){
 //' @name BasicIlluminaSequencer
 //' @title A basic Illumina sequencer class
 //' @description This class implements a basic model for Illumina sequencers.
-//'   It specifies a simulated sequencing error rate and the simulated sequencing 
+//'   It specifies a simulated sequencing error rate and the simulated sequencing
 //'   errors will occurs according to that rate.
 //' @seealso ` simulate_seq`, `simulate_normal_seq`, and `vignette("sequencing")`
 //'   for usage examples
@@ -55,7 +55,7 @@ RCPP_MODULE(Sequencing){
 //' @name BasicIlluminaSequencer$new
 //' @title Build a new basic Illumina sequencer model.
 //' @param error_rate The error rate per base.
-//' @param seed The seed for the internal random generator 
+//' @param seed The seed for the internal random generator
 //'   (default: `0`).
 //' @examples
 //' # build a basic Illumina sequencer model in which errors occur
@@ -68,7 +68,7 @@ RCPP_MODULE(Sequencing){
             "Show a description for the sequencer")
 
 //' @name BasicIlluminaSequencer$get_error_rate
-//' @title Get basic illumina sequencer 
+//' @title Get basic illumina sequencer
 //' @examples
 //' # build a basic Illumina sequencer model in which errors occur
 //' # at rate 4e-3
@@ -80,83 +80,97 @@ RCPP_MODULE(Sequencing){
 
 //' @name simulate_seq
 //' @title Simulate the sequencing of the samples in a phylogenetic forest
-//' @param sequencer The sequencer that performs the sequencing simulation.
 //' @param phylo_forest A phylogenetic forest.
+//' @param sequencer The sequencer that performs the sequencing simulation
+//'   (default: an `ErrorlessIlluminaSequencer`).
+//' @param chromosomes The chromosomes that must be considered (default:
+//'   all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
-//' @param insert_size The insert size. Use 0 for single read sequencing 
-//'   and any value greater than 0 for pair read sequencing 
+//' @param insert_size The insert size. Use 0 for single read sequencing
+//'   and any value greater than 0 for pair read sequencing
 //'   (default: `0`).
-//' @param output_dir The SAM output directory (default: 
+//' @param output_dir The SAM output directory (default:
 //'   `"rRACES_SAM"`).
-//' @param write_SAM A Boolean flag to enable/disable SAM generation 
+//' @param write_SAM A Boolean flag to enable/disable SAM generation
 //'   (default: `FALSE`).
+//' @param update_SAM Update the output directory (default: `FALSE`).
 //' @param epi_FACS Perform an epigenetic FACS analysis (default: `FALSE`).
-//' @param purity The ratio between the number of sample tumeral cell 
+//' @param purity The ratio between the number of sample tumeral cell
 //'   and that of all the cells, i.e., tumoral and normal
-//'   ones. This value must belong to the interval [0,1] 
+//'   ones. This value must belong to the interval [0,1]
 //'   (default: `1`).
 //' @param with_normal_sample A Boolean flag to enable/disable the
 //'   analysis of a normal sample (default: `TRUE`).
-//' @param rnd_seed The random seed for the internal random generator 
+//' @param rnd_seed The random seed for the internal random generator
 //'   (default: `0`).
 //' @return A data frame representing, for each of the observed
 //'   SNVs, the chromosome and the position in which
 //'   it occurs (columns `chromosome` and `chr_pos`),
-//'   the SNV reference base, the alterate base, the causes, 
+//'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
 //'   of the sequencied samples `<sample name>`, the returned
 //'   data frame contains three columns: the number of reads in
-//'   which the corresponding SNV occurs (column 
+//'   which the corresponding SNV occurs (column
 //'   `<sample name>.occurrences`), the coverage of the SNV
 //'   locus (column `<sample name>.coverage`), and the
 //'   corresponding VAF (column `<sample name>.VAF`).
-//' @seealso `BasicIlluminaSequencer` as sequencer type, and 
+//' @seealso `BasicIlluminaSequencer` and
+//'   `ErrorlessIlluminaSequencer` as sequencer types, and
 //'   `vignette("sequencing")` for usage examples
   function("simulate_seq", &simulate_seq,
-           List::create(_["phylo_forest"], _["sequencer"] = NULL, _["coverage"] = 10,
+           List::create(_["phylo_forest"], _["sequencer"] = R_NilValue,
+                        _["chromosomes"] = R_NilValue,
+                        _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_SAM",
-                        _["write_SAM"] = false, _["epi_FACS"] = false, 
-                        _["purity"] = 1, _["with_normal_sample"] = true,
-                        _["rnd_seed"] = 0),
+                        _["write_SAM"] = false, _["update_SAM"] = false,
+                        _["epi_FACS"] = false, _["purity"] = 1,
+                        _["with_normal_sample"] = true, _["rnd_seed"] = 0),
            "Simulate the sequencing of the samples in a phylogenetic forest");
 
 //' @name simulate_normal_seq
 //' @title Simulate the sequencing of the samples in a phylogenetic forest
-//' @param sequencer The sequencer that performs the sequencing simulation.
 //' @param phylo_forest A phylogenetic forest.
+//' @param sequencer The sequencer that performs the sequencing simulation
+//'   (default: an `ErrorlessIlluminaSequencer`).
+//' @param chromosomes The chromosomes that must be considered (default:
+//'   all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
-//' @param insert_size The insert size. Use 0 for single read sequencing 
-//'   and any value greater than 0 for pair read sequencing 
+//' @param insert_size The insert size. Use 0 for single read sequencing
+//'   and any value greater than 0 for pair read sequencing
 //'   (default: `0`).
-//' @param output_dir The SAM output directory (default: 
+//' @param output_dir The SAM output directory (default:
 //'   `"rRACES_normal_SAM"`).
-//' @param write_SAM A Boolean flag to enable/disable SAM generation 
+//' @param write_SAM A Boolean flag to enable/disable SAM generation
 //'   (default: `TRUE`).
-//' @param rnd_seed The random seed for the internal random generator 
+//' @param update_SAM Update the output directory (default: `FALSE`).
+//' @param rnd_seed The random seed for the internal random generator
 //'   (default: `0`).
 //' @return A data frame representing, for each of the observed
 //'   SNVs, the chromosome and the position in which
 //'   it occurs (columns `chromosome` and `chr_pos`),
-//'   the SNV reference base, the alterate base, the causes, 
+//'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
 //'   of the sequencied samples `<sample name>`, the returned
 //'   data frame contains three columns: the number of reads in
-//'   which the corresponding SNV occurs (column 
+//'   which the corresponding SNV occurs (column
 //'   `<sample name>.occurrences`), the coverage of the SNV
 //'   locus (column `<sample name>.coverage`), and the
 //'   corresponding VAF (column `<sample name>.VAF`).
-//' @seealso `BasicIlluminaSequencer` as sequencer type, and 
+//' @seealso `BasicIlluminaSequencer` and
+//'   `ErrorlessIlluminaSequencer` as sequencer types, and
 //'   `vignette("sequencing")` for usage examples
   function("simulate_normal_seq", &simulate_normal_seq,
-           List::create(_["phylo_forest"], _["sequencer"] = NULL, 
+           List::create(_["phylo_forest"], _["sequencer"] = R_NilValue,
+                        _["chromosomes"] = R_NilValue,
                         _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_normal_SAM",
-                        _["write_SAM"] = true, _["rnd_seed"] = 0),
+                        _["write_SAM"] = true, _["update_SAM"] = false,
+                        _["rnd_seed"] = 0),
            "Simulate the sequencing of a normal sample");
 }
