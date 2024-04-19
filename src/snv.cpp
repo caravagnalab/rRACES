@@ -17,12 +17,34 @@
 
 #include "snv.hpp"
 
+#include "utility.hpp"
+
 SNV::SNV(const Races::Mutations::ChromosomeId& chromosome_id,
          const Races::Mutations::ChrPosition& chromosomic_position,
+         const Races::Mutations::AlleleId allele_id,
          const char& ref_base, const char& alt_base, const std::string& cause):
-    Races::Mutations::SNV(chromosome_id, chromosomic_position, ref_base,
-                          alt_base, cause)
+    Races::Mutations::MutationSpec<Races::Mutations::SNV>(allele_id, chromosome_id,
+                                                          chromosomic_position,
+                                                          ref_base, alt_base, cause)
 {}
+
+std::string alleletostr(const Races::Mutations::AlleleId& allele_id)
+{
+    if (allele_id == RANDOM_ALLELE) {
+        return "random";
+    }
+
+    return std::to_string(allele_id);
+}
+
+SEXP wrap_allele(const Races::Mutations::AlleleId& allele_id)
+{
+    Rcpp::StringVector allele_v(1);
+
+    allele_v[0] = alleletostr(allele_id);
+
+    return allele_v;
+}
 
 SNV::SNV()
 {}
@@ -47,6 +69,7 @@ Rcpp::List SNV::get_dataframe() const
 
     return DataFrame::create(_["chromosome"]=get_chromosome(),
                              _["pos_in_chr"]=position,
+                             _["allele"]=wrap_allele(allele_id),
                              _["ref"]=get_ref_base(),
                              _["alt"]=get_alt_base(),
                              _["cause"]=get_cause());
@@ -58,6 +81,8 @@ void SNV::show() const
 
     Rcout << "SNV(chromosome: "<< get_chromosome()
           << ", pos_in_chr: " << static_cast<size_t>(position)
+          << ", pos_in_chr: " << static_cast<size_t>(position)
+          << ", allele: " << alleletostr(allele_id)
           << ", ref: " << ref_base
           << ", alt: " << alt_base;
 
@@ -68,9 +93,9 @@ void SNV::show() const
 }
 
 SNV SNV::build_SNV(const SEXP chromosome_name,
-                   const SEXP position_in_chromosome, 
-                   const SEXP alt_base, const SEXP ref_base, 
-                   const SEXP cause)
+                   const SEXP position_in_chromosome,
+                   const SEXP alt_base, const SEXP ref_base,
+                   const SEXP allele_id, const SEXP cause)
 {
     using namespace Rcpp;
     using namespace Races::Mutations;
@@ -98,5 +123,6 @@ SNV SNV::build_SNV(const SEXP chromosome_name,
 
     auto cause_str = Rcpp::as<std::string>(cause);
     return SNV(chr_id, static_cast<Races::Mutations::ChrPosition>(pos),
-               ref_base_str[0], alt_base_str[0], cause_str);
+               get_allele_id(allele_id, "allele"), ref_base_str[0],
+               alt_base_str[0], cause_str);
 }

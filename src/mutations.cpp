@@ -108,11 +108,12 @@ RCPP_MODULE(Mutations){
     .method("show",&SNV::show);
 
 //' @name SNV
-//' @title Create a SNV amplification.
+//' @title Create a SNV.
 //' @param chromosome The name of the chromosome in which the SNV occurs.
 //' @param pos_in_chr The position in the chromosome where the SNV occurs.
 //' @param alt The base after the mutation.
 //' @param ref The base before the mutation (optional).
+//' @param allele The allele in which the SNV must occur (optional).
 //' @param cause The cause of the SNV (optional).
 //' @examples
 //' # create a SNV without specifying the cause and context
@@ -123,12 +124,17 @@ RCPP_MODULE(Mutations){
 //' snv <- SNV("X", 20002, "T", "A")
 //' snv
 //'
+//' # create a SNV that must be place in allele 1
+//' snv <- SNV("X", 20002, "T", allele = 1)
+//' snv
+//'
 //' # create a SNV with a cause
 //' snv <- SNV("X", 20002, "T", cause = "SBS1")
 //' snv
   function("SNV", &SNV::build_SNV,
            List::create(_["chromosome"], _["pos_in_chr"], _["alt"],
-                        _["ref"] = "?", _["cause"] = ""),
+                        _["ref"] = "?", _["allele"] = R_NilValue,
+                        _["cause"] = ""),
            "Create a single nucleotide variation (SNV)");
 
 //' @name CNA
@@ -150,12 +156,12 @@ RCPP_MODULE(Mutations){
 //' cna
 //'
 //' # create a deletion from the allele 0
-//' cna <- CNA("D", "Y", 101310, 205, allele=0)
+//' cna <- CNA("D", "Y", 101310, 205, allele = 0)
 //'
 //' cna
   function("CNA", &CNA::build_CNA,
            List::create(_["type"], _["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]=false, _["src_allele"]=false),
+                        _["allele"] = R_NilValue, _["src_allele"] = R_NilValue),
            "Create a copy number alteration (CNA)");
 
 //' @name Amplification
@@ -174,7 +180,7 @@ RCPP_MODULE(Mutations){
 //' cna
   function("Amplification", &CNA::build_amplification,
            List::create(_["chromosome"], _["pos_in_chr"], _["len"],
-                        _["allele"]=false, _["src_allele"]=false),
+                        _["allele"] = R_NilValue, _["src_allele"] = R_NilValue),
            "Create a CNA amplification");
 
 //' @name Deletion

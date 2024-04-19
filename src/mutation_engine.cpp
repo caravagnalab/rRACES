@@ -620,7 +620,8 @@ struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
     } 
 };
 
-using SNV_iterator = std::list<std::list<Races::Mutations::SNV>::iterator>;
+using SNVSpec = Races::Mutations::MutationSpec<Races::Mutations::SNV>;
+using SNV_iterator = std::list<std::list<SNVSpec>::iterator>;
 
 void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SNV_iterator>& SNV_partition)
 {
@@ -656,7 +657,7 @@ inline std::ifstream::pos_type filesize(const std::filesystem::path& fasta_filen
 
 void retrieve_missing_references(const std::string& mutant_name, 
                                  const std::filesystem::path& fasta_filename,
-                                 std::list<Races::Mutations::SNV>& SNVs)
+                                 std::list<SNVSpec>& SNVs)
 {
   Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
 
@@ -715,7 +716,7 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
                                 const Rcpp::List& driver_SNVs,
                                 const Rcpp::List& driver_CNAs)
 {
-  auto c_snvs = get_super_object_list<Races::Mutations::SNV, SNV>(driver_SNVs);
+  auto c_snvs = get_super_object_list<SNVSpec, SNV>(driver_SNVs);
   auto c_cnas = get_super_object_list<Races::Mutations::CNA, CNA>(driver_CNAs);
 
   retrieve_missing_references(mutant_name, storage.get_reference_path(), c_snvs);

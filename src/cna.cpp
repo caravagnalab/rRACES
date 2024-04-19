@@ -17,6 +17,8 @@
 
 #include "cna.hpp"
 
+#include "utility.hpp"
+
 // amplification
 CNA::CNA(const Races::Mutations::GenomicPosition& initial_position,
          const Races::Mutations::CNA::Length& length,
@@ -44,7 +46,7 @@ SEXP wrap_allele_id(const Races::Mutations::AlleleId& allele_id)
     if (allele_id == RANDOM_ALLELE) {
         return Rcpp::wrap(NA_INTEGER);
     }
-    return Rcpp::wrap(allele_id); 
+    return Rcpp::wrap(allele_id);
 }
 
 SEXP CNA::get_src_allele() const
@@ -95,29 +97,6 @@ void CNA::show() const
     Rcout << ")" << std::endl;
 }
 
-Races::Mutations::AlleleId
-cast_to_allele(const SEXP allele, const std::string& parameter_name)
-{
-    if (TYPEOF(allele) == LGLSXP) {
-        return RANDOM_ALLELE;
-    }
-
-    long int allele_l;
-    try {
-        allele_l = Rcpp::as<long int>(allele);
-    } catch (std::invalid_argument& ex) {
-        allele_l = -1;
-    }
-
-    if (allele_l < 0) {
-        throw std::domain_error("The parameter \"" + parameter_name 
-                                + "\" must be either a "
-                                + "non-negative number or NA.");
-    }
-
-    return static_cast<Races::Mutations::AlleleId>(allele_l);
-}
-
 CNA CNA::build_CNA(const std::string type, const SEXP chromosome, const SEXP pos_in_chr,
                    const SEXP length, const SEXP allele, const SEXP src_allele)
 {
@@ -141,18 +120,19 @@ CNA CNA::build_CNA(const std::string type, const SEXP chromosome, const SEXP pos
                                 "non-negative numbers");
     }
 
-    AlleleId allele_id = cast_to_allele(allele, "allele");
+    AlleleId allele_id = get_allele_id(allele, "allele");
+
     if (type == "D") {
         return CNA(gen_pos, len, allele_id);
-    } 
+    }
 
     if (type == "A") {
-        AlleleId src_allele_id = cast_to_allele(src_allele, "src_allele");
+        AlleleId src_allele_id = get_allele_id(src_allele, "src_allele");
 
         return CNA(gen_pos, len, allele_id, src_allele_id);
     }
 
-    throw std::domain_error("Unknown CNA type \"" + type 
+    throw std::domain_error("Unknown CNA type \"" + type
                             + "\". Supported types are \"A\" and \"D\" for "
                             + "amplification and deletion, respectively");
 }

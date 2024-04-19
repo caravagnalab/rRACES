@@ -21,15 +21,16 @@
 #include <string>
 
 #include <snv.hpp>
+#include <mutation_spec.hpp>
 
 #include <Rcpp.h>
 
-
-class SNV : public Races::Mutations::SNV
+class SNV : public Races::Mutations::MutationSpec<Races::Mutations::SNV>
 {
 
     SNV(const Races::Mutations::ChromosomeId& chromosome_id,
         const Races::Mutations::ChrPosition& chromosomic_position,
+        const Races::Mutations::AlleleId allele_id,
         const char& ref_base, const char& alt_base,
         const std::string& cause="");
 
@@ -65,8 +66,8 @@ public:
     static
     SNV build_SNV(const SEXP chromosome_name,
                   const SEXP position_in_chromosome,
-                  const SEXP alt_base, const SEXP ref_base, 
-                  const SEXP cause);
+                  const SEXP alt_base, const SEXP ref_base,
+                  const SEXP allele_id, const SEXP cause);
 };
 
 RCPP_EXPOSED_CLASS(SNV);
