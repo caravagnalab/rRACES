@@ -62,7 +62,7 @@ represent the mutations observed in the simulated reads
 The number of columns in the data frame depends on the number
 of samples in the phylogenetic forest. The first four columns
 describe the mutation and report the chromosome and the position
-in the chromosome of the mutation (columns `chromosome` and
+in the chromosome of the mutation (columns `chr` and
 `chr_pos`, respectively), the genetic context in which the
 mutation occurs (column `context`), and the new base (column
 `alt_base`).

@@ -106,7 +106,7 @@ RCPP_MODULE(Sequencing){
 //'   (default: `0`).
 //' @return A data frame representing, for each of the observed
 //'   SNVs, the chromosome and the position in which
-//'   it occurs (columns `chromosome` and `chr_pos`),
+//'   it occurs (columns `chr` and `chr_pos`),
 //'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
@@ -151,7 +151,7 @@ RCPP_MODULE(Sequencing){
 //'   (default: `0`).
 //' @return A data frame representing, for each of the observed
 //'   SNVs, the chromosome and the position in which
-//'   it occurs (columns `chromosome` and `chr_pos`),
+//'   it occurs (columns `chr` and `chr_pos`),
 //'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each

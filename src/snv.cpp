@@ -67,8 +67,8 @@ Rcpp::List SNV::get_dataframe() const
     using namespace Rcpp;
     using namespace Races::Mutations;
 
-    return DataFrame::create(_["chromosome"]=get_chromosome(),
-                             _["pos_in_chr"]=position,
+    return DataFrame::create(_["chr"]=get_chromosome(),
+                             _["chr_pos"]=position,
                              _["allele"]=wrap_allele(allele_id),
                              _["ref"]=get_ref_base(),
                              _["alt"]=get_alt_base(),
@@ -79,9 +79,8 @@ void SNV::show() const
 {
     using namespace Rcpp;
 
-    Rcout << "SNV(chromosome: "<< get_chromosome()
-          << ", pos_in_chr: " << static_cast<size_t>(position)
-          << ", pos_in_chr: " << static_cast<size_t>(position)
+    Rcout << "SNV(chr: "<< get_chromosome()
+          << ", chr_pos: " << static_cast<size_t>(position)
           << ", allele: " << alleletostr(allele_id)
           << ", ref: " << ref_base
           << ", alt: " << alt_base;

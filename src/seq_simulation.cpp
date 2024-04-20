@@ -82,7 +82,7 @@ void add_SNV_data(Rcpp::DataFrame& df,
     ++index;
   }
 
-  df.push_back(chr_names, "chromosome");
+  df.push_back(chr_names, "chr");
   df.push_back(chr_pos, "chr_pos");
   df.push_back(ref_bases, "ref");
   df.push_back(alt_bases, "alt");
@@ -215,23 +215,6 @@ get_genome_chromosome_ids(const std::list<Races::Mutations::SampleGenomeMutation
     return {};
 }
 
-std::string ordinal_suffix(const size_t& ord)
-{
-    if (ord%100==10) {
-        return "th";
-    }
-    switch(ord%10) {
-        case 1:
-            return "st";
-        case 2:
-            return "nd";
-        case 3:
-            return "rd";
-        default:
-            return "th";
-    }
-}
-
 std::set<Races::Mutations::ChromosomeId>
 get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
                      SEXP& chromosome_ids)
@@ -265,8 +248,7 @@ get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutation
             ++i;
             if (TYPEOF(chr_name) != STRSXP) {
                 throw std::domain_error("Expected a list of string: the "
-                                        + std::to_string(i)
-                                        + ordinal_suffix(i)
+                                        + ordtostr(i)
                                         + " element of the list is not "
                                         + "a string.");
             }
@@ -274,8 +256,7 @@ get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutation
             Rcpp::CharacterVector name{chr_name};
             if (name.length()>1) {
                 throw std::domain_error("Expected a list of string: the "
-                                        + std::to_string(i)
-                                        + ordinal_suffix(i)
+                                        + ordtostr(i)
                                         + " element of the list is not "
                                         + "a string.");
             }

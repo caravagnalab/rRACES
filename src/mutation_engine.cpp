@@ -33,7 +33,12 @@
 
 #include "mutation_engine.hpp"
 
+#include "utility.hpp"
+
 #include "genomic_data_storage.hpp"
+
+using SNVSpec = Races::Mutations::MutationSpec<Races::Mutations::SNV>;
+using SNV_iterator = std::list<std::list<SNVSpec>::iterator>;
 
 struct MutationEngineSetup
 {
@@ -52,8 +57,8 @@ struct MutationEngineSetup
                   const std::string& drivers_url,
                   const std::string& passenger_CNAs_url,
                   const std::string& germline_url):
-    description(description), directory(directory), reference_url(reference_url), 
-    SBS_url(SBS_url), drivers_url(drivers_url), 
+    description(description), directory(directory), reference_url(reference_url),
+    SBS_url(SBS_url), drivers_url(drivers_url),
     passenger_CNAs_url(passenger_CNAs_url), germline_url(germline_url)
   {}
 };
@@ -102,7 +107,7 @@ GenomicDataStorage setup_storage(const std::string& directory,
                                  const std::string& germline_source)
 {
   GenomicDataStorage storage(directory, reference_source, SBS_source,
-                             drivers_source, passengers_CNA_source, 
+                             drivers_source, passengers_CNA_source,
                              germline_source);
 
   storage.save_sources();
@@ -117,7 +122,7 @@ GenomicDataStorage setup_storage(const std::string& setup_code)
   auto code_it = supported_setups.find(setup_code);
   if (code_it == supported_setups.end()) {
     std::ostringstream oss;
-  
+
     oss << "\""+setup_code+"\" is an unknown code. "
         << "Supported codes are:" << std::endl;
 
@@ -244,7 +249,7 @@ get_num_of_alleles(const Races::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITI
   return alleles_per_chromosome;
 }
 
-std::map<std::string, Races::Mutations::MutationalSignature> 
+std::map<std::string, Races::Mutations::MutationalSignature>
 load_SBS(const GenomicDataStorage& storage)
 {
   std::ifstream is(storage.get_SBS_path());
@@ -256,32 +261,32 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
 {
   using namespace Races::Mutations;
 
-  ChromosomeId chr_id;    
+  ChromosomeId chr_id;
   try {
     chr_id = GenomicPosition::stochr(row.get_field(0));
   } catch (std::invalid_argument const&) {
-    throw std::domain_error("Unknown chromosome specification " + row.get_field(1) 
-                            + " in row number " + std::to_string(row_num) 
+    throw std::domain_error("Unknown chromosome specification " + row.get_field(1)
+                            + " in row number " + std::to_string(row_num)
                             + ".");
   }
 
-  uint32_t begin_pos;         
+  uint32_t begin_pos;
   try {
     begin_pos = stoul(row.get_field(1));
   } catch (std::invalid_argument const&) {
-    throw std::domain_error("Unknown begin specification " + row.get_field(1) 
-                            + " in row number " + std::to_string(row_num) 
+    throw std::domain_error("Unknown begin specification " + row.get_field(1)
+                            + " in row number " + std::to_string(row_num)
                             + ".");
   }
 
   GenomicPosition pos(chr_id, begin_pos);
 
-  uint32_t end_pos;                
+  uint32_t end_pos;
   try {
     end_pos = stoul(row.get_field(2));
   } catch (std::invalid_argument const&) {
-    throw std::domain_error("Unknown end specification " + row.get_field(2) 
-                            + " in row number " + std::to_string(row_num) 
+    throw std::domain_error("Unknown end specification " + row.get_field(2)
+                            + " in row number " + std::to_string(row_num)
                             + ".");
   }
 
@@ -289,7 +294,7 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
     throw std::domain_error("The CNA begin lays after the end in row number "
                             + std::to_string(row_num));
   }
-  
+
   return {pos, end_pos+1-begin_pos};
 }
 
@@ -316,8 +321,8 @@ std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
                             CNA::Type::AMPLIFICATION);
         }
       } catch (std::invalid_argument const&) {
-        throw std::domain_error("Unknown major specification " + major 
-                                + " in row number " + std::to_string(row_num) 
+        throw std::domain_error("Unknown major specification " + major
+                                + " in row number " + std::to_string(row_num)
                                 + ".");
       }
 
@@ -328,8 +333,8 @@ std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
                             CNA::Type::DELETION);
         }
       } catch (std::invalid_argument const&) {
-        throw std::domain_error("Unknown minor specification " + major 
-                                + " in row number " + std::to_string(row_num) 
+        throw std::domain_error("Unknown minor specification " + major
+                                + " in row number " + std::to_string(row_num)
                                 + ".");
       }
     }
@@ -351,7 +356,7 @@ MutationEngine::MutationEngine(const std::string& setup_name,
                                const std::string& germline_subject,
                                const size_t& context_sampling,
                                const std::string& tumor_type):
-  storage(setup_storage(setup_name)), germline_subject(germline_subject), 
+  storage(setup_storage(setup_name)), germline_subject(germline_subject),
   context_sampling(context_sampling), tumor_type(tumor_type)
 {
   auto setup_cfg = supported_setups.at(setup_name);
@@ -368,8 +373,8 @@ MutationEngine::MutationEngine(const std::string& directory,
                                const std::string& germline_subject,
                                const size_t& context_sampling,
                                const std::string& tumor_type):
-  storage(setup_storage(directory, reference_source, SBS_source, 
-                        drivers_source, passenger_CNAs_source, 
+  storage(setup_storage(directory, reference_source, SBS_source,
+                        drivers_source, passenger_CNAs_source,
                         germline_source)),
   germline_subject(germline_subject), context_sampling(context_sampling),
   tumor_type(tumor_type)
@@ -401,7 +406,7 @@ template<typename VALUE, typename TESTER=TestNonNegative>
 std::map<std::string, VALUE>
 get_map(const Rcpp::List& list)
 {
-  
+
   std::map<std::string, VALUE> c_map;
   if (list.size()==0) {
     return std::map<std::string, VALUE>();
@@ -420,7 +425,7 @@ get_map(const Rcpp::List& list)
   return c_map;
 }
 
-MutationEngine 
+MutationEngine
 MutationEngine::build_MutationEngine(const std::string& directory,
                                      const std::string& reference_source,
                                      const std::string& SBS_source,
@@ -433,8 +438,8 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                                      const std::string& tumor_type)
 {
   if (setup_code!="") {
-    if (directory!="" || reference_source!="" || SBS_source!="" 
-         || drivers_source!="" || passenger_CNAs_source !="" 
+    if (directory!="" || reference_source!="" || SBS_source!=""
+         || drivers_source!="" || passenger_CNAs_source !=""
          || germline_source !="") {
       throw std::domain_error("when \"setup_code\" is provided, the parameters "
                               "\"directory\", \"reference_src\", \"SBS_src\", "
@@ -446,7 +451,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                           context_sampling, tumor_type);
   }
 
-  if (directory=="" || reference_source=="" || SBS_source=="" 
+  if (directory=="" || reference_source=="" || SBS_source==""
       || passenger_CNAs_source== "" || germline_source== "") {
     throw std::domain_error("when \"setup_code\" is NOT provided, the parameters "
                             "\"directory\", \"reference_src\", \"SBS_src\", "
@@ -455,7 +460,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
   }
 
   return MutationEngine(directory, reference_source, SBS_source, drivers_source,
-                        passenger_CNAs_source, germline_source, germline_subject, 
+                        passenger_CNAs_source, germline_source, germline_subject,
                         context_sampling, tumor_type);
 
 }
@@ -500,6 +505,101 @@ void MutationEngine::add_exposure(const double& time, const Rcpp::List& exposure
 void MutationEngine::add_exposure(const Rcpp::List& exposure)
 {
   add_exposure(0, exposure);
+}
+
+const Races::Mutations::SNV&
+get_SNV_from_name(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
+                  const Rcpp::CharacterVector& R_SNV_code)
+{
+    const auto SNV_code = Rcpp::as<std::string>(R_SNV_code);
+
+    const auto found = driver_code_map.find(SNV_code);
+
+    if (found == driver_code_map.end()) {
+        throw std::domain_error("Unknown SNV code " + SNV_code + ".");
+    }
+
+    return found->second;
+}
+
+SNVSpec get_SNV_from_list(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
+                          const size_t index, const Rcpp::List& SVN_spec)
+{
+    const size_t spec_size = static_cast<size_t>(SVN_spec.size());
+    if (spec_size > 2 || spec_size == 0) {
+        throw std::domain_error("The " + ordtostr(index)
+                                + " element in the driver SNV list is "
+                                + "not an SNV specification.");
+    }
+
+    if (TYPEOF(SVN_spec[0])!=STRSXP) {
+        throw std::domain_error("The " + ordtostr(index)
+                                + " element in the driver SNV list is "
+                                + "not an SNV specification");
+    }
+
+    Races::Mutations::AlleleId allele_id = RANDOM_ALLELE;
+
+    if (spec_size>1) {
+        if (TYPEOF(SVN_spec[1])!=REALSXP) {
+            throw std::domain_error("The " + ordtostr(index)
+                                + " element in the driver SNV list is "
+                                + "not an SNV specification");
+        }
+
+        allele_id = Rcpp::as<Races::Mutations::AlleleId>(SVN_spec[1]);
+    }
+
+    return SNVSpec(allele_id, get_SNV_from_name(driver_code_map, SVN_spec[0]));
+}
+
+SNVSpec get_SNV_spec(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
+                     const size_t& index, const Rcpp::List& rcpp_list)
+{
+    switch (TYPEOF(rcpp_list[index])) {
+        case STRSXP:
+            return SNVSpec(RANDOM_ALLELE, get_SNV_from_name(driver_code_map, rcpp_list[index]));
+        case VECSXP:
+            return get_SNV_from_list(driver_code_map, index+1, rcpp_list[index]);
+        case S4SXP:
+            {
+                Rcpp::S4 s4obj( rcpp_list[index] );
+                if ( s4obj.is("Rcpp_SNV" )) {
+                    return static_cast<SNVSpec>(Rcpp::as<SNV>(rcpp_list[index]));
+                }
+            }
+            break;
+        default:
+            break;
+    }
+    std::cout << TYPEOF(rcpp_list[index]) << std::endl;
+    throw std::domain_error("The " + ordtostr(index+1) + " element in the driver SNV "
+                            "list is not an SNV specification");
+}
+
+std::list<SNVSpec> get_SNV_list(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
+                                const Rcpp::List& rcpp_list)
+{
+    std::list<SNVSpec> cpp_list;
+
+    const size_t list_size = static_cast<size_t>(rcpp_list.size());
+    for (size_t i=0; i<list_size; ++i) {
+        cpp_list.push_back(get_SNV_spec(driver_code_map, i, rcpp_list));
+    }
+
+    return cpp_list;
+}
+
+std::list<Races::Mutations::CNA> get_CNA_list(const Rcpp::List& rcpp_list)
+{
+  std::list<Races::Mutations::CNA> cpp_list;
+
+  const size_t list_size = static_cast<size_t>(rcpp_list.size());
+  for (size_t i=0; i<list_size; ++i) {
+    cpp_list.push_back(static_cast<const Races::Mutations::CNA&>(Rcpp::as<CNA>(rcpp_list[i])));
+  }
+
+  return cpp_list;
 }
 
 template<typename CPP_TYPE, typename RCPP_TYPE>
@@ -617,11 +717,8 @@ struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
     inline bool operator()(const std::string& header)
     {
         return !Races::IO::FASTA::is_chromosome_header(header, last_chr_id);
-    } 
+    }
 };
-
-using SNVSpec = Races::Mutations::MutationSpec<Races::Mutations::SNV>;
-using SNV_iterator = std::list<std::list<SNVSpec>::iterator>;
 
 void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SNV_iterator>& SNV_partition)
 {
@@ -652,10 +749,10 @@ void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, S
 inline std::ifstream::pos_type filesize(const std::filesystem::path& fasta_filename)
 {
     std::ifstream in(fasta_filename, std::ifstream::ate | std::ifstream::binary);
-    return in.tellg(); 
+    return in.tellg();
 }
 
-void retrieve_missing_references(const std::string& mutant_name, 
+void retrieve_missing_references(const std::string& mutant_name,
                                  const std::filesystem::path& fasta_filename,
                                  std::list<SNVSpec>& SNVs)
 {
@@ -716,8 +813,9 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
                                 const Rcpp::List& driver_SNVs,
                                 const Rcpp::List& driver_CNAs)
 {
-  auto c_snvs = get_super_object_list<SNVSpec, SNV>(driver_SNVs);
-  auto c_cnas = get_super_object_list<Races::Mutations::CNA, CNA>(driver_CNAs);
+  const auto& driver_storage = m_engine.get_driver_storage();
+  auto c_snvs = get_SNV_list(driver_storage.get_SNVs(), driver_SNVs);
+  auto c_cnas = get_CNA_list(driver_CNAs);
 
   retrieve_missing_references(mutant_name, storage.get_reference_path(), c_snvs);
 
@@ -732,7 +830,7 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
   m_engine.add_mutant(mutant_name, epi_rates, c_snvs, c_cnas);
 }
 
-PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest, 
+PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
                                                    const size_t& num_of_preneoplatic_mutations,
                                                    const int seed)
 {
@@ -748,11 +846,20 @@ PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
           m_engine.get_timed_exposures()};
 }
 
-Rcpp::List MutationEngine::get_SBS_dataframe()
+Rcpp::List MutationEngine::get_SBS_dataframe() const
 {
   Rcpp::Function read_delim("read.delim");
 
   return read_delim(to_string(storage.get_SBS_path()), Rcpp::_["quote"]="");
+}
+
+Rcpp::List MutationEngine::get_known_driver_mutations() const
+{
+  std::string driver_filename = m_engine.get_driver_storage().get_source_path();
+
+  Rcpp::Function read_delim("read.delim");
+
+  return read_delim(driver_filename, Rcpp::_["quote"]="");
 }
 
 template<typename ITERATOR>
@@ -770,7 +877,7 @@ void MutationEngine::show() const
   using namespace Rcpp;
   Rcout << "MutationEngine" << std::endl
         << " Passenger rates";
-  
+
   const auto& m_properties = m_engine.get_mutational_properties();
 
   for (const auto& [species_name, p_rates] : m_properties.get_passenger_rates()) {
@@ -791,7 +898,7 @@ void MutationEngine::show() const
     if (driver_mutations.SNVs.size()>0 || driver_mutations.CNAs.size()>0) {
       if (driver_mutations.SNVs.size()>0) {
         Rcout << "   \"" << mutant_name << "\" SNVs: " << std::endl;
-              
+
         show_list(Rcout, driver_mutations.SNVs.begin(), driver_mutations.SNVs.end(), "       ");
       }
       if (driver_mutations.CNAs.size()>0) {
@@ -814,7 +921,7 @@ void MutationEngine::show() const
     if (next_it == timed_exposures.end()) {
        Rcout << "   [" << coeffs_it->first << ", \u221E[: ";
     } else {
-       Rcout << "   [" 
+       Rcout << "   ["
              << coeffs_it->first << ", " << next_it->first << "[: ";
     }
     show_map(Rcout, coeffs_it->second);

@@ -90,6 +90,8 @@ public:
         return storage.get_germline_storage().get_population_descritions_df();
     }
 
+    Rcpp::List get_known_driver_mutations() const;
+
     inline bool get_infinite_sites_model() const
     {
         return m_engine.infinite_sites_model;
@@ -112,7 +114,7 @@ public:
         return place_mutations(forest, num_of_preneoplatic_mutations, 0);
     }
 
-    Rcpp::List get_SBS_dataframe();
+    Rcpp::List get_SBS_dataframe() const;
 
     void show() const;
 

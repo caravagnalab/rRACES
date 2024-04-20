@@ -119,3 +119,20 @@ get_allele_id(const SEXP allele_id, const std::string& parameter_name)
                             + "\" must be either a "
                             + "non-negative number or NILL.");
 }
+
+std::string ordinal_suffix(const size_t& ord)
+{
+    if ((ord%100)/10==1) {
+        return "th";
+    }
+    switch(ord%10) {
+        case 1:
+            return "st";
+        case 2:
+            return "nd";
+        case 3:
+            return "rd";
+        default:
+            return "th";
+    }
+}
