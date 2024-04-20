@@ -258,7 +258,7 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
 
   ChromosomeId chr_id;    
   try {
-    chr_id = GenomicPosition::stochr(row.get_field(0).substr(3));
+    chr_id = GenomicPosition::stochr(row.get_field(0));
   } catch (std::invalid_argument const&) {
     throw std::domain_error("Unknown chromosome specification " + row.get_field(1) 
                             + " in row number " + std::to_string(row_num) 
@@ -299,7 +299,7 @@ std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
 {
   std::vector<Races::Mutations::CNA> CNAs;
 
-  Races::IO::CSVReader csv_reader(CNAs_csv);
+  Races::IO::CSVReader csv_reader(CNAs_csv, true, '\t');
 
   size_t row_num{2};
   for (const auto& row : csv_reader) {
