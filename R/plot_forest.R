@@ -46,7 +46,11 @@ plot_forest <- function(forest, highlight_sample = NULL) {
     warning("The forest does not contain any node")
     return(ggplot2::ggplot())
   } else {
-    forest_data <- forest$get_nodes() %>%
+    forest_data <- forest$get_nodes()
+
+    forest_data[nrow(forest_data) + 1, ] <- c(NA, NA, NA, NA, NA, 0)
+
+    forest_data <- forest_data %>%
       dplyr::as_tibble() %>%
       dplyr::rename(
         from = .data$ancestor,
@@ -56,16 +60,16 @@ plot_forest <- function(forest, highlight_sample = NULL) {
                     .data$epistate, .data$sample, .data$birth_time) %>%
       dplyr::mutate(
         from = ifelse(is.na(.data$from), "WT", .data$from),
+        to = ifelse(is.na(.data$to), "WT", .data$to),
         species = paste0(.data$mutant, .data$epistate),
         sample = ifelse(is.na(.data$sample), "N/A", .data$sample),
         highlight = FALSE
       )
-    
+
     # Highlight is optional
-    if(!is.null(highlight_sample))
-    {
-      highlight = paths_to_sample(forest_data, highlight_sample)
-      forest_data$highlight = forest_data$to %in% highlight$to
+    if (!is.null(highlight_sample)) {
+      highlight <- paths_to_sample(forest_data, highlight_sample)
+      forest_data$highlight <- forest_data$to %in% highlight$to
     }
 
     edges <- forest_data %>%
@@ -110,17 +114,13 @@ plot_forest <- function(forest, highlight_sample = NULL) {
 
     point_size <- c(.5, rep(1, nsamples))
     names(point_size) <- c("N/A", forest$get_samples_info() %>%
-                            pull(.data$name))
-    
-    # highlight_edges = paths_to_sample(layout, "S_2_2")
-    
-    # layout$highlight = layout$name %in% highlight_edges$name
+                             dplyr::pull(.data$name))
 
     # Plot the graph
-    graph_plot = ggraph::ggraph(layout, "tree") +
-      ggraph::geom_edge_link(edge_width = .1, 
-                             ggplot2::aes(edge_color = ifelse(highlight, 
-                                                              "indianred3", 
+    graph_plot <- ggraph::ggraph(layout, "tree") +
+      ggraph::geom_edge_link(edge_width = .1,
+                             ggplot2::aes(edge_color = ifelse(highlight,
+                                                              "indianred3",
                                                               "black")))
 
     graph_plot +
@@ -129,6 +129,7 @@ plot_forest <- function(forest, highlight_sample = NULL) {
                                                           "N/A",
                                                           .data$sample),
                                            size = .data$sample)) +
+      ggplot2::scale_shape_manual(values = c(0:nsamples + 1)) +
       ggplot2::scale_color_manual(values = species_colors) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "bottom") +
@@ -159,26 +160,28 @@ plot_forest <- function(forest, highlight_sample = NULL) {
 }
 
 
-paths_to_sample = function(forest_data, sample){
-  
-  to = forest_data %>% dplyr::filter(sample == !!sample) %>% pull(to)
-  
-  Q = NULL
-  
-  while(length(to) > 0)
-  {
+paths_to_sample <- function(forest_data, sample) {
+  to <- forest_data %>% dplyr::filter(sample == !!sample) %>%
+    dplyr::pull(to)
+
+  queue <- NULL
+
+  while (length(to) > 0) {
     # New element to inspect
-    to_head = to[1]
-    to = to[-1]
+    to_head <- to[1]
+    to <- to[-1]
 
     # Forward star 
-    to_add = forest_data %>%  dplyr::filter(to == to_head)
-    Q = dplyr::bind_rows(Q, to_add) %>% dplyr::distinct()
-    
-    # Recursion
-    to = c(to, to_add %>% dplyr::pull(.data$from)) %>% unique()
+    to_add <- forest_data %>%  dplyr::filter(to == to_head)
+
+    if (to_add$from != to_head) {
+      queue <- dplyr::bind_rows(queue, to_add) %>% dplyr::distinct()
+
+      # Recursion
+      to <- c(to, to_add %>% dplyr::pull(.data$from)) %>% unique()
+    }
   }
-  
-  Q
+
+  queue
 }
 

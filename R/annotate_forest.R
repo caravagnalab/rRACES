@@ -147,7 +147,7 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
       
       tree_plot$layers <- layers_new
     }
-    else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
+    # else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
   }
   
   if(drivers) {
@@ -212,7 +212,7 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
           )
       } 
     } 
-    else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
+    # else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
   }
   
   tree_plot
