@@ -553,7 +553,7 @@ RCPP_MODULE(Mutations){
     .method("get_SBSs", &MutationEngine::get_SBS_dataframe,
             "Get the SBS data frame")
 
-//' @name MutationEngine$get_known_drivers()
+//' @name MutationEngine$get_known_drivers
 //' @title Get the data frame of the known driver mutations
 //' @description This method returns a data frame reporting
 //'   the known driver mutations together with their types,
