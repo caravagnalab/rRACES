@@ -114,7 +114,7 @@ must be created.</p>
 <code class="sourceCode R"><span><span class="co"># Default constructor</span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span><span class="op">)</span></span></code></pre></div>
 <p>This automatically builds a 1000x1000-cells tissue - which can host
-<span class="math inline">\(1\)</span> milion cells - and sets the name
+<span class="math inline">\(1\)</span> million cells - and sets the name
 of the simulation to be
 <code>races_&lt;date&gt;_&lt;hour&gt;</code>.</p>
 <p>A simulation custom name can be specified as it follows.</p>
@@ -136,7 +136,6 @@ object.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span></span>
 <span><span class="co">#&gt; ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #BB0000;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> Test ──────────────────── <span style="color: #BB0000;">▣ </span>A tissue [1000x1000]<span style="color: #BB0000;">  ⏱ </span>0 ──</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The simulation has no species yet!</span></span>
 <span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> The simulation has no samples yet!</span></span></code></pre></div>
 <p>The <code>sim</code> object exposes also methods to get information
 about the simulation and control it.</p>
@@ -176,9 +175,9 @@ parameters of the species.</p>
 unknown) driver mutations. Cells in the same mutant can have different
 liveness rates due to different epigenetic states.</p>
 <p>A <em>species</em> is a mutant with an optional epigenetic state. At
-this point in the simulation the mutant is just a name (<code>A</code>,
-<code>B</code>, ..) that at later stage could be linked to mutations of
-interest. The epigenome is a binary feature of a species that is
+this point in the simulation, the mutant is just a name (<code>A</code>,
+<code>B</code>, ..) that, at a later stage could be linked to mutations
+of interest. The epigenome is a binary feature of a species that is
 represented by epistates <code>+</code>/<code>-</code> (positive and
 negative status). This is an abstraction, and could represent an
 active/inactive state linked to a promoter methylation or, more broadly,
@@ -299,9 +298,7 @@ thousands of cells.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Spatial distribution for the whole tissue (hexagonal bins)</span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-12-2.png" width="288"></p>
 <blockquote>
 <p><strong>Note:</strong> since the plots are done with
@@ -343,9 +340,7 @@ status.</li>
 <span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; 1      A        -    123</span></span>
 <span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; 2      A        +    500</span></span>
 <span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a></span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span>
-<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt; Warning:  [1m [22mNo shared levels found between `names(values)` of the manual scale and the</span></span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt; data's  [32malpha [39m values.</span></span></code></pre></div>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim)</span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-13-1.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -380,9 +375,7 @@ there are 100 of them.</p>
 <span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt; 6 switch      A        +   387</span></span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the tissue by using 200 bins</span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-16-1.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -403,9 +396,7 @@ reference, and simulate further.</p>
 <span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">get_clock</span>()</span>
 <span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt; [1] 79.19229</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-18-1.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -552,7 +543,7 @@ hold.</p>
 <span id="cb23-37"><a href="#cb23-37" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
 <span id="cb23-38"><a href="#cb23-38" tabindex="-1"></a></span>
 <span id="cb23-39"><a href="#cb23-39" tabindex="-1"></a>sim2</span>
-<span id="cb23-40"><a href="#cb23-40" tabindex="-1"></a><span class="co">#&gt; ──  [43m rRACES  [49m  [37m [42m D  [49m [39m  [37m [41m S  [49m [39m  [37m [41m M  [49m [39m races_20240412-231530 ──  [31m▣  [39mA tissue [1000x1000] [31m  ⏱  [39m40 ──</span></span>
+<span id="cb23-40"><a href="#cb23-40" tabindex="-1"></a><span class="co">#&gt; ──  [43m rRACES  [49m  [37m [42m D  [49m [39m  [37m [41m S  [49m [39m  [37m [41m M  [49m [39m races_20240422-111303 ──  [31m▣  [39mA tissue [1000x1000] [31m  ⏱  [39m40 ──</span></span>
 <span id="cb23-41"><a href="#cb23-41" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb23-42"><a href="#cb23-42" tabindex="-1"></a><span class="co">#&gt; ── Species:  [32m [32m2 [32m [39m,  [32m [32m [32mwith [32m [32m [39m epigenetics</span></span>
 <span id="cb23-43"><a href="#cb23-43" tabindex="-1"></a><span class="co">#&gt;    </span></span>
@@ -687,11 +678,12 @@ cell of mutant <code>B</code>.</p></li>
 <span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a><span class="co"># New evolution</span></span>
 <span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"B+"</span>, <span class="dv">600</span>)</span>
 <span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a> [██<span class="sc">--------------------------------------</span>] <span class="dv">4</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">95193</span></span>
-<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a> [█████████<span class="sc">-------------------------------</span>] <span class="dv">21</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">148908</span></span>
-<span id="cb27-17"><a href="#cb27-17" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">48</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">191665</span></span>
-<span id="cb27-18"><a href="#cb27-18" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">230957</span></span>
-<span id="cb27-19"><a href="#cb27-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Saving snapshot</span></code></pre></div>
+<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a> [██<span class="sc">--------------------------------------</span>] <span class="dv">3</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">88692</span></span>
+<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a> [████████<span class="sc">--------------------------------</span>] <span class="dv">18</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">137355</span></span>
+<span id="cb27-17"><a href="#cb27-17" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">30</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">166792</span></span>
+<span id="cb27-18"><a href="#cb27-18" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">51</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">196034</span></span>
+<span id="cb27-19"><a href="#cb27-19" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">78</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">230006</span></span>
+<span id="cb27-20"><a href="#cb27-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Saving snapshot</span></code></pre></div>
 <p>At this point, we can inspect in more details the tissue. It can help
 to facet on the species to clearly appreciate the spatial diffusion of
 the populations.</p>
@@ -699,17 +691,13 @@ the populations.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-27-1.png" width="288"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-27-2.png" width="288"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Facet on species via ggplot</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">species</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">species</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-28-1.png" width="576"></p>
 <p>If, at this point in the simulation, we generate a new mutant
 <code>C</code> from <code>A</code> in the rectangle <span class="math inline">\([450,500]\times [550, 600]\)</span>.</p>
@@ -724,26 +712,25 @@ the populations.</p>
 <span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a></span>
 <span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_time</span>(sim<span class="sc">$</span><span class="fu">get_clock</span>() <span class="sc">+</span> <span class="dv">7</span>)</span>
 <span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a> [██████████████████████████████████████<span class="sc">--</span>] <span class="dv">94</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">283096</span></span>
-<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">95</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">312854</span></span>
-<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">342373</span></span>
-<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">368911</span></span>
-<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">394781</span></span>
-<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">417765</span></span>
-<span id="cb31-18"><a href="#cb31-18" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">440317</span></span>
-<span id="cb31-19"><a href="#cb31-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">461841</span></span>
-<span id="cb31-20"><a href="#cb31-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Cells<span class="sc">:</span> <span class="dv">482538</span></span>
-<span id="cb31-21"><a href="#cb31-21" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Cells<span class="sc">:</span> <span class="dv">502394</span></span>
-<span id="cb31-22"><a href="#cb31-22" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Saving snapshot</span></code></pre></div>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a> [██████████████████████████████████████<span class="sc">--</span>] <span class="dv">94</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">271508</span></span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">95</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">295224</span></span>
+<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">95</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">316206</span></span>
+<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">342141</span></span>
+<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">363678</span></span>
+<span id="cb31-17"><a href="#cb31-17" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">385709</span></span>
+<span id="cb31-18"><a href="#cb31-18" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">406967</span></span>
+<span id="cb31-19"><a href="#cb31-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">423056</span></span>
+<span id="cb31-20"><a href="#cb31-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Cells<span class="sc">:</span> <span class="dv">442292</span></span>
+<span id="cb31-21"><a href="#cb31-21" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Cells<span class="sc">:</span> <span class="dv">460171</span></span>
+<span id="cb31-22"><a href="#cb31-22" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Cells<span class="sc">:</span> <span class="dv">478710</span></span>
+<span id="cb31-23"><a href="#cb31-23" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Cells<span class="sc">:</span> <span class="dv">495881</span></span>
+<span id="cb31-24"><a href="#cb31-24" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Cells<span class="sc">:</span> <span class="dv">511642</span></span>
+<span id="cb31-25"><a href="#cb31-25" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Saving snapshot</span></code></pre></div>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-30-1.png" width="288"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">alpha</span> values.</span></span>
-<span><span class="co">#&gt; Warning: Removed 11 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_hex()`).</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-30-2.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -888,20 +875,24 @@ the state (by default, <code>Simulation$history_delta</code> is set to
 <span id="cb38-45"><a href="#cb38-45" tabindex="-1"></a></span>
 <span id="cb38-46"><a href="#cb38-46" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"D+"</span>, <span class="dv">1000</span>)</span>
 <span id="cb38-47"><a href="#cb38-47" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb38-48"><a href="#cb38-48" tabindex="-1"></a> [████<span class="sc">------------------------------------</span>] <span class="dv">9</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">97648</span></span>
-<span id="cb38-49"><a href="#cb38-49" tabindex="-1"></a> [████████<span class="sc">--------------------------------</span>] <span class="dv">19</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">160389</span></span>
-<span id="cb38-50"><a href="#cb38-50" tabindex="-1"></a> [████████████<span class="sc">----------------------------</span>] <span class="dv">28</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">212938</span></span>
-<span id="cb38-51"><a href="#cb38-51" tabindex="-1"></a> [███████████████<span class="sc">-------------------------</span>] <span class="dv">37</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">257553</span></span>
-<span id="cb38-52"><a href="#cb38-52" tabindex="-1"></a> [██████████████████<span class="sc">----------------------</span>] <span class="dv">44</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">295307</span></span>
-<span id="cb38-53"><a href="#cb38-53" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">51</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">330601</span></span>
-<span id="cb38-54"><a href="#cb38-54" tabindex="-1"></a> [████████████████████████<span class="sc">----------------</span>] <span class="dv">58</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">362872</span></span>
-<span id="cb38-55"><a href="#cb38-55" tabindex="-1"></a> [████████████████████████████<span class="sc">------------</span>] <span class="dv">68</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">393465</span></span>
-<span id="cb38-56"><a href="#cb38-56" tabindex="-1"></a> [██████████████████████████████<span class="sc">----------</span>] <span class="dv">73</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Cells<span class="sc">:</span> <span class="dv">422108</span></span>
-<span id="cb38-57"><a href="#cb38-57" tabindex="-1"></a> [█████████████████████████████████<span class="sc">-------</span>] <span class="dv">82</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Cells<span class="sc">:</span> <span class="dv">448674</span></span>
-<span id="cb38-58"><a href="#cb38-58" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">87</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Cells<span class="sc">:</span> <span class="dv">468941</span></span>
-<span id="cb38-59"><a href="#cb38-59" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">92</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Cells<span class="sc">:</span> <span class="dv">488658</span></span>
-<span id="cb38-60"><a href="#cb38-60" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Cells<span class="sc">:</span> <span class="dv">510640</span></span>
-<span id="cb38-61"><a href="#cb38-61" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Saving snapshot</span></code></pre></div>
+<span id="cb38-48"><a href="#cb38-48" tabindex="-1"></a> [███<span class="sc">-------------------------------------</span>] <span class="dv">7</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">86416</span></span>
+<span id="cb38-49"><a href="#cb38-49" tabindex="-1"></a> [██████<span class="sc">----------------------------------</span>] <span class="dv">14</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">125661</span></span>
+<span id="cb38-50"><a href="#cb38-50" tabindex="-1"></a> [█████████<span class="sc">-------------------------------</span>] <span class="dv">20</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">163544</span></span>
+<span id="cb38-51"><a href="#cb38-51" tabindex="-1"></a> [██████████<span class="sc">------------------------------</span>] <span class="dv">24</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">196752</span></span>
+<span id="cb38-52"><a href="#cb38-52" tabindex="-1"></a> [██████████████<span class="sc">--------------------------</span>] <span class="dv">33</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">233665</span></span>
+<span id="cb38-53"><a href="#cb38-53" tabindex="-1"></a> [███████████████<span class="sc">-------------------------</span>] <span class="dv">37</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">256656</span></span>
+<span id="cb38-54"><a href="#cb38-54" tabindex="-1"></a> [██████████████████<span class="sc">----------------------</span>] <span class="dv">43</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">287146</span></span>
+<span id="cb38-55"><a href="#cb38-55" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">49</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">319232</span></span>
+<span id="cb38-56"><a href="#cb38-56" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">54</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Cells<span class="sc">:</span> <span class="dv">345004</span></span>
+<span id="cb38-57"><a href="#cb38-57" tabindex="-1"></a> [█████████████████████████<span class="sc">---------------</span>] <span class="dv">62</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Cells<span class="sc">:</span> <span class="dv">370361</span></span>
+<span id="cb38-58"><a href="#cb38-58" tabindex="-1"></a> [████████████████████████████<span class="sc">------------</span>] <span class="dv">68</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Cells<span class="sc">:</span> <span class="dv">392988</span></span>
+<span id="cb38-59"><a href="#cb38-59" tabindex="-1"></a> [█████████████████████████████<span class="sc">-----------</span>] <span class="dv">71</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Cells<span class="sc">:</span> <span class="dv">412916</span></span>
+<span id="cb38-60"><a href="#cb38-60" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">76</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Cells<span class="sc">:</span> <span class="dv">432217</span></span>
+<span id="cb38-61"><a href="#cb38-61" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">83</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">13</span>s] Cells<span class="sc">:</span> <span class="dv">452143</span></span>
+<span id="cb38-62"><a href="#cb38-62" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">87</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">14</span>s] Cells<span class="sc">:</span> <span class="dv">471689</span></span>
+<span id="cb38-63"><a href="#cb38-63" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">92</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">15</span>s] Cells<span class="sc">:</span> <span class="dv">491193</span></span>
+<span id="cb38-64"><a href="#cb38-64" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">16</span>s] Cells<span class="sc">:</span> <span class="dv">508419</span></span>
+<span id="cb38-65"><a href="#cb38-65" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">16</span>s] Saving snapshot</span></code></pre></div>
 <p>The time-series can be plot using <code><a href="../reference/plot_timeseries.html">plot_timeseries()</a></code>.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-series plot</span></span>
@@ -988,10 +979,10 @@ and <code>B-</code>.</p>
 <span id="cb44-32"><a href="#cb44-32" tabindex="-1"></a><span class="co"># Now D will become larger</span></span>
 <span id="cb44-33"><a href="#cb44-33" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"D+"</span>, <span class="dv">6000</span>)</span>
 <span id="cb44-34"><a href="#cb44-34" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb44-35"><a href="#cb44-35" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">17</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">435409</span></span>
-<span id="cb44-36"><a href="#cb44-36" tabindex="-1"></a> [████████<span class="sc">--------------------------------</span>] <span class="dv">18</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">333123</span></span>
-<span id="cb44-37"><a href="#cb44-37" tabindex="-1"></a> [█████████<span class="sc">-------------------------------</span>] <span class="dv">20</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">216059</span></span>
-<span id="cb44-38"><a href="#cb44-38" tabindex="-1"></a> [██████████████<span class="sc">--------------------------</span>] <span class="dv">34</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">93825</span></span>
+<span id="cb44-35"><a href="#cb44-35" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">17</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">443896</span></span>
+<span id="cb44-36"><a href="#cb44-36" tabindex="-1"></a> [███████<span class="sc">---------------------------------</span>] <span class="dv">17</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">356002</span></span>
+<span id="cb44-37"><a href="#cb44-37" tabindex="-1"></a> [████████<span class="sc">--------------------------------</span>] <span class="dv">19</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">243726</span></span>
+<span id="cb44-38"><a href="#cb44-38" tabindex="-1"></a> [██████████<span class="sc">------------------------------</span>] <span class="dv">24</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">116370</span></span>
 <span id="cb44-39"><a href="#cb44-39" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Saving snapshot</span>
 <span id="cb44-40"><a href="#cb44-40" tabindex="-1"></a></span>
 <span id="cb44-41"><a href="#cb44-41" tabindex="-1"></a><span class="co"># Current state</span></span>
