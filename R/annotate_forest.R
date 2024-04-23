@@ -27,10 +27,21 @@
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
 #' sim$sample_cells("MySample", c(500, 500), c(510, 510))
+#' m_engine = build_mutation_engine(setup_code = "demo")
+#'
+#' m_engine$add_mutant(mutant_name = "A",
+#'                    passenger_rates = c(SNV = 1e-9),
+#'                    driver_SNVs = c(SNV("22", 10510210, "C")),
+#'                    driver_CNAs = c(CNA(type = "A", "22", pos_in_chr = 10303470,
+#'                                        len = 200000)))
+#' m_engine$add_exposure(coefficients = c(SBS13 = 0.2, SBS1 = 0.8))
+#' m_engine$add_exposure(time=50, coefficients = c(SBS17b = 0.2, SBS3 = 0.8))
+#'
 #' forest = sim$get_samples_forest()
 #' forest$get_samples_info()
+#' forest_muts = m_engine$place_mutations(forest, 1000)
 #' tree_plot = plot_forest(forest)
-#' annotate_forest(tree_plot, forest)
+#' annotate_forest(tree_plot, forest_muts, samples = T, MRCAs = T, exposures = T, drivers=T, add_driver_label = T)
 annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE, 
                             exposures = FALSE, facet_signatures = TRUE, 
                             drivers = TRUE, add_driver_label = TRUE) {
