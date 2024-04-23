@@ -855,7 +855,7 @@ Rcpp::List MutationEngine::get_SBS_dataframe() const
 
 Rcpp::List MutationEngine::get_known_driver_mutations() const
 {
-  std::string driver_filename = m_engine.get_driver_storage().get_source_path();
+  auto driver_filename = m_engine.get_driver_storage().get_source_path().string();
 
   Rcpp::Function read_delim("read.delim");
 
