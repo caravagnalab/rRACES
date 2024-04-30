@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -438,6 +438,11 @@
         <dd>Get the supported codes for predefined set-up</dd>
       </dl><dl><dt>
           
+          <code><a href="Indel.html">Indel</a></code> 
+        </dt>
+        <dd>Create an indel.</dd>
+      </dl><dl><dt>
+          
           <code><a href="load_phylogenetic_forest.html">load_phylogenetic_forest</a></code> 
         </dt>
         <dd>Load a phylogenetic forest from a file</dd>
@@ -446,6 +451,36 @@
           <code><a href="muts_to_sticks.html">muts_to_sticks()</a></code> 
         </dt>
         <dd>Get mutations-nodes map</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Mutation-cash-get_alt.html">Mutation$get_alt</a></code> 
+        </dt>
+        <dd>Get the sequence after the SNV occurs.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Mutation-cash-get_cause.html">Mutation$get_cause</a></code> 
+        </dt>
+        <dd>Get the mutation cause.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Mutation-cash-get_chromosome.html">Mutation$get_chromosome</a></code> 
+        </dt>
+        <dd>Get the chromosome in which the SNV occurs.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Mutation-cash-get_dataframe.html">Mutation$get_dataframe</a></code> 
+        </dt>
+        <dd>Get a data frame representing the mutation.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Mutation-cash-get_position_in_chromosome.html">Mutation$get_position_in_chromosome</a></code> 
+        </dt>
+        <dd>Get the position in chromosome where the SNV occurs.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="Mutation-cash-get_ref.html">Mutation$get_ref</a></code> 
+        </dt>
+        <dd>Get the reference sequence in which the mutation occurs.</dd>
       </dl><dl><dt>
           
           <code><a href="MutationEngine-cash-add_exposure.html">MutationEngine$add_exposure</a></code> 
@@ -503,6 +538,11 @@
         <dd>Mutation engines generate phylogenetic forests</dd>
       </dl><dl><dt>
           
+          <code><a href="Mutations.html">Mutations</a></code> 
+        </dt>
+        <dd>A single nucleotide variation</dd>
+      </dl><dl><dt>
+          
           <code><a href="PhylogeneticForest-cash-get_coalescent_cells.html">PhylogeneticForest$get_coalescent_cells</a></code> 
         </dt>
         <dd>Retrieve most recent common ancestors</dd>
@@ -518,9 +558,9 @@
         <dd>Gets the identifier of the cell in which a mutation occurs for the first time</dd>
       </dl><dl><dt>
           
-          <code><a href="PhylogeneticForest-cash-get_germline_SNVs.html">PhylogeneticForest$get_germline_SNVs</a></code> 
+          <code><a href="PhylogeneticForest-cash-get_germline_mutations.html">PhylogeneticForest$get_germline_mutations</a></code> 
         </dt>
-        <dd>Gets the SNVs of the germline</dd>
+        <dd>Gets the germinal SNVs and indels</dd>
       </dl><dl><dt>
           
           <code><a href="PhylogeneticForest-cash-get_germline_subject.html">PhylogeneticForest$get_germline_subject</a></code> 
@@ -538,9 +578,9 @@
         <dd>Gets the CNAs of the sampled cells</dd>
       </dl><dl><dt>
           
-          <code><a href="PhylogeneticForest-cash-get_sampled_cell_SNVs.html">PhylogeneticForest$get_sampled_cell_SNVs</a></code> 
+          <code><a href="PhylogeneticForest-cash-get_sampled_cell_mutations.html">PhylogeneticForest$get_sampled_cell_mutations</a></code> 
         </dt>
-        <dd>Gets the SNVs of the sampled cells</dd>
+        <dd>Gets the mutations of the sampled cells</dd>
       </dl><dl><dt>
           
           <code><a href="PhylogeneticForest-cash-get_samples_info.html">PhylogeneticForest$get_samples_info</a></code> 
@@ -573,39 +613,9 @@
         <dd>The phylogenetic forest of cells in samples.</dd>
       </dl><dl><dt>
           
-          <code><a href="SNV-cash-get_alt_base.html">SNV$get_alt_base</a></code> 
-        </dt>
-        <dd>Get the base after the SNV occurs.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="SNV-cash-get_cause.html">SNV$get_cause</a></code> 
-        </dt>
-        <dd>Get the SNV cause.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="SNV-cash-get_chromosome.html">SNV$get_chromosome</a></code> 
-        </dt>
-        <dd>Get the chromosome in which the SNV occurs.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="SNV-cash-get_dataframe.html">SNV$get_dataframe</a></code> 
-        </dt>
-        <dd>Get a data frame representing the SNV.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="SNV-cash-get_position_in_chromosome.html">SNV$get_position_in_chromosome</a></code> 
-        </dt>
-        <dd>Get the position in chromosome where the SNV occurs.</dd>
-      </dl><dl><dt>
-          
-          <code><a href="SNV-cash-get_ref_base.html">SNV$get_ref_base</a></code> 
-        </dt>
-        <dd>Get the reference base in which the SNV occurs.</dd>
-      </dl><dl><dt>
-          
           <code><a href="SNV.html">SNV</a></code> 
         </dt>
-        <dd>A single nucleotide variation</dd>
+        <dd>Create an SNV.</dd>
       </dl></div><div class="section level2">
       <h2 id="sequencing-simulation-interface">Sequencing simulation interface<a class="anchor" aria-label="anchor" href="#sequencing-simulation-interface"></a></h2>
       

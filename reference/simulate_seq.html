@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,18 +130,17 @@ analysis of a normal sample (default: <code>TRUE</code>).</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A data frame representing, for each of the observed
-SNVs, the chromosome and the position in which
-it occurs (columns <code>chr</code> and <code>chr_pos</code>),
-the SNV reference base, the alterate base, the causes,
-and the classes of the SNV (columns <code>ref_base</code>, <code>alt_base</code>,
-<code>causes</code>, and <code>classes</code>, respectively). Moreover, for each
-of the sequencied samples <code>&lt;sample name&gt;</code>, the returned
-data frame contains three columns: the number of reads in
-which the corresponding SNV occurs (column
-<code>&lt;sample name&gt;.occurrences</code>), the coverage of the SNV
-locus (column <code>&lt;sample name&gt;.coverage</code>), and the
-corresponding VAF (column <code>&lt;sample name&gt;.VAF</code>).</p>
+<p>A data frame representing, for each of the observed SNVs
+and indels, the chromosome and the position in which it occurs
+(columns <code>chr</code> and <code>chr_pos</code>), the mutation reference and
+alterate sequences (columns <code>ref</code> and <code>alt</code>, respectively), its
+cause and class (columns <code>causes</code>, and <code>classes</code>, respectively).
+Moreover, for each of the sequencied samples <code>&lt;sample name&gt;</code>,
+the returned data frame contains three columns: the number of
+reads in which the corresponding mutation occurs (column
+<code>&lt;sample name&gt;.occurrences</code>), the coverage of the mutation
+(column <code>&lt;sample name&gt;.coverage</code>), and the corresponding VAF
+(column <code>&lt;sample name&gt;.VAF</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

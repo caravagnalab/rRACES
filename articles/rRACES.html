@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,7 +122,7 @@ signatures can also be included.</p></li>
 possible to generate tumour-matched-normal synthetic data for
 benchmarking bioinformatics tools, or to infer parameters against real
 sequencing data. rRACES output include common VCF formats, as well as
-low-level SAM/FASTq outputs that can be used for aligment and downstream
+low-level SAM outputs that can be used for aligment and downstream
 analysis. Every simulated sample can be assigned custom coverage and
 purity.</p></li>
 </ol>
@@ -133,7 +133,7 @@ purity.</p></li>
 are:</p>
 <ol style="list-style-type: decimal">
 <li>cells are associated with species that proliferate in a stochastic
-fashion on a 2D lattice ;</li>
+fashion on a 2D lattice;</li>
 <li>every species is defined by <em>(i)</em> an abstract “mutant” and
 <em>(ii)</em> a epi-state; the epi-state is binary (0/1, on-off). The
 combination of the mutant and the epi-state determine the evolutionary
@@ -156,7 +156,7 @@ time-points;</li>
 <li>realistic read-counts based bulk sequencing data can be generated,
 both at the level of whole-genome, whole-exome and targeted panels, as
 well as at the level of pre-processed outputs (VCFs) or low-level
-sequencing outputs (SAM/FASTq);</li>
+sequencing outputs (SAM);</li>
 <li>full access to the evolutionary process and its output is available,
 allowing easy testing of complex clonal architecture identification
 methods, mutation callers, etc.</li>
@@ -209,8 +209,8 @@ phylogeny.</li>
 <li>VCF: given mutations on the phylogenetic tree, custom coverage and
 sample purity, a VCF can be simulated to mimic variant-calling with
 Beta-Binomial noise.</li>
-<li>SAM/FASTq: from the same mutations it is possible to generate reads
-for a tumour matched-normal assay, and fed that data to a custom
+<li>SAM: from the same mutations it is possible to generate reads for a
+tumour matched-normal assay, and fed that data to a custom
 biorinformatics pipeline.</li>
 </ol>
 </div>

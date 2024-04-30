@@ -24,7 +24,7 @@ genome mutations occurring in the corresponding cell."><meta property="og:image"
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,17 +102,18 @@ and the birth time (column <code>birth_time</code>).</p></li>
 
 <dt><code>get_first_occurrences</code></dt>
 <dd><p>Gets the identifier of the cell in which a
-mutation occurs for the first time</p><ul><li><p><em>Parameter:</em> <code>mutation</code> - A mutation being either a
-SNV or a CNA.</p></li>
+mutation occurs for the first time</p><ul><li><p><em>Parameter:</em> <code>mutation</code> - A mutation being a
+SNV, a indel, or a CNA.</p></li>
 <li><p><em>Return:</em> The identifier of the cell in which a mutation
 occurs for the first time.</p></li>
 </ul></dd>
 
 
-<dt><code>get_germline_SNVs</code></dt>
-<dd><p>Gets the SNVs of the germline</p><ul><li><p><em>Return:</em> A data frame reporting <code>chr</code> (i.e., the
+<dt><code>get_germline_mutations</code></dt>
+<dd><p>Gets the germinal SNVs and indels</p><ul><li><p><em>Return:</em> A data frame reporting <code>chr</code> (i.e., the
 chromosome), <code>chr_pos</code>" (i.e., the position in the chromosome),
-<code>allele</code> (in which the SNV occurs), <code>ref</code>, <code>alt</code>, and <code>cause</code>.</p></li>
+<code>allele</code> (in which the SNV occurs), <code>ref</code>, <code>alt</code>, <code>type</code> (i.e., either
+<code>"SNV"</code> or <code>"indel"</code>) and <code>class</code> (i.e., <code>"germinal"</code>).</p></li>
 </ul></dd>
 
 
@@ -145,12 +146,14 @@ last CNA locus in the chromosome), <code>allele</code>, <code>src allele</code>
 </ul></dd>
 
 
-<dt><code>get_sampled_cell_SNVs</code></dt>
-<dd><p>Gets the SNVs of the sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting <code>cell_id</code>, <code>chr</code>, (i.e., the
+<dt><code>get_sampled_cell_mutations</code></dt>
+<dd><p>Gets the SNVs and the indels of the
+sampled cells</p><ul><li><p><em>Returns:</em> A data frame reporting <code>cell_id</code>, <code>chr</code>, (i.e., the
 mutation chromosome), <code>begin</code> (i.e., position in the chromosome),
-<code>allele</code> (in which the SNV occurs), <code>ref</code>, <code>alt</code>, <code>cause</code>, and <code>class</code>
-(i.e., <code>"driver"</code>, <code>"passenger"</code>, <code>"germinal"</code> or <code>"preneoplastic"</code>)
-for each SNV in the sampled cell genomes.</p></li>
+<code>allele</code> (in which the SNV occurs), <code>ref</code>, <code>alt</code>, <code>type</code> (i.e., either
+<code>"SNV"</code> or <code>"indel"</code>), <code>cause</code>, and <code>class</code> (i.e., <code>"driver"</code>,
+<code>"passenger"</code>, <code>"germinal"</code> or <code>"preneoplastic"</code>) for each mutation
+in the sampled cell genomes.</p></li>
 </ul></dd>
 
 
