@@ -123,7 +123,7 @@ utils:::format.object_size(file.size("demo/context_index_50.cif"), "auto")
 
 The function `build_mutation_engine()` can be called by specifing the name
 of the set-up directory, the path or URL of the reference sequence, the
-SBS file, the driver SNVs file, the passenger CNAs file, and the germline
+SBS file, the driver mutation file, the passenger CNAs file, and the germline
 data directory.
 
 ```{r}
@@ -196,6 +196,8 @@ The genetic specification of the mutant `A` can be declared as it follows.
 m_engine <- build_mutation_engine(setup_code = "demo")
 ```
 
+DA QUI
+
 ```{r}
 # add the mutant "A" characterized by one driver SNV on the allele 1 of
 # chromosome 22 and two CNAs: a deletion on the allele 1 of chromosome 22
@@ -206,33 +208,33 @@ m_engine <- build_mutation_engine(setup_code = "demo")
 m_engine$add_mutant(mutant_name = "A",
                     passenger_rates = list("+" = c(SNV = 1e-9),
                                            "-" = c(SNV = 3e-8, CNA = 1e-11)),
-                    driver_SNVs = list(SNV("22", 10510210, "C", allele = 1)),
-                    driver_CNAs = list(CNA(type = "A", "22",
-                                           chr_pos = 10303470, len = 200000),
-                                       CNA("D", "22", 5010000, 200000,
-                                           allele = 1)))
+                    drivers = list(SNV("22", 10510210, "C", allele = 1),
+                                   CNA(type = "A", chr = "22",
+                                       chr_pos = 10303470, len = 200000),
+                                   CNA("D", "22", 5010000, 200000,
+                                       allele = 1)))
 
 m_engine
 ```
 
-In the above code, the driver CNAs and SNVs are declared by calling
-the functions `CNA()` and `SNV()`, respectively. These function allow to specify
-the allele in which the mutation must lay.
+In the above code, the driver CNAs, SNVs, and indels are declared by calling
+the functions `CNA()`, `SNV()`, and `indel()`, respectively. These function allow
+to specify the allele in which the mutation must lay.
 
-As far as the SNVs concern, rRACES provides the users with a more compact and,
-sometimes, convenient approach. The mutation engine stores a list of known
-driver mutations and labels each of them by a code which can be used
+As far as the SNVs and indels concern, rRACES provides the users with a more
+compact and, sometimes, convenient approach. The mutation engine stores a list
+of known driver mutations and labels each of them by a code which can be used
 during the mutant declaration. The corresponding data frame can be obtained
 by using the method `MutationEngine$get_known_drivers()`.
 
 ```{r}
 library(dplyr)
 
-m_engine$get_known_drivers() %>% filter(chr == "chr22")
+m_engine$get_known_drivers() %>% filter(chr == "22")
 ```
 
 The code of the known driver mutations can be used in place of the full
-SNV specification as follows.
+specification as follows.
 
 ```{r}
 # add the mutant "B" characterized by three driver SNVs on chromosome 22 (no
@@ -248,6 +250,8 @@ m_engine$add_mutant("B", list("+" = c(SNV = 8e-7), "-" = c(SNV = 5e-8)),
 
 m_engine
 ```
+
+A QUI
 
 #### Mutational Exposures
 
@@ -374,15 +378,15 @@ phylo_forest
 The phylogenetic forest stores all the mutations labeling the
 sampled cells which are represented by the forest leaves.
 Users can retrieve such data by using the methods
-`PhylogeneticForest$get_sampled_cell_SNVs()` and
+`PhylogeneticForest$get_sampled_cell_mutations()` and
 `PhylogeneticForest$get_sampled_cell_CNAs()`.
 
 ```{r}
 library(dplyr)
 
-# select the first SNVs among all the mutations occuring in
+# select the first mutations among all the mutations occuring in
 # the genomes of the sampled cells
-phylo_forest$get_sampled_cell_SNVs() %>% head()
+phylo_forest$get_sampled_cell_mutations() %>% head()
 
 # select the first CNAs among all the mutations occuring in
 # the genomes of the sampled cells
@@ -398,19 +402,19 @@ sampled_cells %>% head()
 # get the identifier of the 3rd cell in `sampled_cells`
 cell_id <- sampled_cells[3, 1]
 
-# get the SNVs of the 3rd cell in `sampled_cells`
-phylo_forest$get_sampled_cell_SNVs(cell_id) %>% head()
+# get the SNVs and the indels of the 3rd cell in `sampled_cells`
+phylo_forest$get_sampled_cell_mutations(cell_id) %>% head()
 
 # get the CNAs of the 3rd cell in `sampled_cells`
 phylo_forest$get_sampled_cell_CNAs(cell_id) %>% head()
 ```
 
-The method `PhylogeneticForest$get_germline_SNVs()` returns
-the SNVs in the germline.
+The method `PhylogeneticForest$get_germline_mutations()` returns
+the SNVs and the indels in the germline.
 
 ```{r}
-# extract the SNVs in the germline
-phylo_forest$get_germline_SNVs() %>% head()
+# extract the germline mutation
+phylo_forest$get_germline_mutations() %>% head()
 ```
 
 
@@ -419,7 +423,7 @@ even when the cell was not sampled.
 
 ```{r}
 # select one of the mutations
-mutation_row <- phylo_forest$get_sampled_cell_SNVs(cell_id)[2, ]
+mutation_row <- phylo_forest$get_sampled_cell_mutations(cell_id)[2, ]
 
 # rebuild the corresponding SNV
 snv <- SNV(mutation_row["chr"][1, ],
@@ -469,15 +473,15 @@ In particular, any new mutations is placed on a locus whose context is mutation-
 test_infinite_sites_model <- function(phylo_forest) {
   # extract non-germinal SNVs that appear multiple times either
   # in the same cell or different cells
-  snvs <- phylo_forest$get_sampled_cell_SNVs() %>%
-    filter(class != "germinal") %>%
+  snvs <- phylo_forest$get_sampled_cell_mutations() %>%
+    filter(class != "germinal", .data$type == "SNV") %>%
     count(.data$chr, .data$chr_pos, .data$ref, .data$alt) %>%
     filter(n > 1)
 
   # search for an SNV that independently occurred in two unrelated cells
   first_occurrences <- c()
   row <- 1
-  while (length(first_occurrences)<2 && row <= nrow(snvs)) {
+  while (length(first_occurrences) < 2 && row <= nrow(snvs)) {
     snv <- SNV(snvs[row, "chr"], snvs[row, "chr_pos"],
                ref = snvs[row, "ref"], alt = snvs[row, "alt"])
 
@@ -491,8 +495,8 @@ test_infinite_sites_model <- function(phylo_forest) {
 
     # print a message containing the two cells
     paste0("SNV('", snv$get_chromosome(), "'',",
-           snv$get_position_in_chromosome(), ",'", snv$get_ref_base(),
-           "','", snv$get_alt_base(),
+           snv$get_position_in_chromosome(), ",'", snv$get_ref(),
+           "','", snv$get_alt(),
            "') independently arises in cells ", first_occurrences[1],
            " and ", first_occurrences[2])
   } else {

@@ -21,17 +21,12 @@
 #' forest$get_samples_info()
 #' m_engine = build_mutation_engine(setup_code = "demo")
 #' m_engine$add_mutant(mutant_name = "A",
-#' passenger_rates = c(SNV = 5e-8),
-#' driver_SNVs = c(),
-#' driver_CNAs = c())
-#' m_engine$add_exposure(time = 0, c(SBS1 = 0.2,SBS5 = 0.8)) 
+#'                     passenger_rates = c(SNV = 5e-8))
+#' m_engine$add_exposure(time = 0, c(SBS1 = 0.2,SBS5 = 0.8))
 #' phylo_forest = m_engine$place_mutations(frel, 100)
 #' labels = get_events_table(forest)
-#' seq_results = simulate_seq(
-#' phylo_forest,
-#' coverage = 100,
-#' epi_FACS =  F,
-#' write_SAM = F)
+#' seq_results = simulate_seq(phylo_forest, coverage = 100,
+#'                            epi_FACS = False, write_SAM = False)
 #' muts = muts_to_sticks(phylo_forest,seq_results,labels)
 #' plot_vaf(muts,vaf_cut = 0.02, color_by = "stick")
 

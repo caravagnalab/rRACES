@@ -83,8 +83,7 @@ preprocess <- function(phylo_forest) {
 #' m_engine <- build_mutation_engine(setup_code = "demo")
 #'
 #' m_engine$add_mutant(mutant_name = "A",
-#'                     passenger_rates = c(SNV = 8e-8),
-#'                     driver_SNVs = c(), driver_CNAs = c())
+#'                     passenger_rates = c(SNV = 8e-8))
 #'
 #' m_engine$add_exposure(c(SBS1 = 0.2, SBS5 = 0.8))
 #' m_engine$add_exposure(time = 50,

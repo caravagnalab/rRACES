@@ -21,19 +21,19 @@
 
 #include "phylogenetic_forest.hpp"
 #include "mutation_engine.hpp"
-#include "snv.hpp"
+#include "sid.hpp"
 #include "cna.hpp"
 
 using namespace Rcpp;
 
 RCPP_MODULE(Mutations){
 
-//' @name SNV
+//' @name Mutations
 //' @title A single nucleotide variation
-  class_<SNV>("SNV")
+  class_<SID>("Mutation")
     .constructor()
 
-//' @name SNV$get_chromosome
+//' @name Mutation$get_chromosome
 //' @title Get the chromosome in which the SNV occurs.
 //' @return The chromosome in which the SNV occurs.
 //' @examples
@@ -41,9 +41,9 @@ RCPP_MODULE(Mutations){
 //'
 //' # get the chromosome in which `snv` occurs (i.e., "X")
 //' snv$get_chromosome()
-    .method("get_chromosome",&SNV::get_chromosome, "Get the chromosome of the SNV position")
+    .method("get_chromosome",&SID::get_chromosome, "Get the chromosome of the mutation")
 
-//' @name SNV$get_position_in_chromosome
+//' @name Mutation$get_position_in_chromosome
 //' @title Get the position in chromosome where the SNV occurs.
 //' @return The position in chromosome where the SNV occurs.
 //' @examples
@@ -51,36 +51,36 @@ RCPP_MODULE(Mutations){
 //'
 //' # get the position in chromosome where `snv` occurs (i.e., 20002)
 //' snv$get_position_in_chromosome()
-    .method("get_position_in_chromosome",&SNV::get_position_in_chromosome,
-            "Get the SNV position in the chromosome")
+    .method("get_position_in_chromosome",&SID::get_position_in_chromosome,
+            "Get the mutation position in the chromosome")
 
-//' @name SNV$get_ref_base
-//' @title Get the reference base in which the SNV occurs.
-//' @return The reference base in which the SNV occurs.
+//' @name Mutation$get_ref
+//' @title Get the reference sequence in which the mutation occurs.
+//' @return The reference sequence before the mutation.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
 //'
 //' # get the reference base in which `snv` occurs (i.e., "A")
-//' snv$get_ref_base()
-    .method("get_ref_base",&SNV::get_ref_base, "Get the reference base in the SNV locus")
+//' snv$get_ref()
+    .method("get_ref",&SID::get_ref, "Get the mutation reference sequence")
 
-//' @name SNV$get_alt_base
-//' @title Get the base after the SNV occurs.
-//' @return The base after the SNV occurs.
+//' @name Mutation$get_alt
+//' @title Get the sequence after the SNV occurs.
+//' @return The sequence after the SNV occurs.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
 //'
-//' # get the base after `snv` occurs (i.e., "T")
-//' snv$get_alt_base()
-    .method("get_alt_base",&SNV::get_alt_base, "Get the new base of the SNV")
+//' # get the sequence after `snv` occurs (i.e., "T")
+//' snv$get_alt()
+    .method("get_alt",&SID::get_alt, "Get the mutation altered sequence")
 
-//' @name SNV$get_cause
-//' @title Get the SNV cause.
-//' @description Evey SNV produced by RACES/rRACES is associated to a cause depending
-//'   on whether it is part of a genomic characterization of a mutant or it is
-//'   caused by a specific SBS profile. This method return such a cause whenever
-//'   it is available.
-//' @return The base after the SNV occurs.
+//' @name Mutation$get_cause
+//' @title Get the mutation cause.
+//' @description Evey mutation produced by RACES/rRACES is associated to a
+//'   cause depending on whether it is part of a genomic characterization of a
+//'   mutant or it is caused by a specific SBS profile. This method return
+//'   such a cause whenever it is available.
+//' @return The sequence after the mutation.
 //' @examples
 //' # let us build a SNV without specifying any cause for it
 //' snv <- SNV("X", 20002, "T", "A")
@@ -93,22 +93,23 @@ RCPP_MODULE(Mutations){
 //'
 //' # get the cause of `snv` (i.e., "SBS13")
 //' snv$get_cause()
-    .method("get_cause",&SNV::get_cause, "Get the cause of the SNV")
+    .method("get_cause",&SID::get_cause, "Get the cause of the mutation")
 
-//' @name SNV$get_dataframe
-//' @title Get a data frame representing the SNV.
-//' @description This method returns a data frame that represents the SNV and whose
-//'   columns are `chr`, `chr_pos`, `ref`, `alt`, and
-//'   `cause`.
+//' @name Mutation$get_dataframe
+//' @title Get a data frame representing the mutation.
+//' @description This method returns a data frame that represents the
+//'   mutation and whose columns are `chr`, `chr_pos`, `ref`, `alt`,
+//'   `type` (i.e., "SNV" and "indel"), and `cause`.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
 //'
 //' snv$get_dataframe()
-    .method("get_dataframe",&SNV::get_dataframe, "Get a dataframe representing the SNV")
-    .method("show",&SNV::show);
+    .method("get_dataframe",&SID::get_dataframe,
+            "Get a dataframe representing the mutation")
+    .method("show",&SID::show);
 
 //' @name SNV
-//' @title Create a SNV.
+//' @title Create an SNV.
 //' @param chr The name of the chromosome in which the SNV occurs.
 //' @param chr_pos The position in the chromosome where the SNV occurs.
 //' @param alt The base after the mutation.
@@ -131,11 +132,41 @@ RCPP_MODULE(Mutations){
 //' # create a SNV with a cause
 //' snv <- SNV("X", 20002, "T", cause = "SBS1")
 //' snv
-  function("SNV", &SNV::build_SNV,
+  function("SNV", &SID::build_SNV,
            List::create(_["chr"], _["chr_pos"], _["alt"],
                         _["ref"] = "?", _["allele"] = R_NilValue,
                         _["cause"] = ""),
            "Create a single nucleotide variation (SNV)");
+
+//' @name Indel
+//' @title Create an indel.
+//' @param chr The name of the chromosome in which the indel occurs.
+//' @param chr_pos The position in the chromosome where the indel occurs.
+//' @param ref The sequence before the indel.
+//' @param alt The sequence after the indel.
+//' @param allele The allele in which the SNV must occur (optional).
+//' @param cause The cause of the SNV (optional).
+//' @examples
+//' # create a deletion without specifying the cause
+//' indel <- Indel("X", 20002, "TAC", "")
+//' indel
+//'
+//' # create an insertion and do not specify the cause
+//' indel <- Indel("X", 20002, "", "AT")
+//' indel
+//'
+//' # create an insertion that must be place in allele 1
+//' indel <- Indel("X", 20002, "", "AT", allele = 1)
+//' indel
+//'
+//' # create an insertion with a cause
+//' indel <- Indel("X", 20002, "", "AT", cause = "SBS1")
+//' indel
+  function("Indel", &SID::build_SID,
+           List::create(_["chr"], _["chr_pos"], _["ref"] = "",
+                        _["alt"] = "", _["allele"] = R_NilValue,
+                        _["cause"] = ""),
+           "Create an insertion or a deletion (indel)");
 
 //' @name CNA
 //' @title Create a CNA amplification.
@@ -371,15 +402,15 @@ RCPP_MODULE(Mutations){
 //' @name MutationEngine$add_mutant
 //' @title Add a mutant specification to the mutation engine.
 //' @description This method adds a mutant specification to the mutation engine.
-//'   The users must use it to specify the name and the genomic
-//'   characterization (i.e., SNVs and CNAs) of all the simulated mutants
-//'   together with the mutation rates of its species.
+//'   The users must use it to specify the name and the genomic characterization
+//'   (i.e., SNVs, indels, and CNAs) of all the simulated mutants together with
+//'   the mutation rates of its species.
 //' @param mutant_name The mutant name.
 //' @param passenger_rates The list of the passenger rates whose names are the
 //'   epigenetic states of the species or a single rate, if the mutant
 //'   does not have an epigenetic state.
-//' @param driver_SNVs The list of the driver SNVs characterizing the mutant.
-//' @param driver_CNAs The list of the driver CNAs characterizing the mutant.
+//' @param drivers The list of the driver SNVs, indels, and CNAs characterizing
+//'   the mutant (optional).
 //' @examples
 //' # create a demostrative mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
@@ -390,24 +421,23 @@ RCPP_MODULE(Mutations){
 //' # 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.
 //' m_engine$add_mutant("A", list("+" = c(SNV = 1e-9),
 //'                               "-" = c(SNV = 3e-8, CNA = 1e-11)),
-//'                     driver_SNVs = c(SNV("22", 10510210, "C")),
-//'                     driver_CNAs = c(CNA(type = "A", "22",
-//'                                         chr_pos = 10303470,
-//'                                         len = 200000),
-//'                                     CNA("D", "22", 5010000, 200000)))
+//'                     drivers = list(SNV("22", 10510210, "C"),
+//'                                    CNA(type = "A", chr = "22",
+//'                                        chr_pos = 10303470,
+//'                                        len = 200000),
+//'                                    CNA("D", "22", 5010000, 200000)))
 //'
 //' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no
 //' # CNA) and missing epigenetic state. Its species "B" has passenger SNV
 //' # rate 5e-9 and passenger CNA rate 0.
-//' m_engine$add_mutant("B", c(SNV = 5e-9), c(SNV("22", 10510210, "C")))
+//' m_engine$add_mutant("B", c(SNV = 5e-9), list(SNV("22", 10510210, "C")))
 //'
 //' m_engine
-    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates,
-                                                    const Rcpp::List&))(
+    .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates))(
                                                         &MutationEngine::add_mutant),
             "Add mutant")
     .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates,
-                                                    const Rcpp::List&, const Rcpp::List&))(
+                                                    const Rcpp::List&))(
                                                         &MutationEngine::add_mutant),
             "Add mutant")
 
@@ -444,7 +474,7 @@ RCPP_MODULE(Mutations){
 //'
 //' # add the mutant "A" to the engine
 //' m_engine$add_mutant("A", c(SNV = 3e-9),
-//'                     c(SNV("22", 12028576, "G")))
+//'                     list(SNV("22", 12028576, "G")))
 //'
 //' # add the default set of SBS coefficients
 //' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))
@@ -756,15 +786,16 @@ RCPP_MODULE(Mutations){
 //' }
 //' @field get_first_occurrences Gets the identifier of the cell in which a
 //'   mutation occurs for the first time\itemize{
-//' \item \emph{Parameter:} \code{mutation} - A mutation being either a
-//'   SNV or a CNA.
+//' \item \emph{Parameter:} \code{mutation} - A mutation being a
+//'   SNV, a indel, or a CNA.
 //' \item \emph{Return:} The identifier of the cell in which a mutation
 //'   occurs for the first time.
 //' }
-//' @field get_germline_SNVs Gets the SNVs of the germline\itemize{
+//' @field get_germline_mutations Gets the germinal SNVs and indels\itemize{
 //' \item \emph{Return:} A data frame reporting `chr` (i.e., the
 //'   chromosome), `chr_pos`" (i.e., the position in the chromosome),
-//'   `allele` (in which the SNV occurs), `ref`, `alt`, and `cause`.
+//'   `allele` (in which the SNV occurs), `ref`, `alt`, `type` (i.e., either
+//'   `"SNV"` or `"indel"`) and `class` (i.e., `"germinal"`).
 //' }
 //' @field get_germline_subject Gets the germline subject name\itemize{
 //' \item \emph{Return:} The name of the subject whose germline is used.
@@ -789,12 +820,14 @@ RCPP_MODULE(Mutations){
 //'   `class` (i.e., `"driver"`, `"passenger"`, `"germinal"` or
 //'   `"preneoplastic"`).
 //' }
-//' @field get_sampled_cell_SNVs Gets the SNVs of the sampled cells \itemize{
+//' @field get_sampled_cell_mutations Gets the SNVs and the indels of the
+//'   sampled cells\itemize{
 //' \item \emph{Returns:} A data frame reporting `cell_id`, `chr`, (i.e., the
 //'   mutation chromosome), `begin` (i.e., position in the chromosome),
-//'   `allele` (in which the SNV occurs), `ref`, `alt`, `cause`, and `class`
-//'   (i.e., `"driver"`, `"passenger"`, `"germinal"` or `"preneoplastic"`)
-//'   for each SNV in the sampled cell genomes.
+//'   `allele` (in which the SNV occurs), `ref`, `alt`, `type` (i.e., either
+//'   `"SNV"` or `"indel"`), `cause`, and `class` (i.e., `"driver"`,
+//'   `"passenger"`, `"germinal"` or `"preneoplastic"`) for each mutation
+//'   in the sampled cell genomes.
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected
@@ -921,40 +954,42 @@ RCPP_MODULE(Mutations){
                 (&PhylogeneticForest::get_sampled_cell_CNAs),
             "Get the CNAs of all the sampled cells")
 
-//' @name PhylogeneticForest$get_sampled_cell_SNVs
-//' @title Gets the SNVs of the sampled cells
-//' @description This method returns a data frame representing all the SNVs
-//'   in the cells sampled during the simulation and represented by
-//'   the leaves of the phylogenetic forest.
-//'   The data frame also reports the allele in which SNVs occur to
+//' @name PhylogeneticForest$get_sampled_cell_mutations
+//' @title Gets the mutations of the sampled cells
+//' @description This method returns a data frame representing all the SNV
+//'   and the indel mutations in the cells sampled during the simulation
+//'   and represented by the leaves of the phylogenetic forest.
+//'   The data frame also reports the allele in which the mutations occur to
 //'   support double occurrencies due to CNAs.
-//' @param cell_id The identifier of the cell whose SNVs are aimed (optional).
-//' @return A data frame reporting `cell_id`, `chr`, (i.e., the
-//'   mutation chromosome), `chr_pos` (i.e., position in the chromosome),
-//'   `allele` (in which the SNV occurs), `ref`, `alt`, `cause`, and `class`
-//'   (i.e., `"driver"`, `"passenger"`, `"germinal"` or `"preneoplastic"`)
-//'   for each SNV in the sampled cell genomes.
+//' @param cell_id The identifier of the cell whose mutations are aimed
+//'   (optional).
+//' @return A data frame reporting `cell_id`, `chr`, (i.e., the mutation
+//'   chromosome), `chr_pos` (i.e., position in the chromosome), `allele`
+//'   (in which the mutation occurs), `ref`, `alt`, `type` (i.e., either
+//'   `"SNV"` or `"indel"`), `cause`, and `class` (i.e., `"driver"`,
+//'   `"passenger"`, `"germinal"` or `"preneoplastic"`) for each mutation
+//'   in the sampled cell genomes.
 //' @seealso `vignette("mutations")` for usage examples
-    .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
-                (&PhylogeneticForest::get_sampled_cell_SNVs),
-            "Get the SNVs of a sampled cell")
-    .method("get_sampled_cell_SNVs", (List (PhylogeneticForest::*)() const)
-                (&PhylogeneticForest::get_sampled_cell_SNVs),
-            "Get the SNVs of all the sampled cells")
+    .method("get_sampled_cell_mutations", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
+                (&PhylogeneticForest::get_sampled_cell_SIDs),
+            "Get the SNVs and the indels of a sampled cell")
+    .method("get_sampled_cell_mutations", (List (PhylogeneticForest::*)() const)
+                (&PhylogeneticForest::get_sampled_cell_SIDs),
+            "Get the SNVs and indels of all the sampled cells")
 
-//' @name PhylogeneticForest$get_germline_SNVs
-//' @title Gets the SNVs of the germline
+//' @name PhylogeneticForest$get_germline_mutations
+//' @title Gets the germinal SNVs and indels
 //' @description This method returns a data frame representing all the germinal
-//'   SNVs of the cells represented in the phylogenetic forest.
-//'   The data frame also reports the allele in which SNVs occur to
+//'   SNVs and indels of the cells represented in the phylogenetic forest.
+//'   The data frame also reports the allele in which the mutations occur to
 //'   support double occurrencies due to CNAs.
-//' @return A data frame reporting `chr`, `chr_pos` (i.e.,
-//'   the position in the chromosome), `allele` (in which the SNV
-//'   occurs), `ref`, `alt`, `cause`, and `class` (i.e., `"driver"`,
-//'   `"passenger"`, `"germinal"` or `"preneoplastic"`) .
+//' @return A data frame reporting `chr`, `chr_pos` (i.e., the position in
+//'   the chromosome), `allele` (in which the mutation occurs), `ref`, `alt`,
+//'   `cause`, `type` (i.e., either `"SNV"` or `"indel"`) and `class` (i.e.,
+//'   `"germinal"`).
 //' @seealso `vignette("mutations")` for usage examples
-    .method("get_germline_SNVs", &PhylogeneticForest::get_germline_SNVs,
-            "Get the SNVs of the germline")
+    .method("get_germline_mutations", &PhylogeneticForest::get_germline_SIDs,
+            "Get the germinal SNVs and indels")
 
 //' @name PhylogeneticForest$get_sticks
 //' @title Compute the forest sticks
@@ -987,7 +1022,7 @@ RCPP_MODULE(Mutations){
 
 //' @name PhylogeneticForest$get_first_occurrences
 //' @title Gets the identifier of the cell in which a mutation occurs for the first time
-//' @param mutation A mutation being either a SNV or a CNA.
+//' @param mutation A mutation being a SNV, a indel, or a CNA.
 //' @return The identifier of the cell in which a mutation occurs for the first time.
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const SEXP&) const)

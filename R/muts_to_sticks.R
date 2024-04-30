@@ -21,51 +21,27 @@
 #' forest$get_samples_info()
 #' m_engine = build_mutation_engine(setup_code = "demo")
 #' m_engine$add_mutant(mutant_name = "A",
-#' passenger_rates = c(SNV = 5e-8),
-#' driver_SNVs = c(),
-#' driver_CNAs = c())
-#' m_engine$add_exposure(time = 0, c(SBS1 = 0.2,SBS5 = 0.8)) 
+#'                     passenger_rates = c(SNV = 5e-8))
+#' m_engine$add_exposure(time = 0, c(SBS1 = 0.2,SBS5 = 0.8))
 #' phylo_forest = m_engine$place_mutations(frel, 100)
 #' labels = get_events_table(forest)
-#' seq_results = simulate_seq(
-#' phylo_forest,
-#' coverage = 100,
-#' epi_FACS =  F,
-#' write_SAM = F)
+#' seq_results = simulate_seq(phylo_forest, coverage = 100,
+#'                            epi_FACS = False, write_SAM = False)
 #' muts_to_sticks(phylo_forest,seq_results,labels)
 
+muts_to_sticks <- function(phylo_forest,seq_results,labels){
 
+  sampled_mutations <- phylo_forest$get_sampled_cell_mutations() %>%
+    as_tibble() %>%
+    dplyr::select(-cell_id) %>% unique() %>%
+    mutate(id = paste0("chr", chromosome, ":", chr_pos,
+                       ":", ref, ":", alt))
 
+  seq_results <- seq_results %>% 
+    mutate(id = paste0("chr", chromosome, ":", chr_pos,
+                       ":", ref, ":", alt)) %>%
+    filter(classes != "germinal") %>% as_tibble()
 
-muts_to_sticks = function(phylo_forest,seq_results,labels){
-  
-  sampled_snvs = phylo_forest$get_sampled_cell_SNVs() %>% as_tibble() %>% 
-    dplyr::select(-cell_id) %>% unique() %>% 
-    mutate(id = paste0(
-      "chr",
-      chromosome,
-      ":",
-      chr_pos,
-      ":",
-      ref,
-      ":",
-      alt
-    ))
-  
-  
-  seq_results = seq_results %>% 
-    mutate(id = paste0(
-      "chr",
-      chromosome,
-      ":",
-      chr_pos,
-      ":",
-      ref,
-      ":",
-      alt
-    )) %>% filter(classes != "germinal") %>% as_tibble()
-  
-  
   if(sum(grepl(x = colnames(seq_results), pattern = "P.VAF")) > 0){
     colnames(seq_results)[grep(x = colnames(seq_results), pattern = "P.VAF")] = "VAF_p"
     colnames(seq_results)[grep(x = colnames(seq_results), pattern = "N.VAF")] = "VAF_n"

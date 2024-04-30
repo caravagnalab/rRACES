@@ -18,6 +18,8 @@
 #include <utils.hpp>
 
 #include "phylogenetic_forest.hpp"
+#include "sid.hpp"
+#include "cna.hpp"
 
 PhylogeneticForest::PhylogeneticForest():
   Races::Mutations::PhylogeneticForest()
@@ -51,13 +53,13 @@ PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::
   return forest;
 }
 
-size_t count_SNVs(const Races::Mutations::GenomeMutations& mutations)
+size_t count_mutations(const Races::Mutations::GenomeMutations& mutations)
 {
   size_t counter{0};
   for (const auto& [chr_id, chromosome]: mutations.get_chromosomes()) {
     for (const auto& [allele_id, allele]: chromosome.get_alleles()) {
       for (const auto& [fragment_pos, fragment]: allele.get_fragments()) {
-          counter += fragment.get_SNVs().size();
+          counter += fragment.get_mutations().size();
       }
     }
   }
@@ -65,11 +67,11 @@ size_t count_SNVs(const Races::Mutations::GenomeMutations& mutations)
   return counter;
 }
 
-size_t count_SNVs(const std::map<Races::Mutants::CellId, std::shared_ptr<Races::Mutations::CellGenomeMutations>>& genome_mutations)
+size_t count_mutations(const std::map<Races::Mutants::CellId, std::shared_ptr<Races::Mutations::CellGenomeMutations>>& genome_mutations)
 {
   size_t counter{0};
   for (const auto& [cell_id, mutations_ptr]: genome_mutations) {
-    counter += count_SNVs(*mutations_ptr);
+    counter += count_mutations(*mutations_ptr);
   }
 
   return counter;
@@ -95,27 +97,28 @@ size_t count_CNAs(const std::map<Races::Mutants::CellId, std::shared_ptr<Races::
   return counter;
 }
 
-void fill_SNV_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
-                    Rcpp::IntegerVector& cell_ids, Rcpp::CharacterVector& chr_names,
-                    Rcpp::IntegerVector& chr_pos, Rcpp::IntegerVector& alleles,
-                    Rcpp::CharacterVector& ref_bases, Rcpp::CharacterVector& alt_bases,
-                    Rcpp::CharacterVector& causes, Rcpp::CharacterVector& classes,
-                    size_t& index)
+void fill_mutation_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
+                         Rcpp::IntegerVector& cell_ids, Rcpp::CharacterVector& chr_names,
+                         Rcpp::IntegerVector& chr_pos, Rcpp::IntegerVector& alleles,
+                         Rcpp::CharacterVector& ref, Rcpp::CharacterVector& alt,
+                         Rcpp::CharacterVector& types, Rcpp::CharacterVector& causes,
+                         Rcpp::CharacterVector& classes, size_t& index)
 {
   using namespace Races::Mutations;
 
   for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
     for (const auto& [allele_id, allele]: chromosome.get_alleles()) {
       for (const auto& [fragment_pos, fragment]: allele.get_fragments()) {
-        for (const auto& [snv_pos, snv]: fragment.get_SNVs()) {
+        for (const auto& [mutation_pos, mutation]: fragment.get_mutations()) {
           cell_ids[index] = cell_mutations.get_id();
           chr_names[index] = GenomicPosition::chrtos(chr_id);
-          chr_pos[index] = snv.position;
+          chr_pos[index] = mutation.position;
           alleles[index] = allele_id;
-          ref_bases[index] = std::string(1,snv.ref_base);
-          alt_bases[index] = std::string(1,snv.alt_base);
-          causes[index] = snv.cause;
-          classes[index] = snv.get_nature_description();
+          ref[index] = mutation.ref;
+          alt[index] = mutation.alt;
+          types[index] = (mutation.is_SNV()?"SNV":"indel");
+          causes[index] = mutation.cause;
+          classes[index] = mutation.get_nature_description();
 
           ++index;
         }
@@ -149,14 +152,14 @@ void fill_CNA_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
   }
 }
 
-Rcpp::List PhylogeneticForest::get_germline_SNVs() const
+Rcpp::List PhylogeneticForest::get_germline_SIDs() const
 {
   const auto& germline = get_germline_mutations();
   size_t num_of_mutations{0};
   for (const auto& [chr_id, chr] : germline.get_chromosomes()) {
     for (const auto& [allele_id, allele] : chr.get_alleles()) {
       for (const auto& [f_pos, fragment] : allele.get_fragments()) {
-        num_of_mutations += fragment.get_SNVs().size();
+        num_of_mutations += fragment.get_mutations().size();
       }
     }
   }
@@ -164,22 +167,23 @@ Rcpp::List PhylogeneticForest::get_germline_SNVs() const
   using namespace Rcpp;
 
   IntegerVector chr_pos(num_of_mutations), alleles(num_of_mutations);
-  CharacterVector chr_names(num_of_mutations), ref_bases(num_of_mutations),
-                  alt_bases(num_of_mutations), causes(num_of_mutations),
-                  classes(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), ref(num_of_mutations),
+                  alt(num_of_mutations), types(num_of_mutations),
+                  causes(num_of_mutations), classes(num_of_mutations);
 
   size_t index{0};
   for (const auto& [chr_id, chr] : germline.get_chromosomes()) {
     for (const auto& [allele_id, allele] : chr.get_alleles()) {
       for (const auto& [f_pos, fragment] : allele.get_fragments()) {
-        for (const auto& [svn_pos, snv] : fragment.get_SNVs()) {
+        for (const auto& [mutation_pos, mutation] : fragment.get_mutations()) {
           chr_names[index] = Races::Mutations::GenomicPosition::chrtos(chr_id);
-          chr_pos[index] = snv.position;
+          chr_pos[index] = mutation.position;
           alleles[index] = allele_id;
-          ref_bases[index] = std::string(1,snv.ref_base);
-          alt_bases[index] = std::string(1,snv.alt_base);
-          causes[index] = snv.cause;
-          classes[index] = snv.get_nature_description();
+          ref[index] = mutation.ref;
+          alt[index] = mutation.alt;
+          types[index] = (mutation.is_SNV()?"SNV":"indel");
+          causes[index] = mutation.cause;
+          classes[index] = mutation.get_nature_description();
 
           ++index;
         }
@@ -189,35 +193,35 @@ Rcpp::List PhylogeneticForest::get_germline_SNVs() const
 
   return DataFrame::create(_["chr"]=chr_names,
                            _["chr_pos"]=chr_pos, _["allele"]=alleles,
-                           _["ref"]=ref_bases, _["alt"]=alt_bases,
+                           _["ref"]=ref, _["alt"]=alt, _["type"]=types,
                            _["cause"]=causes, _["class"]=classes);
 }
 
-Rcpp::List PhylogeneticForest::get_sampled_cell_SNVs() const
+Rcpp::List PhylogeneticForest::get_sampled_cell_SIDs() const
 {
-  size_t num_of_mutations = count_SNVs(get_leaves_mutations());
+  size_t num_of_mutations = count_mutations(get_leaves_mutations());
 
   using namespace Rcpp;
 
   IntegerVector cell_ids(num_of_mutations), chr_pos(num_of_mutations),
                 alleles(num_of_mutations);
-  CharacterVector chr_names(num_of_mutations), ref_bases(num_of_mutations),
-                  alt_bases(num_of_mutations), causes(num_of_mutations),
-                  classes(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), ref(num_of_mutations),
+                  alt(num_of_mutations), types(num_of_mutations),
+                  causes(num_of_mutations), classes(num_of_mutations);
 
   size_t index{0};
   for (const auto& [cell_id, mutations_ptr]: get_leaves_mutations()) {
-    fill_SNV_lists(*mutations_ptr, cell_ids, chr_names, chr_pos, alleles,
-                   ref_bases, alt_bases, causes, classes, index);
+    fill_mutation_lists(*mutations_ptr, cell_ids, chr_names, chr_pos,
+                        alleles, ref, alt, types, causes, classes, index);
   }
 
   return DataFrame::create(_["cell_id"]=cell_ids, _["chr"]=chr_names,
                            _["chr_pos"]=chr_pos, _["allele"]=alleles,
-                           _["ref"]=ref_bases, _["alt"]=alt_bases,
+                           _["ref"]=ref, _["alt"]=alt, _["type"]=types,
                            _["cause"]=causes, _["class"]=classes);
 }
 
-Rcpp::List PhylogeneticForest::get_sampled_cell_SNVs(const Races::Mutants::CellId& cell_id) const
+Rcpp::List PhylogeneticForest::get_sampled_cell_SIDs(const Races::Mutants::CellId& cell_id) const
 {
   auto mutation_it = get_leaves_mutations().find(cell_id);
 
@@ -227,23 +231,23 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_SNVs(const Races::Mutants::CellI
 
   const auto& cell_mutations = *(mutation_it->second);
 
-  size_t num_of_mutations = count_SNVs(cell_mutations);
+  size_t num_of_mutations = count_mutations(cell_mutations);
 
   using namespace Rcpp;
 
   IntegerVector cell_ids(num_of_mutations), chr_pos(num_of_mutations),
                 alleles(num_of_mutations);
-  CharacterVector chr_names(num_of_mutations), ref_bases(num_of_mutations),
-                  alt_bases(num_of_mutations), causes(num_of_mutations),
-                  classes(num_of_mutations);
+  CharacterVector chr_names(num_of_mutations), ref(num_of_mutations),
+                  alt(num_of_mutations), types(num_of_mutations),
+                  causes(num_of_mutations), classes(num_of_mutations);
 
   size_t index{0};
-  fill_SNV_lists(cell_mutations, cell_ids, chr_names, chr_pos, alleles,
-                 ref_bases, alt_bases, causes, classes, index);
+  fill_mutation_lists(cell_mutations, cell_ids, chr_names, chr_pos, alleles,
+                      ref, alt, types, causes, classes, index);
 
   return DataFrame::create(_["cell_id"]=cell_ids, _["chr"]=chr_names,
                            _["chr_pos"]=chr_pos, _["allele"]=alleles,
-                           _["ref"]=ref_bases, _["alt"]=alt_bases,
+                           _["ref"]=ref, _["alt"]=alt, _["type"]=types,
                            _["cause"]=causes, _["class"]=classes);
 }
 
@@ -312,7 +316,7 @@ Rcpp::List get_first_occurrence(const std::map<MUTATION_TYPE, std::set<Races::Mu
   if (first_cell_it == mutation_first_cells.end()) {
     std::ostringstream oss;
 
-    if constexpr (std::is_base_of_v<MUTATION_TYPE, Races::Mutations::SNV>) {
+    if constexpr (std::is_base_of_v<MUTATION_TYPE, Races::Mutations::SID>) {
       if (germline.includes(mutation)) {
         oss << mutation << " is a germinal mutation.";
       } else {
@@ -341,11 +345,11 @@ Rcpp::List PhylogeneticForest::get_first_occurrence(const SEXP& mutation) const
   if ( TYPEOF(mutation) == S4SXP ) {
 
     Rcpp::S4 s4obj( mutation );
-    if ( s4obj.is("Rcpp_SNV" ) ) {
+    if ( s4obj.is("Rcpp_Mutation" ) ) {
       Rcpp::Environment env( s4obj );
-      Rcpp::XPtr<SNV> snv_ptr( env.get(".pointer") );
+      Rcpp::XPtr<SID> snv_ptr( env.get(".pointer") );
 
-      return ::get_first_occurrence(get_SNV_first_cells(), get_germline_mutations(),
+      return ::get_first_occurrence(get_mutation_first_cells(), get_germline_mutations(),
                                     *snv_ptr);
     }
 
@@ -353,15 +357,13 @@ Rcpp::List PhylogeneticForest::get_first_occurrence(const SEXP& mutation) const
       Rcpp::Environment env( s4obj );
       Rcpp::XPtr<CNA> cna_ptr( env.get(".pointer") );
 
-    std::cout << *cna_ptr << std::endl;
-
       return ::get_first_occurrence(get_CNA_first_cells(), get_germline_mutations(),
                                     *cna_ptr);
     }
   }
 
   ::Rf_error("This methods exclusively accepts as the parameters "
-             "SNV or CNA objects.");
+             "SNV, Indel, or CNA objects.");
 }
 
 Rcpp::List PhylogeneticForest::get_timed_exposures() const
@@ -450,7 +452,7 @@ void PhylogeneticForest::show() const
   }
 
   Rcout << "}" << std::endl << std::endl
-        << "  # of emerged SNVs: " << get_SNV_first_cells().size() << std::endl
+        << "  # of emerged SNVs and indels: " << get_mutation_first_cells().size() << std::endl
         << "  # of emerged CNAs: " << get_CNA_first_cells().size() << std::endl
         << std::endl;
 }

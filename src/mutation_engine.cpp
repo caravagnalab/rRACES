@@ -37,8 +37,8 @@
 
 #include "genomic_data_storage.hpp"
 
-using SNVSpec = Races::Mutations::MutationSpec<Races::Mutations::SNV>;
-using SNV_iterator = std::list<std::list<SNVSpec>::iterator>;
+using SIDSpec = Races::Mutations::MutationSpec<Races::Mutations::SID>;
+using SID_iterator = std::list<std::list<SIDSpec>::iterator>;
 
 struct MutationEngineSetup
 {
@@ -197,8 +197,9 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
   if (std::filesystem::exists(drivers_path)) {
     auto driver_storage = DriverStorage::load(drivers_path);
 
-    for (const auto& [name, snv] : driver_storage.get_SNVs()) {
-        regions_to_avoid.emplace(snv, 1);
+    for (const auto& [name, mutation] : driver_storage.get_mutations()) {
+        regions_to_avoid.emplace(mutation, std::max(static_cast<size_t>(1),
+                                                    mutation.ref.size()));
     }
   }
 
@@ -507,65 +508,86 @@ void MutationEngine::add_exposure(const Rcpp::List& exposure)
   add_exposure(0, exposure);
 }
 
-const Races::Mutations::SNV&
-get_SNV_from_name(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
-                  const Rcpp::CharacterVector& R_SNV_code)
+const Races::Mutations::SID&
+get_mutation_from_name(const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                       const Rcpp::CharacterVector& R_mutation_code)
 {
-    const auto SNV_code = Rcpp::as<std::string>(R_SNV_code);
+    const auto mutation_code = Rcpp::as<std::string>(R_mutation_code);
 
-    const auto found = driver_code_map.find(SNV_code);
+    const auto found = driver_code_map.find(mutation_code);
 
     if (found == driver_code_map.end()) {
-        throw std::domain_error("Unknown SNV code " + SNV_code + ".");
+        throw std::domain_error("Unknown mutation code " + mutation_code + ".");
     }
 
     return found->second;
 }
 
-SNVSpec get_SNV_from_list(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
-                          const size_t index, const Rcpp::List& SVN_spec)
+SIDSpec get_mutation_from_list(const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                               const Rcpp::List& SID_spec, const size_t index)
 {
-    const size_t spec_size = static_cast<size_t>(SVN_spec.size());
+    const size_t spec_size = static_cast<size_t>(SID_spec.size());
     if (spec_size > 2 || spec_size == 0) {
         throw std::domain_error("The " + ordtostr(index)
-                                + " element in the driver SNV list is "
-                                + "not an SNV specification.");
+                                + " element in the driver mutation list"
+                                + " is not an mutation specification");
     }
 
-    if (TYPEOF(SVN_spec[0])!=STRSXP) {
+    if (TYPEOF(SID_spec[0])!=STRSXP) {
         throw std::domain_error("The " + ordtostr(index)
-                                + " element in the driver SNV list is "
-                                + "not an SNV specification");
+                                + " element in the driver mutation list"
+                                + " is not an mutation specification");
     }
 
     Races::Mutations::AlleleId allele_id = RANDOM_ALLELE;
 
     if (spec_size>1) {
-        if (TYPEOF(SVN_spec[1])!=REALSXP) {
+        if (TYPEOF(SID_spec[1])!=REALSXP) {
             throw std::domain_error("The " + ordtostr(index)
-                                + " element in the driver SNV list is "
-                                + "not an SNV specification");
+                                + " element in the driver mutation list"
+                                + " is not an mutation specification");
         }
 
-        allele_id = Rcpp::as<Races::Mutations::AlleleId>(SVN_spec[1]);
+        allele_id = Rcpp::as<Races::Mutations::AlleleId>(SID_spec[1]);
     }
 
-    return SNVSpec(allele_id, get_SNV_from_name(driver_code_map, SVN_spec[0]));
+    return SIDSpec(allele_id, get_mutation_from_name(driver_code_map, SID_spec[0]));
 }
 
-SNVSpec get_SNV_spec(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
-                     const size_t& index, const Rcpp::List& rcpp_list)
+void
+get_mutation_spec(std::list<SIDSpec>& c_sids,
+                  std::list<Races::Mutations::CNA>& c_cnas,
+                  const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                  const Rcpp::List& rcpp_list, const size_t& index)
 {
     switch (TYPEOF(rcpp_list[index])) {
         case STRSXP:
-            return SNVSpec(RANDOM_ALLELE, get_SNV_from_name(driver_code_map, rcpp_list[index]));
+            c_sids.emplace_back(RANDOM_ALLELE, 
+                                get_mutation_from_name(driver_code_map,
+                                                       rcpp_list[index]));
+
+            return;
         case VECSXP:
-            return get_SNV_from_list(driver_code_map, index+1, rcpp_list[index]);
+            c_sids.push_back(get_mutation_from_list(driver_code_map,
+                                                    rcpp_list[index],
+                                                    index+1));
+            return;
         case S4SXP:
             {
                 Rcpp::S4 s4obj( rcpp_list[index] );
-                if ( s4obj.is("Rcpp_SNV" )) {
-                    return static_cast<SNVSpec>(Rcpp::as<SNV>(rcpp_list[index]));
+                if ( s4obj.is("Rcpp_Mutation")) {
+                    const auto sid = Rcpp::as<SID>(rcpp_list[index]);
+
+                    c_sids.push_back(static_cast<SIDSpec>(sid));
+
+                    return;
+                }
+                if ( s4obj.is("Rcpp_CNA")) {
+                    const auto cna = Rcpp::as<CNA>(rcpp_list[index]);
+
+                    c_cnas.push_back(static_cast<const Races::Mutations::CNA&>(cna));
+
+                    return;
                 }
             }
             break;
@@ -573,55 +595,29 @@ SNVSpec get_SNV_spec(const std::map<std::string, Races::Mutations::SNV>& driver_
             break;
     }
     std::cout << TYPEOF(rcpp_list[index]) << std::endl;
-    throw std::domain_error("The " + ordtostr(index+1) + " element in the driver SNV "
-                            "list is not an SNV specification");
+    throw std::domain_error("The " + ordtostr(index+1)
+                            + " element in the driver mutation list"
+                            + " is not an mutation specification");
 }
 
-std::list<SNVSpec> get_SNV_list(const std::map<std::string, Races::Mutations::SNV>& driver_code_map,
-                                const Rcpp::List& rcpp_list)
+void
+get_mutation_lists(std::list<SIDSpec>& c_sids,
+                   std::list<Races::Mutations::CNA>& c_cnas,
+                   const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                   const Rcpp::List& rcpp_list)
 {
-    std::list<SNVSpec> cpp_list;
-
     const size_t list_size = static_cast<size_t>(rcpp_list.size());
     for (size_t i=0; i<list_size; ++i) {
-        cpp_list.push_back(get_SNV_spec(driver_code_map, i, rcpp_list));
+        get_mutation_spec(c_sids, c_cnas, driver_code_map, rcpp_list, i);
     }
-
-    return cpp_list;
-}
-
-std::list<Races::Mutations::CNA> get_CNA_list(const Rcpp::List& rcpp_list)
-{
-  std::list<Races::Mutations::CNA> cpp_list;
-
-  const size_t list_size = static_cast<size_t>(rcpp_list.size());
-  for (size_t i=0; i<list_size; ++i) {
-    cpp_list.push_back(static_cast<const Races::Mutations::CNA&>(Rcpp::as<CNA>(rcpp_list[i])));
-  }
-
-  return cpp_list;
-}
-
-template<typename CPP_TYPE, typename RCPP_TYPE>
-std::list<CPP_TYPE> get_super_object_list(const Rcpp::List& rcpp_list)
-{
-  std::list<CPP_TYPE> cpp_list;
-
-  const size_t list_size = static_cast<size_t>(rcpp_list.size());
-  for (size_t i=0; i<list_size; ++i) {
-    cpp_list.push_back(static_cast<const CPP_TYPE&>(Rcpp::as<RCPP_TYPE>(rcpp_list[i])));
-  }
-
-  return cpp_list;
 }
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
-                                const Rcpp::List& epistate_passenger_rates,
-                                const Rcpp::List& driver_SNVs)
+                                const Rcpp::List& epistate_passenger_rates)
 {
   Rcpp::List empty_list;
 
-  add_mutant(mutant_name, epistate_passenger_rates, driver_SNVs, empty_list);
+  add_mutant(mutant_name, epistate_passenger_rates, empty_list);
 }
 
 double get_non_negative(const Rcpp::List& values,
@@ -720,7 +716,7 @@ struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
     }
 };
 
-void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SNV_iterator>& SNV_partition)
+void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SID_iterator>& SNV_partition)
 {
   if (SNV_partition.size()>0) {
     std::ostringstream oss;
@@ -754,15 +750,15 @@ inline std::ifstream::pos_type filesize(const std::filesystem::path& fasta_filen
 
 void retrieve_missing_references(const std::string& mutant_name,
                                  const std::filesystem::path& fasta_filename,
-                                 std::list<SNVSpec>& SNVs)
+                                 std::list<SIDSpec>& SNVs)
 {
   Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
 
-  std::map<Races::Mutations::ChromosomeId, SNV_iterator> SNV_partition;
+  std::map<Races::Mutations::ChromosomeId, SID_iterator> SNV_partition;
 
   size_t SNV_to_check{0};
   for (auto it=SNVs.begin(); it != SNVs.end(); ++it) {
-    if (it->ref_base == '?') {
+    if (it->ref == "?") {
       SNV_partition[it->chr_id].push_back(it);
       ++SNV_to_check;
     }
@@ -792,9 +788,10 @@ void retrieve_missing_references(const std::string& mutant_name,
           throw std::out_of_range(oss.str());
         }
 
-        const auto& candidate_ref = chr_seq.nucleotides[SNV_it->position-1];
-        if (SNV_it->ref_base == '?') {
-          SNV_it->ref_base = candidate_ref;
+        if (SNV_it->ref == "?") {
+          const auto& candidate_ref = chr_seq.nucleotides[SNV_it->position-1];
+
+          SNV_it->ref = std::string(1, candidate_ref);
         }
         --SNV_to_check;
       }
@@ -810,24 +807,25 @@ void retrieve_missing_references(const std::string& mutant_name,
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
                                 const Rcpp::List& epistate_passenger_rates,
-                                const Rcpp::List& driver_SNVs,
-                                const Rcpp::List& driver_CNAs)
+                                const Rcpp::List& drivers)
 {
-  const auto& driver_storage = m_engine.get_driver_storage();
-  auto c_snvs = get_SNV_list(driver_storage.get_SNVs(), driver_SNVs);
-  auto c_cnas = get_CNA_list(driver_CNAs);
+  std::list<SIDSpec> c_sids;
+  std::list<Races::Mutations::CNA> c_cnas;
 
-  retrieve_missing_references(mutant_name, storage.get_reference_path(), c_snvs);
+  const auto& driver_storage = m_engine.get_driver_storage();
+  get_mutation_lists(c_sids, c_cnas, driver_storage.get_mutations(), drivers);
+
+  retrieve_missing_references(mutant_name, storage.get_reference_path(), c_sids);
 
   if (contains_passenger_rates(epistate_passenger_rates)) {
     auto p_rates = get_passenger_rates(epistate_passenger_rates);
-    m_engine.add_mutant(mutant_name, {{"", p_rates}}, c_snvs, c_cnas);
+    m_engine.add_mutant(mutant_name, {{"", p_rates}}, c_sids, c_cnas);
 
     return;
   }
 
   auto epi_rates = get_epistate_passenger_rates(epistate_passenger_rates);
-  m_engine.add_mutant(mutant_name, epi_rates, c_snvs, c_cnas);
+  m_engine.add_mutant(mutant_name, epi_rates, c_sids, c_cnas);
 }
 
 PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
@@ -895,11 +893,11 @@ void MutationEngine::show() const
 
   Rcout << std::endl << std::endl << " Driver mutations" << std::endl;
   for (const auto&[mutant_name, driver_mutations]: m_properties.get_driver_mutations()) {
-    if (driver_mutations.SNVs.size()>0 || driver_mutations.CNAs.size()>0) {
-      if (driver_mutations.SNVs.size()>0) {
-        Rcout << "   \"" << mutant_name << "\" SNVs: " << std::endl;
+    if (driver_mutations.SIDs.size()>0 || driver_mutations.CNAs.size()>0) {
+      if (driver_mutations.SIDs.size()>0) {
+        Rcout << "   \"" << mutant_name << "\" SNVs&indels: " << std::endl;
 
-        show_list(Rcout, driver_mutations.SNVs.begin(), driver_mutations.SNVs.end(), "       ");
+        show_list(Rcout, driver_mutations.SIDs.begin(), driver_mutations.SIDs.end(), "       ");
       }
       if (driver_mutations.CNAs.size()>0) {
         Rcout << "   \"" << mutant_name << "\" CNAs: " << std::endl;

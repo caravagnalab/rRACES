@@ -15,17 +15,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "snv.hpp"
+#include "sid.hpp"
 
 #include "utility.hpp"
 
-SNV::SNV(const Races::Mutations::ChromosomeId& chromosome_id,
+SID::SID(const Races::Mutations::ChromosomeId& chromosome_id,
          const Races::Mutations::ChrPosition& chromosomic_position,
          const Races::Mutations::AlleleId allele_id,
-         const char& ref_base, const char& alt_base, const std::string& cause):
-    Races::Mutations::MutationSpec<Races::Mutations::SNV>(allele_id, chromosome_id,
+         const char& ref, const char& alt, const std::string& cause):
+    Races::Mutations::MutationSpec<Races::Mutations::SID>(allele_id, chromosome_id,
                                                           chromosomic_position,
-                                                          ref_base, alt_base, cause)
+                                                          ref, alt, cause)
 {}
 
 std::string alleletostr(const Races::Mutations::AlleleId& allele_id)
@@ -46,10 +46,10 @@ SEXP wrap_allele(const Races::Mutations::AlleleId& allele_id)
     return allele_v;
 }
 
-SNV::SNV()
+SID::SID()
 {}
 
-SEXP SNV::get_cause() const
+SEXP SID::get_cause() const
 {
     Rcpp::StringVector cause_v(1);
 
@@ -62,7 +62,7 @@ SEXP SNV::get_cause() const
     return cause_v;
 }
 
-Rcpp::List SNV::get_dataframe() const
+Rcpp::List SID::get_dataframe() const
 {
     using namespace Rcpp;
     using namespace Races::Mutations;
@@ -70,20 +70,27 @@ Rcpp::List SNV::get_dataframe() const
     return DataFrame::create(_["chr"]=get_chromosome(),
                              _["chr_pos"]=position,
                              _["allele"]=wrap_allele(allele_id),
-                             _["ref"]=get_ref_base(),
-                             _["alt"]=get_alt_base(),
+                             _["ref"]=get_ref(),
+                             _["alt"]=get_alt(),
+                             _["type"]=(is_SNV()?"SNV":"indel"),
                              _["cause"]=get_cause());
 }
 
-void SNV::show() const
+void SID::show() const
 {
     using namespace Rcpp;
 
-    Rcout << "SNV(chr: "<< get_chromosome()
+    if (is_SNV()) {
+        Rcout << "SNV";
+    } else {
+        Rcout << "indel";
+    }
+
+    Rcout << "(chr: "<< get_chromosome()
           << ", chr_pos: " << static_cast<size_t>(position)
           << ", allele: " << alleletostr(allele_id)
-          << ", ref: " << ref_base
-          << ", alt: " << alt_base;
+          << ", ref: " << (ref.size()==0?"-":ref)
+          << ", alt: " << (alt.size()==0?"-":alt);
 
     if (cause!="") {
         Rcout << ", cause: \"" << cause << "\"";
@@ -91,9 +98,30 @@ void SNV::show() const
     Rcout << ")" << std::endl;
 }
 
-SNV SNV::build_SNV(const SEXP chromosome_name,
+SID SID::build_SNV(const SEXP chromosome_name,
                    const SEXP position_in_chromosome,
                    const SEXP alt_base, const SEXP ref_base,
+                   const SEXP allele_id, const SEXP cause)
+{
+    SID mutation = build_SID(chromosome_name, position_in_chromosome,
+                             ref_base, alt_base, allele_id, cause);
+
+    if (mutation.ref.size() != 1) {
+        throw std::domain_error("The reference base must be a single "
+                                "nucleotide.");
+    }
+
+    if (mutation.alt.size() != 1) {
+        throw std::domain_error("The altered base must be a single "
+                                "nucleotide.");
+    }
+
+    return mutation;
+}
+
+SID SID::build_SID(const SEXP chromosome_name,
+                   const SEXP position_in_chromosome,
+                   const SEXP ref_base, const SEXP alt_base,
                    const SEXP allele_id, const SEXP cause)
 {
     using namespace Rcpp;
@@ -109,19 +137,10 @@ SNV SNV::build_SNV(const SEXP chromosome_name,
     }
 
     auto ref_base_str = Rcpp::as<std::string>(ref_base);
-    if (ref_base_str.size() != 1) {
-        throw std::domain_error("The reference base must be a single "
-                                "nucleotide.");
-    }
-
     auto alt_base_str = Rcpp::as<std::string>(alt_base);
-    if (alt_base_str.size() != 1) {
-        throw std::domain_error("The altered base must be a single "
-                                "nucleotide.");
-    }
 
     auto cause_str = Rcpp::as<std::string>(cause);
-    return SNV(chr_id, static_cast<Races::Mutations::ChrPosition>(pos),
+    return SID(chr_id, static_cast<Races::Mutations::ChrPosition>(pos),
                get_allele_id(allele_id, "allele"), ref_base_str[0],
                alt_base_str[0], cause_str);
 }
