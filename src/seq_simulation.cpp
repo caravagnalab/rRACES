@@ -54,19 +54,19 @@ void add_SNV_data(Rcpp::DataFrame& df,
   using namespace Rcpp;
   using namespace Races::Mutations;
 
-  size_t num_of_mutations = sample_statistics.get_SNV_data().size();
+  size_t num_of_mutations = sample_statistics.get_data().size();
 
   IntegerVector chr_pos(num_of_mutations);
-  CharacterVector chr_names(num_of_mutations), ref_bases(num_of_mutations),
-                  alt_bases(num_of_mutations), causes(num_of_mutations),
+  CharacterVector chr_names(num_of_mutations), ref(num_of_mutations),
+                  alt(num_of_mutations), causes(num_of_mutations),
                   classes(num_of_mutations);
 
   size_t index{0};
-  for (const auto& [snv, data] : sample_statistics.get_SNV_data()) {
-    chr_names[index] = GenomicPosition::chrtos(snv.chr_id);
-    chr_pos[index] = snv.position;
-    ref_bases[index] = std::string(1,snv.ref_base);
-    alt_bases[index] = std::string(1,snv.alt_base);
+  for (const auto& [mutation, data] : sample_statistics.get_data()) {
+    chr_names[index] = GenomicPosition::chrtos(mutation.chr_id);
+    chr_pos[index] = mutation.position;
+    ref[index] = mutation.ref;
+    alt[index] = mutation.alt;
 
     auto full_causes = join(data.causes, ';');
 
@@ -82,10 +82,10 @@ void add_SNV_data(Rcpp::DataFrame& df,
     ++index;
   }
 
-  df.push_back(chr_names, "chromosome");
+  df.push_back(chr_names, "chr");
   df.push_back(chr_pos, "chr_pos");
-  df.push_back(ref_bases, "ref");
-  df.push_back(alt_bases, "alt");
+  df.push_back(ref, "ref");
+  df.push_back(alt, "alt");
   df.push_back(causes, "causes");
   df.push_back(classes, "classes");
 }
@@ -97,7 +97,7 @@ void add_sample_statistics(Rcpp::DataFrame& df,
     add_SNV_data(df, sample_statistics);
   }
 
-  size_t num_of_mutations = sample_statistics.get_SNV_data().size();
+  size_t num_of_mutations = sample_statistics.get_data().size();
 
   if (num_of_mutations != static_cast<size_t>(df.nrows())) {
     throw std::runtime_error("SeqSimResults are not canonical!!!");
@@ -110,17 +110,17 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   IntegerVector occurrences(num_of_mutations), coverages(num_of_mutations);
 
   size_t index{0};
-  auto coverage_it = sample_statistics.get_SNV_coverage().begin();
+  auto coverage_it = sample_statistics.get_coverage().begin();
   std::less<GenomicPosition> come_before;
-  for (const auto& [snv, snv_data] : sample_statistics.get_SNV_data()) {
-    occurrences[index] = snv_data.num_of_occurrences;
+  for (const auto& [mutation, mutation_data] : sample_statistics.get_data()) {
+    occurrences[index] = mutation_data.num_of_occurrences;
 
-    if (come_before(coverage_it->first, snv)) {
+    if (come_before(coverage_it->first, mutation)) {
       ++coverage_it;
     }
 
     coverages[index] = coverage_it->second;
-    VAF[index] = static_cast<double>(snv_data.num_of_occurrences)/coverage_it->second;
+    VAF[index] = static_cast<double>(mutation_data.num_of_occurrences)/coverage_it->second;
 
     ++index;
   }
@@ -215,23 +215,6 @@ get_genome_chromosome_ids(const std::list<Races::Mutations::SampleGenomeMutation
     return {};
 }
 
-std::string ordinal_suffix(const size_t& ord)
-{
-    if (ord%100==10) {
-        return "th";
-    }
-    switch(ord%10) {
-        case 1:
-            return "st";
-        case 2:
-            return "nd";
-        case 3:
-            return "rd";
-        default:
-            return "th";
-    }
-}
-
 std::set<Races::Mutations::ChromosomeId>
 get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
                      SEXP& chromosome_ids)
@@ -265,8 +248,7 @@ get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutation
             ++i;
             if (TYPEOF(chr_name) != STRSXP) {
                 throw std::domain_error("Expected a list of string: the "
-                                        + std::to_string(i)
-                                        + ordinal_suffix(i)
+                                        + ordtostr(i)
                                         + " element of the list is not "
                                         + "a string.");
             }
@@ -274,8 +256,7 @@ get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutation
             Rcpp::CharacterVector name{chr_name};
             if (name.length()>1) {
                 throw std::domain_error("Expected a list of string: the "
-                                        + std::to_string(i)
-                                        + ordinal_suffix(i)
+                                        + ordtostr(i)
                                         + " element of the list is not "
                                         + "a string.");
             }

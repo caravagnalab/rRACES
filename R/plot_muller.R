@@ -95,14 +95,19 @@ plot_muller <- function(simulation) {
     df_populations
   )
 
-  muller_df <- ggmuller::get_Muller_df(df_edges, t_wt_dynamics)
-
   color_map <- get_species_colors(simulation$get_species())
 
-  ggmuller::Muller_pop_plot(muller_df, add_legend = TRUE) +
-    my_theme() +
-    ggplot2::guides(fill = ggplot2::guide_legend("Species")) +
-    ggplot2::scale_fill_manual(values = c(`Wild-type` = "gainsboro",
-                                          color_map)
-    )
+  suppressWarnings({
+    muller_df <- ggmuller::get_Muller_df(df_edges, t_wt_dynamics)
+
+    plot <- ggmuller::Muller_pop_plot(muller_df, add_legend = TRUE,
+                                      palette = c(`Wild-type` = "gainsboro",
+                                                  color_map)) +
+      my_theme() +
+      ggplot2::guides(fill = ggplot2::guide_legend("Species")) #+
+    #ggplot2::scale_fill_manual(values = c(`Wild-type` = "gainsboro",
+    #                                      color_map))
+  })
+
+  plot
 }

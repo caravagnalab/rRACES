@@ -27,10 +27,22 @@
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
 #' sim$sample_cells("MySample", c(500, 500), c(510, 510))
+#' m_engine = build_mutation_engine(setup_code = "demo")
+#'
+#' m_engine$add_mutant(mutant_name = "A",
+#'                     passenger_rates = c(SNV = 1e-9),
+#'                     drivers = list(SNV("22", 10510210, "C"),
+#'                                    CNA(type = "A", "22", chr_pos = 10303470,
+#'                                        len = 200000)))
+#' m_engine$add_exposure(coefficients = c(SBS13 = 0.2, SBS1 = 0.8))
+#' m_engine$add_exposure(time=50, coefficients = c(SBS17b = 0.2, SBS3 = 0.8))
+#'
 #' forest = sim$get_samples_forest()
 #' forest$get_samples_info()
+#' forest_muts = m_engine$place_mutations(forest, 1000)
 #' tree_plot = plot_forest(forest)
-#' annotate_forest(tree_plot, forest)
+#' annotate_forest(tree_plot, forest_muts, samples = T, MRCAs = T,
+#'                 exposures = T, drivers=T, add_driver_label = T)
 annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE, 
                             exposures = FALSE, facet_signatures = TRUE, 
                             drivers = TRUE, add_driver_label = TRUE) {
@@ -113,7 +125,7 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
         dplyr::rowwise() %>% 
         dplyr::mutate(t_end = dplyr::case_when(
           time == max(times) ~ Inf,
-          .default = min(times[times > time]))
+          .default = min(times[times >= time]))
         ) %>% 
         dplyr::mutate(signature = factor(signature, 
                                   levels = exposures %>% 
@@ -147,27 +159,26 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
       
       tree_plot$layers <- layers_new
     }
-    else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
   }
   
   if(drivers) {
     if(inherits(forest, "Rcpp_PhylogeneticForest")) {
-      drivers_SNVs = drivers_CNAs = data.frame()
+      drivers_mutations = drivers_CNAs = data.frame()
       try(expr = {
-        drivers_SNVs <- forest$get_sampled_cell_SNVs() %>% 
+        drivers_mutations <- forest$get_sampled_cell_mutations() %>% 
           dplyr::filter(class == "driver") %>% 
-          dplyr::mutate(driver_id = paste0(chromosome, ":", chr_pos, ":", ref, ">", alt),
-                        driver_type = "SNV") %>% 
+          dplyr::mutate(driver_id = paste0(chr, ":", chr_pos, ":", ref, ">", alt),
+                        driver_type = type) %>% 
           dplyr::select(cell_id, driver_id, driver_type)
       })
       try(expr = {
         drivers_CNAs <- forest$get_sampled_cell_CNAs() %>% 
-          dplyr::mutate(driver_id = paste0(chromosome, ":", begin, "-", end, ":", allele),
+          dplyr::mutate(driver_id = paste0(chr, ":", begin, "-", end, ":", allele),
                         driver_type = "CNA") %>% 
           dplyr::select(cell_id, driver_id, driver_type)
       })
       
-      drivers <- dplyr::bind_rows(drivers_SNVs, drivers_CNAs)
+      drivers <- dplyr::bind_rows(drivers_mutations, drivers_CNAs)
       
       drivers_start_nodes <- lapply(unique(drivers$driver_id), function(d) {
         nodes_with_driver = drivers %>% dplyr::filter(driver_id==d) %>% dplyr::pull(cell_id)
@@ -211,8 +222,7 @@ annotate_forest <- function(tree_plot, forest, samples = TRUE, MRCAs = TRUE,
             direction = "x"
           )
       } 
-    } 
-    else cli::cli_alert_danger(text = "The input forest is not a PhylogeneticForest: cannot annotate signature exposures!")
+    }
   }
   
   tree_plot

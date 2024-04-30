@@ -15,26 +15,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __RRACES_SNV__
-#define __RRACES_SNV__
+#ifndef __RRACES_SID__
+#define __RRACES_SID__
 
 #include <string>
 
-#include <snv.hpp>
+#include <sid.hpp>
+#include <mutation_spec.hpp>
 
 #include <Rcpp.h>
 
-
-class SNV : public Races::Mutations::SNV
+class SID : public Races::Mutations::MutationSpec<Races::Mutations::SID>
 {
 
-    SNV(const Races::Mutations::ChromosomeId& chromosome_id,
+    SID(const Races::Mutations::ChromosomeId& chromosome_id,
         const Races::Mutations::ChrPosition& chromosomic_position,
+        const Races::Mutations::AlleleId allele_id,
         const char& ref_base, const char& alt_base,
         const std::string& cause="");
 
 public:
-    SNV();
+    SID();
 
     inline std::string get_chromosome() const
     {
@@ -46,14 +47,14 @@ public:
         return position;
     }
 
-    inline std::string get_ref_base() const
+    inline std::string get_ref() const
     {
-        return std::string(1,ref_base);
+        return ref;
     }
 
-    inline std::string get_alt_base() const
+    inline std::string get_alt() const
     {
-        return std::string(1,alt_base);
+        return alt;
     }
 
     SEXP get_cause() const;
@@ -63,12 +64,18 @@ public:
     void show() const;
 
     static
-    SNV build_SNV(const SEXP chromosome_name,
+    SID build_SNV(const SEXP chromosome_name,
                   const SEXP position_in_chromosome,
-                  const SEXP alt_base, const SEXP ref_base, 
-                  const SEXP cause);
+                  const SEXP alt_base, const SEXP ref_base,
+                  const SEXP allele_id, const SEXP cause);
+
+    static
+    SID build_SID(const SEXP chromosome_name,
+                  const SEXP position_in_chromosome,
+                  const SEXP alt_base, const SEXP ref_base,
+                  const SEXP allele_id, const SEXP cause);
 };
 
-RCPP_EXPOSED_CLASS(SNV);
+RCPP_EXPOSED_CLASS(SID);
 
-#endif // __RRACES_SNV__
+#endif // __RRACES_SID__

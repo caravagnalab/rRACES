@@ -408,10 +408,7 @@
     )
 
     species <- object$get_species()
-    if (nrow(species) == 0) {
-      cat("\n")
-      cli::cli_alert_danger("The simulation has no species yet!")
-    } else {
+    if (nrow(species) > 0) {
       counts_tab <- object$get_counts() %>%
         dplyr::mutate(
           `%` = 100 * .data$counts / sum(.data$counts)

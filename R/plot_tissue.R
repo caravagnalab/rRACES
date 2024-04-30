@@ -74,10 +74,10 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
                   subtitle = paste("Tissue:", tissue_title, "[",
                                    tissue_size, "]")) +
     ggplot2::scale_fill_manual(values = color_map) +
-    ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
+    # ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
     ggplot2::theme(legend.position = "bottom") +
-    ggplot2::xlim(0, simulation$get_tissue_size()[1]) +
-    ggplot2::ylim(0, simulation$get_tissue_size()[2])
+    ggplot2::xlim(-1, simulation$get_tissue_size()[1] + 1) +
+    ggplot2::ylim(-1, simulation$get_tissue_size()[2] + 1)
 }
 
 

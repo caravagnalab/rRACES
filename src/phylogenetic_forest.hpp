@@ -27,8 +27,6 @@
 #include <mutation_engine.hpp>
 
 #include "forest.hpp"
-#include "snv.hpp"
-#include "cna.hpp"
 
 class MutationEngine;
 
@@ -73,17 +71,17 @@ public:
 
   inline Rcpp::List get_coalescent_cells(const std::list<Races::Mutants::CellId>& cell_ids) const
   {
-    return ForestCore::get_coalescent_cells(static_cast<const Races::Mutations::PhylogeneticForest&>(*this), 
+    return ForestCore::get_coalescent_cells(static_cast<const Races::Mutations::PhylogeneticForest&>(*this),
                                             cell_ids);
   }
 
   PhylogeneticForest get_subforest_for(const std::vector<std::string>& sample_names) const;
 
-  Rcpp::List get_germline_SNVs() const;
+  Rcpp::List get_germline_SIDs() const;
 
-  Rcpp::List get_sampled_cell_SNVs() const;
+  Rcpp::List get_sampled_cell_SIDs() const;
 
-  Rcpp::List get_sampled_cell_SNVs(const Races::Mutants::CellId& cell_ids) const;
+  Rcpp::List get_sampled_cell_SIDs(const Races::Mutants::CellId& cell_ids) const;
 
   Rcpp::List get_sampled_cell_CNAs() const;
 
@@ -100,7 +98,7 @@ public:
 
   inline const std::string& get_germline_subject() const
   {
-    return germline_subject; 
+    return germline_subject;
   }
 
   void save(const std::string& filename) const;

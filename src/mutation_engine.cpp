@@ -33,7 +33,12 @@
 
 #include "mutation_engine.hpp"
 
+#include "utility.hpp"
+
 #include "genomic_data_storage.hpp"
+
+using SIDSpec = Races::Mutations::MutationSpec<Races::Mutations::SID>;
+using SID_iterator = std::list<std::list<SIDSpec>::iterator>;
 
 struct MutationEngineSetup
 {
@@ -52,8 +57,8 @@ struct MutationEngineSetup
                   const std::string& drivers_url,
                   const std::string& passenger_CNAs_url,
                   const std::string& germline_url):
-    description(description), directory(directory), reference_url(reference_url), 
-    SBS_url(SBS_url), drivers_url(drivers_url), 
+    description(description), directory(directory), reference_url(reference_url),
+    SBS_url(SBS_url), drivers_url(drivers_url),
     passenger_CNAs_url(passenger_CNAs_url), germline_url(germline_url)
   {}
 };
@@ -102,7 +107,7 @@ GenomicDataStorage setup_storage(const std::string& directory,
                                  const std::string& germline_source)
 {
   GenomicDataStorage storage(directory, reference_source, SBS_source,
-                             drivers_source, passengers_CNA_source, 
+                             drivers_source, passengers_CNA_source,
                              germline_source);
 
   storage.save_sources();
@@ -117,7 +122,7 @@ GenomicDataStorage setup_storage(const std::string& setup_code)
   auto code_it = supported_setups.find(setup_code);
   if (code_it == supported_setups.end()) {
     std::ostringstream oss;
-  
+
     oss << "\""+setup_code+"\" is an unknown code. "
         << "Supported codes are:" << std::endl;
 
@@ -192,8 +197,9 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
   if (std::filesystem::exists(drivers_path)) {
     auto driver_storage = DriverStorage::load(drivers_path);
 
-    for (const auto& [name, snv] : driver_storage.get_SNVs()) {
-        regions_to_avoid.emplace(snv, 1);
+    for (const auto& [name, mutation] : driver_storage.get_mutations()) {
+        regions_to_avoid.emplace(mutation, std::max(static_cast<size_t>(1),
+                                                    mutation.ref.size()));
     }
   }
 
@@ -244,7 +250,7 @@ get_num_of_alleles(const Races::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITI
   return alleles_per_chromosome;
 }
 
-std::map<std::string, Races::Mutations::MutationalSignature> 
+std::map<std::string, Races::Mutations::MutationalSignature>
 load_SBS(const GenomicDataStorage& storage)
 {
   std::ifstream is(storage.get_SBS_path());
@@ -256,32 +262,32 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
 {
   using namespace Races::Mutations;
 
-  ChromosomeId chr_id;    
+  ChromosomeId chr_id;
   try {
-    chr_id = GenomicPosition::stochr(row.get_field(0).substr(3));
+    chr_id = GenomicPosition::stochr(row.get_field(0));
   } catch (std::invalid_argument const&) {
-    throw std::domain_error("Unknown chromosome specification " + row.get_field(1) 
-                            + " in row number " + std::to_string(row_num) 
+    throw std::domain_error("Unknown chromosome specification " + row.get_field(1)
+                            + " in row number " + std::to_string(row_num)
                             + ".");
   }
 
-  uint32_t begin_pos;         
+  uint32_t begin_pos;
   try {
     begin_pos = stoul(row.get_field(1));
   } catch (std::invalid_argument const&) {
-    throw std::domain_error("Unknown begin specification " + row.get_field(1) 
-                            + " in row number " + std::to_string(row_num) 
+    throw std::domain_error("Unknown begin specification " + row.get_field(1)
+                            + " in row number " + std::to_string(row_num)
                             + ".");
   }
 
   GenomicPosition pos(chr_id, begin_pos);
 
-  uint32_t end_pos;                
+  uint32_t end_pos;
   try {
     end_pos = stoul(row.get_field(2));
   } catch (std::invalid_argument const&) {
-    throw std::domain_error("Unknown end specification " + row.get_field(2) 
-                            + " in row number " + std::to_string(row_num) 
+    throw std::domain_error("Unknown end specification " + row.get_field(2)
+                            + " in row number " + std::to_string(row_num)
                             + ".");
   }
 
@@ -289,7 +295,7 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
     throw std::domain_error("The CNA begin lays after the end in row number "
                             + std::to_string(row_num));
   }
-  
+
   return {pos, end_pos+1-begin_pos};
 }
 
@@ -299,7 +305,7 @@ std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
 {
   std::vector<Races::Mutations::CNA> CNAs;
 
-  Races::IO::CSVReader csv_reader(CNAs_csv);
+  Races::IO::CSVReader csv_reader(CNAs_csv, true, '\t');
 
   size_t row_num{2};
   for (const auto& row : csv_reader) {
@@ -316,8 +322,8 @@ std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
                             CNA::Type::AMPLIFICATION);
         }
       } catch (std::invalid_argument const&) {
-        throw std::domain_error("Unknown major specification " + major 
-                                + " in row number " + std::to_string(row_num) 
+        throw std::domain_error("Unknown major specification " + major
+                                + " in row number " + std::to_string(row_num)
                                 + ".");
       }
 
@@ -328,8 +334,8 @@ std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
                             CNA::Type::DELETION);
         }
       } catch (std::invalid_argument const&) {
-        throw std::domain_error("Unknown minor specification " + major 
-                                + " in row number " + std::to_string(row_num) 
+        throw std::domain_error("Unknown minor specification " + major
+                                + " in row number " + std::to_string(row_num)
                                 + ".");
       }
     }
@@ -351,7 +357,7 @@ MutationEngine::MutationEngine(const std::string& setup_name,
                                const std::string& germline_subject,
                                const size_t& context_sampling,
                                const std::string& tumor_type):
-  storage(setup_storage(setup_name)), germline_subject(germline_subject), 
+  storage(setup_storage(setup_name)), germline_subject(germline_subject),
   context_sampling(context_sampling), tumor_type(tumor_type)
 {
   auto setup_cfg = supported_setups.at(setup_name);
@@ -368,8 +374,8 @@ MutationEngine::MutationEngine(const std::string& directory,
                                const std::string& germline_subject,
                                const size_t& context_sampling,
                                const std::string& tumor_type):
-  storage(setup_storage(directory, reference_source, SBS_source, 
-                        drivers_source, passenger_CNAs_source, 
+  storage(setup_storage(directory, reference_source, SBS_source,
+                        drivers_source, passenger_CNAs_source,
                         germline_source)),
   germline_subject(germline_subject), context_sampling(context_sampling),
   tumor_type(tumor_type)
@@ -401,7 +407,7 @@ template<typename VALUE, typename TESTER=TestNonNegative>
 std::map<std::string, VALUE>
 get_map(const Rcpp::List& list)
 {
-  
+
   std::map<std::string, VALUE> c_map;
   if (list.size()==0) {
     return std::map<std::string, VALUE>();
@@ -420,7 +426,7 @@ get_map(const Rcpp::List& list)
   return c_map;
 }
 
-MutationEngine 
+MutationEngine
 MutationEngine::build_MutationEngine(const std::string& directory,
                                      const std::string& reference_source,
                                      const std::string& SBS_source,
@@ -433,8 +439,8 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                                      const std::string& tumor_type)
 {
   if (setup_code!="") {
-    if (directory!="" || reference_source!="" || SBS_source!="" 
-         || drivers_source!="" || passenger_CNAs_source !="" 
+    if (directory!="" || reference_source!="" || SBS_source!=""
+         || drivers_source!="" || passenger_CNAs_source !=""
          || germline_source !="") {
       throw std::domain_error("when \"setup_code\" is provided, the parameters "
                               "\"directory\", \"reference_src\", \"SBS_src\", "
@@ -446,7 +452,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                           context_sampling, tumor_type);
   }
 
-  if (directory=="" || reference_source=="" || SBS_source=="" 
+  if (directory=="" || reference_source=="" || SBS_source==""
       || passenger_CNAs_source== "" || germline_source== "") {
     throw std::domain_error("when \"setup_code\" is NOT provided, the parameters "
                             "\"directory\", \"reference_src\", \"SBS_src\", "
@@ -455,7 +461,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
   }
 
   return MutationEngine(directory, reference_source, SBS_source, drivers_source,
-                        passenger_CNAs_source, germline_source, germline_subject, 
+                        passenger_CNAs_source, germline_source, germline_subject,
                         context_sampling, tumor_type);
 
 }
@@ -502,26 +508,116 @@ void MutationEngine::add_exposure(const Rcpp::List& exposure)
   add_exposure(0, exposure);
 }
 
-template<typename CPP_TYPE, typename RCPP_TYPE>
-std::list<CPP_TYPE> get_super_object_list(const Rcpp::List& rcpp_list)
+const Races::Mutations::SID&
+get_mutation_from_name(const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                       const Rcpp::CharacterVector& R_mutation_code)
 {
-  std::list<CPP_TYPE> cpp_list;
+    const auto mutation_code = Rcpp::as<std::string>(R_mutation_code);
 
-  const size_t list_size = static_cast<size_t>(rcpp_list.size());
-  for (size_t i=0; i<list_size; ++i) {
-    cpp_list.push_back(static_cast<const CPP_TYPE&>(Rcpp::as<RCPP_TYPE>(rcpp_list[i])));
-  }
+    const auto found = driver_code_map.find(mutation_code);
 
-  return cpp_list;
+    if (found == driver_code_map.end()) {
+        throw std::domain_error("Unknown mutation code " + mutation_code + ".");
+    }
+
+    return found->second;
+}
+
+SIDSpec get_mutation_from_list(const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                               const Rcpp::List& SID_spec, const size_t index)
+{
+    const size_t spec_size = static_cast<size_t>(SID_spec.size());
+    if (spec_size > 2 || spec_size == 0) {
+        throw std::domain_error("The " + ordtostr(index)
+                                + " element in the driver mutation list"
+                                + " is not an mutation specification");
+    }
+
+    if (TYPEOF(SID_spec[0])!=STRSXP) {
+        throw std::domain_error("The " + ordtostr(index)
+                                + " element in the driver mutation list"
+                                + " is not an mutation specification");
+    }
+
+    Races::Mutations::AlleleId allele_id = RANDOM_ALLELE;
+
+    if (spec_size>1) {
+        if (TYPEOF(SID_spec[1])!=REALSXP) {
+            throw std::domain_error("The " + ordtostr(index)
+                                + " element in the driver mutation list"
+                                + " is not an mutation specification");
+        }
+
+        allele_id = Rcpp::as<Races::Mutations::AlleleId>(SID_spec[1]);
+    }
+
+    return SIDSpec(allele_id, get_mutation_from_name(driver_code_map, SID_spec[0]));
+}
+
+void
+get_mutation_spec(std::list<SIDSpec>& c_sids,
+                  std::list<Races::Mutations::CNA>& c_cnas,
+                  const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                  const Rcpp::List& rcpp_list, const size_t& index)
+{
+    switch (TYPEOF(rcpp_list[index])) {
+        case STRSXP:
+            c_sids.emplace_back(RANDOM_ALLELE, 
+                                get_mutation_from_name(driver_code_map,
+                                                       rcpp_list[index]));
+
+            return;
+        case VECSXP:
+            c_sids.push_back(get_mutation_from_list(driver_code_map,
+                                                    rcpp_list[index],
+                                                    index+1));
+            return;
+        case S4SXP:
+            {
+                Rcpp::S4 s4obj( rcpp_list[index] );
+                if ( s4obj.is("Rcpp_Mutation")) {
+                    const auto sid = Rcpp::as<SID>(rcpp_list[index]);
+
+                    c_sids.push_back(static_cast<SIDSpec>(sid));
+
+                    return;
+                }
+                if ( s4obj.is("Rcpp_CNA")) {
+                    const auto cna = Rcpp::as<CNA>(rcpp_list[index]);
+
+                    c_cnas.push_back(static_cast<const Races::Mutations::CNA&>(cna));
+
+                    return;
+                }
+            }
+            break;
+        default:
+            break;
+    }
+    std::cout << TYPEOF(rcpp_list[index]) << std::endl;
+    throw std::domain_error("The " + ordtostr(index+1)
+                            + " element in the driver mutation list"
+                            + " is not an mutation specification");
+}
+
+void
+get_mutation_lists(std::list<SIDSpec>& c_sids,
+                   std::list<Races::Mutations::CNA>& c_cnas,
+                   const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                   const Rcpp::List& rcpp_list)
+{
+    const size_t list_size = static_cast<size_t>(rcpp_list.size());
+    for (size_t i=0; i<list_size; ++i) {
+        get_mutation_spec(c_sids, c_cnas, driver_code_map, rcpp_list, i);
+    }
 }
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
-                                const Rcpp::List& epistate_passenger_rates,
-                                const Rcpp::List& driver_SNVs)
+                                const Rcpp::List& epistate_passenger_rates)
 {
   Rcpp::List empty_list;
 
-  add_mutant(mutant_name, epistate_passenger_rates, driver_SNVs, empty_list);
+  add_mutant(mutant_name, epistate_passenger_rates, empty_list);
 }
 
 double get_non_negative(const Rcpp::List& values,
@@ -617,12 +713,10 @@ struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
     inline bool operator()(const std::string& header)
     {
         return !Races::IO::FASTA::is_chromosome_header(header, last_chr_id);
-    } 
+    }
 };
 
-using SNV_iterator = std::list<std::list<Races::Mutations::SNV>::iterator>;
-
-void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SNV_iterator>& SNV_partition)
+void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SID_iterator>& SNV_partition)
 {
   if (SNV_partition.size()>0) {
     std::ostringstream oss;
@@ -651,20 +745,20 @@ void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, S
 inline std::ifstream::pos_type filesize(const std::filesystem::path& fasta_filename)
 {
     std::ifstream in(fasta_filename, std::ifstream::ate | std::ifstream::binary);
-    return in.tellg(); 
+    return in.tellg();
 }
 
-void retrieve_missing_references(const std::string& mutant_name, 
+void retrieve_missing_references(const std::string& mutant_name,
                                  const std::filesystem::path& fasta_filename,
-                                 std::list<Races::Mutations::SNV>& SNVs)
+                                 std::list<SIDSpec>& SNVs)
 {
   Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
 
-  std::map<Races::Mutations::ChromosomeId, SNV_iterator> SNV_partition;
+  std::map<Races::Mutations::ChromosomeId, SID_iterator> SNV_partition;
 
   size_t SNV_to_check{0};
   for (auto it=SNVs.begin(); it != SNVs.end(); ++it) {
-    if (it->ref_base == '?') {
+    if (it->ref == "?") {
       SNV_partition[it->chr_id].push_back(it);
       ++SNV_to_check;
     }
@@ -694,9 +788,10 @@ void retrieve_missing_references(const std::string& mutant_name,
           throw std::out_of_range(oss.str());
         }
 
-        const auto& candidate_ref = chr_seq.nucleotides[SNV_it->position-1];
-        if (SNV_it->ref_base == '?') {
-          SNV_it->ref_base = candidate_ref;
+        if (SNV_it->ref == "?") {
+          const auto& candidate_ref = chr_seq.nucleotides[SNV_it->position-1];
+
+          SNV_it->ref = std::string(1, candidate_ref);
         }
         --SNV_to_check;
       }
@@ -712,26 +807,28 @@ void retrieve_missing_references(const std::string& mutant_name,
 
 void MutationEngine::add_mutant(const std::string& mutant_name,
                                 const Rcpp::List& epistate_passenger_rates,
-                                const Rcpp::List& driver_SNVs,
-                                const Rcpp::List& driver_CNAs)
+                                const Rcpp::List& drivers)
 {
-  auto c_snvs = get_super_object_list<Races::Mutations::SNV, SNV>(driver_SNVs);
-  auto c_cnas = get_super_object_list<Races::Mutations::CNA, CNA>(driver_CNAs);
+  std::list<SIDSpec> c_sids;
+  std::list<Races::Mutations::CNA> c_cnas;
 
-  retrieve_missing_references(mutant_name, storage.get_reference_path(), c_snvs);
+  const auto& driver_storage = m_engine.get_driver_storage();
+  get_mutation_lists(c_sids, c_cnas, driver_storage.get_mutations(), drivers);
+
+  retrieve_missing_references(mutant_name, storage.get_reference_path(), c_sids);
 
   if (contains_passenger_rates(epistate_passenger_rates)) {
     auto p_rates = get_passenger_rates(epistate_passenger_rates);
-    m_engine.add_mutant(mutant_name, {{"", p_rates}}, c_snvs, c_cnas);
+    m_engine.add_mutant(mutant_name, {{"", p_rates}}, c_sids, c_cnas);
 
     return;
   }
 
   auto epi_rates = get_epistate_passenger_rates(epistate_passenger_rates);
-  m_engine.add_mutant(mutant_name, epi_rates, c_snvs, c_cnas);
+  m_engine.add_mutant(mutant_name, epi_rates, c_sids, c_cnas);
 }
 
-PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest, 
+PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
                                                    const size_t& num_of_preneoplatic_mutations,
                                                    const int seed)
 {
@@ -747,11 +844,20 @@ PhylogeneticForest MutationEngine::place_mutations(const SamplesForest& forest,
           m_engine.get_timed_exposures()};
 }
 
-Rcpp::List MutationEngine::get_SBS_dataframe()
+Rcpp::List MutationEngine::get_SBS_dataframe() const
 {
   Rcpp::Function read_delim("read.delim");
 
   return read_delim(to_string(storage.get_SBS_path()), Rcpp::_["quote"]="");
+}
+
+Rcpp::List MutationEngine::get_known_driver_mutations() const
+{
+  auto driver_filename = m_engine.get_driver_storage().get_source_path().string();
+
+  Rcpp::Function read_delim("read.delim");
+
+  return read_delim(driver_filename, Rcpp::_["quote"]="");
 }
 
 template<typename ITERATOR>
@@ -769,7 +875,7 @@ void MutationEngine::show() const
   using namespace Rcpp;
   Rcout << "MutationEngine" << std::endl
         << " Passenger rates";
-  
+
   const auto& m_properties = m_engine.get_mutational_properties();
 
   for (const auto& [species_name, p_rates] : m_properties.get_passenger_rates()) {
@@ -787,11 +893,11 @@ void MutationEngine::show() const
 
   Rcout << std::endl << std::endl << " Driver mutations" << std::endl;
   for (const auto&[mutant_name, driver_mutations]: m_properties.get_driver_mutations()) {
-    if (driver_mutations.SNVs.size()>0 || driver_mutations.CNAs.size()>0) {
-      if (driver_mutations.SNVs.size()>0) {
-        Rcout << "   \"" << mutant_name << "\" SNVs: " << std::endl;
-              
-        show_list(Rcout, driver_mutations.SNVs.begin(), driver_mutations.SNVs.end(), "       ");
+    if (driver_mutations.SIDs.size()>0 || driver_mutations.CNAs.size()>0) {
+      if (driver_mutations.SIDs.size()>0) {
+        Rcout << "   \"" << mutant_name << "\" SNVs&indels: " << std::endl;
+
+        show_list(Rcout, driver_mutations.SIDs.begin(), driver_mutations.SIDs.end(), "       ");
       }
       if (driver_mutations.CNAs.size()>0) {
         Rcout << "   \"" << mutant_name << "\" CNAs: " << std::endl;
@@ -813,7 +919,7 @@ void MutationEngine::show() const
     if (next_it == timed_exposures.end()) {
        Rcout << "   [" << coeffs_it->first << ", \u221E[: ";
     } else {
-       Rcout << "   [" 
+       Rcout << "   ["
              << coeffs_it->first << ", " << next_it->first << "[: ";
     }
     show_map(Rcout, coeffs_it->second);

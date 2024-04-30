@@ -46,11 +46,13 @@ reference:
   - starts_with("CNA")
   - Deletion
   - get_mutation_engine_codes
+  - Indel
   - load_phylogenetic_forest
   - muts_to_sticks
+  - starts_with("Mutation")
   - starts_with("MutationEngine")
   - starts_with("PhylogeneticForest")
-  - starts_with("SNV")
+  - SNV
 - title: "Sequencing simulation interface"
   desc:  "Sequencing simulation methods"
   contents:

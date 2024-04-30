@@ -88,3 +88,51 @@ std::filesystem::path get_tmp_dir_path(const std::string& base_name)
 
   return output_path;
 }
+
+Races::Mutations::AlleleId
+get_allele_id(const SEXP allele_id, const std::string& parameter_name)
+{
+    switch (TYPEOF(allele_id)) {
+        case REALSXP:
+        {
+            long int allele_l;
+            try {
+                allele_l = Rcpp::as<long int>(allele_id);
+            } catch (std::invalid_argument& ex) {
+                allele_l = -1;
+            }
+
+            if (allele_l >= 0) {
+                return allele_l;
+            }
+            break;
+        }
+        case NILSXP:
+        {
+            return RANDOM_ALLELE;
+        }
+        default:
+            break;
+    }
+
+    throw std::domain_error("The parameter \"" + parameter_name
+                            + "\" must be either a "
+                            + "non-negative number or NILL.");
+}
+
+std::string ordinal_suffix(const size_t& ord)
+{
+    if ((ord%100)/10==1) {
+        return "th";
+    }
+    switch(ord%10) {
+        case 1:
+            return "st";
+        case 2:
+            return "nd";
+        case 3:
+            return "rd";
+        default:
+            return "th";
+    }
+}

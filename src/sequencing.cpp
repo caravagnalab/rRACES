@@ -104,18 +104,17 @@ RCPP_MODULE(Sequencing){
 //'   analysis of a normal sample (default: `TRUE`).
 //' @param rnd_seed The random seed for the internal random generator
 //'   (default: `0`).
-//' @return A data frame representing, for each of the observed
-//'   SNVs, the chromosome and the position in which
-//'   it occurs (columns `chromosome` and `chr_pos`),
-//'   the SNV reference base, the alterate base, the causes,
-//'   and the classes of the SNV (columns `ref_base`, `alt_base`,
-//'   `causes`, and `classes`, respectively). Moreover, for each
-//'   of the sequencied samples `<sample name>`, the returned
-//'   data frame contains three columns: the number of reads in
-//'   which the corresponding SNV occurs (column
-//'   `<sample name>.occurrences`), the coverage of the SNV
-//'   locus (column `<sample name>.coverage`), and the
-//'   corresponding VAF (column `<sample name>.VAF`).
+//' @return A data frame representing, for each of the observed SNVs
+//'   and indels, the chromosome and the position in which it occurs
+//'   (columns `chr` and `chr_pos`), the mutation reference and
+//'   alterate sequences (columns `ref` and `alt`, respectively), its
+//'   cause and class (columns `causes`, and `classes`, respectively).
+//'   Moreover, for each of the sequencied samples `<sample name>`,
+//'   the returned data frame contains three columns: the number of
+//'   reads in which the corresponding mutation occurs (column
+//'   `<sample name>.occurrences`), the coverage of the mutation
+//'   (column `<sample name>.coverage`), and the corresponding VAF
+//'   (column `<sample name>.VAF`).
 //' @seealso `BasicIlluminaSequencer` and
 //'   `ErrorlessIlluminaSequencer` as sequencer types, and
 //'   `vignette("sequencing")` for usage examples
@@ -151,7 +150,7 @@ RCPP_MODULE(Sequencing){
 //'   (default: `0`).
 //' @return A data frame representing, for each of the observed
 //'   SNVs, the chromosome and the position in which
-//'   it occurs (columns `chromosome` and `chr_pos`),
+//'   it occurs (columns `chr` and `chr_pos`),
 //'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each

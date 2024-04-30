@@ -25,7 +25,7 @@
 #include <mutation_engine.hpp>
 
 #include "cna.hpp"
-#include "snv.hpp"
+#include "sid.hpp"
 #include "phylogenetic_forest.hpp"
 #include "samples_forest.hpp"
 
@@ -69,11 +69,10 @@ public:
 
     void add_exposure(const double& time, const Rcpp::List& exposure);
 
-    void add_mutant(const std::string& mutant_name, const Rcpp::List& passenger_rates,
-                    const Rcpp::List& driver_SNVs);
+    void add_mutant(const std::string& mutant_name, const Rcpp::List& passenger_rates);
 
     void add_mutant(const std::string& mutant_name, const Rcpp::List& passenger_rates,
-                    const Rcpp::List& driver_SNVs, const Rcpp::List& driver_CNAs);
+                    const Rcpp::List& drivers);
 
     inline Rcpp::List get_active_germline() const
     {
@@ -89,6 +88,8 @@ public:
     {
         return storage.get_germline_storage().get_population_descritions_df();
     }
+
+    Rcpp::List get_known_driver_mutations() const;
 
     inline bool get_infinite_sites_model() const
     {
@@ -112,7 +113,7 @@ public:
         return place_mutations(forest, num_of_preneoplatic_mutations, 0);
     }
 
-    Rcpp::List get_SBS_dataframe();
+    Rcpp::List get_SBS_dataframe() const;
 
     void show() const;
 

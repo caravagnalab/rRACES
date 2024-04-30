@@ -45,7 +45,7 @@ sim <- new(Simulation)
 ```
 
 This automatically builds a 1000x1000-cells tissue - which can host $1$
-milion cells - and sets the name of the simulation to be
+million cells - and sets the name of the simulation to be
 `races_<date>_<hour>`.
 
 A simulation custom name can be specified as it follows.
@@ -115,7 +115,7 @@ mutations. Cells in the same mutant can have different liveness rates
 due to different epigenetic states.
 
 A *species* is a mutant with an optional epigenetic state. At this point in the
-simulation the mutant is just a name (`A`, `B`, ..) that at later stage
+simulation, the mutant is just a name (`A`, `B`, ..) that, at a later stage
 could be linked to mutations of interest. The epigenome is a binary
 feature of a species that is represented by epistates `+`/`-` (positive
 and negative status). This is an abstraction, and could represent an
@@ -746,4 +746,3 @@ plot_muller(sim) +
   ggplot2::scale_y_log10()
 ```
 
-#####
