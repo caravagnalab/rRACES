@@ -31,33 +31,35 @@
 #' get_events_table(forest)
 
 
+get_events_table <- function(forest) {
 
-get_events_table = function(forest){
-  
-  sticks = forest$get_sticks()
-  
-  events_table = lapply(1:length(sticks), function(i){
-    
-    gen = forest$get_nodes() %>% as_tibble() %>% 
-      filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>% pull(mutant)
-    
-    epi = forest$get_nodes() %>% as_tibble() %>% 
-      filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>% pull(epistate)
-   
+  sticks <- forest$get_sticks()
+
+  events_table <- lapply(seq_along(sticks), function(i) {
+
+    gen <- forest$get_nodes() %>% dplyr::as_tibble() %>%
+      dplyr::filter(.data$cell_id == sticks[[i]][length(sticks[[i]])]) %>%
+      dplyr::pull(.data$mutant)
+
+    epi <- forest$get_nodes() %>% dplyr::as_tibble() %>%
+      dplyr::filter(.data$cell_id == sticks[[i]][length(sticks[[i]])]) %>%
+      dplyr::pull(.data$epistate)
+
     if (epi != "") {
-      change = paste0(ifelse(epi == "+", "-", "+"), " -> ", epi)
-      tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]),
-             obs = paste0(gen, " ", change))
+      change <- paste0(ifelse(epi == "+", "-", "+"), " -> ", epi)
+      dplyr::tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]),
+                    obs = paste0(gen, " ", change))
     } else{
-      tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]), obs = gen
-      )
+      dplyr::tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]),
+                    obs = gen)
     }
-    
- }) %>% bind_rows()
-  
-  as_tibble(forest$get_nodes()) %>% full_join(events_table, by = "cell_id") %>% 
-    mutate(obs = ifelse(is.na(obs),"Subclonal",obs)) %>% unique()
-  
+
+  }) %>% dplyr::bind_rows()
+
+  dplyr::as_tibble(forest$get_nodes()) %>%
+    dplyr::full_join(events_table, by = "cell_id") %>%
+    dplyr::mutate(obs = ifelse(is.na(obs), "Subclonal", obs)) %>%
+    unique()
 }
 
 
