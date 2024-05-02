@@ -384,7 +384,7 @@ sim$update_tissue(250, 250)
 
 sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 sim$place_cell("A", 125, 125)
-sim$run_up_to_size("A", 300)
+sim$run_up_to_size("A", 3000)
 
 plot_tissue(sim)
 ```
