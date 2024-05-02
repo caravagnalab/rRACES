@@ -25,10 +25,11 @@ The former exclusively admits duplication of cells that have space to duplicate
 duplications everywhere in the tumor.
 
 
-The homogeneous-growth model is the default one. However, users can switch the 
-growth model by assigning the `Simulation`'s `duplicate_internal_cells` Boolean field.
-By setting it to `TRUE`, the homogeneous-growth model is used. If, instead, it is 
-set to `FALSE`, the simulation evolves according with the "border"-growth model.
+The "border"-growth model is the default one. However, users can switch to the 
+homogeneous growth model by assigning the `Simulation`'s `duplicate_internal_cells` 
+Boolean field. By setting it to `TRUE`, the homogeneous-growth model is used. If, 
+instead, it is set to `FALSE`, the simulation evolves according with the 
+"border"-growth model.
 
 In the remaining part of this article we clarify the differences between the 
 supported growth models by showing that they produce different evolutions 
@@ -142,13 +143,14 @@ plot_forest(forest, highlight = "S_2_2") %>%
 
 ### "Border" Growth
 
-We now build a simulation and switch to the "border" growth model.
+We now build a simulation and use the "border" growth model.
 
 ```{r}
 sim <- new(Simulation, "Border Growth")
 
-# Set the "border" growth model
-sim$duplicate_internal_cells <- FALSE
+# Setting the "border" growth model is not needed as the
+# boder growth model is the default.
+sim$duplicate_internal_cells
 
 # Set the death activation level to avoid drift
 sim$death_activation_level <- 50

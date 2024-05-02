@@ -235,7 +235,7 @@ tissue conformation.
 ```{r,  fig.height=4, fig.width=3}
 # A bounding box 50x50 with at least 100 cells of species B
 n_w <- n_h <- 50
-ncells <- 0.8*n_w*n_h
+ncells <- 0.8 * n_w * n_h
 
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
 bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
@@ -337,7 +337,7 @@ sim$add_mutant(name = "B",
 sim$mutate_progeny(cell, "B")
 
 # let it grow more time units
-sim$run_up_to_time(sim$get_clock() + 25)
+sim$run_up_to_time(sim$get_clock() + 45)
 
 plot_tissue(sim, num_of_bins = 500)
 ```
@@ -345,8 +345,8 @@ plot_tissue(sim, num_of_bins = 500)
 Sample again and plot the tissue
 
 ```{r,  fig.height=4, fig.width=3}
-n_w <- n_h <- 50
-ncells <- 0.8*n_w*n_h
+n_w <- n_h <- 25
+ncells <- 0.9 * n_w * n_h
 
 bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
@@ -393,7 +393,7 @@ We sample
 
 ```{r,  fig.height=4, fig.width=3}
 n_w <- n_h <- 7
-ncells <- 0.3*n_w*n_h
+ncells <- 0.8 * n_w * n_h
 
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
 bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
