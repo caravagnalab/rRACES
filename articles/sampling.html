@@ -130,7 +130,8 @@ multiple time-points.</p></li>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">place_cell</span>(<span class="st">"A"</span>, <span class="dv">500</span>, <span class="dv">500</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"A"</span>, <span class="dv">60000</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span></code></pre></div>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [███████████████████████████████████<span class="sc">-----</span>] <span class="dv">85</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">51022</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="va">current</span></span></code></pre></div>
@@ -199,8 +200,8 @@ object of the S4 class <code>SamplesForest</code>.</p>
 <span><span class="va">forest</span></span>
 <span><span class="co">#&gt; SamplesForest</span></span>
 <span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 14297</span></span>
-<span><span class="co">#&gt;   # of leaves: 5199</span></span>
+<span><span class="co">#&gt;   # of nodes: 18299</span></span>
+<span><span class="co">#&gt;   # of leaves: 5174</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2"}</span></span></code></pre></div>
 <p>The forest has methods to obtain the nodes of the sampled cells.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -208,10 +209,10 @@ object of the S4 class <code>SamplesForest</code>.</p>
 <span><span class="co">#&gt;   cell_id ancestor mutant epistate sample birth_time</span></span>
 <span><span class="co">#&gt; 1       0       NA      A            &lt;NA&gt;    0.00000</span></span>
 <span><span class="co">#&gt; 2       1        0      A            &lt;NA&gt;   18.33874</span></span>
-<span><span class="co">#&gt; 3       2        0      A            &lt;NA&gt;   18.33874</span></span>
-<span><span class="co">#&gt; 4       3        1      A            &lt;NA&gt;   20.91379</span></span>
-<span><span class="co">#&gt; 5       4        1      A            &lt;NA&gt;   20.91379</span></span>
-<span><span class="co">#&gt; 6       5        2      A            &lt;NA&gt;   23.77724</span></span></code></pre></div>
+<span><span class="co">#&gt; 3       3        1      A            &lt;NA&gt;   34.48728</span></span>
+<span><span class="co">#&gt; 4       4        1      A            &lt;NA&gt;   34.48728</span></span>
+<span><span class="co">#&gt; 5       5        4      A            &lt;NA&gt;   36.01932</span></span>
+<span><span class="co">#&gt; 6       6        4      A            &lt;NA&gt;   36.01932</span></span></code></pre></div>
 <p>The leaves of the forest are sampled cells, while the internal nodes
 are their ancestors. The field <code>sample</code> is not available for
 internal nodes, and reports the sample name otherwise.</p>
@@ -221,12 +222,12 @@ internal nodes, and reports the sample name otherwise.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">sample</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="va">head</span></span>
 <span><span class="co">#&gt;   cell_id ancestor mutant epistate sample birth_time</span></span>
-<span><span class="co">#&gt; 1   73241    40279      A           S_1_1   124.0441</span></span>
-<span><span class="co">#&gt; 2   73249    40301      A           S_1_1   124.0456</span></span>
-<span><span class="co">#&gt; 3   73255    40307      A           S_1_2   124.0464</span></span>
-<span><span class="co">#&gt; 4   73257    40331      A           S_1_1   124.0471</span></span>
-<span><span class="co">#&gt; 5   73258    40331      A           S_1_1   124.0471</span></span>
-<span><span class="co">#&gt; 6   73265    40308      A           S_1_2   124.0481</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   15684      207      A           S_1_2   227.7732</span></span>
+<span><span class="co">#&gt; 2   19668    14691      A           S_1_2   241.1761</span></span>
+<span><span class="co">#&gt; 3   20154    10756      A           S_1_2   242.6826</span></span>
+<span><span class="co">#&gt; 4   24112    20501      A           S_1_2   254.3884</span></span>
+<span><span class="co">#&gt; 5   26919    25698      A           S_1_2   261.6585</span></span>
+<span><span class="co">#&gt; 6   27056    23748      A           S_1_1   262.0744</span></span></code></pre></div>
 <p>The roots of the forest having no ancestors.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If it is one cell, than the forest is a tree</span></span>
@@ -238,8 +239,8 @@ internal nodes, and reports the sample name otherwise.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_samples_info</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    name xmin ymin xmax ymax tumoural_cells     time</span></span>
-<span><span class="co">#&gt; 1 S_1_1  400  400  450  450           2599 130.6534</span></span>
-<span><span class="co">#&gt; 2 S_1_2  500  500  550  550           2600 130.6534</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 S_1_1  400  400  450  450           2584 435.5852</span></span>
+<span><span class="co">#&gt; 2 S_1_2  500  500  550  550           2590 435.5852</span></span></code></pre></div>
 <p>We can visualise the forest. This plot reports the cells and, on the
 y-axis, their time of birth.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -279,7 +280,8 @@ as the sampling times, and the MRCAs of each sample in the tree.</p>
 <span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">place_cell</span>(<span class="st">"A"</span>, <span class="dv">500</span>, <span class="dv">500</span>)</span>
 <span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"A"</span>, <span class="dv">60000</span>)</span>
 <span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span></code></pre></div>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">78</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">47374</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span></code></pre></div>
 <p>We include a new mutant and let it grow. This new mutant has much
 higher growth rates than its ancestor.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># Add a new mutant</span></span>
@@ -288,7 +290,7 @@ higher growth rates than its ancestor.</p>
 <span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a></span>
 <span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"B"</span>, <span class="dv">10000</span>)</span>
 <span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [█████████████<span class="sc">---------------------------</span>] <span class="dv">31</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">150148</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [█████████████████████████<span class="sc">---------------</span>] <span class="dv">60</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">96899</span></span>
 <span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
 <span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a></span>
 <span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>current <span class="ot">&lt;-</span> <span class="fu">plot_tissue</span>(sim)</span>
@@ -316,7 +318,7 @@ tissue conformation.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># A bounding box 50x50 with at least 100 cells of species B</span></span>
 <span><span class="va">n_w</span> <span class="op">&lt;-</span> <span class="va">n_h</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.8</span><span class="op">*</span><span class="va">n_w</span><span class="op">*</span><span class="va">n_h</span></span>
+<span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.8</span> <span class="op">*</span> <span class="va">n_w</span> <span class="op">*</span> <span class="va">n_h</span></span>
 <span></span>
 <span><span class="co"># Sampling ncells with random box sampling of boxes of size n_w x n_h</span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
@@ -404,30 +406,16 @@ subclonal expansions.</p>
 <span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">mutate_progeny</span>(cell, <span class="st">"B"</span>)</span>
 <span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a></span>
 <span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a><span class="co"># let it grow more time units</span></span>
-<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_time</span>(sim<span class="sc">$</span><span class="fu">get_clock</span>() <span class="sc">+</span> <span class="dv">25</span>)</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_time</span>(sim<span class="sc">$</span><span class="fu">get_clock</span>() <span class="sc">+</span> <span class="dv">45</span>)</span>
 <span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">103926</span></span>
-<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">97</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">151361</span></span>
-<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">185790</span></span>
-<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Cells<span class="sc">:</span> <span class="dv">219609</span></span>
-<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Cells<span class="sc">:</span> <span class="dv">253199</span></span>
-<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">04</span>s] Cells<span class="sc">:</span> <span class="dv">283485</span></span>
-<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">05</span>s] Cells<span class="sc">:</span> <span class="dv">307757</span></span>
-<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">06</span>s] Cells<span class="sc">:</span> <span class="dv">332700</span></span>
-<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">07</span>s] Cells<span class="sc">:</span> <span class="dv">356359</span></span>
-<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">08</span>s] Cells<span class="sc">:</span> <span class="dv">378199</span></span>
-<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">09</span>s] Cells<span class="sc">:</span> <span class="dv">398242</span></span>
-<span id="cb28-24"><a href="#cb28-24" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">10</span>s] Cells<span class="sc">:</span> <span class="dv">415237</span></span>
-<span id="cb28-25"><a href="#cb28-25" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">11</span>s] Cells<span class="sc">:</span> <span class="dv">430690</span></span>
-<span id="cb28-26"><a href="#cb28-26" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">99</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">12</span>s] Cells<span class="sc">:</span> <span class="dv">446146</span></span>
-<span id="cb28-27"><a href="#cb28-27" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">13</span>s] Saving snapshot</span>
-<span id="cb28-28"><a href="#cb28-28" tabindex="-1"></a></span>
-<span id="cb28-29"><a href="#cb28-29" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span></code></pre></div>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-26-1.png" width="288"></p>
 <p>Sample again and plot the tissue</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">n_w</span> <span class="op">&lt;-</span> <span class="va">n_h</span> <span class="op">&lt;-</span> <span class="fl">50</span></span>
-<span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.5</span><span class="op">*</span><span class="va">n_w</span><span class="op">*</span><span class="va">n_h</span></span>
+<code class="sourceCode R"><span><span class="va">n_w</span> <span class="op">&lt;-</span> <span class="va">n_h</span> <span class="op">&lt;-</span> <span class="fl">25</span></span>
+<span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.9</span> <span class="op">*</span> <span class="va">n_w</span> <span class="op">*</span> <span class="va">n_h</span></span>
 <span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
@@ -472,7 +460,7 @@ visualisation.</p>
 <p>We sample</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n_w</span> <span class="op">&lt;-</span> <span class="va">n_h</span> <span class="op">&lt;-</span> <span class="fl">7</span></span>
-<span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.5</span><span class="op">*</span><span class="va">n_w</span><span class="op">*</span><span class="va">n_h</span></span>
+<span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.8</span> <span class="op">*</span> <span class="va">n_w</span> <span class="op">*</span> <span class="va">n_h</span></span>
 <span></span>
 <span><span class="co"># Sampling ncells with random box sampling of boxes of size n_w x n_h</span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
