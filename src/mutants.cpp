@@ -1027,11 +1027,12 @@ RCPP_MODULE(Mutants){
           "Update tissue size")
 
 //' @name Simulation$search_sample
-//' @title Search a rectangular sample containing a minimum number of cells
+//' @title Search a rectangular tissue sample
 //' @description This method searches a rectangular tissue sample containing
 //'   the provided number of cells. The sizes of the sample are also
 //'   provided a parameter of the method.
-//'   The complexity of this method is O(|tissue rows|*|tissue cols|).
+//'   The complexity of this method is 
+//'   \eqn{O(|\textrm{tissue width}|*|\textrm{tissue height}|)}.
 //' @param min_num_of_cells A named integer vector reporting the minimum number
 //'   of cells per species or mutant.
 //' @param num_of_cells The number of cells in the searched sample.
@@ -1051,10 +1052,67 @@ RCPP_MODULE(Mutants){
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
 //' sim$run_up_to_size(species = "B", num_of_cells = 1000)
 //'
-//' # find a 10x10 sample containing 80 "B" cells and 10 "A" cells at least
-//' sim$search_sample(c("A" = 10, "B" = 80),50,50)
+//' # find a 50x50 sample containing 80 "B" cells and 10 "A" cells at least
+//' sim$search_sample(c("A" = 10, "B" = 80), 50, 50)
   .method("search_sample", &Simulation::search_sample,
           "Search a rectangular sample containing a given number of cells")
+
+//' @name Simulation$search_samples
+//' @title Search a vector of rectangular tissue samples
+//' @description This method searches rectangular tissue samples containing
+//'   the provided number of cells. The sizes of the samples are also
+//'   provided a parameter of the method.
+//'   This method takes asymptotic time
+//'   \eqn{\Theta(|\textrm{tissue width}|*|\textrm{tissue height}|)}.
+//' @param min_num_of_cells A named integer vector reporting the minimum number
+//'   of cells per species or mutant.
+//' @param num_of_cells The number of cells in the searched sample.
+//' @param width The width of the searched sample.
+//' @param height The height of the searched sample.
+//' @param n_samples The number of searched samples.
+//' @param seed The seed of the random generator the select the samples
+//'     among those satisfying the constraints (default: 0).
+//' @return A vector of `n_samples` rectangular tissue samples that 
+//'     satisfy the aimed constraints. 
+//' @seealso [Simulation]
+//' @examples
+//' sim <- new(Simulation)
+//' sim$death_activation_level <- 50
+//' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
+//' sim$place_cell("A", 500, 500)
+//' sim$run_up_to_size(species = "A", num_of_cells = 500)
+//'
+//' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
+//' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+//' sim$run_up_to_size(species = "B", num_of_cells = 40000)
+//'
+//' plot <- plot_tissue(sim, num_of_bins = 1000)
+//'
+//' # find 3 50x50 samples containing 80 "B" cells and 100 "A" cells 
+//' # at least
+//' bboxes <- sim$search_samples(c("A" = 100, "B" = 80), 50, 50,
+//'                              n_samples=3)
+//' bboxes
+//'
+//' # plot the bbox of the found samples
+//' for (bbox in bboxes) {
+//'   plot <- plot +
+//'     ggplot2::geom_rect(xmin = bbox$lower_corner[1],
+//'                        xmax = bbox$upper_corner[1],
+//'                        ymin = bbox$lower_corner[2],
+//'                        ymax = bbox$upper_corner[2],
+//'                        fill = NA, color = "black")
+//' }
+//'
+//' plot
+  .method("search_samples", (std::vector<TissueRectangle> (Simulation::*)(const Rcpp::IntegerVector&,
+                                                                          const uint16_t&, const uint16_t&,
+                                                                          const size_t) const)(&Simulation::search_samples),
+          "Search rectangular samples containing a given number of cells")
+  .method("search_samples", (std::vector<TissueRectangle> (Simulation::*)(const Rcpp::IntegerVector&,
+                                                                          const uint16_t&, const uint16_t&,
+                                                                          const size_t, int) const)(&Simulation::search_samples),
+          "Search rectangular samples containing a given number of cells")
 
 //' @name Simulation$var
 //' @title Builds a variable representing a simulation quantity

@@ -46,6 +46,10 @@ void TissueRectangle::show() const
         << "(" << upper_corner.x <<"," << upper_corner.y << "))" << std::endl;
 }
 
+TissueRectangle::TissueRectangle():
+  RectangleSet()
+{}
+
 TissueRectangle::TissueRectangle(const Races::Mutants::Evolutions::PositionInTissue& lower_corner, 
                                  const Races::Mutants::Evolutions::PositionInTissue& upper_corner):
   RectangleSet(lower_corner, upper_corner)

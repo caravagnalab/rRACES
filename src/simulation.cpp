@@ -1522,8 +1522,76 @@ bool constraints_satisfied(const std::map<Races::Mutants::SpeciesId, size_t>& ce
   return true;
 }
 
+std::vector<TissueRectangle>
+Simulation::find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
+                             const uint16_t& width, const uint16_t& height) const
+{
+  auto species_constraints = get_species_constraints(*sim_ptr, minimum_cell_vector);
+  auto mutant_constraints = get_mutant_constraints(*sim_ptr, minimum_cell_vector);
+
+  auto t_bbox = get_tumor_bounding_box();
+
+  const auto& tissue = sim_ptr->tissue();
+  const auto t_width = t_bbox.upper_corner.x - t_bbox.lower_corner.x;
+  const auto t_height = t_bbox.upper_corner.y - t_bbox.lower_corner.y;
+
+  const uint16_t grid_width = t_width/width+((t_width%width>0?1:0));
+  const uint16_t grid_height = t_height/height+((t_height%height>0?1:0));
+
+  std::vector<TissueRectangle> rectangles;
+  for (size_t grid_x=0; grid_x<grid_width; ++grid_x) {
+    for (size_t grid_y=0; grid_y<grid_height; ++grid_y) {
+      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y, 
+                                              width, height);
+        
+      if (constraints_satisfied(cell_counts, species_constraints, 
+                                mutant_constraints)) {
+        rectangles.push_back(get_tissue_rectangle(t_bbox, grid_x, grid_y, 
+                                                  width, height));
+      }
+    }
+  }
+
+  return rectangles;
+}
+
+std::vector<TissueRectangle>
+Simulation::search_samples(const Rcpp::IntegerVector& minimum_cell_vector,
+                           const uint16_t& width, const uint16_t& height,
+                           const size_t num_of_samples, const int seed) const
+{
+    auto rectangles = find_all_samples(minimum_cell_vector, width, height);
+    std::mt19937 gen(seed);
+
+    if (rectangles.size()<num_of_samples) {
+        std::ostringstream oss;
+        if (rectangles.size()==0) {
+            oss << "No box satisfies";
+        } else if (rectangles.size()==1) {
+            oss << "Only 1 sample satisfies";
+        } else {
+            oss << "Only " << rectangles.size()
+                << " samples satisfy";
+        }
+        throw std::runtime_error(oss.str()+" the constraints.");
+    }
+
+    std::vector<TissueRectangle> output;
+    while (output.size()<num_of_samples) {
+        std::uniform_int_distribution<size_t> selector(0, rectangles.size()-1);
+
+        size_t pos = selector(gen);
+
+        output.push_back(rectangles[pos]);
+        std::swap(rectangles[pos], rectangles[rectangles.size()-1]);
+        rectangles.resize(rectangles.size()-1);
+    }
+
+    return output;
+}
+
 TissueRectangle Simulation::search_sample(const Rcpp::IntegerVector& minimum_cell_vector,
-                                          const uint16_t& width, const uint16_t& height)
+                                          const uint16_t& width, const uint16_t& height) const
 {
   auto species_constraints = get_species_constraints(*sim_ptr, minimum_cell_vector);
   auto mutant_constraints = get_mutant_constraints(*sim_ptr, minimum_cell_vector);

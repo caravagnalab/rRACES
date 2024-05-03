@@ -30,6 +30,8 @@
 class TissueRectangle : public Races::Mutants::RectangleSet
 {
 public:
+  TissueRectangle();
+
   TissueRectangle(const Races::Mutants::Evolutions::PositionInTissue& lower_corner, 
                   const Races::Mutants::Evolutions::PositionInTissue& upper_corner);
 

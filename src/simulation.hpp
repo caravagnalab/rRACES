@@ -83,6 +83,10 @@ class Simulation
 
   Rcpp::List wrap_a_cell(const Races::Mutants::Evolutions::CellInTissue& cell) const;
 
+  std::vector<TissueRectangle>
+  find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
+                   const uint16_t& width, const uint16_t& height) const;
+
 public:
   Simulation();
 
@@ -299,7 +303,21 @@ public:
   TissueRectangle get_tumor_bounding_box() const;
 
   TissueRectangle search_sample(const Rcpp::IntegerVector& minimum_cell_vector,
-                                const uint16_t& width, const uint16_t& height);
+                                const uint16_t& width, const uint16_t& height) const;
+
+  inline std::vector<TissueRectangle>
+  search_samples(const Rcpp::IntegerVector& minimum_cell_vector,
+                 const uint16_t& width, const uint16_t& height,
+                 const size_t num_of_samples) const
+  {
+    return search_samples(minimum_cell_vector, width, height,
+                          num_of_samples, 0);
+  }
+
+  std::vector<TissueRectangle>
+  search_samples(const Rcpp::IntegerVector& minimum_cell_vector,
+                 const uint16_t& width, const uint16_t& height,
+                 const size_t num_of_samples, int seed) const;
 
   Logics::Variable get_var(const std::string& name) const;
 };
