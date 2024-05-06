@@ -31,7 +31,6 @@ reference:
   contents:
   - annotate_forest
   - bbox_sampler
-  - get_events_table
   - load_samples_forest
   - starts_with("TissueRectangle")
   - starts_with("SamplesForest")
@@ -48,7 +47,6 @@ reference:
   - get_mutation_engine_codes
   - Indel
   - load_phylogenetic_forest
-  - muts_to_sticks
   - starts_with("Mutation")
   - starts_with("MutationEngine")
   - starts_with("PhylogeneticForest")
