@@ -58,6 +58,7 @@ reference:
   - starts_with("ErrorlessIlluminaSequencer")
   - simulate_seq
   - simulate_normal_seq
+  - seq_to_long
 - title: "Simulation Logics"
   desc:  "Simulation Logics"
   contents:
