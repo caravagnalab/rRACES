@@ -1403,18 +1403,21 @@ RCPP_MODULE(Mutants){
 //' @name SamplesForest$get_sticks
 //' @title Compute the forest sticks
 //' @description A _crucial node_ of a forest is a root of the forest, a node
-//'   whose parent belongs to a different mutant, or the most recent
-//'   common ancestor of two crucial nodes.
+//'   whose parent belongs to a different species, or the most recent common
+//'   ancestor of two crucial nodes.
 //'
-//'   A _stick_ is a path of the forest in which the only crucial
-//'   nodes are the first and the last one.
+//'   A _stick_ is a path of the forest in which the only crucial nodes are
+//'   the first and the last one.
 //'
 //'   This method return the list of the forest sticks. Each stick is
-//'   represented by the sequence of cell identifiers labelling the
-//'   nodes in the stick.
-//' @return The list of the forest sticks. Each stick is represented as
-//'   the list of cell identifiers labelling the nodes in the stick
-//'   from the higher to the deeper in the forest.
+//'   represented by the sequence of cell identifiers labelling the nodes in
+//'   the stick.
+//' @param birth_threshold The maximum birth time for the cells associated
+//'   to the returned sticks (optional).
+//' @return The list of the forest sticks whose associated cells have
+//'   birth time smaller than or equal to `birth_threshold`. Each stick is
+//'   represented as the list of cell identifiers labelling the nodes in the
+//'   stick from the higher to the deeper in the forest.
 //' @seealso [PhylogeneticForest$get_sticks()]
 //' @examples
 //' sim <- new(Simulation)
@@ -1425,20 +1428,39 @@ RCPP_MODULE(Mutants){
 //' sim$death_activation_level <- 100
 //' sim$run_up_to_size(species = "A", num_of_cells = 5000)
 //'
+//' sim$get_clock()
+//'
 //' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-//' sim$run_up_to_size(species = "B", num_of_cells = 1000)
+//' sim$run_up_to_size(species = "B", num_of_cells = 50)
+//'
+//' sim$get_clock()
+//'
+//' sim$add_mutant(name = "C", growth_rate = 0.3, death_rate = 0.01)
+//' sim$mutate_progeny(sim$choose_cell_in("B"), "C")
+//' sim$run_up_to_size(species = "C", num_of_cells = 100)
 //'
 //' # search for a 33x33 region containing 50 cells in A and
 //' # 50 cells in B at least and sample it
 //' region <- sim$search_sample(c(A = 50, B = 50), 33, 33)
 //' sim$sample_cells("S1", region$lower_corner, region$upper_corner)
 //'
+//' # search for a 33x33 region containing 50 cells in B and
+//' # 50 cells in C at least and sample it
+//' region <- sim$search_sample(c(B = 50, C = 50), 33, 33)
+//' sim$sample_cells("S2", region$lower_corner, region$upper_corner)
+//'
 //' # build the samples forest
 //' forest <- sim$get_samples_forest()
 //'
 //' # search for the forest sticks
 //' forest$get_sticks()
+//'
+//' # search for the forest sticks whose corresponding cells have 
+//' # birth times 120.2 time units at most
+//' forest$get_sticks(120.2)
+    .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (SamplesForest::*)(const double) const)(&SamplesForest::get_sticks),
+            "Get the forest sticks")
     .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (SamplesForest::*)() const)(&SamplesForest::get_sticks),
             "Get the forest sticks")
 

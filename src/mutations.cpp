@@ -994,19 +994,24 @@ RCPP_MODULE(Mutations){
 //' @name PhylogeneticForest$get_sticks
 //' @title Compute the forest sticks
 //' @description A _crucial node_ of a forest is a root of the forest, a node
-//'   whose parent belongs to a different mutant, or the most recent
-//'   common ancestor of two crucial nodes.
+//'   whose parent belongs to a different species, or the most recent common
+//'   ancestor of two crucial nodes.
 //'
-//'   A _stick_ is a path of the forest in which the only crucial
-//'   nodes are the first and the last one.
+//'   A _stick_ is a path of the forest in which the only crucial nodes are
+//'   the first and the last one.
 //'
 //'   This method return the list of the forest sticks. Each stick is
-//'   represented by the sequence of cell identifiers labelling the
-//'   nodes in the stick.
-//' @return The list of the forest sticks. Each stick is represented as
-//'   the list of cell identifiers labelling the nodes in the stick
-//'   from the higher to the deeper in the forest.
+//'   represented by the sequence of cell identifiers labelling the nodes in
+//'   the stick.
+//' @param birth_threshold The maximum birth time for the cells associated to
+//'   the returned sticks (optional).
+//' @return The list of the forest sticks whose associated cells have
+//'   birth time smaller than or equal to `birth_threshold`. Each stick is
+//'   represented as the list of cell identifiers labelling the nodes in the
+//'   stick from the higher to the deeper in the forest.
 //' @seealso [SamplesForest$get_sticks()] for usage examples
+    .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (PhylogeneticForest::*)(const double) const)(&PhylogeneticForest::get_sticks),
+            "Get the forest sticks")
     .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (PhylogeneticForest::*)() const)(&PhylogeneticForest::get_sticks),
             "Get the forest sticks")
 
