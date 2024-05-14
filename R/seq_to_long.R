@@ -10,12 +10,18 @@
 #' 
 #' @examples
 #' # Example data frame in wide format
-#' seq_results <- data.frame(chr = c("chr1", "chr2"),
-#'                            chr_pos = c(100, 200),
-#'                            ref = c("A", "C"),
-#'                            alt = c("T", "G"),
-#'                            sample1.VAF = c(0.1, 0.2),
-#'                            sample2.VAF = c(0.3, 0.4))
+# seq_results <- data.frame(chr = c("chr1", "chr2"),
+#                           chr_pos = c(100, 200),
+#                           ref = c("A", "C"),
+#                           alt = c("T", "G"),
+#                           causes = c("SBS5", "SBS1"),
+#                           classes = c("germinal", "passneger"),
+#                           Sample.A.occurrences = c(10, 90),
+#                           Sample.A.coverage = c(100, 100),
+#                           Sample.A.VAF = c(0.1, 0.9),
+#                           normal_sample.occurrences = c(45, 52),
+#                           normal_sample.coverage = c(100, 100),
+#                           normal_sample.VAF = c(0.45, 0.52))
 #' # Convert to long format
 #' seq_to_long(seq_results)
 seq_to_long <- function(seq_results) {
