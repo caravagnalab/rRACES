@@ -677,7 +677,7 @@ RCPP_MODULE(Mutations){
 //' @return A mutation engine object.
 //' @examples
 //' # set the reference and SBS URLs
-//' reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/current/",
+//' reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/release-111/",
 //'                         "fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.",
 //'                         "dna.chromosome.22.fa.gz")
 //' sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
