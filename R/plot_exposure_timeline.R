@@ -66,7 +66,7 @@ preprocess <- function(phylo_forest) {
 #'                death_rates = 0.0)
 #' sim$place_cell("A", 500, 500)
 #'
-#' sim$run_up_to_time(60)
+#' sim$run_up_to_time(150)
 #'
 #' # sampling tissue
 #'
