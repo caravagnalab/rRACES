@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -238,7 +238,7 @@ call as the last parameter.</p>
 specifing the name of the set-up directory, the path or URL of the
 reference sequence, the SBS file, the driver mutation file, the
 passenger CNAs file, and the germline data directory.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>reference_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://ftp.ensembl.org/pub/grch37/current/"</span>,</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>reference_url <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"https://ftp.ensembl.org/pub/grch37/release-111/"</span>,</span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>                        <span class="st">"fasta/homo_sapiens/dna/Homo_sapiens.GRCh37."</span>,</span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>                        <span class="st">"dna.chromosome.22.fa.gz"</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
@@ -341,7 +341,7 @@ declared as it follows.</p>
 <span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Retrieving <span class="st">"A"</span> SNVs</span>
 <span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Found <span class="dv">22</span></span>
 <span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
-<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Reading <span class="dv">22</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Reading <span class="dv">22</span></span>
 <span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] <span class="st">"A"</span> SNVs retrieved</span>
 <span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a></span>
 <span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>m_engine</span>
@@ -613,9 +613,9 @@ use the samples forest saved in the file
 <span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>phylo_forest <span class="ot">&lt;-</span> m_engine<span class="sc">$</span><span class="fu">place_mutations</span>(samples_forest, <span class="dv">1000</span>)</span>
 <span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Placing mutations</span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">48</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
-<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a> [█████████████████████████████████<span class="sc">-------</span>] <span class="dv">81</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a> [█████████████████████████████████████<span class="sc">---</span>] <span class="dv">91</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Placing mutations</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a> [███████████████████████<span class="sc">-----------------</span>] <span class="dv">55</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">84</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">95</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Placing mutations</span>
 <span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Mutations placed</span>
 <span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a></span>
 <span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>phylo_forest</span>
@@ -821,9 +821,9 @@ that are not each other ancestors.</p>
 <span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>phylo_forest2 <span class="ot">&lt;-</span> m_engine<span class="sc">$</span><span class="fu">place_mutations</span>(samples_forest, <span class="dv">1000</span>)</span>
 <span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Placing mutations</span>
-<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a> [████████████████████<span class="sc">--------------------</span>] <span class="dv">48</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
-<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a> [████████████████████████████████<span class="sc">--------</span>] <span class="dv">79</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
-<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">89</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Placing mutations</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">52</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Placing mutations</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">84</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Placing mutations</span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Placing mutations</span>
 <span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">03</span>s] Mutations placed</span>
 <span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a></span>
 <span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a><span class="co"># test whether the infinite sites conditions hold</span></span>
@@ -841,26 +841,25 @@ load by the function <code><a href="../reference/load_phylogenetic_forest.html">
 <span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>phylo_forest<span class="sc">$</span><span class="fu">save</span>(<span class="st">"phylo_forest.sff"</span>)</span>
 <span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving forest</span>
-<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a> [████████████████████████████████████<span class="sc">----</span>] <span class="dv">88</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Saving forest</span>
-<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Forest saved</span>
-<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a></span>
-<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="co"># loading the saved forest</span></span>
-<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a>loaded_phylo_forest <span class="ot">&lt;-</span> <span class="fu">load_phylogenetic_forest</span>(<span class="st">"phylo_forest.sff"</span>)</span>
-<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading forest</span>
-<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a> [███████████████████<span class="sc">---------------------</span>] <span class="dv">47</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Loading forest</span>
-<span id="cb29-13"><a href="#cb29-13" tabindex="-1"></a> [███████████████████████████████████████<span class="sc">-</span>] <span class="dv">96</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Loading forest</span>
-<span id="cb29-14"><a href="#cb29-14" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Forest loaded</span>
-<span id="cb29-15"><a href="#cb29-15" tabindex="-1"></a></span>
-<span id="cb29-16"><a href="#cb29-16" tabindex="-1"></a>loaded_phylo_forest</span>
-<span id="cb29-17"><a href="#cb29-17" tabindex="-1"></a><span class="co">#&gt; PhylogeneticForest</span></span>
-<span id="cb29-18"><a href="#cb29-18" tabindex="-1"></a><span class="co">#&gt;   # of trees: 1</span></span>
-<span id="cb29-19"><a href="#cb29-19" tabindex="-1"></a><span class="co">#&gt;   # of nodes: 4959</span></span>
-<span id="cb29-20"><a href="#cb29-20" tabindex="-1"></a><span class="co">#&gt;   # of leaves: 953</span></span>
-<span id="cb29-21"><a href="#cb29-21" tabindex="-1"></a><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
-<span id="cb29-22"><a href="#cb29-22" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb29-23"><a href="#cb29-23" tabindex="-1"></a><span class="co">#&gt;   # of emerged SNVs and indels: 77521</span></span>
-<span id="cb29-24"><a href="#cb29-24" tabindex="-1"></a><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Forest saved</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a><span class="co"># loading the saved forest</span></span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a>loaded_phylo_forest <span class="ot">&lt;-</span> <span class="fu">load_phylogenetic_forest</span>(<span class="st">"phylo_forest.sff"</span>)</span>
+<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a> [█<span class="sc">---------------------------------------</span>] <span class="dv">0</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Loading forest</span>
+<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a> [█████████████████████<span class="sc">-------------------</span>] <span class="dv">51</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Loading forest</span>
+<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Loading forest</span>
+<span id="cb29-13"><a href="#cb29-13" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">02</span>s] Forest loaded</span>
+<span id="cb29-14"><a href="#cb29-14" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" tabindex="-1"></a>loaded_phylo_forest</span>
+<span id="cb29-16"><a href="#cb29-16" tabindex="-1"></a><span class="co">#&gt; PhylogeneticForest</span></span>
+<span id="cb29-17"><a href="#cb29-17" tabindex="-1"></a><span class="co">#&gt;   # of trees: 1</span></span>
+<span id="cb29-18"><a href="#cb29-18" tabindex="-1"></a><span class="co">#&gt;   # of nodes: 4959</span></span>
+<span id="cb29-19"><a href="#cb29-19" tabindex="-1"></a><span class="co">#&gt;   # of leaves: 953</span></span>
+<span id="cb29-20"><a href="#cb29-20" tabindex="-1"></a><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
+<span id="cb29-21"><a href="#cb29-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb29-22"><a href="#cb29-22" tabindex="-1"></a><span class="co">#&gt;   # of emerged SNVs and indels: 77521</span></span>
+<span id="cb29-23"><a href="#cb29-23" tabindex="-1"></a><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-alexandrov2020repertoire" class="csl-entry">
 Alexandrov, Ludmil B, Jaegil Kim, Nicholas J Haradhvala, Mi Ni Huang,

@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,7 +130,7 @@ multiple time-points.</p></li>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">place_cell</span>(<span class="st">"A"</span>, <span class="dv">500</span>, <span class="dv">500</span>)</span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"A"</span>, <span class="dv">60000</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">63</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">38350</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a> [███████████████████████████████<span class="sc">---------</span>] <span class="dv">76</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">45712</span></span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
@@ -280,7 +280,7 @@ as the sampling times, and the MRCAs of each sample in the tree.</p>
 <span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">place_cell</span>(<span class="st">"A"</span>, <span class="dv">500</span>, <span class="dv">500</span>)</span>
 <span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"A"</span>, <span class="dv">60000</span>)</span>
 <span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a> [██████████████████████████<span class="sc">--------------</span>] <span class="dv">64</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">38600</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a> [████████████████████████████<span class="sc">------------</span>] <span class="dv">69</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">41439</span></span>
 <span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span></code></pre></div>
 <p>We include a new mutant and let it grow. This new mutant has much
 higher growth rates than its ancestor.</p>
@@ -290,8 +290,8 @@ higher growth rates than its ancestor.</p>
 <span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a></span>
 <span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_size</span>(<span class="st">"B"</span>, <span class="dv">10000</span>)</span>
 <span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [████████<span class="sc">--------------------------------</span>] <span class="dv">19</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">83283</span></span>
-<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a> [██████████████████████████████████<span class="sc">------</span>] <span class="dv">83</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Cells<span class="sc">:</span> <span class="dv">102834</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a> [█████<span class="sc">-----------------------------------</span>] <span class="dv">11</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">79618</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a> [██████████████████████<span class="sc">------------------</span>] <span class="dv">54</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">95181</span></span>
 <span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">01</span>s] Saving snapshot</span>
 <span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a></span>
 <span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>current <span class="ot">&lt;-</span> <span class="fu">plot_tissue</span>(sim)</span>
@@ -409,7 +409,7 @@ subclonal expansions.</p>
 <span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a><span class="co"># let it grow more time units</span></span>
 <span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>sim<span class="sc">$</span><span class="fu">run_up_to_time</span>(sim<span class="sc">$</span><span class="fu">get_clock</span>() <span class="sc">+</span> <span class="dv">45</span>)</span>
 <span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">50223</span></span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">98</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Cells<span class="sc">:</span> <span class="dv">48664</span></span>
 <span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a> [████████████████████████████████████████] <span class="dv">100</span>% [<span class="dv">00</span>m<span class="sc">:</span><span class="dv">00</span>s] Saving snapshot</span>
 <span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a></span>
 <span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a><span class="fu">plot_tissue</span>(sim, <span class="at">num_of_bins =</span> <span class="dv">500</span>)</span></code></pre></div>

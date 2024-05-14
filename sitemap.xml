@@ -355,6 +355,15 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/load_samples_forest.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_BAF_gw.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_DR_gw.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_VAF_gw.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_exposure_timeline.html</loc>
   </url>
   <url>
@@ -362,6 +371,12 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_forest.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_histogram_vaf.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/plot_marginals.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_muller.html</loc>
@@ -377,6 +392,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/seq_to_long.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/simulate_normal_seq.html</loc>
