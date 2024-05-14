@@ -35,7 +35,11 @@ reference:
   - starts_with("TissueRectangle")
   - starts_with("SamplesForest")
   - starts_with("Simulation")
-  - starts_with("plot_")
+  - plot_firings
+  - plot_muller
+  - plot_state
+  - plot_timeseries
+  - plot_tissue
   - recover_simulation
 - title: "Mutation simulation interface"
   desc:  "Mutation simulation classes and methods"
@@ -50,12 +54,19 @@ reference:
   - starts_with("Mutation")
   - starts_with("MutationEngine")
   - starts_with("PhylogeneticForest")
+  - plot_exposure_timeline
+  - plot_forest
   - SNV
 - title: "Sequencing simulation interface"
   desc:  "Sequencing simulation methods"
   contents:
   - starts_with("BasicIlluminaSequencer")
   - starts_with("ErrorlessIlluminaSequencer")
+  - plot_BAF_gw
+  - plot_DR_gw
+  - plot_VAF_gw
+  - plot_histogram_vaf
+  - plot_marginals
   - simulate_seq
   - simulate_normal_seq
   - seq_to_long
