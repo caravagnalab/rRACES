@@ -94,8 +94,8 @@ plot_histogram_vaf <- function(
 
   data %>%
     ggplot2::ggplot(mapping = ggplot2::aes(x = VAF, fill = col)) +
-    ggplot2::geom_histogram(binwidth=0.01, alpha=0.5, position = "identity") +
-    ggplot2::xlim(x = c(-0.01, 1.01)) +
+    ggplot2::geom_histogram(binwidth = 0.01, alpha = 0.5,
+                            position = "identity") +
     ggplot2::facet_grid(sample_name ~ chr, scales = "free_y") +
     ggplot2::theme_bw() +
     ggplot2::labs(col = colour_by, fill = colour_by) +
