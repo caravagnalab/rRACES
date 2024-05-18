@@ -28,18 +28,28 @@ PhylogeneticForest::PhylogeneticForest():
 PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
                                        const std::string& germline_subject,
                                        const std::filesystem::path& reference_path,
-                                       const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures):
-   Races::Mutations::PhylogeneticForest(orig), germline_subject(germline_subject),
-   reference_path(reference_path), timed_exposures(timed_exposures)
-{}
+                                       const TimedMutationalExposure& timed_SBS_exposures,
+                                       const TimedMutationalExposure& timed_indel_exposures):
+    Races::Mutations::PhylogeneticForest(orig), germline_subject(germline_subject),
+    reference_path(reference_path)
+{
+    using namespace Races::Mutations;
+    timed_exposures[MutationType::Type::SBS] = timed_SBS_exposures;
+    timed_exposures[MutationType::Type::INDEL] = timed_indel_exposures;
+}
 
 PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
                                        const std::string& germline_subject,
                                        const std::filesystem::path& reference_path,
-                                       const std::map<Races::Time, Races::Mutations::Exposure>& timed_exposures):
+                                       const TimedMutationalExposure& timed_SBS_exposures,
+                                       const TimedMutationalExposure& timed_indel_exposures):
    Races::Mutations::PhylogeneticForest(std::move(orig)), germline_subject(germline_subject),
-   reference_path(reference_path), timed_exposures(timed_exposures)
-{}
+   reference_path(reference_path)
+{
+    using namespace Races::Mutations;
+    timed_exposures[MutationType::Type::SBS] = timed_SBS_exposures;
+    timed_exposures[MutationType::Type::INDEL] = timed_indel_exposures;
+}
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const
 {
@@ -116,7 +126,7 @@ void fill_mutation_lists(const Races::Mutations::CellGenomeMutations& cell_mutat
           alleles[index] = allele_id;
           ref[index] = mutation.ref;
           alt[index] = mutation.alt;
-          types[index] = (mutation.is_SNV()?"SNV":"indel");
+          types[index] = (mutation.is_SBS()?"SNV":"indel");
           causes[index] = mutation.cause;
           classes[index] = mutation.get_nature_description();
 
@@ -181,7 +191,7 @@ Rcpp::List PhylogeneticForest::get_germline_SIDs() const
           alleles[index] = allele_id;
           ref[index] = mutation.ref;
           alt[index] = mutation.alt;
-          types[index] = (mutation.is_SNV()?"SNV":"indel");
+          types[index] = (mutation.is_SBS()?"SNV":"indel");
           causes[index] = mutation.cause;
           classes[index] = mutation.get_nature_description();
 
@@ -366,35 +376,50 @@ Rcpp::List PhylogeneticForest::get_first_occurrence(const SEXP& mutation) const
              "SNV, Indel, or CNA objects.");
 }
 
+void fill_timed_exposures(const std::map<Races::Time, Races::Mutations::MutationalExposure>& mutation_timed_exposures,
+                          const std::string& mutation_type_name,
+                          size_t& index, Rcpp::NumericVector& times, Rcpp::NumericVector& probs,
+                          Rcpp::CharacterVector& sig_names, Rcpp::CharacterVector& types)
+{
+  for (const auto& [time, exposure]: mutation_timed_exposures) {
+    for (const auto& [sign_name, prob]: exposure) {
+      times[index] = time;
+      probs[index] = prob;
+      sig_names[index] = sign_name;
+      types[index] = mutation_type_name;
+      ++index;
+    }
+  }
+}
+
+
 Rcpp::List PhylogeneticForest::get_timed_exposures() const
 {
   using namespace Rcpp;
   using namespace Races::Mutants;
+  using namespace Races::Mutations;
 
   size_t dataframe_size{0};
-  for (const auto& [time, exposure]: timed_exposures) {
-    for (const auto& [SBS, prob]: exposure) {
-      (void)SBS;
-
-      ++dataframe_size;
+  for (const auto& [type, mutation_timed_exposures] : timed_exposures) {
+    (void)type;
+    for (const auto& [time, exposure]: mutation_timed_exposures) {
+      for (const auto& [sign_name, prob]: exposure) {
+        (void)sign_name;
+        ++dataframe_size;
+      }
     }
   }
 
   NumericVector times(dataframe_size), probs(dataframe_size);
-  CharacterVector SBSs(dataframe_size), types(dataframe_size);
+  CharacterVector sig_names(dataframe_size), types(dataframe_size);
 
   size_t index{0};
-  for (const auto& [time, exposure]: timed_exposures) {
-    for (const auto& [SBS, prob]: exposure) {
-      times[index] = time;
-      probs[index] = prob;
-      SBSs[index] = SBS;
-      types[index] = "SBS";
-      ++index;
-    }
-  }
+  fill_timed_exposures(timed_exposures.at(MutationType::Type::SBS), "SNV",
+                       index, times, probs, sig_names, types);
+  fill_timed_exposures(timed_exposures.at(MutationType::Type::INDEL), "indel",
+                       index, times, probs, sig_names, types);
 
-  return DataFrame::create(_["time"]=times, _["signature"]=SBSs,
+  return DataFrame::create(_["time"]=times, _["signature"]=sig_names,
                            _["exposure"]=probs, _["type"]=types);
 }
 

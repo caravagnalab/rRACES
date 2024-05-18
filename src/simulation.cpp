@@ -254,7 +254,7 @@ bool Simulation::has_names_in(const Rcpp::List& list, std::set<std::string> aime
   return true;
 }
 
-Rcpp::List 
+Rcpp::List
 Simulation::get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
                       const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
                       const std::set<Races::Mutants::SpeciesId> &species_filter,
@@ -400,7 +400,7 @@ void Simulation::init(const SEXP& sexp)
     default: {
       std::ostringstream oss;
 
-      oss << "Invalid type for the first parameter: " 
+      oss << "Invalid type for the first parameter: "
           << type2name(sexp);
 
       throw std::domain_error(oss.str());
@@ -450,7 +450,7 @@ Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
   if (TYPEOF(first_param) != STRSXP) {
     std::ostringstream oss;
 
-    oss << "Invalid type for the parameter 1: " 
+    oss << "Invalid type for the parameter 1: "
         << type2name(first_param)
         << ". If the last parameter is not a Boolean value (save on disk"
         << " parameter), it must be a string (the name of the simulation).";
@@ -461,7 +461,7 @@ Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
   if (TYPEOF(second_param) != INTSXP && TYPEOF(second_param) != REALSXP) {
     std::ostringstream oss;
 
-    oss << "Invalid type for the parameter 2: " 
+    oss << "Invalid type for the parameter 2: "
         << type2name(second_param)
         << ". If the last parameter is not a Boolean value (save on disk"
         << " parameter), it must be an integer value (the random seed).";
@@ -1112,7 +1112,7 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
   }
 }
 
-Rcpp::List 
+Rcpp::List
 Simulation::choose_cell_in(const std::string& mutant_name,
                            const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
                            const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner)
@@ -1171,7 +1171,6 @@ void Simulation::mutate_progeny(const Races::Mutants::Evolutions::AxisPosition& 
   sim_ptr->simulate_mutation(pos_in_tissue, mutated_mutant);
 }
 
-
 void Simulation::mutate_progeny(const Rcpp::List& cell_position,
                                 const std::string& mutated_mutant)
 {
@@ -1186,7 +1185,7 @@ void Simulation::mutate_progeny(const Rcpp::List& cell_position,
     if (!cell_position.containsElementNamed(field.c_str())) {
       std::string msg = "Missing \"" + field + "\" element from the Rcpp::List.";
 
-      ::Rf_error(msg.c_str());
+      ::Rf_error("%s", msg.c_str());
     }
     vector_position.push_back(as<RS::AxisPosition>(cell_position[field]));
   }
@@ -1298,7 +1297,7 @@ count_cells_in(const Races::Mutants::Evolutions::Tissue& tissue,
   return count_cells_in(tissue, x, y, width, height);
 }
 
-inline 
+inline
 TissueRectangle get_tissue_rectangle(const TissueRectangle& tumor_bounding_box,
                                      const uint16_t& grid_x, const uint16_t& grid_y,
                                      const uint16_t& width, const uint16_t& height)
@@ -1311,7 +1310,7 @@ TissueRectangle get_tissue_rectangle(const TissueRectangle& tumor_bounding_box,
   return TissueRectangle(PositionInTissue{x,y}, width, height);
 }
 
-std::set<Races::Mutants::SpeciesId> 
+std::set<Races::Mutants::SpeciesId>
 collect_species_of(const Races::Mutants::Evolutions::Simulation& simulation,
                    const std::string& mutant_name)
 {
@@ -1419,7 +1418,7 @@ get_species_constraints(const Races::Mutants::Evolutions::Simulation& simulation
           if (minimum_cell_vector[i] < 0) {
             throw std::domain_error("The minimum number of cells must be "
                                     "a non-negative number. Specified "
-                                    + std::to_string(threshold) 
+                                    + std::to_string(threshold)
                                     + " for species \"" + name + "\".");
           }
           species_constraints.emplace_back(name, species.get_id(),
@@ -1488,11 +1487,11 @@ get_mutant_constraints(const Races::Mutants::Evolutions::Simulation& simulation,
 
     if (species_ids.size()>0) {
       const auto& threshold = minimum_cell_vector[i];
-      
+
       if (threshold < 0) {
         throw std::domain_error("The minimum number of cells must be "
                                 "a non-negative number. Specified "
-                                + std::to_string(threshold) 
+                                + std::to_string(threshold)
                                 + " for species \"" + name + "\".");
       }
       mutant_constraints.emplace_back(name, std::move(species_ids),
@@ -1541,12 +1540,12 @@ Simulation::find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
   std::vector<TissueRectangle> rectangles;
   for (size_t grid_x=0; grid_x<grid_width; ++grid_x) {
     for (size_t grid_y=0; grid_y<grid_height; ++grid_y) {
-      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y, 
+      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y,
                                               width, height);
-        
-      if (constraints_satisfied(cell_counts, species_constraints, 
+
+      if (constraints_satisfied(cell_counts, species_constraints,
                                 mutant_constraints)) {
-        rectangles.push_back(get_tissue_rectangle(t_bbox, grid_x, grid_y, 
+        rectangles.push_back(get_tissue_rectangle(t_bbox, grid_x, grid_y,
                                                   width, height));
       }
     }
@@ -1612,48 +1611,48 @@ TissueRectangle Simulation::search_sample(const Rcpp::IntegerVector& minimum_cel
     uint16_t grid_x=diag, grid_y=diag;
 
     for (; grid_x<grid_width-diag; ++grid_x) {
-      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y, 
+      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y,
                                               width, height);
-        
-      if (constraints_satisfied(cell_counts, species_constraints, 
+
+      if (constraints_satisfied(cell_counts, species_constraints,
                                 mutant_constraints)) {
         return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
       }
     }
 
     for (; grid_y<grid_height-diag; ++grid_y) {
-      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y, 
+      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y,
                                               width, height);
-        
-      if (constraints_satisfied(cell_counts, species_constraints, 
+
+      if (constraints_satisfied(cell_counts, species_constraints,
                                 mutant_constraints)) {
         return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
       }
     }
 
     for (; grid_x>diag; --grid_x) {
-      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y, 
+      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y,
                                               width, height);
-        
-      if (constraints_satisfied(cell_counts, species_constraints, 
+
+      if (constraints_satisfied(cell_counts, species_constraints,
                                 mutant_constraints)) {
         return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
       }
     }
 
     {
-      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y, 
+      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y,
                                               width, height);
-      if (constraints_satisfied(cell_counts, species_constraints, 
+      if (constraints_satisfied(cell_counts, species_constraints,
                                 mutant_constraints)) {
         return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
       }
     }
 
     for (; grid_y>diag; --grid_y) {
-      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y, 
+      const auto cell_counts = count_cells_in(tissue, t_bbox, grid_x, grid_y,
                                               width, height);
-      if (constraints_satisfied(cell_counts, species_constraints, 
+      if (constraints_satisfied(cell_counts, species_constraints,
                                 mutant_constraints)) {
         return get_tissue_rectangle(t_bbox, grid_x, grid_y, width, height);
       }
@@ -1674,7 +1673,7 @@ Logics::Variable Simulation::get_var(const std::string& name) const
   if (dot_pos == std::string::npos) {
     return Logics::Variable(sim_ptr->get_cardinality_variable(name));
   }
-  
+
   std::string event_name(name.substr(dot_pos+1));
   std::string species_name{name.substr(0, dot_pos)};
 

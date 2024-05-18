@@ -134,6 +134,9 @@ reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/release-111/",
 sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
                   "COSMIC_v3.4_SBS_GRCh37.txt")
 
+indel_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/",
+                    "2121/COSMIC_v3.4_ID_GRCh37.txt")
+
 drivers_url <- paste0("https://raw.githubusercontent.com/",
                       "caravagnalab/rRACES/main/inst/extdata/",
                       "driver_mutations_hg19.csv")
@@ -149,7 +152,8 @@ germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
 # build a mutation engine and place all the files in the directory "Test"
 m_engine <- build_mutation_engine(directory = "Test",
                                   reference_src = reference_url,
-                                  SBS_src = sbs_url,
+                                  SBS_signatures_src = sbs_url,
+                                  indel_signatures_src = indel_url,
                                   drivers_src = drivers_url,
                                   passenger_CNAs_src = passenger_cnas_url,
                                   germline_src = germline_url)
@@ -196,19 +200,19 @@ The genetic specification of the mutant `A` can be declared as it follows.
 m_engine <- build_mutation_engine(setup_code = "demo")
 ```
 
-DA QUI
-
 ```{r}
 # add the mutant "A" characterized by one driver SNV on the allele 1 of
-# chromosome 22 and two CNAs: a deletion on the allele 1 of chromosome 22
-# and an amplification on a random allele of the same chromosome. The
-# mutant has two epigenetic states and its species "A+" and "A-" have
-# passenger SNV rates 1e-9 and 3e-8, respectively, and passenger CNA rates
-# 0 and 1e-11, respectively.
+# chromosome 22, one indel deletion on the same chromosome, and two CNAs:
+# a deletion on the allele 1 of chromosome 22 and an amplification on a
+# random allele of the same chromosome. The mutant has two epigenetic
+# states and its species "A+" and "A-" have passenger SNV rates 1e-9 and
+# 3e-8, respectively, passenger indel rates 1e-10 and 0, respectively,
+# and passenger CNA rates 0 and 1e-11, respectively.
 m_engine$add_mutant(mutant_name = "A",
-                    passenger_rates = list("+" = c(SNV = 1e-9),
+                    passenger_rates = list("+" = c(SNV = 1e-9, indel = 1e-10),
                                            "-" = c(SNV = 3e-8, CNA = 1e-11)),
                     drivers = list(SNV("22", 10510210, "C", allele = 1),
+                                   Mutation("22", 15220157, "GTTTTTTTT", "G"),
                                    CNA(type = "A", chr = "22",
                                        chr_pos = 10303470, len = 200000),
                                    CNA("D", "22", 5010000, 200000,
@@ -218,8 +222,8 @@ m_engine
 ```
 
 In the above code, the driver CNAs, SNVs, and indels are declared by calling
-the functions `CNA()`, `SNV()`, and `indel()`, respectively. These function allow
-to specify the allele in which the mutation must lay.
+the functions `CNA()`, `SNV()`, and `Mutation()`, respectively. These function
+allow to specify the allele in which the mutation must lay.
 
 As far as the SNVs and indels concern, rRACES provides the users with a more
 compact and, sometimes, convenient approach. The mutation engine stores a list
@@ -251,29 +255,31 @@ m_engine$add_mutant("B", list("+" = c(SNV = 8e-7), "-" = c(SNV = 5e-8)),
 m_engine
 ```
 
-A QUI
-
 #### Mutational Exposures
 
 The probability for a mutation to occur depends on both its genomic and
 environmental context.
 
-A SBS is a single base mutation substituion signature that provides for any
-genomic context (i.e., a triplet of bases) the probability for a SNV to occur
-on that context.
+A _signature_ is a mutation probability distribution over mutation contexts or
+mutation structure. _SBS (single base substitution) signatures_ provide
+for any genomic context (i.e., a triplet of bases) the probability for a SNV
+to occur on that context. On the contrary, _ID (indel) signatures_ associates
+the probability of an indel to its length and structure
+(see [@alexandrov2020repertoire]).
 
-The SBSs depends on the environmental context (see [@alexandrov2020repertoire])
-and, because of that, more than one SBSs may be active at the same time with
-different probabilities. An _mutational exposure_ (or _exposure_) is a
-discrete probability distribution among SBS signatures.
+The signature depends on the environmental context and, because of that, more
+than one signature may be active at the same time with different probabilities.
+An _mutational exposure_ (or _exposure_) is a discrete probability distribution
+among signatures.
 
-In order to simulate passeger SNVs, we need to specify a default exposure.
-This can be achieved as it follows.
+In order to simulate passeger mutations of a given type, we need to specify a
+default exposure for that type. This can be achieved as it follows.
 
 ```{r}
-# add a default exposure. This will be used from simulated
-# time 0 up to the successive exposure change.
+# add SNV and indel default exposures. This will be used from simulated time 0
+# up to the successive exposure change.
 m_engine$add_exposure(coefficients = c(SBS13 = 0.2, SBS1 = 0.8))
+m_engine$add_exposure(c(ID2 = 0.6, ID13 = 0.2, ID21 = 0.2))
 ```
 
 Further exposures can also be defined by specifying an activation time
@@ -281,10 +287,20 @@ for each of them, i.e., the new exposures will be used
 from the specified time up to the next exposure change.
 
 ```{r}
-# add a new exposure that will be used from simulated
+# add a new SNV exposure that will be used from simulated
 # time 100 up to the successive exposure change.
-m_engine$add_exposure(time = 100,
-                      c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
+m_engine$add_exposure(time = 100, c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
+
+m_engine
+```
+
+The default exposures and the simultaneous changes in SNV and ID exposures
+can be specified by a sigle call to the function
+`MutationEngine$add_exposure()` as it follows.
+
+```{r}
+m_engine$add_exposure(time = 120, c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5,
+                                    ID1 = 0.8, ID9 = 0.2))
 
 m_engine
 ```
@@ -368,9 +384,9 @@ in that article.
 ```{r}
 samples_forest <- load_samples_forest("samples_forest.sff")
 
-# place mutations on the sample forest assuming 1000
-# pre-neoplastic mutations
-phylo_forest <- m_engine$place_mutations(samples_forest, 1000)
+# place mutations on the sample forest assuming 1000 pre-neoplastic SNVs and
+# 500 indels
+phylo_forest <- m_engine$place_mutations(samples_forest, 1000, 500)
 
 phylo_forest
 ```
@@ -425,14 +441,14 @@ even when the cell was not sampled.
 # select one of the mutations
 mutation_row <- phylo_forest$get_sampled_cell_mutations(cell_id)[2, ]
 
-# rebuild the corresponding SNV
-snv <- SNV(mutation_row["chr"][1, ],
-           mutation_row["chr_pos"][1, ],
-           mutation_row["alt"][1, ],
-           mutation_row["ref"][1, ])
+# rebuild the corresponding mutation
+mutation <- Mutation(mutation_row["chr"][1, ],
+                     mutation_row["chr_pos"][1, ],
+                     mutation_row["ref"][1, ],
+                     mutation_row["alt"][1, ])
 
-# get the identifier of the oldest cells in which the SNV occurs
-phylo_forest$get_first_occurrences(snv)
+# get the identifier of the oldest cells in which the mutation occurs
+phylo_forest$get_first_occurrences(mutation)
 ```
 
 The exposures used in placing the mutations on the cells in the
@@ -444,13 +460,16 @@ phylogenetic forest can be obtained by using the method
 phylo_forest$get_exposures()
 ```
 
-The details about the SBSs adopted during the evolution are
-available in the mutation engine and they can be retrieved
-by using the method `MutationEngine$get_SBSs()`.
+The details about the SNV and indel signatures adopted during the evolution are
+available in the mutation engine and they can be retrieved by using the methods
+`MutationEngine$get_SNV_signatures()` and `MutationEngine$get_indel_signatures()`.
 
 ```{r}
-# get the SBSs used in placing the mutations
-m_engine$get_SBSs()[1:6, 1:5]
+# get the SNV signatures used in placing the mutations
+m_engine$get_SNV_signatures()[1:6, 1:5]
+
+# get the indel signatures used in placing the mutations
+m_engine$get_indel_signatures()[1:6, 1:5]
 ```
 
 The name of the subject whose germline corresponds to
@@ -504,8 +523,7 @@ test_infinite_sites_model <- function(phylo_forest) {
   }
 }
 
-# test whether the infinite sites conditions hold
-# in the built phylogenetic forest
+# test whether the infinite sites conditions hold in the built forest
 test_infinite_sites_model(phylo_forest)
 ```
 
@@ -531,12 +549,10 @@ of the genomes of two cells that are not each other ancestors.
 # test whether the infinite sites model is enable
 m_engine$infinite_sites_model
 
-# place the mutations on the same samples forest
-# used above
-phylo_forest2 <- m_engine$place_mutations(samples_forest, 1000)
+# place the mutations on the same samples forest used above
+phylo_forest2 <- m_engine$place_mutations(samples_forest, 1000, 500)
 
-# test whether the infinite sites conditions hold
-# in the new phylogenetic forest
+# test whether the infinite sites conditions hold in the new forest
 test_infinite_sites_model(phylo_forest2)
 ```
 

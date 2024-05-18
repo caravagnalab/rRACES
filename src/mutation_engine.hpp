@@ -30,6 +30,7 @@
 #include "samples_forest.hpp"
 
 #include "genomic_data_storage.hpp"
+#include "utility.hpp"
 
 class MutationEngine
 {
@@ -39,33 +40,66 @@ class MutationEngine
 
     std::string germline_subject;
     size_t context_sampling;
+    size_t max_motif_size;
+    size_t max_repetition_storage;
     std::string tumor_type;
 
     Races::Mutations::ContextIndex<AbsGenotypePosition> context_index;
+    Races::Mutations::RSIndex rs_index;
     Races::Mutations::MutationEngine<AbsGenotypePosition, std::mt19937_64> m_engine;
 
     GermlineSubject get_germline_subject(const std::string& subject_name) const;
 
     void init_mutation_engine();
+
+    template<typename MUTATION_TYPE>
+    void show_timed_exposures() const
+    {
+        Rcpp::Rcout << "   " << MUTATION_TYPE::name() << " Timed Exposures" << std::endl;
+
+        const auto& timed_exposures = m_engine.get_timed_exposures(MUTATION_TYPE::type());
+        auto coeffs_it = timed_exposures.begin();
+        while (coeffs_it != timed_exposures.end()) {
+            auto next_it = coeffs_it;
+            ++next_it;
+            if (next_it == timed_exposures.end()) {
+                Rcpp::Rcout << "     [" << coeffs_it->first << ", \u221E[: ";
+            } else {
+                Rcpp::Rcout << "     ["
+                            << coeffs_it->first << ", " << next_it->first << "[: ";
+            }
+            Rcpp::Rcout << coeffs_it->second << std::endl;
+
+            coeffs_it = next_it;
+        }
+    }
 public:
     MutationEngine(const std::string& setup_code,
                    const std::string& germline_subject="",
                    const size_t& context_sampling=100,
+                   const size_t& max_motif_size=50,
+                   const size_t& max_repetition_storage=500000,
                    const std::string& tumor_type="");
 
     MutationEngine(const std::string& directory,
                    const std::string& reference_source,
-                   const std::string& SBS_source,
+                   const std::string& SBS_signatures_source,
+                   const std::string& indel_signatures_source,
                    const std::string& drivers_source,
                    const std::string& passenger_CNAs_source,
                    const std::string& germline_source,
                    const std::string& germline_subject="",
                    const size_t& context_sampling=100,
+                   const size_t& max_motif_size=50,
+                   const size_t& max_repetition_storage=500000,
                    const std::string& tumor_type="");
 
     static Rcpp::List get_supported_setups();
 
-    void add_exposure(const Rcpp::List& exposure);
+    inline void add_exposure(const Rcpp::List& exposure)
+    {
+        add_exposure(0, exposure);
+    }
 
     void add_exposure(const double& time, const Rcpp::List& exposure);
 
@@ -104,34 +138,69 @@ public:
     void set_germline_subject(const std::string& germline_subject);
 
     PhylogeneticForest place_mutations(const SamplesForest& forest,
-                                       const size_t& num_of_preneoplatic_mutations,
+                                       const size_t& num_of_preneoplatic_SNVs,
+                                       const std::string& preneoplatic_SNV_signature_name,
+                                       const size_t& num_of_preneoplatic_indels,
+                                       const std::string& preneoplatic_indel_signature_name,
                                        const int seed);
 
     inline PhylogeneticForest place_mutations(const SamplesForest& forest,
-                                              const size_t& num_of_preneoplatic_mutations)
+                                              const size_t& num_of_preneoplatic_SNVs,
+                                              const std::string& preneoplatic_SNV_signature_name,
+                                              const size_t& num_of_preneoplatic_indels,
+                                              const std::string& preneoplatic_indel_signature_name)
     {
-        return place_mutations(forest, num_of_preneoplatic_mutations, 0);
+        return place_mutations(forest, num_of_preneoplatic_SNVs, preneoplatic_SNV_signature_name,
+                               num_of_preneoplatic_indels, preneoplatic_indel_signature_name, 0);
     }
 
-    Rcpp::List get_SBS_dataframe() const;
+    inline PhylogeneticForest place_mutations(const SamplesForest& forest,
+                                              const size_t& num_of_preneoplatic_SNVs,
+                                              const size_t& num_of_preneoplatic_indels)
+    {
+        return place_mutations(forest, num_of_preneoplatic_SNVs, num_of_preneoplatic_indels, 0);
+    }
+
+    inline PhylogeneticForest place_mutations(const SamplesForest& forest,
+                                              const size_t& num_of_preneoplatic_SNVs,
+                                              const size_t& num_of_preneoplatic_indels,
+                                              const int seed)
+    {
+        return place_mutations(forest, num_of_preneoplatic_SNVs, "SBS1",
+                               num_of_preneoplatic_indels, "ID1", seed);
+    }
+
+    inline PhylogeneticForest place_mutations(const SamplesForest& forest,
+                                              const size_t& num_of_preneoplatic_SNVs)
+    {
+        return place_mutations(forest, num_of_preneoplatic_SNVs, "SBS1",
+                               0, "ID1", 0);
+    }
+
+    Rcpp::List get_SNV_signatures_dataframe() const;
+
+    Rcpp::List get_indel_signatures_dataframe() const;
 
     void show() const;
 
-    static MutationEngine 
+    static MutationEngine
     build_MutationEngine(const std::string& directory,
                          const std::string& reference_source,
-                         const std::string& SBS_source,
+                         const std::string& SBS_signatures_source,
+                         const std::string& indel_signatures_source,
                          const std::string& drivers_source,
                          const std::string& passenger_CNAs_source,
                          const std::string& germline_source,
                          const std::string& setup_code,
                          const std::string& germline_subject,
                          const size_t& context_sampling,
+                         const size_t& max_motif_size,
+                         const size_t& max_repetition_storage,
                          const std::string& tumor_type);
 
     void set_context_sampling(const size_t& context_sampling);
 
-    void rebuild_context_index();
+    void rebuild_indices();
 
     void reset(const bool full=true);
 };

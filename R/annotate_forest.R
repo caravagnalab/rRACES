@@ -39,7 +39,7 @@
 #'
 #' forest = sim$get_samples_forest()
 #' forest$get_samples_info()
-#' forest_muts = m_engine$place_mutations(forest, 1000)
+#' forest_muts = m_engine$place_mutations(forest, 1000, 500)
 #' tree_plot = plot_forest(forest)
 #' annotate_forest(tree_plot, forest_muts, samples = T, MRCAs = T,
 #'                 exposures = T, drivers=T, add_driver_label = T)

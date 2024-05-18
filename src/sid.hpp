@@ -31,7 +31,7 @@ class SID : public Races::Mutations::MutationSpec<Races::Mutations::SID>
     SID(const Races::Mutations::ChromosomeId& chromosome_id,
         const Races::Mutations::ChrPosition& chromosomic_position,
         const Races::Mutations::AlleleId allele_id,
-        const char& ref_base, const char& alt_base,
+        const std::string& ref, const std::string& alt,
         const std::string& cause="");
 
 public:

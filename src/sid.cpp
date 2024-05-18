@@ -22,7 +22,8 @@
 SID::SID(const Races::Mutations::ChromosomeId& chromosome_id,
          const Races::Mutations::ChrPosition& chromosomic_position,
          const Races::Mutations::AlleleId allele_id,
-         const char& ref, const char& alt, const std::string& cause):
+         const std::string& ref, const std::string& alt, 
+         const std::string& cause):
     Races::Mutations::MutationSpec<Races::Mutations::SID>(allele_id, chromosome_id,
                                                           chromosomic_position,
                                                           ref, alt, cause)
@@ -72,7 +73,7 @@ Rcpp::List SID::get_dataframe() const
                              _["allele"]=wrap_allele(allele_id),
                              _["ref"]=get_ref(),
                              _["alt"]=get_alt(),
-                             _["type"]=(is_SNV()?"SNV":"indel"),
+                             _["type"]=(is_SBS()?"SNV":"indel"),
                              _["cause"]=get_cause());
 }
 
@@ -80,7 +81,7 @@ void SID::show() const
 {
     using namespace Rcpp;
 
-    if (is_SNV()) {
+    if (is_SBS()) {
         Rcout << "SNV";
     } else {
         Rcout << "indel";
@@ -141,6 +142,6 @@ SID SID::build_SID(const SEXP chromosome_name,
 
     auto cause_str = Rcpp::as<std::string>(cause);
     return SID(chr_id, static_cast<Races::Mutations::ChrPosition>(pos),
-               get_allele_id(allele_id, "allele"), ref_base_str[0],
-               alt_base_str[0], cause_str);
+               get_allele_id(allele_id, "allele"), ref_base_str,
+               alt_base_str, cause_str);
 }

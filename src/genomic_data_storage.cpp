@@ -221,33 +221,27 @@ GermlineStorage::get_germline(const std::string& subject_name) const
   return germline;
 }
 
-bool is_an_URL(const std::string& reference)
-{
-  std::set<std::string> protocols{"ftp", "http"};
-
-  for (const auto& protocol : protocols) {
-    if (reference.find(protocol)==0) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
 GenomicDataStorage::GenomicDataStorage(const std::string& directory,
                                        const std::string& reference_source,
-                                       const std::string& SBS_source,
+                                       const std::string& SBS_signatures_source,
+                                       const std::string& indel_signatures_source,
                                        const std::string& driver_mutations_source,
                                        const std::string& passenger_CNAs_source,
                                        const std::string& germline_source):
-  directory(directory), reference_src(reference_source),
-  SBS_src(SBS_source), drivers_src(driver_mutations_source),
-  passenger_CNAs_src(passenger_CNAs_source), germline_src(germline_source)
+  directory{directory}, reference_src{reference_source},
+  SBS_signatures_downloaded{false}, SBS_signatures_src{SBS_signatures_source},
+  indel_signatures_downloaded{false}, indel_signatures_src{indel_signatures_source},
+  drivers_src{driver_mutations_source}, passenger_CNAs_src{passenger_CNAs_source},
+  germline_src{germline_source}
 {
   std::filesystem::create_directory(directory);
 
   retrieve_reference();
-  retrieve_SBS();
+  retrieve_file<Races::Mutations::SBSType>("SBS");
+  SBS_signatures_downloaded = true;
+  retrieve_file<Races::Mutations::IDType>("indel");
+  indel_signatures_downloaded = true;
+
   retrieve_drivers();
   retrieve_passenger_CNAs();
   const auto germline_path = retrieve_germline();
@@ -355,33 +349,6 @@ std::filesystem::path GenomicDataStorage::retrieve_reference()
   return reference_filename;
 }
 
-std::filesystem::path GenomicDataStorage::retrieve_SBS()
-{
-  SBS_downloaded = is_an_URL(SBS_src);
-  if (!SBS_downloaded && !std::filesystem::exists(SBS_src)) {
-    throw std::runtime_error("Designed SBS file \"" + SBS_src
-                             + "\" does not exists.");
-  }
-
-  const auto SBS_filename = get_SBS_path();
-
-  if (std::filesystem::exists(SBS_filename)) {
-    return SBS_filename;
-  }
-
-  using namespace Rcpp;
-
-  Rcout << "Downloading SBS file..." << std::endl << std::flush;
-
-  auto downloaded_file = download_file(SBS_src);
-
-  Rcout << "SBS file downloaded" << std::endl;
-
-  std::filesystem::rename(downloaded_file, SBS_filename);
-
-  return SBS_filename;
-}
-
 std::filesystem::path GenomicDataStorage::retrieve_drivers()
 {
   if (drivers_src == "") {
@@ -418,7 +385,7 @@ std::filesystem::path GenomicDataStorage::retrieve_passenger_CNAs()
   passenger_CNAs_downloaded = is_an_URL(passenger_CNAs_src);
   if (!passenger_CNAs_downloaded 
        && !std::filesystem::exists(passenger_CNAs_src)) {
-    throw std::runtime_error("Designed passenger CNAs file \"" + SBS_src
+    throw std::runtime_error("Designed passenger CNAs file \"" + SBS_signatures_src
                              + "\" does not exists.");
   }
 
@@ -482,15 +449,6 @@ std::filesystem::path GenomicDataStorage::get_reference_path() const
   }
 }
 
-std::filesystem::path GenomicDataStorage::get_SBS_path() const
-{
-  if (SBS_downloaded) {
-    return directory/std::string("SBS.txt");
-  } else {
-    return SBS_src;
-  }
-}
-
 std::filesystem::path GenomicDataStorage::get_passenger_CNAs_path() const
 {
   if (passenger_CNAs_downloaded) {
@@ -516,7 +474,7 @@ void GenomicDataStorage::save_sources() const
   std::ofstream of(directory/"sources.csv");
 
   of << "reference\t" << reference_src << std::endl
-     << "SBS\t" << SBS_src << std::endl
+     << "SBS\t" << SBS_signatures_src << std::endl
      << "drivers\t" << drivers_src << std::endl
      << "passenger_CNAs\t" << passenger_CNAs_src << std::endl
      << "germline\t" << germline_src << std::endl;

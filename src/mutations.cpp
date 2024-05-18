@@ -116,6 +116,7 @@ RCPP_MODULE(Mutations){
 //' @param ref The base before the mutation (optional).
 //' @param allele The allele in which the SNV must occur (optional).
 //' @param cause The cause of the SNV (optional).
+//' @seealso `Mutation()` for SNV and indel creation.
 //' @examples
 //' # create a SNV without specifying the cause and context
 //' snv <- SNV("X", 20002, "T")
@@ -138,35 +139,44 @@ RCPP_MODULE(Mutations){
                         _["cause"] = ""),
            "Create a single nucleotide variation (SNV)");
 
-//' @name Indel
-//' @title Create an indel.
+//' @name Mutation
+//' @title Create either a SNV or a indel.
+//' @description This function creates SNVs and indels. It generalizes
+//'   the function `SNV()` by building SNVs and indels. However, it
+//'   requires the reference sequence specification whereas `SNV()` can
+//'   deduce it from the reference sequence itself.
+//'
+//'   Another difference with respect to `SNV()` is the `ref`-`alt`
+//'   parameter order: the `alt` parameter comes before the optional
+//'   `ref` parameter in `SNV()`; `Mutation()` adopts the reverse order.
 //' @param chr The name of the chromosome in which the indel occurs.
 //' @param chr_pos The position in the chromosome where the indel occurs.
-//' @param ref The sequence before the indel.
-//' @param alt The sequence after the indel.
-//' @param allele The allele in which the SNV must occur (optional).
-//' @param cause The cause of the SNV (optional).
+//' @param ref The reference sequence.
+//' @param alt The mutation altered sequence.
+//' @param allele The allele in which the mutation must occur (optional).
+//' @param cause The cause of the mutation (optional).
+//' @seealso `SNV()` for SNV creation.
 //' @examples
 //' # create a deletion without specifying the cause
-//' indel <- Indel("X", 20002, "TAC", "")
-//' indel
+//' mutation <- Mutation("X", 20002, "TAC", "T")
+//' mutation
 //'
 //' # create an insertion and do not specify the cause
-//' indel <- Indel("X", 20002, "", "AT")
-//' indel
+//' mutation <- Mutation("X", 20002, "A", "AT")
+//' mutation
 //'
 //' # create an insertion that must be place in allele 1
-//' indel <- Indel("X", 20002, "", "AT", allele = 1)
-//' indel
+//' mutation <- Mutation("X", 20002, "A", "AT", allele = 1)
+//' mutation
 //'
 //' # create an insertion with a cause
-//' indel <- Indel("X", 20002, "", "AT", cause = "SBS1")
-//' indel
-  function("Indel", &SID::build_SID,
-           List::create(_["chr"], _["chr_pos"], _["ref"] = "",
-                        _["alt"] = "", _["allele"] = R_NilValue,
+//' mutation <- Mutation("X", 20002, "A", "AT", cause = "SBS1")
+//' mutation
+  function("Mutation", &SID::build_SID,
+           List::create(_["chr"], _["chr_pos"], _["ref"],
+                        _["alt"], _["allele"] = R_NilValue,
                         _["cause"] = ""),
-           "Create an insertion or a deletion (indel)");
+           "Create either an SNV or a indel");
 
 //' @name CNA
 //' @title Create a CNA amplification.
@@ -373,30 +383,34 @@ RCPP_MODULE(Mutations){
 //'
 //'   Each exposure is associated to a time that is the simulated
 //'   time in which the set is adopted.
-//'   If a time is provided the exposure is used from the
-//'   specified time on up to the successive possible change of
-//'   exposure. When an exposure is added to the mutation engine
-//'   without specifying the time, its time is 0.
+//'   If a time is provided the exposure is used from the specified
+//'   time on up to the successive exposure change. When an exposure
+//'   is added to the mutation engine without specifying the time,
+//'   its time is 0.
 //' @param time The simulated time at which the exposure is adopted
 //'   (optional).
-//' @param exposure An signature exposure, i.e., a discrete probability
-//'   distribution over a set of SBS signature.
+//' @param exposure An exposure for the specified mutation type, i.e.,
+//'   a discrete probability distribution over a set of signature.
+//'   The indel and SNV exposures can be specified in the same list.
 //' @examples
 //' # create a demostrative mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # add a default set of SBS coefficients that will be used from simulated
-//' # time 0 up to the successive SBS coefficient change.
-//' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))
+//' # add a default set of coefficients that will be used from simulated
+//' # time 0 up to the successive coefficient change. The indel and SNV
+//' # exposures can be specified in the same list.
+//' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7, ID2 = 0.2, ID3 = 0.3,
+//'                         ID20 = 0.5))
 //'
-//' # add a default set of SBS coefficients that will be used from simulated
+//' # add a default set of coefficients that will be used from simulated
 //' # time 3.2 up to the end of the simulation.
 //' m_engine$add_exposure(3.2, c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5))
 //'
 //' m_engine
     .method("add_exposure", (void (MutationEngine::*)(const List&))(
               &MutationEngine::add_exposure), "Add an exposure")
-    .method("add_exposure", (void (MutationEngine::*)(const double&, const List&))(
+    .method("add_exposure", (void (MutationEngine::*)(const double&,
+                                                      const List&))(
               &MutationEngine::add_exposure), "Add an exposure")
 
 //' @name MutationEngine$add_mutant
@@ -419,9 +433,11 @@ RCPP_MODULE(Mutations){
 //' # two CNAs: an amplification and a deletion. The mutant has two epigenetic
 //' # states and its species "A+" and "A-" have passenger SNV rates 1e-9 and
 //' # 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.
-//' m_engine$add_mutant("A", list("+" = c(SNV = 1e-9),
+//' m_engine$add_mutant("A", list("+" = c(SNV = 1e-9, indel = 1e-10),
 //'                               "-" = c(SNV = 3e-8, CNA = 1e-11)),
-//'                     drivers = list(SNV("22", 10510210, "C"),
+//'                     drivers = list(SNV("22", 23657587, "C"),
+//'                                    Mutation("22", 15220157, "GTTTTTTTT",
+//'                                             "G"),
 //'                                    CNA(type = "A", chr = "22",
 //'                                        chr_pos = 10303470,
 //'                                        len = 200000),
@@ -443,13 +459,16 @@ RCPP_MODULE(Mutations){
 
 //' @name MutationEngine$place_mutations
 //' @title Place the mutations on a samples forest
-//' @description This method labels each node of a samples forest
-//'   by the mutations occuring for the first time in the
-//'   cell represented by the node itself and produces a
-//'   phylogenetic forest.
+//' @description This method labels each node of a samples forest by the
+//'   mutations occuring for the first time in the cell represented by the
+//'   node itself and produces a phylogenetic forest.
 //' @param samples_forest A samples forest.
-//' @param num_of_preneoplatic_mutations The number of pre-neoplastic
-//'   mutations.
+//' @param num_of_preneoplatic_SNVs The number of pre-neoplastic SNVs.
+//' @param preneoplatic_SNV_signature_name The name of the SNV signature
+//'   for the preneoplastic SNV generation. (optional)
+//' @param num_of_preneoplatic_indels The number of pre-neoplastic indels.
+//' @param preneoplatic_indel_signature_name The name of the indel signature
+//'   for the preneoplastic indel generation. (optional)
 //' @param seed The seed for random number generator. (optional)
 //' @return A phylogenetic forest whose structure corresponds to
 //'   `samples_forest`.
@@ -473,25 +492,49 @@ RCPP_MODULE(Mutations){
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
 //' # add the mutant "A" to the engine
-//' m_engine$add_mutant("A", c(SNV = 3e-9),
-//'                     list(SNV("22", 12028576, "G")))
+//' m_engine$add_mutant("A", c(SNV = 3e-9), list(SNV("22", 12028576, "G")))
 //'
-//' # add the default set of SBS coefficients
-//' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7))
+//' # add the default set of SNV signature coefficients
+//' m_engine$add_exposure(c(SBS13 = 0.3, SBS1 = 0.7, ID2 = 0.3, ID21 = 0.5,
+//'                         ID3 = 0.2))
 //'
-//' # place the mutations on the samples forest assuming
-//' # 1000 pre-neoplastic mutations
-//' phylogenetic_forest <- m_engine$place_mutations(samples_forest, 1000)
+//' # place the mutations on the samples forest assuming 1000 pre-neoplastic
+//' # SNVs and 500 indels
+//' phylogenetic_forest <- m_engine$place_mutations(samples_forest, 1000, 500)
 //'
 //' phylogenetic_forest
-    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
-                                                                       const size_t& num_of_preneoplatic_mutations))(
+    .method("place_mutations",
+            (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
+                                                    const size_t& num_of_preneoplatic_SNVs))(
                                                         &MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
-    .method("place_mutations", (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
-                                                                       const size_t& num_of_preneoplatic_mutations,
-                                                                       const int seed))(
+    .method("place_mutations",
+            (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
+                                                    const size_t& num_of_preneoplatic_SNVs,
+                                                    const size_t& num_of_preneoplatic_indels))(
                                                         &MutationEngine::place_mutations),
+            "Place mutations on a SamplesForest")
+    .method("place_mutations",
+            (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
+                                                    const size_t& num_of_preneoplatic_SNVs,
+                                                    const size_t& num_of_preneoplatic_indels,
+                                                    const int seed))(&MutationEngine::place_mutations),
+            "Place mutations on a SamplesForest")
+    .method("place_mutations",
+            (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
+                                                    const size_t& num_of_preneoplatic_SNVs,
+                                                    const std::string& preneoplatic_SNV_signature_name,
+                                                    const size_t& num_of_preneoplatic_indels,
+                                                    const std::string& preneoplatic_indel_signature_name))(
+                                                        &MutationEngine::place_mutations),
+            "Place mutations on a SamplesForest")
+    .method("place_mutations",
+            (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
+                                                    const size_t& num_of_preneoplatic_SNVs,
+                                                    const std::string& preneoplatic_SNV_signature_name,
+                                                    const size_t& num_of_preneoplatic_indels,
+                                                    const std::string& preneoplatic_indel_signature_name,
+                                                    const int seed))(&MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
 
 //' @name MutationEngine$get_active_germline
@@ -565,23 +608,47 @@ RCPP_MODULE(Mutations){
 //' head(m_engine$get_population_descritions(), 5)
     .method("get_population_descritions", &MutationEngine::get_population_descritions)
 
-//' @name MutationEngine$get_SBSs
-//' @title Get a data frame containing the available SBSs
+//' @name MutationEngine$get_SNV_signatures
+//' @title Get a data frame containing the available SNV
+//'   signatures
 //' @description This method returns a data frame containing
-//'   the available SBSs and the corresponding mutation
-//'   probability. The first column ("Type") describes a
-//'   mutation in a context, while each of the remaining
-//'   columns contains the probabilities of the mutations
-//'   for one of the available SBSs.
-//' @return A data frame containing the available SBSs.
+//'   the available SNV signatures and the corresponding
+//'   mutation probability. The first column ("Type")
+//'   describes a mutation in a context, while each of the
+//'   remaining columns contains the probabilities of the
+//'   mutations for one of the available SNV signatures.
+//' @return A data frame containing the available SNV
+//'   signatures.
 //' @examples
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # get the SBS data frame
-//' head(m_engine$get_SBSs(), 5)
-    .method("get_SBSs", &MutationEngine::get_SBS_dataframe,
-            "Get the SBS data frame")
+//' # get the indel data frame
+//' head(m_engine$get_SNV_signatures(), 5)
+    .method("get_SNV_signatures",
+            &MutationEngine::get_SNV_signatures_dataframe,
+            "Get the SNV signatures data frame")
+
+//' @name MutationEngine$get_indel_signatures
+//' @title Get a data frame containing the available indel
+//'   signatures
+//' @description This method returns a data frame containing
+//'   the available indel signatures and the corresponding
+//'   mutation probability. The first column ("Type")
+//'   describes a mutation in a context, while each of the
+//'   remaining columns contains the probabilities of the
+//'   mutations for one of the available indel signatures.
+//' @return A data frame containing the available  indel
+//'   signatures.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- build_mutation_engine(setup_code = "demo")
+//'
+//' # get the indel data frame
+//' head(m_engine$get_indel_signatures(), 5)
+    .method("get_indel_signatures",
+            &MutationEngine::get_indel_signatures_dataframe,
+            "Get the indel signatures data frame")
 
 //' @name MutationEngine$get_known_drivers
 //' @title Get the data frame of the known driver mutations
@@ -654,18 +721,27 @@ RCPP_MODULE(Mutations){
 //' @export
 //' @param setup_code The set-up code (alternative to `directory`).
 //' @param directory The set-up directory (alternative to `setup_code`).
-//' @param reference_src The reference genome path or URL (mandatory when `directory`
-//'   is provided).
-//' @param SBS_src The SBS file path or URL (mandatory when `directory` is provided).
+//' @param reference_src The reference genome path or URL (mandatory when
+//'   `directory` is provided).
+//' @param SBS_signatures_src The SBS signature file path or URL (mandatory
+//'   when `directory` is provided).
+//' @param indel_signatures_src The indel signature file path or URL (mandatory
+//'   when `directory` is provided).
 //' @param drivers_src The driver mutation file path or URL (mandatory when
 //'   `directory` is provided).
-//' @param passenger_CNAs_src The passenger CNAs file path or URL (mandatory when
-//'   `directory` is provided).
+//' @param passenger_CNAs_src The passenger CNAs file path or URL (mandatory
+//'   when `directory` is provided).
 //' @param germline_src The germline directory path or URL (mandatory when
 //'   `directory` is provided).
 //' @param germline_subject The germline subject (optional).
-//' @param context_sampling The number of reference contexts per context in the
-//'   index (optional: default value is 100).
+//' @param context_sampling The number of reference contexts per context in
+//'   the index (optional: default value is 100).
+//' @param max_index_size The maximum size of an admitted indel and, as a
+//'   consequence, the maximum size of a motif stored in the repeated
+//'   sequence index (optional: default value is 50).
+//' @param max_repetition_storage The maximum number of repetitions per type
+//'   stored in the repeated sequence index (optional: default value is
+//'   500000).
 //' @param tumor_type The type of tumor. This is currently used to select the
 //'   admissible passenger CNAs. If any passenger CNA in the dataset is
 //'   admissible, use the the empty string `""` (optional: default value is
@@ -680,8 +756,10 @@ RCPP_MODULE(Mutations){
 //' reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/release-111/",
 //'                         "fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.",
 //'                         "dna.chromosome.22.fa.gz")
-//' sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
-//'                   "COSMIC_v3.4_SBS_GRCh37.txt")
+//' sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/",
+//'                   "2123/COSMIC_v3.4_SBS_GRCh37.txt")
+//' indel_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/",
+//'                     "2121/COSMIC_v3.4_ID_GRCh37.txt")
 //' drivers_url <- paste0("https://raw.githubusercontent.com/",
 //'                       "caravagnalab/rRACES/main/inst/extdata/",
 //'                       "driver_mutations_hg19.csv")
@@ -697,7 +775,8 @@ RCPP_MODULE(Mutations){
 //' # it is suggested to avoid passenger mutations on driver loci.
 //' m_engine <- build_mutation_engine(directory = "Test",
 //'                                   reference_src = reference_url,
-//'                                   SBS_src = sbs_url,
+//'                                   SBS_signatures_src = sbs_url,
+//'                                   indel_signatures_src = indel_url,
 //'                                   drivers_src = drivers_url,
 //'                                   passenger_CNAs_src = passenger_CNAs_url,
 //'                                   germline_src = germline_url)
@@ -707,21 +786,23 @@ RCPP_MODULE(Mutations){
 //' # the SBS file, and the previously built context index are loaded from
 //' # the set-up directory avoiding further computations.
 //' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
-//'                                   drivers_url, passenger_CNAs_url,
-//'                                   germline_url)
+//'                                   indel_url, drivers_url,
+//'                                   passenger_CNAs_url, germline_url)
 //'
 //' # if the `context_sampling` parameter changes, a new context index is
 //' # built, while neither the reference sequence nor the SBS file are
 //' # downloaded again.
 //' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
-//'                                   drivers_url, passenger_CNAs_url,
-//'                                   germline_url, context_sampling = 50)
+//'                                   indel_url, drivers_url,
+//'                                   passenger_CNAs_url, germline_url,
+//'                                   context_sampling = 50)
 //'
 //' # a futher contruction with the same parameters avoids both downloads
 //' # and context index construction.
 //' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
-//'                                   drivers_url, passenger_CNAs_url,
-//'                                   germline_url, context_sampling = 50)
+//'                                   indel_url, drivers_url,
+//'                                   passenger_CNAs_url, germline_url,
+//'                                   context_sampling = 50)
 //'
 //' m_engine
 //'
@@ -743,10 +824,13 @@ RCPP_MODULE(Mutations){
 //' unlink("demo", recursive = TRUE)
   function("build_mutation_engine", &MutationEngine::build_MutationEngine,
            List::create(_["directory"] = "",
-                        _["reference_src"] = "", _["SBS_src"] = "",
+                        _["reference_src"] = "", _["SBS_signatures_src"] = "",
+                        _["indel_signatures_src"] = "",
                         _["drivers_src"] = "", _["passenger_CNAs_src"] = "",
                         _["germline_src"] = "", _["setup_code"] = "",
                         _["germline_subject"] = "", _["context_sampling"] = 100,
+                        _["max_motif_size"] = 50,
+                        _["max_repetition_storage"] = 500000,
                         _["tumor_type"] = ""),
            "Create a MutationEngine");
 

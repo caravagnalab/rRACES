@@ -21,7 +21,6 @@ export(load_samples_forest)
 
 export(build_mutation_engine)
 export(get_mutation_engine_codes)
-export(Indel)
 export(load_phylogenetic_forest)
 export(MutationEngine)
 export(Mutation)

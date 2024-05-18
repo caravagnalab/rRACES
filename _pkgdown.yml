@@ -49,7 +49,6 @@ reference:
   - starts_with("CNA")
   - Deletion
   - get_mutation_engine_codes
-  - Indel
   - load_phylogenetic_forest
   - starts_with("Mutation")
   - starts_with("MutationEngine")
