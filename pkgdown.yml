@@ -1,15 +1,15 @@
-pandoc: 3.1.13
-pkgdown: 2.0.7
+pandoc: '3.2'
+pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
-  SCOUT: SCOUT.html
   growth_models: growth_models.html
   mutations: mutations.html
   rRACES: rRACES.html
   sampling: sampling.html
+  SCOUT: SCOUT.html
   sequencing: sequencing.html
   tissue_simulation: tissue_simulation.html
-last_built: 2024-05-14T08:46Z
+last_built: 2024-05-18T19:51Z
 urls:
   reference: https://caravagnalab.github.io/rRACES/reference
   article: https://caravagnalab.github.io/rRACES/articles

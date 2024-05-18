@@ -85,9 +85,6 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Formula.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Indel.html</loc>
-  </url>
-  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_alt.html</loc>
   </url>
   <url>
@@ -106,19 +103,25 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_ref.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_exposure.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_mutant.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_SBSs.html</loc>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_SNV_signatures.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_active_germline.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_germline_subjects.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_indel_signatures.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_known_drivers.html</loc>
