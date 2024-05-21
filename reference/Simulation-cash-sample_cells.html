@@ -68,9 +68,29 @@ retrieved to build a samples forest.</p>
 
 
     <div class="section level2">
+    <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
+    <dl><dt>sample_name</dt>
+<dd><p>The name of the sample.</p></dd>
+
+
+<dt>lower_corner</dt>
+<dd><p>The lower corner of the sample bounding box (optional
+in pair with <code>upper_corner</code>).</p></dd>
+
+
+<dt>upper_corner</dt>
+<dd><p>The upper corner of the sample bounding box (optional
+in pair with <code>lower_corner</code>).</p></dd>
+
+
+<dt>num_of_cells</dt>
+<dd><p>The maximum number of tumor cells to collect
+(optional).</p></dd>
+
+</dl></div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><a href="Simulation.html">Simulation</a>, <code><a href="Simulation-cash-var.html">Simulation$var()</a></code>, <code><a href="Simulation-cash-run_up_to_time.html">Simulation$run_up_to_time()</a></code>,
-<code><a href="Simulation-cash-run_up_to_event.html">Simulation$run_up_to_event()</a></code>, <code><a href="Simulation-cash-run_up_to_size.html">Simulation$run_up_to_size()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="Simulation-cash-get_samples_info.html">Simulation$get_samples_info()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -83,10 +103,23 @@ retrieved to build a samples forest.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"A"</span>, num_of_cells <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                                                                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                                                                                                                          </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># randomly sample 50 tumor cells in the whole tissue</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S1"</span>, num_of_cells<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># sample the region [450,500]x[475,550]</span></span></span>
-<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S1"</span>, lower_corner<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">450</span>,<span class="fl">475</span><span class="op">)</span>, upper_corner<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">550</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S2"</span>, lower_corner<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">450</span>,<span class="fl">475</span><span class="op">)</span>, upper_corner<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">550</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># randomly sample 50 tumor cells in the region [500,550]x[500,550]</span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S3"</span>, lower_corner<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>,<span class="fl">500</span><span class="op">)</span>, upper_corner<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">550</span>,<span class="fl">550</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 num_of_cells<span class="op">=</span><span class="fl">50</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_info</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   name xmin ymin xmax ymax tumor_cells tumor_cells_in_bbox    time</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   S1    0    0  999  999          50               50000 227.816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   S2  450  475  500  550        3855                3855 227.816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   S3  500  500  550  550          50                2541 227.816</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

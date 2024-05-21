@@ -298,12 +298,7 @@ thousands of cells.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Spatial distribution for the whole tissue (hexagonal bins)</span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-12-2.png" width="288"></p>
 <blockquote>
 <p><strong>Note:</strong> since the plots are done with
@@ -345,12 +340,7 @@ status.</li>
 <span><span class="co">#&gt; 1      A        -    263</span></span>
 <span><span class="co">#&gt; 2      A        +    500</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-13-1.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -385,12 +375,7 @@ there are 100 of them.</p>
 <span><span class="co">#&gt; 6 switch      A        +   131</span></span></code></pre></div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the tissue by using 200 bins</span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-16-1.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -411,12 +396,7 @@ reference, and simulate further.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 99.49105</span></span></code></pre></div>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-18-1.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -563,7 +543,7 @@ hold.</p>
 <span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="va">sim2</span></span>
-<span><span class="co">#&gt; ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #00BB00;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> races_20240518-223412 ── <span style="color: #BB0000;">▣ </span>A tissue [1000x1000]<span style="color: #BB0000;">  ⏱ </span>40 ──</span></span>
+<span><span class="co">#&gt; ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #00BB00;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> races_20240521-105953 ── <span style="color: #BB0000;">▣ </span>A tissue [1000x1000]<span style="color: #BB0000;">  ⏱ </span>40 ──</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── Species: <span style="color: #00BB00;">2</span>, <span style="color: #00BB00;">with</span> epigenetics</span></span>
 <span><span class="co">#&gt;    </span></span>
@@ -706,26 +686,13 @@ the populations.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-27-1.png" width="288"></p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-27-2.png" width="288"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Facet on species via ggplot</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">species</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">species</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-28-1.png" width="576"></p>
 <p>If, at this point in the simulation, we generate a new mutant
 <code>C</code> from <code>A</code> in the rectangle <span class="math inline">\([450,500]\times [550, 600]\)</span>.</p>
@@ -745,12 +712,7 @@ the populations.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_state.html">plot_state</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-30-1.png" width="288"></p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-30-2.png" width="288"></p>
 </div>
 <div class="section level3">
@@ -893,7 +855,7 @@ the state (by default, <code>Simulation$history_delta</code> is set to
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"D"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"D+"</span>, <span class="fl">1000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█████████████████████████---------------] 62% [00m:00s] Cells: 33113 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
+<span><span class="co">#&gt;  [███████████████████████████-------------] 66% [00m:00s] Cells: 34689 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
 <p>The time-series can be plot using <code><a href="../reference/plot_timeseries.html">plot_timeseries()</a></code>.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Time-series plot</span></span>
@@ -980,7 +942,7 @@ and <code>B-</code>.</p>
 <span></span>
 <span><span class="co"># Now D will become larger</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"D+"</span>, <span class="fl">6000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█████████████████████████---------------] 61% [00m:00s] Cells: 54605 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [█████████████████████████---------------] 62% [00m:00s] Cells: 55030 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="co"># Current state</span></span>
 <span><span class="va">sim</span></span>

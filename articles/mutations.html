@@ -143,8 +143,8 @@ can be obtained by invoking the function
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving context index [████████████████████████████████████████] 100% [00m:00s] Context index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; Building repeated sequence index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:12s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [██████████████████████------------------] 52% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:05s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:11s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [███████████████████████-----------------] 57% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving germline [████████████████████████████████████████] 100% [00m:00s] Germline saved</span></span>
@@ -182,7 +182,7 @@ performs them.</p>
 <code class="sourceCode R"><span><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
 <span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading context index [████████████████████████████████████████] 100% [00m:00s] Context index loaded</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [███████████████████---------------------] 47% [00m:01s] Loading RS index [████████████████████████████████████----] 89% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [████████████████████--------------------] 48% [00m:01s] Loading RS index [█████████████████████████████████████---] 92% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="context-index-sampling">Context Index Sampling<a class="anchor" aria-label="anchor" href="#context-index-sampling"></a>
@@ -216,7 +216,7 @@ call as the last parameter.</p>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█████████████████-----------------------] 40% [00m:01s] Processing chr. 22 [█████████████████████████████████-------] 81% [00m:02s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:02s] Context index built</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving context index [████████████████████████████████████████] 100% [00m:00s] Context index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [███████████████████---------------------] 45% [00m:01s] Loading RS index [███████████████████████████████████-----] 85% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [███████████████████---------------------] 47% [00m:01s] Loading RS index [████████████████████████████████████----] 89% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span></code></pre></div>
 <p>Above call uses the already downloaded data in the directory
 <code>"demo"</code> to build the context and produces the file
@@ -280,8 +280,8 @@ passenger CNAs file, and the germline data directory.</p>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving context index [████████████████████████████████████████] 100% [00m:00s] Context index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; Building repeated sequence index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:12s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [████████████████████--------------------] 49% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:05s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:11s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [█████████-------------------------------] 20% [00m:01s] Saving RS index [███████████████████████████████████-----] 85% [00m:02s] Saving RS index [████████████████████████████████████████] 100% [00m:02s] RS index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving germline [████████████████████████████████████████] 100% [00m:00s] Germline saved</span></span>
@@ -649,16 +649,16 @@ use the samples forest saved in the file
 <span><span class="co"># place mutations on the sample forest assuming 1000 pre-neoplastic SNVs and</span></span>
 <span><span class="co"># 500 indels</span></span>
 <span><span class="va">phylo_forest</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span>, <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [█████████████████-----------------------] 40% [00m:01s] Placing mutations [████████████████████████████████--------] 78% [00m:02s] Placing mutations [████████████████████████████████████----] 89% [00m:03s] Placing mutations [████████████████████████████████████████] 100% [00m:03s] Mutations placed</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [█████████████████-----------------------] 41% [00m:01s] Placing mutations [███████████████████████-----------------] 55% [00m:02s] Placing mutations [███████████████████████████████---------] 77% [00m:03s] Placing mutations [████████████████████████████████████████] 100% [00m:03s] Mutations placed</span></span>
 <span></span>
 <span><span class="va">phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
 <span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 4959</span></span>
-<span><span class="co">#&gt;   # of leaves: 953</span></span>
+<span><span class="co">#&gt;   # of nodes: 4759</span></span>
+<span><span class="co">#&gt;   # of leaves: 949</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs and indels: 78315</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs and indels: 69115</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The phylogenetic forest stores all the mutations labeling the sampled
 cells which are represented by the forest leaves. Users can retrieve
@@ -870,11 +870,11 @@ that are not each other ancestors.</p>
 <span></span>
 <span><span class="co"># place the mutations on the same samples forest used above</span></span>
 <span><span class="va">phylo_forest2</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span>, <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [█████████████████-----------------------] 40% [00m:01s] Placing mutations [██████████████████████████--------------] 63% [15m:38s] Placing mutations [█████████████████████████████████-------] 82% [15m:39s] Placing mutations [█████████████████████████████████████---] 92% [15m:40s] Placing mutations [████████████████████████████████████████] 100% [15m:40s] Mutations placed</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [█████████████████-----------------------] 42% [00m:01s] Placing mutations [███████████████████████-----------------] 56% [00m:02s] Placing mutations [██████████████████████████████████------] 83% [00m:03s] Placing mutations [████████████████████████████████████████] 100% [00m:03s] Mutations placed</span></span>
 <span></span>
 <span><span class="co"># test whether the infinite sites conditions hold in the new forest</span></span>
 <span><span class="fu">test_infinite_sites_model</span><span class="op">(</span><span class="va">phylo_forest2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "SNV('22'',16061034,'C','T') independently arises in cells 242694 and 247419"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "SNV('22'',16057447,'G','A') independently arises in cells 12793 and 242025"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="storing-phylogenetic-forests">Storing Phylogenetic Forests<a class="anchor" aria-label="anchor" href="#storing-phylogenetic-forests"></a>
@@ -889,16 +889,16 @@ load by the function <code><a href="../reference/load_phylogenetic_forest.html">
 <span></span>
 <span><span class="co"># loading the saved forest</span></span>
 <span><span class="va">loaded_phylo_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_phylogenetic_forest.html">load_phylogenetic_forest</a></span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading forest [██████████████████----------------------] 43% [00m:01s] Loading forest [███████████████████████████████████-----] 86% [00m:02s] Loading forest [████████████████████████████████████████] 100% [00m:02s] Forest loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading forest [██████████████████----------------------] 43% [00m:01s] Loading forest [███████████████████████████████████-----] 85% [00m:02s] Loading forest [████████████████████████████████████████] 100% [00m:02s] Forest loaded</span></span>
 <span></span>
 <span><span class="va">loaded_phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
 <span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 4959</span></span>
-<span><span class="co">#&gt;   # of leaves: 953</span></span>
+<span><span class="co">#&gt;   # of nodes: 4759</span></span>
+<span><span class="co">#&gt;   # of leaves: 949</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs and indels: 78315</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs and indels: 69115</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-alexandrov2020repertoire" class="csl-entry">

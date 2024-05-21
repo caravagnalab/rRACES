@@ -130,15 +130,10 @@ multiple time-points.</p></li>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">60000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [███████████████████████████████████-----] 87% [00m:00s] Cells: 52485 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
+<span><span class="co">#&gt;  [█████████████████████████████████-------] 82% [00m:00s] Cells: 49611 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="va">current</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="va">current</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-3-1.png" width="288"></p>
 <p>A sample is defined by a name and a bounding box, which has a <span class="math inline">\((x,y)\)</span> coordinate for the bottom left
 point, and for the top right point.</p>
@@ -163,12 +158,7 @@ point, and for the top right point.</p>
 <span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">bbox2_p</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xmax <span class="op">=</span> <span class="va">bbox2_q</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
 <span>            ymin <span class="op">=</span> <span class="va">bbox2_p</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, ymax <span class="op">=</span> <span class="va">bbox2_q</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
-<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-4-1.png" width="288"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -184,12 +174,7 @@ are no longer part of the simulation.</p>
 <p>A new call to <code><a href="../reference/plot_tissue.html">plot_tissue()</a></code> will show the box where the
 cells have been removed to be white.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-5-1.png" width="288"></p>
 <p>This is also reflected by <code>Simulation$get_cells()</code>, which
 now will not find any tumour cell in the sampled region.</p>
@@ -252,9 +237,9 @@ internal nodes, and reports the sample name otherwise.</p>
 <p>We can also query the forest about the samples used to build it.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_samples_info</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    name xmin ymin xmax ymax tumoural_cells     time</span></span>
-<span><span class="co">#&gt; 1 S_1_1  400  400  450  450           2584 435.5852</span></span>
-<span><span class="co">#&gt; 2 S_1_2  500  500  550  550           2590 435.5852</span></span></code></pre></div>
+<span><span class="co">#&gt;    name xmin ymin xmax ymax tumor_cells tumor_cells_in_bbox     time</span></span>
+<span><span class="co">#&gt; 1 S_1_1  400  400  450  450        2584                2584 435.5852</span></span>
+<span><span class="co">#&gt; 2 S_1_2  500  500  550  550        2590                2590 435.5852</span></span></code></pre></div>
 <p>We can visualise the forest. This plot reports the cells and, on the
 y-axis, their time of birth.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -294,7 +279,7 @@ as the sampling times, and the MRCAs of each sample in the tree.</p>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">60000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [███████████████████████████████████-----] 85% [00m:00s] Cells: 51077 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
+<span><span class="co">#&gt;  [█████████████████████████████████-------] 82% [00m:00s] Cells: 49595 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
 <p>We include a new mutant and let it grow. This new mutant has much
 higher growth rates than its ancestor.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -303,15 +288,10 @@ higher growth rates than its ancestor.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">10000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [██████████████████████████--------------] 64% [00m:00s] Cells: 98120 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [██████████████████████████--------------] 64% [00m:00s] Cells: 98193 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="va">current</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="va">current</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-16-1.png" width="288"></p>
 <p>Since mutant start has been randomised by
 <code>Simulation$choose_cell_in()</code>, we have no exact idea of where
@@ -340,42 +320,31 @@ tissue conformation.</p>
 <span><span class="co"># Sampling ncells with random box sampling of boxes of size n_w x n_h</span></span>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># plot the bounding box</span></span>
 <span><span class="va">current</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xmax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>            ymin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, ymax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
-<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-17-1.png" width="288"></p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># sample the tissue</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_1"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
 <p>Something similar with species <code>A</code>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># plot the bounding box</span></span>
 <span><span class="va">current</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_rect</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, xmax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>            ymin <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, ymax <span class="op">=</span> <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>,</span>
-<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span>            fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-19-1.png" width="288"></p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># sample the tissue</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span></code></pre></div>
 <p>The two samples have been extracted.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-21-1.png" width="288"></p>
 <p>Cell division tree.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
@@ -404,12 +373,7 @@ subclonal expansions.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-23-1.png" width="288"></p>
 <p>We sample before introducing a new mutant.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
@@ -423,24 +387,14 @@ subclonal expansions.</p>
 <span>                 bottom_left <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>,</span>
 <span>                 top_right <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span>, <span class="fl">500</span> <span class="op">+</span> <span class="va">bbox_width</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-24-1.png" width="288"></p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Let it grow a bit more</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-25-1.png" width="288"></p>
 <p>Add a new submutant.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
@@ -457,12 +411,7 @@ subclonal expansions.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">45</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-26-1.png" width="288"></p>
 <p>Sample again and plot the tissue</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
@@ -475,12 +424,7 @@ subclonal expansions.</p>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-27-1.png" width="288"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
@@ -512,12 +456,7 @@ visualisation.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">3000</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-29-1.png" width="288"></p>
 <p>We sample</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
@@ -531,12 +470,7 @@ visualisation.</p>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_1_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-30-1.png" width="288"></p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
@@ -548,12 +482,7 @@ visualisation.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">400</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-32-1.png" width="288"></p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
@@ -568,12 +497,7 @@ visualisation.</p>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_2_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-33-1.png" width="288"></p>
 <p>Finally, a third mutant branching from <code>A</code>.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
@@ -583,12 +507,7 @@ visualisation.</p>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">1000</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-34-1.png" width="288"></p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
@@ -602,12 +521,7 @@ visualisation.</p>
 <span><span class="va">bbox</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">search_sample</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"C"</span> <span class="op">=</span> <span class="va">ncells</span><span class="op">)</span>, <span class="va">n_w</span>, <span class="va">n_h</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">sample_cells</span><span class="op">(</span><span class="st">"S_3_2"</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">lower_corner</span>, <span class="va">bbox</span><span class="op">$</span><span class="va">upper_corner</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Computation failed in `stat_binhex()`.</span></span>
-<span><span class="co">#&gt; Caused by error in `compute_group()`:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> The package "hexbin" is required for `stat_bin_hex()`.</span></span>
-<span><span class="co">#&gt; Warning: No shared levels found between `names(values)` of the manual scale and the</span></span>
-<span><span class="co">#&gt; data's <span style="color: #00BB00;">fill</span> values.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-35-1.png" width="288"></p>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_muller.html">plot_muller</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>

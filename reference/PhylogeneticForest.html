@@ -159,11 +159,12 @@ in the sampled cell genomes.</p></li>
 
 <dt><code>get_samples_info</code></dt>
 <dd><p>Retrieve information about the samples</p><ul><li><p><em>Returns:</em> A data frame containing, for each sample collected
-during the simulation, the columns <code>name</code>, <code>time</code>, <code>ymin</code>,
-<code>xmin</code>, <code>ymax</code>, <code>xmax</code>, and  <code>tumoral cells</code>. <code>ymin</code>,
-<code>xmin</code>, <code>ymax</code>, <code>xmax</code> report the boundaries of the sampled
-rectangular region, while <code>tumoral cells</code> is the number of
-tumoral cells in the sample.</p></li>
+during the simulation, the columns "<code>name</code>", "<code>time</code>", "<code>ymin</code>",
+"<code>xmin</code>", "<code>ymax</code>", "<code>xmax</code>", "<code>tumor_cells</code>", and
+"<code>tumor_cells_in_bbox</code>". The columns "<code>ymin</code>", "<code>xmin</code>", "<code>ymax</code>",
+"<code>xmax</code>" report the boundaries of the sample bounding box, while
+"<code>tumor_cells</code>" and "<code>tumor_cells_in_bbox</code>" are the number of tumor
+cells in the sample and in the bounding box, respectively.</p></li>
 </ul></dd>
 
 
