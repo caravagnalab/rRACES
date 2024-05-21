@@ -17,21 +17,20 @@
 
 #include "samples_forest.hpp"
 
+#include "simulation.hpp"
 
 SamplesForest::SamplesForest():
   Races::Mutants::DescendantsForest()
 {}
 
-// This method produces a segmentation fault and I cannot understand why
-/*
-SamplesForest::SamplesForest(const Simulation& simulation):
-  Races::Mutants::DescendantsForest(*(simulation.sim_ptr))
-{}
-*/
-
 SamplesForest::SamplesForest(const Races::Mutants::Evolutions::Simulation& simulation):
   Races::Mutants::DescendantsForest(simulation)
 {}
+
+Rcpp::List SamplesForest::get_samples_info() const
+{
+ return Simulation::get_samples_info(get_samples());
+}
 
 SamplesForest SamplesForest::get_subforest_for(const std::vector<std::string>& sample_names) const
 {

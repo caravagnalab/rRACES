@@ -915,11 +915,12 @@ RCPP_MODULE(Mutations){
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected
-//'   during the simulation, the columns `name`, `time`, `ymin`,
-//'   `xmin`, `ymax`, `xmax`, and  `tumoral cells`. `ymin`,
-//'   `xmin`, `ymax`, `xmax` report the boundaries of the sampled
-//'   rectangular region, while `tumoral cells` is the number of
-//'   tumoral cells in the sample.
+//'   during the simulation, the columns "`name`", "`time`", "`ymin`",
+//'   "`xmin`", "`ymax`", "`xmax`", "`tumor_cells`", and
+//'   "`tumor_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
+//'   "`xmax`" report the boundaries of the sample bounding box, while
+//'   "`tumor_cells`" and "`tumor_cells_in_bbox`" are the number of tumor
+//'   cells in the sample and in the bounding box, respectively.
 //' }
 //' @field get_species_info Gets the species data\itemize{
 //' \item \emph{Returns:} A data frame reporting `mutant` and `epistate`
@@ -998,10 +999,15 @@ RCPP_MODULE(Mutations){
 //' @description This method retrieves information about
 //'   the samples whose cells were used as leaves
 //'   of the samples forest.
-//' @return A data frame reporting, for each sample, the
-//'   name, the sampling time, the position, and
-//'   the number of tumoural cells.
-//' @seealso [SamplesForest$get_samples_info()] for usage examples
+//' @return A data frame containing, for each sample collected
+//'   during the simulation, the columns "`name`", "`time`", "`ymin`",
+//'   "`xmin`", "`ymax`", "`xmax`", "`tumor_cells`", and
+//'   "`tumor_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
+//'   "`xmax`" report the boundaries of the sample bounding box, while
+//'   "`tumor_cells`" and "`tumor_cells_in_bbox`" are the number of tumor
+//'   cells in the sample and in the bounding box, respectively.
+//' @seealso [SamplesForest$get_samples_info()] for usage examples,
+//'   [Simulation$get_samples_info()]
     .method("get_samples_info", &PhylogeneticForest::get_samples_info,
             "Get some pieces of information about the samples")
 

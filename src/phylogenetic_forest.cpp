@@ -20,6 +20,7 @@
 #include "phylogenetic_forest.hpp"
 #include "sid.hpp"
 #include "cna.hpp"
+#include "simulation.hpp"
 
 PhylogeneticForest::PhylogeneticForest():
   Races::Mutations::PhylogeneticForest()
@@ -49,6 +50,11 @@ PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& or
     using namespace Races::Mutations;
     timed_exposures[MutationType::Type::SBS] = timed_SBS_exposures;
     timed_exposures[MutationType::Type::INDEL] = timed_indel_exposures;
+}
+
+Rcpp::List PhylogeneticForest::get_samples_info() const
+{
+return Simulation::get_samples_info(get_samples());
 }
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const

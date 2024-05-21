@@ -79,41 +79,6 @@ struct ForestCore
   }
 
   template<typename CPP_FOREST>
-  inline static Rcpp::List get_samples_info(const CPP_FOREST& forest)
-  {
-    const auto samples = forest.get_samples();
-
-    using namespace Rcpp;
-
-    CharacterVector sample_name(samples.size());
-    NumericVector time(samples.size());
-    IntegerVector ymin(samples.size()), ymax(samples.size()),
-                  xmin(samples.size()), xmax(samples.size()),
-                  non_wild(samples.size());
-
-    size_t i{0};
-    for (const auto& sample : samples) {
-      sample_name[i] = sample.get_name();
-      time[i] = sample.get_time();
-      non_wild[i] = sample.get_cell_ids().size();
-
-      const auto& rectangle = sample.get_region();
-      xmin[i] = rectangle.lower_corner.x;
-      xmax[i] = rectangle.upper_corner.x;
-      ymin[i] = rectangle.lower_corner.y;
-      ymax[i] = rectangle.upper_corner.y;
-
-      ++i;
-    }
-
-    return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin,
-                             _["ymin"]=ymin, _["xmax"]=xmax,
-                             _["ymax"]=ymax,
-                             _["tumoural_cells"]=non_wild,
-                             _["time"]=time);
-  }
-
-  template<typename CPP_FOREST>
   static Rcpp::List get_species_info(const CPP_FOREST& forest)
   {
     using namespace Rcpp;

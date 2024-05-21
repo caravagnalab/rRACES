@@ -88,6 +88,40 @@ class Simulation
                    const uint16_t& width, const uint16_t& height) const;
 
 public:
+
+  template<typename SAMPLES>
+  static Rcpp::List get_samples_info(const SAMPLES& samples)
+  {
+    using namespace Rcpp;
+    CharacterVector sample_name(samples.size());
+    NumericVector time(samples.size());
+    IntegerVector ymin(samples.size()), ymax(samples.size()),
+                  xmin(samples.size()), xmax(samples.size()),
+                  num_of_cells(samples.size()),
+                  tumor_in_bbox(samples.size());
+
+    size_t i{0};
+    for (const auto& sample : samples) {
+        sample_name[i] = sample.get_name();
+        time[i] = sample.get_time();
+        num_of_cells[i] = sample.get_cell_ids().size();
+        tumor_in_bbox[i] = sample.get_tumor_cells_in_bbox();
+        const auto& bounding_box = sample.get_bounding_box();
+        xmin[i] = bounding_box.lower_corner.x;
+        xmax[i] = bounding_box.upper_corner.x;
+        ymin[i] = bounding_box.lower_corner.y;
+        ymax[i] = bounding_box.upper_corner.y;
+        ++i;
+    }
+
+    return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin,
+                             _["ymin"]=ymin, _["xmax"]=xmax,
+                             _["ymax"]=ymax,
+                             _["tumor_cells"]=num_of_cells,
+                             _["tumor_cells_in_bbox"]=tumor_in_bbox,
+                             _["time"]=time);
+  }
+
   Simulation();
 
   Simulation(const SEXP& sexp);
@@ -168,7 +202,10 @@ public:
 
   Rcpp::List get_lineage_graph() const;
 
-  Rcpp::List get_samples_info() const;
+  inline Rcpp::List get_samples_info() const
+  {
+    return get_samples_info(sim_ptr->get_tissue_samples());
+  }
 
   inline void schedule_mutation(const std::string& src, const std::string& dst,
                                          const Races::Time& time)
@@ -185,9 +222,16 @@ public:
 
   void run_until(const Logics::Formula& formula);
 
+  void sample_cells(const std::string& sample_name, const size_t& num_of_cells) const;
+
   void sample_cells(const std::string& sample_name,
                     const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
                     const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const;
+
+  void sample_cells(const std::string& sample_name,
+                    const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
+                    const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+                    const size_t& num_of_cells) const;
 
   Rcpp::List get_firings() const;
 

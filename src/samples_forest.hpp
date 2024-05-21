@@ -42,10 +42,7 @@ public:
     return ForestCore::get_nodes(static_cast<const Races::Mutants::DescendantsForest&>(*this));
   }
 
-  inline Rcpp::List get_samples_info() const
-  {
-    return ForestCore::get_samples_info(static_cast<const Races::Mutants::DescendantsForest&>(*this));
-  }
+  Rcpp::List get_samples_info() const;
 
   inline Rcpp::List get_species_info() const
   {

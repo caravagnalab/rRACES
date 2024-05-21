@@ -1203,47 +1203,43 @@ void Simulation::sample_cells(const std::string& sample_name,
     ::Rf_error("Sample name \"normal_sample\" is reserved.");
   }
 
-  auto rectangle = get_rectangle(lower_corner, upper_corner);
+  auto bounding_box = get_rectangle(lower_corner, upper_corner);
+  auto num_of_cells = bounding_box.size();
 
-  sim_ptr->sample_tissue(sample_name, rectangle);
+  Races::Mutants::Evolutions::SampleSpecification spec(sample_name, bounding_box, num_of_cells);
+
+  sim_ptr->sample_tissue(spec);
 }
 
-template<typename SAMPLES>
-Rcpp::List get_samples_info(const SAMPLES& samples)
+void Simulation::sample_cells(const std::string& sample_name,
+                              const size_t& num_of_cells) const
 {
-  using namespace Rcpp;
+    std::vector<Races::Mutants::Evolutions::AxisPosition> lower_corner, upper_corner;
 
-  CharacterVector sample_name(samples.size());
-  NumericVector time(samples.size());
-  IntegerVector ymin(samples.size()), ymax(samples.size()),
-                xmin(samples.size()), xmax(samples.size()),
-                non_wild(samples.size());
+    for (const auto axis_size : sim_ptr->tissue().size()) {
+        lower_corner.push_back(0);
+        upper_corner.push_back(axis_size-1);
+    }
 
-  size_t i{0};
-  for (const auto& sample : samples) {
-    sample_name[i] = sample.get_name();
-    time[i] = sample.get_time();
-    non_wild[i] = sample.get_cell_ids().size();
+    sample_cells(sample_name, lower_corner, upper_corner, num_of_cells);
+}
 
-    const auto& rectangle = sample.get_region();
-    xmin[i] = rectangle.lower_corner.x;
-    xmax[i] = rectangle.upper_corner.x;
-    ymin[i] = rectangle.lower_corner.y;
-    ymax[i] = rectangle.upper_corner.y;
+void Simulation::sample_cells(const std::string& sample_name,
+                              const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
+                              const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+                              const size_t& num_of_cells) const
+{
+  using namespace Races::Mutants;
 
-    ++i;
+  if (sample_name == "normal_sample") {
+    ::Rf_error("Sample name \"normal_sample\" is reserved.");
   }
 
-  return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin,
-                           _["ymin"]=ymin, _["xmax"]=xmax,
-                           _["ymax"]=ymax,
-                           _["tumoural cells"]=non_wild,
-                           _["time"]=time);
-}
+  auto bounding_box = get_rectangle(lower_corner, upper_corner);
 
-Rcpp::List Simulation::get_samples_info() const
-{
-  return ::get_samples_info(sim_ptr->get_tissue_samples());
+  Races::Mutants::Evolutions::SampleSpecification spec(sample_name, bounding_box, num_of_cells);
+
+  sim_ptr->sample_tissue(spec);
 }
 
 SamplesForest Simulation::get_samples_forest() const

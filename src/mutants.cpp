@@ -167,11 +167,12 @@ RCPP_MODULE(Mutants){
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected
-//'   during the simulation, the columns "name", "time", "ymin",
-//'   "xmin", "ymax", "xmax", and  "tumoral cells". "ymin",
-//'   "xmin", "ymax", "xmax" report the boundaries of the sampled
-//'   rectangular region, while "tumoral cells" is the number of
-//'   tumoral cells in the sample.
+//'   during the simulation, the columns "`name`", "`time`", "`ymin`",
+//'   "`xmin`", "`ymax`", "`xmax`", "`tumor_cells`", and
+//'   "`tumor_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
+//'   "`xmax`" report the boundaries of the sample bounding box, while
+//'   "`tumor_cells`" and "`tumor_cells_in_bbox`" are the number of tumor
+//'   cells in the sample and in the bounding box, respectively.
 //' }
 //' @field get_species Gets the species \itemize{
 //' \item \emph{Returns:} A data frame describing the registered species.
@@ -742,7 +743,8 @@ RCPP_MODULE(Mutants){
 //'
 //' # get the number of event fired per event and species
 //' sim$get_firing_history()
-  .method("get_firing_history", (List (Simulation::*)() const)&Simulation::get_firing_history,
+  .method("get_firing_history",
+          (List (Simulation::*)() const)&Simulation::get_firing_history,
           "Get the number of simulated events per species along the computation")
 
 //' @name Simulation$get_rates
@@ -756,7 +758,8 @@ RCPP_MODULE(Mutants){
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
 //'                death_rates = c("+" = 0.1, "-" = 0.01))
 //'
-//' # Get the rates of "A-". In this case c("growth"=0.08, "death"=0.01, "switch"=0.02) is expected
+//' # Get the rates of "A-". In this case c("growth"=0.08, "death"=0.01,
+//' # "switch"=0.02) is expected
 //' sim$get_rates("A-")
   .method("get_rates", &Simulation::get_rates,
           "Get the rates of a species")
@@ -765,9 +768,16 @@ RCPP_MODULE(Mutants){
 //' @title Retrieve information about the samples
 //' @description This method retrieves information about
 //'   the samples collected along the simulation.
-//'   It returns a data frame reporting, for each
-//'   sample, the name, the sampling time, the
-//'   position, and the number of tumoural cells.
+//' @return A data frame containing, for each sample collected
+//'   during the simulation, the columns "`name`", "`time`", "`ymin`",
+//'   "`xmin`", "`ymax`", "`xmax`", "`tumor_cells`", and
+//'   "`tumor_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
+//'   "`xmax`" report the boundaries of the sample bounding box, while
+//'   "`tumor_cells`" and "`tumor_cells_in_bbox`" are the number of tumor
+//'   cells in the sample and in the bounding box, respectively.
+//' @seealso [Simulation$sample_cells()],
+//'   [SamplesForest$get_samples_info()],
+//'   [PhylogeneticForest$get_samples_info()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -779,20 +789,19 @@ RCPP_MODULE(Mutants){
 //' sim$run_up_to_size(species = "A", num_of_cells = 50000)
 //'
 //' # sample the region [450,500]x[475,550]
-//' sim$sample_cells("S1", lower_corner=c(450,475),
-//'                  upper_corner=c(500,550))
+//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
 //'
 //' # simulate 1 time unit more
 //' sim$run_up_to_time(sim$get_clock()+1)
 //'
 //' # sample the region [500,520]x[525,550]
-//' sim$sample_cells("S2", lower_corner=c(500,525),
-//'                  upper_corner=c(520,550))
+//' sim$sample_cells("S2", lower_corner=c(500,525), upper_corner=c(520,550))
 //'
 //' # get information about all the collected
 //' # samples, i.e, S1 and S2
 //' sim$get_samples_info()
-  .method("get_samples_info", &Simulation::get_samples_info,
+  .method("get_samples_info",
+          (List (Simulation::*)() const)&Simulation::get_samples_info,
           "Get some pieces of information about the collected samples")
 
 //' @name Simulation$history_delta
@@ -973,8 +982,14 @@ RCPP_MODULE(Mutants){
 //' @description This method removes a rectangular region from the simulated
 //'   tissue and stores its cells in a sample that can subsequently
 //'   retrieved to build a samples forest.
-//' @seealso [Simulation], [Simulation$var()], [Simulation$run_up_to_time()],
-//'    [Simulation$run_up_to_event()], [Simulation$run_up_to_size()]
+//' @param sample_name The name of the sample.
+//' @param lower_corner The lower corner of the sample bounding box (optional
+//'   in pair with `upper_corner`).
+//' @param upper_corner The upper corner of the sample bounding box (optional
+//'   in pair with `lower_corner`).
+//' @param num_of_cells The maximum number of tumor cells to collect
+//'   (optional).
+//' @seealso [Simulation$get_samples_info()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -985,9 +1000,31 @@ RCPP_MODULE(Mutants){
 //' sim$death_activation_level <- 100
 //' sim$run_up_to_size(species = "A", num_of_cells = 50000)
 //'
+//' # randomly sample 50 tumor cells in the whole tissue
+//' sim$sample_cells("S1", num_of_cells=50)
+//'
 //' # sample the region [450,500]x[475,550]
-//' sim$sample_cells("S1", lower_corner=c(450,475), upper_corner=c(500,550))
-  .method("sample_cells", &Simulation::sample_cells,
+//' sim$sample_cells("S2", lower_corner=c(450,475), upper_corner=c(500,550))
+//'
+//' # randomly sample 50 tumor cells in the region [500,550]x[500,550]
+//' sim$sample_cells("S3", lower_corner=c(500,500), upper_corner=c(550,550),
+//'                  num_of_cells=50)
+//'
+//' sim$get_samples_info()
+  .method("sample_cells",
+          (void (Simulation::*)(const std::string&,
+                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+                                const size_t& num_of_cells) const)(&Simulation::sample_cells),
+          "Sample a rectangular region of the tissue")
+  .method("sample_cells",
+          (void (Simulation::*)(const std::string&,
+                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const)(&Simulation::sample_cells),
+          "Sample a rectangular region of the tissue")
+  .method("sample_cells",
+          (void (Simulation::*)(const std::string&,
+                                const size_t& num_of_cells) const)(&Simulation::sample_cells),
           "Sample a rectangular region of the tissue")
 
 //' @name Simulation$update_rates
@@ -1031,7 +1068,7 @@ RCPP_MODULE(Mutants){
 //' @description This method searches a rectangular tissue sample containing
 //'   the provided number of cells. The sizes of the sample are also
 //'   provided a parameter of the method.
-//'   The complexity of this method is 
+//'   The complexity of this method is
 //'   \eqn{O(|\textrm{tissue width}|*|\textrm{tissue height}|)}.
 //' @param min_num_of_cells A named integer vector reporting the minimum number
 //'   of cells per species or mutant.
@@ -1072,8 +1109,8 @@ RCPP_MODULE(Mutants){
 //' @param n_samples The number of searched samples.
 //' @param seed The seed of the random generator the select the samples
 //'     among those satisfying the constraints (default: 0).
-//' @return A vector of `n_samples` rectangular tissue samples that 
-//'     satisfy the aimed constraints. 
+//' @return A vector of `n_samples` rectangular tissue samples that
+//'     satisfy the aimed constraints.
 //' @seealso [Simulation]
 //' @examples
 //' sim <- new(Simulation)
@@ -1088,7 +1125,7 @@ RCPP_MODULE(Mutants){
 //'
 //' plot <- plot_tissue(sim, num_of_bins = 1000)
 //'
-//' # find 3 50x50 samples containing 80 "B" cells and 100 "A" cells 
+//' # find 3 50x50 samples containing 80 "B" cells and 100 "A" cells
 //' # at least
 //' bboxes <- sim$search_samples(c("A" = 100, "B" = 80), 50, 50,
 //'                              n_samples=3)
@@ -1232,11 +1269,12 @@ RCPP_MODULE(Mutants){
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
 //' \item \emph{Returns:} A data frame containing, for each sample collected
-//'   during the simulation, the columns "name", "time", "ymin",
-//'   "xmin", "ymax", "xmax", and  "tumoral cells". "ymin",
-//'   "xmin", "ymax", "xmax" report the boundaries of the sampled
-//'   rectangular region, while "tumoral cells" is the number of
-//'   tumoral cells in the sample.
+//'   during the simulation, the columns "`name`", "`time`", "`ymin`",
+//'   "`xmin`", "`ymax`", "`xmax`", "`tumor_cells`", and
+//'   "`tumor_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
+//'   "`xmax`" report the boundaries of the sample bounding box, while
+//'   "`tumor_cells`" and "`tumor_cells_in_bbox`" are the number of tumor
+//'   cells in the sample and in the bounding box, respectively.
 //' }
 //' @field get_species_info Gets the species data\itemize{
 //' \item \emph{Returns:} A data frame reporting "mutant" and "epistate"
@@ -1369,9 +1407,15 @@ RCPP_MODULE(Mutants){
 //' @description This method retrieves information about
 //'   the samples whose cells were used as leaves
 //'   of the samples forest.
-//' @return A data frame reporting, for each sample, the
-//'   name, the sampling time, the position, and
-//'   the number of tumoural cells.
+//' @return A data frame containing, for each sample collected
+//'   during the simulation, the columns "name", "time", "ymin", "xmin",
+//'   "ymax", "xmax", "tumor_cells", and "tumor_cells_in_bbox". The columns
+//'   "ymin", "xmin", "ymax", "xmax" report the boundaries of the sample
+//'   bounding box, while "tumor_cells" and "tumor_cells_in_bbox" are the
+//'   number of tumor cells in the sample and in the bounding box,
+//'   respectively.
+//' @seealso [PhylogeneticForest$get_samples_info()] for usage examples,
+//'   [Simulation$sample_cells()], [Simulation$get_samples_info()]
 //' @examples
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A", growth_rate = 0.2,
@@ -1456,7 +1500,7 @@ RCPP_MODULE(Mutants){
 //' # search for the forest sticks
 //' forest$get_sticks()
 //'
-//' # search for the forest sticks whose corresponding cells have 
+//' # search for the forest sticks whose corresponding cells have
 //' # birth times 120.2 time units at most
 //' forest$get_sticks(120.2)
     .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (SamplesForest::*)(const double) const)(&SamplesForest::get_sticks),
