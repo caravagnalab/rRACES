@@ -33,10 +33,6 @@ devtools::install_github("caravagnalab/rRACES")
 ```
 
 
-Tissue plotting requires the R package 
-[`hexbin`](https://cran.r-project.org/web/packages/hexbin/index.html)
-under GNU/Linux and Windows.
-
 ------------------------------------------------------------------------
 
 #### Copyright and contacts

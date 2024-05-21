@@ -19,6 +19,7 @@ Imports:
     dplyr,
     Rcpp (>= 1.0.11),
     R.utils,
+    hexbin,
     ggplot2,
     cli,
     crayon,
@@ -32,8 +33,7 @@ Imports:
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests:
-    rmarkdown,
-    hexbin
+    rmarkdown
 VignetteBuilder: knitr
 Depends:
     methods,
