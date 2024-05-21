@@ -978,9 +978,9 @@ RCPP_MODULE(Mutants){
           "Simulate the system until a formula is *not* satisfied")
 
 //' @name Simulation$sample_cells
-//' @title Sample a tissue rectangle region.
-//' @description This method removes a rectangular region from the simulated
-//'   tissue and stores its cells in a sample that can subsequently
+//' @title Sample a set of cells.
+//' @description This method collects a set of cells from the simulated
+//'   tissue and stores them in a sample that can be subsequently
 //'   retrieved to build a samples forest.
 //' @param sample_name The name of the sample.
 //' @param lower_corner The lower corner of the sample bounding box (optional
@@ -1000,13 +1000,13 @@ RCPP_MODULE(Mutants){
 //' sim$death_activation_level <- 100
 //' sim$run_up_to_size(species = "A", num_of_cells = 50000)
 //'
-//' # randomly sample 50 tumor cells in the whole tissue
+//' # randomly sample 50 tumor cells from the tissue
 //' sim$sample_cells("S1", num_of_cells=50)
 //'
 //' # sample the region [450,500]x[475,550]
 //' sim$sample_cells("S2", lower_corner=c(450,475), upper_corner=c(500,550))
 //'
-//' # randomly sample 50 tumor cells in the region [500,550]x[500,550]
+//' # randomly sample 50 tumor cells from the tissue region [500,550]x[500,550]
 //' sim$sample_cells("S3", lower_corner=c(500,500), upper_corner=c(550,550),
 //'                  num_of_cells=50)
 //'
