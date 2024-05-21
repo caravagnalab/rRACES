@@ -1007,6 +1007,10 @@ void MutationEngine::show() const
       Rcout << "SNV: " << p_rates.snv;
       sep = ", ";
     }
+    if (p_rates.indel>0) {
+      Rcout << sep << "indel: " << p_rates.indel;
+      sep = ", ";
+    }
     if (p_rates.cna>0) {
       Rcout << sep << "CNA: " << p_rates.cna;
     }
