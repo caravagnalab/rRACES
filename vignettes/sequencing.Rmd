@@ -73,23 +73,6 @@ and the ratio between these two last columns
 (columns `<sample name> occurrences`, `<sample name> coverage`,
 and `<sample name> VAF`, respectively).
 
-### Cell Partition by Epigenetic State (Epi-FACS)
-
-The sequencing simulation supports cell partition by epigenetic
-state (epi-FACS) using the `simualate_seq()` parameter `epi_FACS`.
-At the beginning of the sequencing simulation process, each
-sample in the phylogenetic forest is split into two distinct
-samples: `<sample name>_P`, which contains all the cells in the
-original sample having epigenetic state `+`, and `<sample name>_N`,
-that consists in the cells having epigenetic state `-`.
-The result of the simulation reports the data for the split samples.
-
-```{r}
-seq_results <- simulate_seq(phylo_forest, coverage = 2.5, epi_FACS = TRUE)
-
-seq_results %>% head
-```
-
 ### Saving the Simulated Reads
 
 rRACES/RACE can also save the simulated reads in the SAM format

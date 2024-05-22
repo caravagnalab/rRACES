@@ -106,6 +106,8 @@ public:
 
   static PhylogeneticForest load(const std::string& filename);
 
+  static Rcpp::List get_SID_dataframe(const Races::Mutations::CellGenomeMutations& cell_mutations);
+
   void show() const;
 
   friend class MutationEngine;

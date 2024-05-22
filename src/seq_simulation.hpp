@@ -29,7 +29,8 @@ Rcpp::List  simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                          SEXP& chromosome_ids, const double& coverage,
                          const int& read_size, const int& insert_size,
                          const std::string& output_dir, const bool& write_SAM,
-                         const bool& update_SAM_dir, const bool& FACS,
+                         const bool& update_SAM_dir,
+                         const SEXP& FACS_labelling_function,
                          const double& purity, const bool& with_normal_sample,
                          const int& rnd_seed);
 

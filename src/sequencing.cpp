@@ -95,7 +95,8 @@ RCPP_MODULE(Sequencing){
 //' @param write_SAM A Boolean flag to enable/disable SAM generation
 //'   (default: `FALSE`).
 //' @param update_SAM Update the output directory (default: `FALSE`).
-//' @param epi_FACS Perform an epigenetic FACS analysis (default: `FALSE`).
+//' @param cell_labelling The labelling function for sampled cells
+//'   See `vignette("sample_partition")` for details (default: `NULL`).
 //' @param purity The ratio between the number of sample tumeral cell
 //'   and that of all the cells, i.e., tumoral and normal
 //'   ones. This value must belong to the interval [0,1]
@@ -104,13 +105,13 @@ RCPP_MODULE(Sequencing){
 //'   analysis of a normal sample (default: `TRUE`).
 //' @param rnd_seed The random seed for the internal random generator
 //'   (default: `0`).
-//' @return A data frame representing, for each of the observed SNVs
+//' @return A dataframe representing, for each of the observed SNVs
 //'   and indels, the chromosome and the position in which it occurs
 //'   (columns `chr` and `chr_pos`), the mutation reference and
 //'   alterate sequences (columns `ref` and `alt`, respectively), its
 //'   cause and class (columns `causes`, and `classes`, respectively).
 //'   Moreover, for each of the sequencied samples `<sample name>`,
-//'   the returned data frame contains three columns: the number of
+//'   the returned dataframe contains three columns: the number of
 //'   reads in which the corresponding mutation occurs (column
 //'   `<sample name>.occurrences`), the coverage of the mutation
 //'   (column `<sample name>.coverage`), and the corresponding VAF
@@ -125,7 +126,7 @@ RCPP_MODULE(Sequencing){
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_SAM",
                         _["write_SAM"] = false, _["update_SAM"] = false,
-                        _["epi_FACS"] = false, _["purity"] = 1,
+                        _["cell_labelling"] = R_NilValue, _["purity"] = 1,
                         _["with_normal_sample"] = true, _["rnd_seed"] = 0),
            "Simulate the sequencing of the samples in a phylogenetic forest");
 
@@ -172,4 +173,60 @@ RCPP_MODULE(Sequencing){
                         _["write_SAM"] = true, _["update_SAM"] = false,
                         _["rnd_seed"] = 0),
            "Simulate the sequencing of a normal sample");
+
+//' @name SampledCell
+//' @title A sampled cell
+//' @description The sampled cell class for sample labelling.
+//' @details There is no public constructor for this class as it is
+//'   exclusively used by `simulate_seq()` to label sampled cells.
+//' @seealso `simulate_seq()` and `vignette("sample_partition")`
+  class_<SampledCell>("SampledCell")
+
+//' @name SampledCell$epistate
+//' @title Getting the sampled cell epigenetic state
+//' @description The epigenetic state of the sampled cell.
+//' @details This property is the epigenetic state of the sampled cell.
+//'   It can be one among "`+`", "`-`", or "".
+//' @seealso `simulate_seq()` and `vignette("sample_partition")`
+    .property("epistate", &SampledCell::epistate,
+              "The cell epistate")
+
+//' @name SampledCell$mutant
+//' @title Getting the sampled cell mutant
+//' @description The mutant name of the sampled cell.
+//' @details This property is the mutant name of the sampled cell.
+//' @seealso `simulate_seq()` and `vignette("sample_partition")`
+    .property("mutant", &SampledCell::mutant,
+              "The cell mutant name")
+
+//' @name SampledCell$species
+//' @title Getting the sampled cell species
+//' @description The species name of the sampled cell.
+//' @details This property is the species name of the sampled cell.
+//' @seealso `simulate_seq()` and `vignette("sample_partition")`
+    .property("species", &SampledCell::species,
+              "The cell species name")
+
+//' @name SampledCell$birth_time
+//' @title Getting the sampled cell birth time
+//' @description The birth time of the sampled cell.
+//' @details This property is the birth time of the sampled cell.
+//' @seealso `simulate_seq()` and `vignette("sample_partition")`
+    .property("birth_time", &SampledCell::birth_time,
+              "The cell birth time")
+
+//' @name SampledCell$mutations
+//' @title Getting the sampled cell mutations
+//' @description The mutations of the sampled cell.
+//' @details This property contains a dataframe that represents the sampled
+//'   cell mutations. The dataframe format is analoguous to that returned by
+//'   `PhylogeneticForest$get_sampled_cell_mutations()`: it has columns
+//'   `cell_id`, `chr`, (i.e., the mutation chromosome), `chr_pos` (i.e.,
+//'   position in the chromosome), `allele` (in which the mutation occurs),
+//'   `ref`, `alt`, `type` (i.e., either `"SNV"` or `"indel"`), `cause`, and
+//'   `class` (i.e., `"driver"`, `"passenger"`, `"germinal"` or
+//'   `"preneoplastic"`).
+//' @seealso `simulate_seq()` and `vignette("sample_partition")`
+    .property("mutations", &SampledCell::mutations,
+              "The cell mutation dataframe");
 }

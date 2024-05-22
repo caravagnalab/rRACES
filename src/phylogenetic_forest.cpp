@@ -245,8 +245,11 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_SIDs(const Races::Mutants::CellI
     throw std::domain_error("Cell \""+std::to_string(cell_id)+"\" is not a leaf");
   }
 
-  const auto& cell_mutations = *(mutation_it->second);
+  return get_SID_dataframe(*(mutation_it->second));
+}
 
+Rcpp::List PhylogeneticForest::get_SID_dataframe(const Races::Mutations::CellGenomeMutations& cell_mutations)
+{
   size_t num_of_mutations = count_mutations(cell_mutations);
 
   using namespace Rcpp;

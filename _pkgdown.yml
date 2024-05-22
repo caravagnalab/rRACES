@@ -23,6 +23,7 @@ articles:
   - growth_models
   - mutations
   - sequencing
+  - sample_partition
   - SCOUT
 
 reference:
@@ -66,6 +67,7 @@ reference:
   - plot_VAF_gw
   - plot_histogram_vaf
   - plot_marginals
+  - starts_with("SampledCell")
   - simulate_seq
   - simulate_normal_seq
   - seq_to_long

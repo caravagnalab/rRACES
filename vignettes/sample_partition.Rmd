@@ -1,0 +1,142 @@
+---
+title: "Partitioning samples (FACS)"
+output: rmarkdown::html_vignette
+description: >
+  How to partitioning samples, sorting cells, and simulate FACS.
+vignette: >
+  %\VignetteIndexEntry{Partitioning samples (FACS)}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 72
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+> *Note:* This article presents advanced topics about sequencing simulation.
+> Refer to `vignette("sequencing")` for an introduction on the subject.
+
+
+The sequencing simulation supports sample partition
+analoguous to [FACS](https://www.sinobiological.com/category/fcm-facs-facs).
+Users can provide a labelling function for the sampled cells by
+using the `simulate_seq()` parameter `cell_labelling`.
+This function must take in input an object of the class `SampledCell` and
+return a string representing the cell label. The function `simulate_seq()`
+applies the labelling function to all the sampled cells and
+partition them according to the labelling function outputs.
+The resulting sub-samples are named according the format
+`<sample name>_<cell label>`.
+
+Let us assume to have built the phylogenetic forest `phylo_forest`
+as detailed in `vignette("mutations")`.
+
+```{r, echo=FALSE, results='hide', message=FALSE}
+library(rRACES)
+
+phylo_forest <- load_phylogenetic_forest("phylo_forest.sff")
+```
+
+The sampled cells can be grouped by epigenetic state as it
+follows.
+
+```{r}
+# the labelling function parameter has type `SampledCell`
+epi_labelling <- function(cell) {
+
+    # epigenetic state is "+", "-", "". However, "+" and "-"
+    # are not supported in R dataframe column names, so, we
+    # can replace them by "P" and "N", respectively
+    if (cell$epistate == "+") {
+        return("P");
+    }
+    if (cell$epistate == "-") {
+        return("N");
+    }
+    return("");
+}
+
+seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
+                            cell_labelling = epi_labelling)
+
+library(dplyr)
+
+seq_results %>% head()
+```
+
+The same approach can be easily applied to group sampled cells
+by mutant name...
+
+```{r}
+# a mutant-name-based labelling function
+mutant_labelling <- function(cell) {
+    return(cell$mutant);
+}
+
+seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
+                            cell_labelling = mutant_labelling)
+
+seq_results %>% head()
+```
+
+..., birth time...
+
+```{r}
+# a birth-time-based labelling function
+birth_time_labelling <- function(cell) {
+    if (cell$birth_time>421) {
+        return("YOUNG");
+    }
+    
+    if (cell$birth_time>321) {
+        return("MIDDLE_AGED");
+    }
+
+    return("OLD");
+}
+
+seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
+                            cell_labelling = birth_time_labelling)
+
+seq_results %>% head()
+```
+
+..., mutations...
+
+```{r}
+# collect all the sample passenger indels
+passenger_indels <- phylo_forest$get_sampled_cell_mutations() %>%
+    filter(class=="passenger", type == "indel")
+
+# get one of the passenger indels
+p_indel <- passenger_indels[sample(1:nrow(passenger_indels),1),]
+
+p_indel
+
+# a mutation-based labelling function that discriminates sampled cells
+# containing indel `p_indel` from the other sampled cells
+mutations_labelling <- function(cell) {
+    has_indel <- nrow(cell$mutations %>%
+        filter(chr == p_indel[["chr"]], chr_pos == p_indel[["chr_pos"]],
+               ref == p_indel[["ref"]], alt == p_indel[["alt"]])) > 0
+
+    if (has_indel) {
+        return("HAS_MUTATION");
+    }
+    return("MISSES_MUTATION")
+}
+
+seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
+                            cell_labelling = mutations_labelling)
+
+seq_results %>% head()
+```
+
+... or combination of these properties.

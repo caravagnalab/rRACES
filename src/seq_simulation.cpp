@@ -19,6 +19,7 @@
 
 #include "seq_simulation.hpp"
 #include "sequencers.hpp"
+#include "sampled_cell.hpp"
 
 #include "utility.hpp"
 
@@ -144,58 +145,65 @@ Rcpp::List get_result_dataframe(const Races::Mutations::SequencingSimulations::S
 }
 
 void
-split_by_epigenetic_status(std::list<Races::Mutations::SampleGenomeMutations>& FACS_samples,
-                           const Races::Mutations::SampleGenomeMutations& sample_mutations,
-                           std::map<Races::Mutants::SpeciesId, std::string> methylation_map)
+split_by_labels(std::list<Races::Mutations::SampleGenomeMutations>& FACS_samples,
+                const Rcpp::Function& labelling_function,
+                const Races::Mutations::SampleGenomeMutations& sample_mutations,
+                const PhylogeneticForest& forest)
 {
     using namespace Races::Mutants;
     using namespace Races::Mutants::Evolutions;
     using namespace Races::Mutations;
 
-    std::map<std::string, SampleGenomeMutations*> meth_samples;
+    std::map<std::string, SampleGenomeMutations*> labelled_samples;
 
     for (const auto& cell_mutations : sample_mutations.mutations) {
-        const auto& meth_status = methylation_map.at(cell_mutations->get_species_id());
-        auto found = meth_samples.find(meth_status);
+        auto node = Rcpp::wrap(SampledCell(forest, cell_mutations->get_id()));
 
-        if (found == meth_samples.end()) {
-            const auto new_name = sample_mutations.name + "_" + meth_status;
+        std::string label = Rcpp::as<std::string>(labelling_function(node));
+
+        auto found = labelled_samples.find(label);
+
+        if (found == labelled_samples.end()) {
+            std::string new_name = sample_mutations.name;
+            if (label != "") {
+                new_name = new_name + "_" + label;
+            }
 
             FACS_samples.emplace_back(new_name, sample_mutations.germline_mutations);
 
             FACS_samples.back().mutations.push_back(cell_mutations);
 
-            meth_samples.insert({meth_status, &(FACS_samples.back())});
+            labelled_samples.insert({label, &(FACS_samples.back())});
         } else {
             (found->second)->mutations.push_back(cell_mutations);
         }
     }
 }
 
-std::list<Races::Mutations::SampleGenomeMutations>
-split_by_epigenetic_status(const std::list<Races::Mutations::SampleGenomeMutations>& sample_mutations_list,
-                           const PhylogeneticForest& forest)
+void
+apply_FACS_labels(std::list<Races::Mutations::SampleGenomeMutations>& sample_mutations_list,
+                  const SEXP& labelling_function,
+                  const PhylogeneticForest& forest)
 {
-    using namespace Races::Mutants;
-    using namespace Races::Mutants::Evolutions;
+    switch (TYPEOF(labelling_function)) {
+        case NILSXP:
+            break;
+        case CLOSXP:
+        {
+            std::list<Races::Mutations::SampleGenomeMutations> FACS_samples;
+            Rcpp::Function l_function = Rcpp::as<Rcpp::Function>(labelling_function);
 
-    std::map<SpeciesId, std::string> methylation_map;
+            for (const auto& sample_mutations : sample_mutations_list) {
+                split_by_labels(FACS_samples, l_function, sample_mutations, forest);
+            }
 
-    for (const auto& [species_id, species_data] : forest.get_species_data()) {
-      if (MutantProperties::signature_to_string(species_data.signature) == "+") {
-        methylation_map[species_id] = "P";
-      } else {
-        methylation_map[species_id] = "N";
-      }
-    }
+            std::swap(sample_mutations_list, FACS_samples);
 
-    std::list<Races::Mutations::SampleGenomeMutations> FACS_samples;
-
-    for (const auto& sample_mutations : sample_mutations_list) {
-        split_by_epigenetic_status(FACS_samples, sample_mutations, methylation_map);
-    }
-
-    return FACS_samples;
+            break;
+        }
+        default:
+            throw std::domain_error("The FACs_labelling_function must be a function.");
+    } 
 }
 
 std::set<Races::Mutations::ChromosomeId>
@@ -220,7 +228,7 @@ get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutation
                      SEXP& chromosome_ids)
 {
   using namespace Rcpp;
- using namespace Races::Mutations;
+  using namespace Races::Mutations;
 
   switch (TYPEOF(chromosome_ids)) {
     case NILSXP:
@@ -271,7 +279,8 @@ get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutation
 }
 
 Races::Mutations::SequencingSimulations::SampleSetStatistics
-simulate_seq(Races::Mutations::SequencingSimulations::ReadSimulator<>& simulator, SEXP& sequencer,
+simulate_seq(Races::Mutations::SequencingSimulations::ReadSimulator<>& simulator,
+             SEXP& sequencer,
              std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
              const std::set<Races::Mutations::ChromosomeId>& chromosome_ids,
              const double& coverage, const double purity,
@@ -314,7 +323,8 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                         SEXP& chromosome_ids, const double& coverage,
                         const int& read_size, const int& insert_size,
                         const std::string& output_dir, const bool& write_SAM,
-                        const bool& update_SAM_dir, const bool& FACS,
+                        const bool& update_SAM_dir,
+                        const SEXP& FACS_labelling_function,
                         const double& purity, const bool& with_normal_sample,
                         const int& rnd_seed)
 {
@@ -356,9 +366,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
 
   auto mutations_list = forest.get_sample_mutations_list();
 
-  if (FACS) {
-    mutations_list = split_by_epigenetic_status(mutations_list, forest);
-  }
+  apply_FACS_labels(mutations_list, FACS_labelling_function, forest);
 
   if (with_normal_sample) {
     const auto& germline = forest.get_germline_mutations();
