@@ -228,7 +228,7 @@ GenomicDataStorage::GenomicDataStorage(const std::string& directory,
                                        const std::string& driver_mutations_source,
                                        const std::string& passenger_CNAs_source,
                                        const std::string& germline_source):
-  directory{directory}, reference_src{reference_source},
+  directory{std::filesystem::absolute(directory)}, reference_src{reference_source},
   SBS_signatures_downloaded{false}, SBS_signatures_src{SBS_signatures_source},
   indel_signatures_downloaded{false}, indel_signatures_src{indel_signatures_source},
   drivers_src{driver_mutations_source}, passenger_CNAs_src{passenger_CNAs_source},
