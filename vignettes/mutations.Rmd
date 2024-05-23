@@ -1,6 +1,8 @@
 ---
 title: "Simulating Mutations"
 output: rmarkdown::html_vignette
+description: >
+  How to simulate mutations on sampled cells
 vignette: >
   %\VignetteIndexEntry{Simulating Mutations}
   %\VignetteEncoding{UTF-8}
@@ -19,18 +21,18 @@ knitr::opts_chunk$set(
 ```
 
 rRACES/RACES can simulate genomic mutations on the cells represented in
-a `SamplesForest` according to a specified mutational signature of single
-base substitutions (SBS) (see [@alexandrov2020repertoire]).
+a `SamplesForest` according to the specified SBS and indel mutational
+signatures (see [@alexandrov2020repertoire]).
 This process is performed by the class `MutationEngine` which also takes
 into account the mutation rate of the simulated species and gives the
-chance to dynamically change the SBS signature.
+chance to dynamically change the signatures.
 
 ### Setting Up Mutation Engine
 
 The creation of an object of the type `MutationEngine` requires to download
-the reference sequence and the corresponding SBS file and to build the
-corresponding context index. The function `build_mutation_engine()` performs
-all these steps in a single call.
+the reference sequence and the signature files and to build the
+corresponding two signature indices. The function `build_mutation_engine()`
+performs all these steps in a single call.
 
 This function is quite flexible and it allows to customize the mutation
 engine in many ways. However, the vast majority of rRACES users aim a
@@ -70,7 +72,7 @@ list.files("demo")
 
 The execution of the function `build_mutation_engine()` may takes some time, but
 it is meant to be performed one for all and, as long as the user does not need to
-change the reference genome or the SBS file, it is no more required. In this
+change the reference genome or the signature files, it is no more required. In this
 spirit, any call to the function `MutationEngine` checks whether all the building
 process sub-tasks are really needed and, if this is not the case, it avoids to
 performs them.
@@ -80,105 +82,22 @@ performs them.
 m_engine <- build_mutation_engine(setup_code = "demo")
 ```
 
-#### Context Index Sampling
-
-The `MutationEngine` function also builds a context index of the reference
-sequence. The complete context index of a sequence whose size is up to 4Gbps
-takes 4 times the length of the sequence itself both in memory and on the disk.
-For instance, the complete contex index of a human genome takes about 12GBytes.
-In order to avoid such requirement in memory and disk space,
-`MutationEngine` allows to sample the reference genome contexts and
-to stores only some of the them in the context index. This is achieved by
-the optional parameter `context_sampling` which specifies how many
-occurences of the same context must be identified before adding one of
-them to the context index. The larger the number of context sampling,
-the larger the context index. On the other side, the lower the number
-of context sampling, the lower the number of sites in the refernce
-genome that can be affected by simulated mutations.
-The `context_sampling` is set to 100 by default, but it can
-be specified during the `MutationEngine` call as the last parameter.
-
-```{r}
-# get the size of the context index when `context_sampling` is 100
-utils:::format.object_size(file.size("demo/context_index_100.cif"), "auto")
-```
-
-Let us rebuild the context index sampling one context every 50.
-
-```{r}
-# building a mutation engine by using the "demo" set-up configuration
-# and setting context_sampling to 50
-m_engine <- build_mutation_engine(setup_code = "demo", context_sampling = 50)
-```
-
-Above call uses the already downloaded data in the directory `"demo"` to
-build the context and produces the file `"demo/context_index_50.cif"`.
-
-```
-# get the size of the context index when `context_sampling` is 50
-utils:::format.object_size(file.size("demo/context_index_50.cif"), "auto")
-```
-
-#### Customizing `MutationEngine` (Advanced Topic)
-
-The function `build_mutation_engine()` can be called by specifing the name
-of the set-up directory, the path or URL of the reference sequence, the
-SBS file, the driver mutation file, the passenger CNAs file, and the germline
-data directory.
-
-```{r}
-reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/release-111/",
-                        "fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.",
-                        "dna.chromosome.22.fa.gz")
-
-sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
-                  "COSMIC_v3.4_SBS_GRCh37.txt")
-
-indel_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/",
-                    "2121/COSMIC_v3.4_ID_GRCh37.txt")
-
-drivers_url <- paste0("https://raw.githubusercontent.com/",
-                      "caravagnalab/rRACES/main/inst/extdata/",
-                      "driver_mutations_hg19.csv")
-
-passenger_cnas_url <- paste0("https://raw.githubusercontent.com/",
-                             "caravagnalab/rRACES/main/inst/extdata/",
-                             "passenger_CNAs_hg19.csv")
-
-germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
-                       "m6wjve/germline_data_demo.tar.gz?rlkey=15jshul",
-                       "d3bqgyfcs7fa0bzqeo&dl=1")
-
-# build a mutation engine and place all the files in the directory "Test"
-m_engine <- build_mutation_engine(directory = "Test",
-                                  reference_src = reference_url,
-                                  SBS_signatures_src = sbs_url,
-                                  indel_signatures_src = indel_url,
-                                  drivers_src = drivers_url,
-                                  passenger_CNAs_src = passenger_cnas_url,
-                                  germline_src = germline_url)
-
-dir.exists("Test")
-```
-
-```{r, echo=FALSE,  results='hide', message=FALSE}
-unlink("Test", recursive = TRUE)
-```
-
 #### Mutant Genetic Characterization
 
 Once the mutation engine has been built, we can define mutant genotype and
 declare species mutation rates.
 
-Let us consider the _"Border Growth"_ simulation peformed in
-`vignette("growth_models")`. It involves the two mutants `A` and
+Let us consider simulation peformed in Section "_Two populations with 
+epigenetic state_" of `vignette("sampling")`. It involves the two 
+mutants `A` and
 "B". Both of them has two possible epigenetic states, `+` and `-`, leading
 to the four the species `A+`, `A-`, `B+`, and `B-`, respectively.
 Each of these species has a passenger mutation rate that must be
 declated to the mutation engine before labeling the samples forest.
-Let 1e-9, 3e-8, 8e-7, and 5e-8 be the passenger SNV rates of the
-species `A+`, `A-`, `B+`, and `B-`, respectively. Furthermore,
-let 0, 1e-11, 0, and 0 be the passenger CNA rates of the same
+Let 1e-9, 3e-8, 8e-7, and 5e-8 be the passenger SNV rates for the
+species `A+`, `A-`, `B+`, and `B-`, respectively. Let the indel 
+rates be 0 for all the species, but `A+` which has indel rate 1e-8. 
+Furthermore, let 0, 1e-11, 0, and 0 be the passenger CNA rates of the same
 species, respectively.
 
 The two mutants may also be genetically characterized by some
@@ -209,7 +128,7 @@ m_engine <- build_mutation_engine(setup_code = "demo")
 # 3e-8, respectively, passenger indel rates 1e-10 and 0, respectively,
 # and passenger CNA rates 0 and 1e-11, respectively.
 m_engine$add_mutant(mutant_name = "A",
-                    passenger_rates = list("+" = c(SNV = 1e-9, indel = 1e-10),
+                    passenger_rates = list("+" = c(SNV = 1e-9, indel = 1e-8),
                                            "-" = c(SNV = 3e-8, CNA = 1e-11)),
                     drivers = list(SNV("22", 10510210, "C", allele = 1),
                                    Mutation("22", 15220157, "GTTTTTTTT", "G"),
@@ -305,18 +224,18 @@ m_engine$add_exposure(time = 120, c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5,
 m_engine
 ```
 
-#### Passenger CNAs and Tumor Type
+#### Passenger CNAs and Tumour Type
 
-The passenger CNAs applied during the simulation depend on tumor type.
-The type of tumor can be specified when building the mutation engine
-by using the `tumor_type` parameter. For instance, if the
+The passenger CNAs applied during the simulation depend on tumour type.
+The type of tumour can be specified when building the mutation engine
+by using the `tumour_type` parameter. For instance, if the
 passenger CNAs file used to build the mutation engine contains
 some of the data identified in breast carcinoma in the UK,
 the specific CNA can be applied during the simulation as it follows.
 
 ```{r, eval=FALSE}
 m_engine <- build_mutation_engine(setup_code = "demo",
-                                  tumor_type = "BRCA-UK")
+                                  tumour_type = "BRCA-UK")
 ```
 
 #### Germline Mutations
@@ -377,9 +296,10 @@ The configurated mutation engine can be used to label each node in a
 samples forest by mutations.
 
 Since the mutation engine has be configurated to deal with the
-simulation peformed in `vignette("growth_models")`,
-we can use the samples forest saved in the file `"samples_forest.sff"`
-in that article.
+simulation peformed in Section "_Two populations with 
+epigenetic state_" of `vignette("sampling")`,
+we can load its samples forest from the file `"samples_forest.sff"`
+in saved that article.
 
 ```{r}
 samples_forest <- load_samples_forest("samples_forest.sff")
@@ -480,81 +400,6 @@ obtained by the method `Phylogenetic$get_germline_subject()`.
 phylo_forest$get_germline_subject()
 ```
 
-### Infinite Sites Model
-
-The mutation engine places mutation on the sampled cell genome according to the
-[infinite sites model](https://en.wikipedia.org/wiki/Infinite_sites_model) by default.
-In particular, any new mutations is placed on a locus whose context is mutation-free.
-
-```{r}
-# this function verifies whether any mutation arised in
-# two unrelated cells represented in a phylogenetic forest
-test_infinite_sites_model <- function(phylo_forest) {
-  # extract non-germinal SNVs that appear multiple times either
-  # in the same cell or different cells
-  snvs <- phylo_forest$get_sampled_cell_mutations() %>%
-    filter(class != "germinal", .data$type == "SNV") %>%
-    count(.data$chr, .data$chr_pos, .data$ref, .data$alt) %>%
-    filter(n > 1)
-
-  # search for an SNV that independently occurred in two unrelated cells
-  first_occurrences <- c()
-  row <- 1
-  while (length(first_occurrences) < 2 && row <= nrow(snvs)) {
-    snv <- SNV(snvs[row, "chr"], snvs[row, "chr_pos"],
-               ref = snvs[row, "ref"], alt = snvs[row, "alt"])
-
-    first_occurrences <- phylo_forest$get_first_occurrences(snv)
-    row <- row + 1
-  }
-
-  # if the last handled SNV independently occurred in two unrelated
-  # cells at least
-  if (length(first_occurrences) >= 2) {
-
-    # print a message containing the two cells
-    paste0("SNV('", snv$get_chromosome(), "'',",
-           snv$get_position_in_chromosome(), ",'", snv$get_ref(),
-           "','", snv$get_alt(),
-           "') independently arises in cells ", first_occurrences[1],
-           " and ", first_occurrences[2])
-  } else {
-    print("Every mutation arises exclusively in one cell")
-  }
-}
-
-# test whether the infinite sites conditions hold in the built forest
-test_infinite_sites_model(phylo_forest)
-```
-
-This behavior can be changed by using the mutation engine property
-`MutationEngine$infinite_sites_model()`. This property is a Boolean flag
-that enable/disable the infinite sites model.
-
-```{r}
-# establish whether the infinite sites model is used
-m_engine$infinite_sites_model
-
-# disable it
-m_engine$infinite_sites_model <- FALSE
-```
-
-When the infinite sites model is disabled,
-`MutationEngine$place_mutations()` may place two mutations
-in the same locus of different alleles of the same genome
-or the same mutation in the same locus of one allele
-of the genomes of two cells that are not each other ancestors.
-
-```{r}
-# test whether the infinite sites model is enable
-m_engine$infinite_sites_model
-
-# place the mutations on the same samples forest used above
-phylo_forest2 <- m_engine$place_mutations(samples_forest, 1000, 500)
-
-# test whether the infinite sites conditions hold in the new forest
-test_infinite_sites_model(phylo_forest2)
-```
 
 ### Storing Phylogenetic Forests
 
@@ -572,6 +417,3 @@ loaded_phylo_forest <- load_phylogenetic_forest("phylo_forest.sff")
 loaded_phylo_forest
 ```
 
-```{r, echo=FALSE,  results='hide', message=FALSE}
-unlink("samples_forest.sff")
-```

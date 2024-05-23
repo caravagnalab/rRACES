@@ -1,4 +1,4 @@
-chr	from	to	ref	alt	mutation_type	tumor_type	driver_gene	driver_code
+chr	from	to	ref	alt	mutation_type	tumour_type	driver_gene	driver_code
 1	114713881	114713887	TGGTCTC	-	indel	PACA	NRAS	NRAS RDQ68
 1	114713881	114713887	TGGTCTC	-	indel	PACA	NRAS	NRAS A66
 1	114713907	114713907	T	G	SNV	MALY	NRAS	NRAS Q61H

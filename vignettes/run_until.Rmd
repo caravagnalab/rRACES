@@ -1,0 +1,162 @@
+---
+title: "Formula-base simulation constraints"
+output: rmarkdown::html_vignette
+description: >
+  Simulate a tissue evolution until a simulation state formula
+  does not hold
+vignette: >
+  %\VignetteIndexEntry{Formula-base simulation constraints}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+> *Note:* This article presents advanced topics on tissue simulation.
+> Refer to `vignette("tissue_simulation")` for an introduction of the
+> subject.
+
+rRACES implements a first order unquantified logic having variables
+representing the cardinality of the species, the number of events
+fired in a species (being duplications, deaths, or switches), and
+the simulation time. These variables and reals values are summed by
+`+`, subtracted by `-`, and multiplied by `*` and form expressions.
+The expressions are then compared with the standard semantics by
+`>`, `>=`, `==`, `!=`, `<=`, and `<` to form relations.
+A formula in this language is either a relation, the conjunction
+of two formulas (`&`), or the disjunction of two formulas (`|`).
+
+Any formula in above language expresses a condition on the simulation
+status and it can be used as the parameter of the method
+`Simulation$run_until()` to let the simulation evolve until
+the condition does not hold.
+
+### Variables
+
+The variables represent one among the following quantities:
+
+-  the cardinality of a species;
+-  the number fired event among deaths, duplications and switches in a species;
+-  the elapse simulation time.
+
+All above variables can be built by using the method `Simulation$var()`.
+When the parameter is the string `"Time"`, the elapsed simulation time
+variable is returned.
+
+```{r}
+library(rRACES)
+
+# build a simulation and add two species to it
+sim <- new(Simulation)
+sim$add_mutant(name = "A",
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.2, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
+
+# get the variable representing the simulation time
+v_time <- sim$var("Time")
+
+v_time
+```
+
+When the parameter is the name of a species,
+a variable representing the cardinality of the species is built.
+
+```{r}
+# get the variable representing the cardinality of A+ in sim
+va_p <- sim$var("A+")
+va_p
+
+# get the variable representing the cardinality of A- in sim
+va_m <- sim$var("A-")
+va_m
+```
+
+
+Finally, when the parameter is the name of a species followed by
+a `.` and the name of an event among `deaths`, `duplications`,
+or `switches`, `Simulation$var()` returns
+the variable associated with the number of
+the corresponding event in the specified species.
+
+```{r}
+# get the variable representing the number of epigenetic
+# switches from A+
+va_ps <- sim$var("A+.switches")
+va_ps
+
+# get the variable representing the number of duplications in A+
+sim$var("A+.duplications")
+
+# get the variable representing the number of deaths in A+
+sim$var("A+.deaths")
+```
+
+### Expressions and Formulas
+
+An expression is one of the following object:
+
+-  a variable, e.g., `sim$var("A+")`;
+-  a numeric value, e.g., `3.4`;
+-  the sum of two expressions, e.g., `sim$var("A+") + 3.4`;
+-  the subtraction of two expressions, e.g., `sim$var("A+") - 3.4`;
+-  the multiplication of two expressions, e.g., `sim$var("A+") * 3.4`.
+
+Two expression can be related by `<=`, `<`, `==`, `!=`, `>` and
+`>=`.
+
+A formula is:
+
+-  a relation among two expressions, e.g., `sim$var("A+")>=2`;
+-  the conjunction of two formulas, e.g., `sim$var("A+")>=2 & sim$var("A+")<=500`;
+-  the disjunction of two formulas, e.g., `sim$var("A+")>=2 | sim$var("A+")<=500`.
+
+### The method `Simulation$run_until()`
+
+The method `Simulation$run_until()` takes as the parameter a formula and
+lets the simulation evolve until
+the formula does not hold.
+
+```{r}
+# build a condition stating that the cardinality of A+ doubles
+# that of A-
+c1 <- va_p >= 2 * va_m
+c1
+
+# build a condition that holds when there are more than
+# 100000 live cells of mutant A
+c2 <- va_p + va_m > 1e5
+c2
+
+# build a condition that holds when less than 4000
+# epigenetic switches from the species A+ have occured
+c3 <- va_ps < 4000
+c3
+
+# build a condition that holds when 40 time unit have been
+# simulated at least
+c4 <- v_time >= 40
+c4
+
+# build a condition that holds when c4 and at least one
+# among c1, c2, and c3 hold
+c5 <- c4 & (c1 | c2 | c3)
+c5
+
+# place the initial cell
+sim$place_cell("A+", 500, 500)
+
+# run the simulation while c5 does not hold
+sim$run_until(c5)
+
+sim
+sim$get_clock()
+```

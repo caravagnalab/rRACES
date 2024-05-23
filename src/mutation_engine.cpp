@@ -382,7 +382,7 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
 
 
 std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::path& CNAs_csv,
-                                                                        const std::string& tumor_type)
+                                                       const std::string& tumour_type)
 {
   std::vector<Races::Mutations::CNA> CNAs;
 
@@ -393,7 +393,7 @@ std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
     if (row.size()<6) {
       throw std::runtime_error("The CNA CSV must contains at least 6 columns");
     }
-    if ((tumor_type=="") || (row.get_field(5) == tumor_type)) {
+    if ((tumour_type=="") || (row.get_field(5) == tumour_type)) {
       const auto region = get_CNA_region(row, row_num);
 
       const auto major = row.get_field(3);
@@ -440,10 +440,10 @@ MutationEngine::MutationEngine(const std::string& setup_name,
                                const size_t& context_sampling,
                                const size_t& max_motif_size,
                                const size_t& max_repetition_storage,
-                               const std::string& tumor_type):
+                               const std::string& tumour_type):
   storage(setup_storage(setup_name)), germline_subject(germline_subject),
   context_sampling(context_sampling), max_motif_size(max_motif_size),
-  max_repetition_storage(max_repetition_storage), tumor_type(tumor_type)
+  max_repetition_storage(max_repetition_storage), tumour_type(tumour_type)
 {
   auto setup_cfg = supported_setups.at(setup_name);
 
@@ -461,14 +461,14 @@ MutationEngine::MutationEngine(const std::string& directory,
                                const size_t& context_sampling,
                                const size_t& max_motif_size,
                                const size_t& max_repetition_storage,
-                               const std::string& tumor_type):
+                               const std::string& tumour_type):
   storage(setup_storage(directory, reference_source, SBS_signatures_source,
                         indel_signatures_source, drivers_source,
                         passenger_CNAs_source, germline_source)),
   germline_subject(germline_subject), context_sampling(context_sampling),
   max_motif_size(max_motif_size),
   max_repetition_storage(max_repetition_storage), 
-  tumor_type(tumor_type)
+  tumour_type(tumour_type)
 {
   init_mutation_engine();
 }
@@ -529,7 +529,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                                      const size_t& context_sampling,
                                      const size_t& max_motif_size,
                                      const size_t& max_repetition_storage,
-                                     const std::string& tumor_type)
+                                     const std::string& tumour_type)
 {
   if (setup_code!="") {
     if (directory!="" || reference_source!="" || SBS_signatures_source!=""
@@ -542,7 +542,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
     }
 
     return MutationEngine(setup_code, germline_subject, context_sampling,
-                          max_motif_size, max_repetition_storage, tumor_type);
+                          max_motif_size, max_repetition_storage, tumour_type);
   }
 
   if (directory=="" || reference_source=="" || SBS_signatures_source==""
@@ -558,51 +558,14 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                         indel_signatures_source, drivers_source,
                         passenger_CNAs_source, germline_source, germline_subject,
                         context_sampling, max_motif_size, max_repetition_storage, 
-                        tumor_type);
+                        tumour_type);
 
 }
 
-/*
-void MutationEngine::add_exposure(const std::string& type_name,
-                                  const double& time, const Rcpp::List& exposure)
-{
-    using namespace Races::Mutations;
-
-    if (type_name == "index") {
-        add_exposure(IDType::type(), time, exposure);
-    } else if (type_name == "SNV") {
-        add_exposure(SBSType::type(), time, exposure);
-    } else {
-        std::ostringstream oss;
-
-        oss << "Unsupported type name \"" << type_name <<"\". "
-            << "The supported types are \"SNV\" and \"" 
-            << "indel\".";
-        throw std::runtime_error(oss.str());
-    }
-}
-*/
 
 void MutationEngine::add_exposure(const double& time, const Rcpp::List& exposure)
 {
   auto c_exposure = get_map<double, TestNonNegative>(exposure);
-
-  /*
-  double sum{1};
-  for (const auto& [sbs, coeff]: c_exposure) {
-    sum -= coeff;
-  }
-
-  if (std::abs(sum)>1e-13) {
-    std::ostringstream oss;
-
-    oss << "The exposure must sum up to 1: ";
-    show_map(oss, c_exposure);
-    oss << " sums up to " << sum;
-
-    throw std::domain_error(oss.str());
-  }
-  */
 
   m_engine.add(time, c_exposure);
 }
@@ -1089,7 +1052,7 @@ void MutationEngine::reset(const bool full)
   auto indel_signatures = load_signature<IDType>(storage);
 
   auto passenger_CNAs = load_passenger_CNAs(storage.get_passenger_CNAs_path(),
-                                            tumor_type);
+                                            tumour_type);
 
   auto driver_storage = DriverStorage::load(storage.get_driver_mutations_path());
 

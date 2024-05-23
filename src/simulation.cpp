@@ -1283,25 +1283,25 @@ count_cells_in(const Races::Mutants::Evolutions::Tissue& tissue,
 inline
 std::map<Races::Mutants::SpeciesId, size_t>
 count_cells_in(const Races::Mutants::Evolutions::Tissue& tissue,
-               const TissueRectangle& tumor_bounding_box,
+               const TissueRectangle& tumour_bounding_box,
                const uint16_t& grid_x, const uint16_t& grid_y,
                const uint16_t& width, const uint16_t& height)
 {
-  const uint16_t x = grid_x*width+tumor_bounding_box.lower_corner.x,
-                 y = grid_y*height+tumor_bounding_box.lower_corner.y;
+  const uint16_t x = grid_x*width+tumour_bounding_box.lower_corner.x,
+                 y = grid_y*height+tumour_bounding_box.lower_corner.y;
 
   return count_cells_in(tissue, x, y, width, height);
 }
 
 inline
-TissueRectangle get_tissue_rectangle(const TissueRectangle& tumor_bounding_box,
+TissueRectangle get_tissue_rectangle(const TissueRectangle& tumour_bounding_box,
                                      const uint16_t& grid_x, const uint16_t& grid_y,
                                      const uint16_t& width, const uint16_t& height)
 {
   using namespace Races::Mutants::Evolutions;
 
-  const uint16_t x = grid_x*width+tumor_bounding_box.lower_corner.x,
-                 y = grid_y*height+tumor_bounding_box.lower_corner.y;
+  const uint16_t x = grid_x*width+tumour_bounding_box.lower_corner.x,
+                 y = grid_y*height+tumour_bounding_box.lower_corner.y;
 
   return TissueRectangle(PositionInTissue{x,y}, width, height);
 }
@@ -1327,7 +1327,7 @@ collect_species_of(const Races::Mutants::Evolutions::Simulation& simulation,
   return species_ids;
 }
 
-TissueRectangle Simulation::get_tumor_bounding_box() const
+TissueRectangle Simulation::get_tumour_bounding_box() const
 {
   using namespace Races::Mutants::Evolutions;
   const auto& tissue = sim_ptr->tissue();
@@ -1524,7 +1524,7 @@ Simulation::find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
   auto species_constraints = get_species_constraints(*sim_ptr, minimum_cell_vector);
   auto mutant_constraints = get_mutant_constraints(*sim_ptr, minimum_cell_vector);
 
-  auto t_bbox = get_tumor_bounding_box();
+  auto t_bbox = get_tumour_bounding_box();
 
   const auto& tissue = sim_ptr->tissue();
   const auto t_width = t_bbox.upper_corner.x - t_bbox.lower_corner.x;
@@ -1591,7 +1591,7 @@ TissueRectangle Simulation::search_sample(const Rcpp::IntegerVector& minimum_cel
   auto species_constraints = get_species_constraints(*sim_ptr, minimum_cell_vector);
   auto mutant_constraints = get_mutant_constraints(*sim_ptr, minimum_cell_vector);
 
-  auto t_bbox = get_tumor_bounding_box();
+  auto t_bbox = get_tumour_bounding_box();
 
   const auto& tissue = sim_ptr->tissue();
   const auto t_width = t_bbox.upper_corner.x - t_bbox.lower_corner.x;

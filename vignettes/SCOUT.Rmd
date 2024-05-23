@@ -1,6 +1,8 @@
 ---
 title: "SCOUT"
 output: rmarkdown::html_vignette
+description: >
+  The Simulated Cohort of Universal Tumours (SCOUT)
 vignette: >
   %\VignetteIndexEntry{SCOUT}
   %\VignetteEngine{knitr::rmarkdown}

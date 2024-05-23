@@ -2,7 +2,7 @@
 title: "Partitioning samples (FACS)"
 output: rmarkdown::html_vignette
 description: >
-  How to partitioning samples, sorting cells, and simulate FACS.
+  How to partitioning samples, sorting cells, and simulate FACS
 vignette: >
   %\VignetteIndexEntry{Partitioning samples (FACS)}
   %\VignetteEncoding{UTF-8}
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-> *Note:* This article presents advanced topics about sequencing simulation.
+> *Note:* This article presents advanced topics on sequencing simulation.
 > Refer to `vignette("sequencing")` for an introduction on the subject.
 
 

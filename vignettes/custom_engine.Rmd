@@ -1,0 +1,173 @@
+---
+title: "Customizing mutation engine"
+output: rmarkdown::html_vignette
+description: >
+  How to customize the mutation engine and its indices
+vignette: >
+  %\VignetteIndexEntry{Customizing mutation engine}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 72
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+rRACES/RACES can simulate genomic mutations on the cells represented in
+a `SamplesForest` according to the specified SBS and indel mutational signatures
+(see `vignette["mutations"]`). 
+This task is achieved by the mutation engine which uses two indices on the 
+reference genome to place the most probable mutations according to
+signatures: the _context index_ and the _repeted sequence index_.
+
+The function `build_mutation_engine()` builds the mutation engine and 
+these two indices.
+
+## Customizing the mutation engine
+
+While the most convient way to invoke `build_mutation_engine()` is by using
+the parameter `setup_code` (see `vignette["mutations"]`), the are cases
+in which a custom set-up is required. In these cases, 
+the function `build_mutation_engine()` can be called by specifying the name
+of the set-up directory, the path or URL of the reference sequence, the
+signature files, the driver mutation file, the passenger CNAs file, and 
+the germline data directory.
+
+```{r}
+library("rRACES")
+
+reference_url <- paste0("https://ftp.ensembl.org/pub/grch37/release-111/",
+                        "fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.",
+                        "dna.chromosome.22.fa.gz")
+
+sbs_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/2123/",
+                  "COSMIC_v3.4_SBS_GRCh37.txt")
+
+indel_url <- paste0("https://cancer.sanger.ac.uk/signatures/documents/",
+                    "2121/COSMIC_v3.4_ID_GRCh37.txt")
+
+drivers_url <- paste0("https://raw.githubusercontent.com/",
+                      "caravagnalab/rRACES/main/inst/extdata/",
+                      "driver_mutations_hg19.csv")
+
+passenger_cnas_url <- paste0("https://raw.githubusercontent.com/",
+                             "caravagnalab/rRACES/main/inst/extdata/",
+                             "passenger_CNAs_hg19.csv")
+
+germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
+                       "m6wjve/germline_data_demo.tar.gz?rlkey=15jshul",
+                       "d3bqgyfcs7fa0bzqeo&dl=1")
+
+# build a mutation engine and place all the files in the directory "Test"
+m_engine <- build_mutation_engine(directory = "Test",
+                                  reference_src = reference_url,
+                                  SBS_signatures_src = sbs_url,
+                                  indel_signatures_src = indel_url,
+                                  drivers_src = drivers_url,
+                                  passenger_CNAs_src = passenger_cnas_url,
+                                  germline_src = germline_url)
+
+dir.exists("Test")
+```
+
+```{r, echo=FALSE,  results='hide', message=FALSE}
+unlink("Test", recursive = TRUE)
+```
+
+### The Context Index
+
+The SBS signatures fixes, for every possible context
+(i.e., a triplet of consetutive nucleotides), the probability for a SNV
+to occur in such a context (see [@alexandrov2020repertoire]). Hence, the
+function `build_mutation_engine()` builds
+a context index of the reference sequence to place SNVs on the forest
+cells. The complete context index of a sequence whose size is up to 4Gbps
+takes 4 times the length of the sequence itself both in memory and on the disk 
+because 4 bytes per nucleotide are required to store the context position.
+For instance, the complete contex index of a human genome takes about 12GBytes.
+In order to avoid such requirement in memory and disk space,
+`build_mutation_engine()` allows to sample the reference genome contexts and
+to stores only some of the them in the context index. This is achieved by
+the optional parameter `context_sampling` which specifies how many
+occurences of the same context must be identified before adding one of
+them to the context index. The larger the number of context sampling,
+the larger the context index. On the other side, the lower the number
+of context sampling, the lower the number of sites in the refernce
+genome that can be affected by simulated mutations.
+The `context_sampling` is set to 100 by default, but it can
+be specified during the `build_mutation_engine()` call.
+
+```{r}
+m_engine <- build_mutation_engine(setup_code = "demo")
+
+# get the size of the context index when `context_sampling` is 100
+utils:::format.object_size(file.size("demo/context_index_100.cif"), "auto")
+```
+
+Let us rebuild the context index sampling one context every 50.
+
+```{r}
+# building a mutation engine by using the "demo" set-up configuration
+# and setting context_sampling to 50
+m_engine <- build_mutation_engine(setup_code = "demo", context_sampling = 50)
+```
+
+Above call uses the already downloaded data in the directory `"demo"` to
+build the context and produces the file `"demo/context_index_50.cif"`.
+
+```{r}
+# get the size of the context index when `context_sampling` is 50
+utils:::format.object_size(file.size("demo/context_index_50.cif"), "auto")
+```
+
+### The Repeated Sequence Index
+
+Analoguosly to the SBS signatures, the ID (indel) signatures fixes, for 
+some kinds of repeated sequences, the probability for an indel
+to occur in them (see [@alexandrov2020repertoire]). Thus, the `MutationEngine`
+function also builds an index for the repeated sequences in the reference.
+As in the case of the SBS signatures, the ID signatures can be memory eager.
+To mitigate the memory requirement, the function `build_mutation_engine()` 
+accepts as parameters the maximum size of the considered indel
+(the parameter `max_index_size`) and the maximum number of reference position
+stored per repetition type (the parameter `max_repetition_storage`).
+The larger the two parameters, the larger the repetition index.
+As far the building time concerns, the larger `max_index_size`, the longer
+takes the index construction. On the contrary, `max_repetition_storage` does not
+directly affects the computation time.
+By default, the two parameters are set to 50 and 500000, respectively.
+However, their values can
+be specified during the `build_mutation_engine()` call.
+
+```{r}
+# get the size of the repeated index when the default parameter values
+# are used
+utils:::format.object_size(file.size("demo/rs_index_50_500000.rsif"), "auto")
+```
+
+Let us rebuild the context index sampling one context every 50.
+
+```{r}
+# building a mutation engine by using the "demo" set-up configuration
+# and setting max_repetition_storage to 10,000,000
+m_engine <- build_mutation_engine(setup_code = "demo",
+                                  max_repetition_storage = 10000000)
+```
+
+Above call uses the already downloaded data in the directory `"demo"` to
+build the repeated sequence index and produces the file
+`"demo/rs_index_50_10000000.rsif"`.
+
+```{r}
+# get the size of the context index when `context_sampling` is 50
+utils:::format.object_size(file.size("demo/rs_index_50_10000000.rsif"),
+                                     "auto")
+```

@@ -1,6 +1,8 @@
 ---
 title: "Sequencing Simulation"
 output: rmarkdown::html_vignette
+description: >
+  How to simulate sample sequencing
 vignette: >
   %\VignetteIndexEntry{Sequencing Simulation}
   %\VignetteEncoding{UTF-8}
@@ -56,8 +58,7 @@ seq_results %>% head
 ```
 
 The function `simulate_seq()` returns a data frame whose rows
-represent the mutations observed in the simulated reads
-(currently, only SNVs are supported).
+represent the mutations observed in the simulated reads.
 
 The number of columns in the data frame depends on the number
 of samples in the phylogenetic forest. The first four columns
@@ -130,7 +131,7 @@ simulations.
 
 ```{r}
 # simulate the sequencing of a sample in which 70% of the cells are
-# tumor cells
+# tumour cells
 seq_results <- simulate_seq(phylo_forest, coverage = 2.5, purity = 0.7,
                             write_SAM = TRUE, output_dir = "SAM_0.7")
 
@@ -158,7 +159,7 @@ This default behaviour can be turned off by setting the
 `FALSE`.
 
 The function `simulate_normal_seq()` simulates the normal cell sample
-sequencing *avoiding* tumor sequencing.
+sequencing *avoiding* tumour sequencing.
 
 ### Simulating Sequencing Errors
 
@@ -266,4 +267,5 @@ unlink("SAM_0.7", recursive = TRUE)
 unlink("rRACES_SAM", recursive = TRUE)
 unlink("demo", recursive = TRUE)
 unlink("phylo_forest.sff")
+unlink("samples_forest.sff")
 ```

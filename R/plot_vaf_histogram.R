@@ -19,7 +19,7 @@
 #' @examples
 #' sim <- new(Simulation)
 #' sim$add_mutant(name = "A",
-#'                growth_rates = 0.2,
+#'                growth_rates = 0.1,
 #'                death_rates = 0.0)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(100)
@@ -32,10 +32,10 @@
 #'
 #' # adding second mutant
 #' sim$add_mutant(name = "B",
-#'                growth_rates = 0.5,
+#'                growth_rates = 0.3,
 #'                death_rates = 0.0)
 #' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-#' sim$run_up_to_time(200)
+#' sim$run_up_to_time(300)
 #'
 #' # sampling tissue again
 #' bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
@@ -55,13 +55,12 @@
 #' # simulating sequencing
 #' seq_results <- simulate_seq(
 #'   phylo_forest,
-#'   chromosomes = c('22'),
 #'   coverage = 10,
 #'   write_SAM = F
 #' )
 #'
 #' # plotting histogram of the VAF
-#' plot_histogram_vaf(seq_results, colour_by="causes", chromosomes=c("22"))
+#' plot_histogram_vaf(seq_results, colour_by="causes")
 #'
 #' # deleting the mutation engine directory
 #' unlink('demo', recursive = T)

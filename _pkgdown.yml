@@ -15,15 +15,24 @@ authors:
 
 
 articles:
-- title: Articles
+- title: Introduction
   navbar: ~
   contents:
   - tissue_simulation
   - sampling
-  - growth_models
   - mutations
   - sequencing
+- title: Advanced techniques
+  contents:
+  - growth_models
+  - run_until
+  - custom_engine
+  - infinite_site_model
   - sample_partition
+  - time_series
+- title: Tests and Examples
+  contents:
+  - three_sampling
   - SCOUT
 
 reference:

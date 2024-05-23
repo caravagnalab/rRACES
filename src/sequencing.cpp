@@ -21,6 +21,7 @@
 
 #include "sequencers.hpp"
 #include "seq_simulation.hpp"
+#include "sampled_cell.hpp"
 
 using namespace Rcpp;
 
@@ -30,11 +31,12 @@ RCPP_MODULE(Sequencing){
 //' @title An error-less Illumina sequencer class
 //' @description This class implements a perferct Illumina sequencers that
 //'   does not commit errors.
-//' @seealso ` simulate_seq`, `simulate_normal_seq`, and `vignette("sequencing")`
-//'   for usage examples
+//' @seealso `simulate_seq()`, `simulate_normal_seq()`, and
+//'   `vignette("sequencing")` for usage examples
   class_<ErrorlessIlluminaSequencer>("ErrorlessIlluminaSequencer")
 //' @name ErrorlessIlluminaSequencer$new
-//' @title Build a new error-less Illumina sequencer model.
+//' @title Building a new error-less Illumina sequencer model
+//' @description This method builds an error-less Illumina sequencer model.
 //' @examples
 //' # build an error-less Illumina sequencer
 //' sequencer <- new(ErrorlessIlluminaSequencer)
@@ -47,13 +49,14 @@ RCPP_MODULE(Sequencing){
 //' @name BasicIlluminaSequencer
 //' @title A basic Illumina sequencer class
 //' @description This class implements a basic model for Illumina sequencers.
-//'   It specifies a simulated sequencing error rate and the simulated sequencing
-//'   errors will occurs according to that rate.
-//' @seealso ` simulate_seq`, `simulate_normal_seq`, and `vignette("sequencing")`
-//'   for usage examples
+//' @details It specifies a simulated sequencing error rate and the simulated
+//'   sequencing errors will occurs according to that rate.
+//' @seealso `simulate_seq()`, `simulate_normal_seq()`, and
+//'   `vignette("sequencing")` for usage examples
   class_<BasicIlluminaSequencer>("BasicIlluminaSequencer")
 //' @name BasicIlluminaSequencer$new
-//' @title Build a new basic Illumina sequencer model.
+//' @title Building a new basic Illumina sequencer model
+//' @description This method builds a basic model for Illumina sequencers.
 //' @param error_rate The error rate per base.
 //' @param seed The seed for the internal random generator
 //'   (default: `0`).
@@ -68,7 +71,10 @@ RCPP_MODULE(Sequencing){
             "Show a description for the sequencer")
 
 //' @name BasicIlluminaSequencer$get_error_rate
-//' @title Get basic illumina sequencer
+//' @title Getting error rate
+//' @description This method returns the sequencing error rate of the
+//'   simulated illumina sequencer.
+//' @return The sequencing error rate of the simualted sequencer.
 //' @examples
 //' # build a basic Illumina sequencer model in which errors occur
 //' # at rate 4e-3
@@ -79,7 +85,9 @@ RCPP_MODULE(Sequencing){
             "Get the sequencer error rate");
 
 //' @name simulate_seq
-//' @title Simulate the sequencing of the samples in a phylogenetic forest
+//' @title Simulating the sequencing
+//' @description This method simulates the sequencing of the samples in a phylogenetic
+//'   forest.
 //' @param phylo_forest A phylogenetic forest.
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
@@ -98,7 +106,7 @@ RCPP_MODULE(Sequencing){
 //' @param cell_labelling The labelling function for sampled cells
 //'   See `vignette("sample_partition")` for details (default: `NULL`).
 //' @param purity The ratio between the number of sample tumeral cell
-//'   and that of all the cells, i.e., tumoral and normal
+//'   and that of all the cells, i.e., tumour and normal
 //'   ones. This value must belong to the interval [0,1]
 //'   (default: `1`).
 //' @param with_normal_sample A Boolean flag to enable/disable the
@@ -131,7 +139,9 @@ RCPP_MODULE(Sequencing){
            "Simulate the sequencing of the samples in a phylogenetic forest");
 
 //' @name simulate_normal_seq
-//' @title Simulate the sequencing of the samples in a phylogenetic forest
+//' @title Simulating wild-type sequencing
+//' @description This method simulates a wild-type sample sequencing in a phylogenetic
+//'   forest.
 //' @param phylo_forest A phylogenetic forest.
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
@@ -149,14 +159,14 @@ RCPP_MODULE(Sequencing){
 //' @param update_SAM Update the output directory (default: `FALSE`).
 //' @param rnd_seed The random seed for the internal random generator
 //'   (default: `0`).
-//' @return A data frame representing, for each of the observed
+//' @return A dataframe representing, for each of the observed
 //'   SNVs, the chromosome and the position in which
 //'   it occurs (columns `chr` and `chr_pos`),
 //'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
 //'   of the sequencied samples `<sample name>`, the returned
-//'   data frame contains three columns: the number of reads in
+//'   dataframe contains three columns: the number of reads in
 //'   which the corresponding SNV occurs (column
 //'   `<sample name>.occurrences`), the coverage of the SNV
 //'   locus (column `<sample name>.coverage`), and the

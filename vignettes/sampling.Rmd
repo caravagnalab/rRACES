@@ -1,6 +1,8 @@
 ---
 title: "Tissue sampling"
 output: rmarkdown::html_vignette
+description: >
+  How to sample cells from a simulated tissue
 vignette: >
   %\VignetteIndexEntry{Tissue sampling}
   %\VignetteEncoding{UTF-8}
@@ -111,7 +113,7 @@ sim$get_cells(c(400, 400), c(400 + bbox_width, 400 + bbox_width)) %>% head
 ```
 
 It should also be remarked that the sampling process exclusively collects 
-tumor cells, while it excludes wild-type cells.
+tumour cells, while it excludes wild-type cells.
 
 ### Cell division tree for sampled cells
 
@@ -240,6 +242,7 @@ ncells <- 0.8 * n_w * n_h
 # Sampling ncells with random box sampling of boxes of size n_w x n_h
 bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
 
+# plot the bounding box
 current +
   geom_rect(xmin = bbox$lower_corner[1], xmax = bbox$upper_corner[1],
             ymin = bbox$lower_corner[2], ymax = bbox$upper_corner[2],
@@ -247,6 +250,7 @@ current +
 ```
 
 ```{r}
+# sample the tissue
 sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
 ```
 
@@ -255,6 +259,7 @@ Something similar with species `A`.
 ```{r,  fig.height=4, fig.width=3}
 bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
 
+# plot the bounding box
 current +
   geom_rect(xmin = bbox$lower_corner[1], xmax = bbox$upper_corner[1],
             ymin = bbox$lower_corner[2], ymax = bbox$upper_corner[2],
@@ -262,6 +267,7 @@ current +
 ```
 
 ```{r}
+# sample the tissue
 sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
 ```
 
@@ -279,6 +285,28 @@ forest <- sim$get_samples_forest()
 plot_forest(forest) %>%
   annotate_forest(forest)
 ```
+
+## Randomised cell sampling (Liquid biopsy)
+
+rRACES supports randomized cell sampling over the full tissue or
+a rectangle thereof.
+
+```{r}
+# collect up to 2500 tumour cells randomly selected over the whole tissue
+sim$sample_cells("S_2_3", num_of_cells = 2500)
+
+bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
+
+# collect up to 200 tumour cells randomly selected in the provided
+# bounding box
+sim$sample_cells("S_2_4", bbox$lower_corner, bbox$upper_corner, 200)
+
+forest <- sim$get_samples_forest()
+
+plot_forest(forest) %>%
+  annotate_forest(forest)
+```
+
 
 ## Two populations with epigenetic state
 
@@ -331,13 +359,13 @@ cell <- sim$choose_cell_in("A")
 
 sim$add_mutant(name = "B",
                epigenetic_rates = c("+-" = 0.05, "-+" = 0.1),
-               growth_rates = c("+" = 0.5, "-" = 0.3),
+               growth_rates = c("+" = 0.8, "-" = 0.3),
                death_rates = c("+" = 0.05, "-" = 0.05))
 
 sim$mutate_progeny(cell, "B")
 
 # let it grow more time units
-sim$run_up_to_time(sim$get_clock() + 45)
+sim$run_up_to_size("B+", 7000)
 
 plot_tissue(sim, num_of_bins = 500)
 ```
@@ -368,105 +396,35 @@ plot_forest(forest) %>%
   annotate_forest(forest)
 ```
 
-## More complex example
 
-Some features allow for a smarter sampling and more advanced
-visualisation.
+### Storing Samples Forests
 
-We build a tumour with three populations, branching.
+A samples forest can be saved in a file by using the method `SamplesForest$save()`.
 
-```{r, fig.height=4, fig.width=3}
-sim <- new(Simulation, "Three Populations")
-
-sim$death_activation_level <- 20
-
-sim$update_tissue(250, 250)
-
-sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
-sim$place_cell("A", 125, 125)
-sim$run_up_to_size("A", 3000)
-
-plot_tissue(sim)
+```{r, echo=FALSE,  results='hide', message=FALSE}
+unlink("samples_forest.sff")
 ```
 
-We sample
+```{r}
+# check the file existence. It should not exists.
+file.exists("samples_forest.sff")
 
-```{r,  fig.height=4, fig.width=3}
-n_w <- n_h <- 7
-ncells <- 0.8 * n_w * n_h
+# save the samples forest in the file "samples_forest.sff"
+forest$save("samples_forest.sff")
 
-# Sampling ncells with random box sampling of boxes of size n_w x n_h
-bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
-sim$sample_cells("S_1_1", bbox$lower_corner, bbox$upper_corner)
-
-bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
-sim$sample_cells("S_1_2", bbox$lower_corner, bbox$upper_corner)
-
-plot_tissue(sim)
+# check the file existence. It now exists.
+file.exists("samples_forest.sff")
 ```
 
-```{r,  fig.height=4, fig.width=3, eval=FALSE}
-plot_muller(sim)
-```
+The saved samples forest can successively be load by using the function
+`load_samples_forest()`.
 
-Second mutant starts.
+```{r}
+# load the samples forest from "samples_forest.sff" and store it in `forest2`
+forest2 <- load_samples_forest("samples_forest.sff")
 
-```{r,  fig.height=4, fig.width=3}
-# New submutant
-sim$add_mutant(name = "B", growth_rates = 0.13, death_rates = 0.01)
-sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-sim$run_up_to_size("B", 400)
-
-plot_tissue(sim)
-plot_muller(sim)
-```
-
-Random sampling of cells from both mutant `A` and `B`.
-
-```{r,  fig.height=4, fig.width=3}
-# Sampling with random box sampling
-bbox <- sim$search_sample(c("A" = ncells), n_w, n_h)
-sim$sample_cells("S_2_1", bbox$lower_corner, bbox$upper_corner)
-
-bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
-sim$sample_cells("S_2_2", bbox$lower_corner, bbox$upper_corner)
-
-plot_tissue(sim)
-```
-
-Finally, a third mutant branching from `A`.
-
-```{r,  fig.height=4, fig.width=3}
-# New submutant
-sim$add_mutant(name = "C", growth_rates = 0.6, death_rates = 0.01)
-sim$mutate_progeny(sim$choose_cell_in("A"), "C")
-
-sim$run_up_to_size("C", 1000)
-plot_tissue(sim)
-plot_muller(sim)
-```
-
-With sampling of mutants `B` and `C`.
-
-```{r,  fig.height=4, fig.width=3}
-# Sampling with random box sampling
-bbox <- sim$search_sample(c("B" = ncells), n_w, n_h)
-sim$sample_cells("S_3_1", bbox$lower_corner, bbox$upper_corner)
-
-bbox <- sim$search_sample(c("C" = ncells), n_w, n_h)
-sim$sample_cells("S_3_2", bbox$lower_corner, bbox$upper_corner)
-
-plot_tissue(sim, num_of_bins = 100)
-plot_muller(sim)
-```
-
-Finally, the tree plot where we annotate samples and MRCAs of each
-sample.
-
-```{r,  fig.height=12, fig.width=17}
-# Tree data
-forest <- sim$get_samples_forest()
-
-plot_forest(forest) %>%
-  annotate_forest(forest)
+# let us now compare the samples forests stored in `forest` and `forest2`;
+# they should be the same.
+forest
+forest2
 ```

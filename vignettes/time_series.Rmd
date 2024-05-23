@@ -1,0 +1,239 @@
+---
+title: "Time Series Analysis"
+output: rmarkdown::html_vignette
+description: >
+  Analyse the evolution of the system over time
+vignette: >
+  %\VignetteIndexEntry{Time Series Analysis}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
+library(rRACES)
+
+sim <- new(Simulation, "Test")
+
+sim$death_activation_level <- 50
+
+# Set the tissue name and size to different values
+sim$update_tissue("Liver", 1200, 900)
+
+sim$add_mutant(name = "A",
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.2, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
+
+# We add one cell of species A+ (mutant A in epistate +) in
+# position (500, 500).
+sim$place_cell("A+", 500, 500)
+
+sim$run_up_to_size("A+", 500)
+
+sim$run_up_to_event("death", "A-", 100)
+
+# Run the simulation for other 15 time units
+sim$run_up_to_time(sim$get_clock() + 15)
+
+# Add mutant
+sim$add_mutant(name = "B",
+               epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
+               growth_rates = c("+" = 0.3, "-" = 0.3),
+               death_rates = c("+" = 0.05, "-" = 0.1))
+
+# Mutant injection
+sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+
+# New evolution
+sim$run_up_to_size("B+", 600)
+
+# Define evolutionary parameters
+sim$add_mutant(name = "C",
+               epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+               growth_rates = c("+" = 0.2, "-" = 0.4),
+               death_rates = c("+" = 0.1, "-" = 0.01))
+
+# Choose and mutate
+sim$mutate_progeny(sim$choose_cell_in("A",  c(450, 550), c(500, 600)), "C")
+
+sim$run_up_to_time(sim$get_clock() + 7)
+```
+
+> *Note:* This article presents advanced topics on tissue simulation.
+> Refer to `vignette("tissue_simulation")` for an introduction on the subject.
+
+Sometimes it is convenient to plot a time series of a simulation,
+reporting species or firing counts over time. Since rRACES is
+programmable, it is immediate to make a for-loop algorithm and collect
+the simulation data over time.
+
+## Default History-Based Data
+
+However, this is not required because at the end of any `run_to_*`
+methods, RACES stores the data about the number of species cells, and
+that of event firings. These data can be extracted.
+
+Let us consider the simulation `sim` as produced in 
+`vignette("tissue_simulation")`.
+
+```{r}
+library(rRACES)
+library(dplyr)
+
+# The firings
+sim$get_firing_history() %>% head()
+
+# For example, total number of the deaths on `B+` at the end of the
+# previous calls of the `run_to_*` methods
+sim$get_firing_history() %>%
+  filter(event == "death", mutant == "B", epistate == "-")
+
+# The counts
+sim$get_count_history() %>% head()
+```
+
+The time-series can be plot using `plot_timeseries()`
+
+```{r,  fig.height=4, fig.width=4}
+# Time-series plot
+plot_timeseries(sim)
+```
+
+## Custom Time-Series
+
+If the default time-series is not enough coarse-grained, one can set
+`Simulation$history_delta` to increase the sampling rate of
+the state (by default, `Simulation$history_delta` is set to $0$).
+
+We show this by re-simulating a tumour with two submutants.
+
+```{r}
+# Example time-series on a new simulation, with coarse-grained time-series
+sim <- new(Simulation, "Finer Time Series")
+
+sim$history_delta <- 1
+sim$death_activation_level <- 100
+
+# A
+sim$add_mutant(name = "A",
+               epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+               growth_rates = c("+" = 0.2, "-" = 0.08),
+               death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$place_cell("A+", 500, 500)
+sim$run_up_to_size("A+", 400)
+
+# B (linear inside A)
+sim$add_mutant(name = "B",
+               epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
+               growth_rates = c("+" = 0.3, "-" = 0.3),
+               death_rates = c("+" = 0.05, "-" = 0.1))
+
+sim$mutate_progeny(sim$choose_cell_in("A"), "B")
+
+sim$run_up_to_size("B-", 300)
+
+# C (linear inside B)
+sim$add_mutant(name = "C",
+               epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+               growth_rates = c("+" = 0.2, "-" = 0.4),
+               death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$mutate_progeny(sim$choose_cell_in("B"), "C")
+
+# D (linear inside A, so branching with C) - same parameters of C
+sim$add_mutant(name = "D",
+               epigenetic_rates = c("+-" = 0.1, "-+" = 0.1),
+               growth_rates = c("+" = 0.2, "-" = 0.4),
+               death_rates = c("+" = 0.1, "-" = 0.01))
+
+sim$mutate_progeny(sim$choose_cell_in("A"), "D")
+
+sim$run_up_to_size("D+", 1000)
+```
+
+The time-series can be plot using `plot_timeseries()`.
+
+```{r,  fig.height=4, fig.width=4}
+# Time-series plot
+plot_timeseries(sim)
+
+# Logscale helps seeing the different effective growth rates
+plot_timeseries(sim) + ggplot2::scale_y_log10()
+```
+
+### Muller Plot
+
+We can also get a Muller plot of the evolution using
+[ggmuller](https://CRAN.R-project.org/package=ggmuller).
+
+```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
+# default Muller plot
+plot_muller(sim)
+```
+
+In this case every population is annotated as a descendant of the
+ancestor mutant. Note however that reversible espistates do not fit a
+traditional Muller plot because they violate the no-back mutation model.
+
+In this case, _rRACES_ will show first the epistate that was randomly
+injected in the simulation, and the second will result by linear. This
+is not a completely correct perspective of the simulation time-series;
+still, it help understand trends.
+
+```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
+# Custom Mullers
+clock <- sim$get_clock()
+
+plot_muller(sim) + ggplot2::xlim(clock * 3/4, clock)
+
+plot_muller(sim) +
+  ggplot2::xlim(clock * 3/4, clock) +
+  ggplot2::scale_y_log10()
+```
+
+## Time-Varying Evolutionary Rates
+
+You can model the fact that the rates of one species. For instance, this
+happens when a population is subject to a targeted treatment.
+
+Considering the example above, where `C` and `D` have the same rates, we
+increase the death rate of both `C+` and `C-` species, as well as `B+`
+and `B-`.
+
+```{r,  fig.height=4, fig.width=6, message=FALSE, warning=FALSE}
+# Current rates
+sim
+
+# Raise the death rate levels
+sim$update_rates("B+", c(death = 3))
+sim$update_rates("B-", c(death = 3))
+sim$update_rates("C+", c(death = 3))
+sim$update_rates("C-", c(death = 3))
+
+# Now D will become larger
+sim$run_up_to_size("D+", 6000)
+
+# Current state
+sim
+
+# This now show the change in rates
+clock <- sim$get_clock()
+plot_muller(sim) + ggplot2::xlim(clock * 3/4, clock)
+
+plot_muller(sim) +
+  ggplot2::xlim(clock * 3/4, clock) +
+  ggplot2::scale_y_log10()
+```
+

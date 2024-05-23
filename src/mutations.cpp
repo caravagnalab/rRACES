@@ -28,14 +28,16 @@ using namespace Rcpp;
 
 RCPP_MODULE(Mutations){
 
-//' @name Mutations
+//' @name Mutation
 //' @title A single nucleotide variation
   class_<SID>("Mutation")
     .constructor()
 
 //' @name Mutation$get_chromosome
-//' @title Get the chromosome in which the SNV occurs.
-//' @return The chromosome in which the SNV occurs.
+//' @title Getting the mutation chromosome
+//' @description This method returns the identifier of the chromosome
+//'   where the mutation occurs.
+//' @return The chromosome in which the mutation occurs.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
 //'
@@ -44,8 +46,10 @@ RCPP_MODULE(Mutations){
     .method("get_chromosome",&SID::get_chromosome, "Get the chromosome of the mutation")
 
 //' @name Mutation$get_position_in_chromosome
-//' @title Get the position in chromosome where the SNV occurs.
-//' @return The position in chromosome where the SNV occurs.
+//' @title Getting the mutation chromosome position
+//' @description This method returns the position in the chromosome where
+//'   the mutation occurs.
+//' @return The position in chromosome where the mutation occurs.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
 //'
@@ -55,7 +59,9 @@ RCPP_MODULE(Mutations){
             "Get the mutation position in the chromosome")
 
 //' @name Mutation$get_ref
-//' @title Get the reference sequence in which the mutation occurs.
+//' @title Getting the mutation reference sequence
+//' @description This method returns the reference sequence that is
+//'   altered by the mutation.
 //' @return The reference sequence before the mutation.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
@@ -65,8 +71,9 @@ RCPP_MODULE(Mutations){
     .method("get_ref",&SID::get_ref, "Get the mutation reference sequence")
 
 //' @name Mutation$get_alt
-//' @title Get the sequence after the SNV occurs.
-//' @return The sequence after the SNV occurs.
+//' @title Getting the mutation altered sequence
+//' @description This method returns the sequence after the mutation occurs. 
+//' @return The sequence after the mutation occurs.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
 //'
@@ -75,12 +82,13 @@ RCPP_MODULE(Mutations){
     .method("get_alt",&SID::get_alt, "Get the mutation altered sequence")
 
 //' @name Mutation$get_cause
-//' @title Get the mutation cause.
-//' @description Evey mutation produced by RACES/rRACES is associated to a
-//'   cause depending on whether it is part of a genomic characterization of a
-//'   mutant or it is caused by a specific SBS profile. This method return
-//'   such a cause whenever it is available.
-//' @return The sequence after the mutation.
+//' @title Getting the mutation cause
+//' @description This method returns the mutation cause. 
+//' @details Evey mutation is associated to a cause depending on whether
+//'   it is part of a genomic characterization of a mutant or it is caused
+//'   by a specific profile. This method returns such a cause whenever it is
+//'   available.
+//' @return The mutation cause.
 //' @examples
 //' # let us build a SNV without specifying any cause for it
 //' snv <- SNV("X", 20002, "T", "A")
@@ -96,10 +104,10 @@ RCPP_MODULE(Mutations){
     .method("get_cause",&SID::get_cause, "Get the cause of the mutation")
 
 //' @name Mutation$get_dataframe
-//' @title Get a data frame representing the mutation.
-//' @description This method returns a data frame that represents the
-//'   mutation and whose columns are `chr`, `chr_pos`, `ref`, `alt`,
-//'   `type` (i.e., "SNV" and "indel"), and `cause`.
+//' @title Getting the mutation dataframe
+//' @description This method builds a dataframe representing the mutation. 
+//' @details The dataframe has the columns `chr`, `chr_pos`, `ref`, `alt`,
+//'   `type` (i.e., "`SNV`" and "`indel`"), and `cause`.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
 //'
@@ -109,7 +117,8 @@ RCPP_MODULE(Mutations){
     .method("show",&SID::show);
 
 //' @name SNV
-//' @title Create an SNV.
+//' @title Creating a SNV
+//' @description This function creates SNVs. 
 //' @param chr The name of the chromosome in which the SNV occurs.
 //' @param chr_pos The position in the chromosome where the SNV occurs.
 //' @param alt The base after the mutation.
@@ -140,11 +149,11 @@ RCPP_MODULE(Mutations){
            "Create a single nucleotide variation (SNV)");
 
 //' @name Mutation
-//' @title Create either a SNV or a indel.
-//' @description This function creates SNVs and indels. It generalizes
-//'   the function `SNV()` by building SNVs and indels. However, it
-//'   requires the reference sequence specification whereas `SNV()` can
-//'   deduce it from the reference sequence itself.
+//' @title Creating a SNV or a indel
+//' @description This function creates SNVs and indels. 
+//' @details It generalizes the function `SNV()` by building SNVs and
+//'   indels. However, it requires the reference sequence specification
+//'   whereas `SNV()` can deduce it from the reference sequence itself.
 //'
 //'   Another difference with respect to `SNV()` is the `ref`-`alt`
 //'   parameter order: the `alt` parameter comes before the optional
@@ -179,7 +188,8 @@ RCPP_MODULE(Mutations){
            "Create either an SNV or a indel");
 
 //' @name CNA
-//' @title Create a CNA amplification.
+//' @title Creating a CNA
+//' @description This function creates a CNA.
 //' @param type The CNA type: either `"A"` or `"D"` for amplification and
 //'   deletion, respectively.
 //' @param chr The name of the chromosome in which the CNA occurs.
@@ -206,7 +216,8 @@ RCPP_MODULE(Mutations){
            "Create a copy number alteration (CNA)");
 
 //' @name Amplification
-//' @title Create a CNA amplification.
+//' @title Creating a CNA amplification
+//' @description This function creates a CNA amplification.
 //' @param chr The name of the chromosome in which the CNA occurs.
 //' @param chr_pos The position in the chromosome where the CNA occurs.
 //' @param len The CNA length.
@@ -225,7 +236,8 @@ RCPP_MODULE(Mutations){
            "Create a CNA amplification");
 
 //' @name Deletion
-//' @title Create a CNA deletion.
+//' @title Creating a CNA deletion
+//' @description This function creates a CNA deletion.
 //' @param chr The name of the chromosome in which the CNA occurs.
 //' @param chr_pos The position in the chromosome where the CNA occurs.
 //' @param len The CNA length.
@@ -248,8 +260,10 @@ RCPP_MODULE(Mutations){
     .constructor()
 
 //' @name CNA$get_chromosome
-//' @title Get the chromosome in which the CNA occurs.
-//' @return The chromosome in which the CNA occurs.
+//' @title Getting the CNA chromosome
+//' @description This method returns the identifier of the chromosome
+//'   where the CNA occurs.
+//' @return The identifier of the chromosome in which the CNA occurs.
 //' @examples
 //' # create an amplification CNA
 //' cna <- CNA("A", "X", 20002, 100)
@@ -259,7 +273,9 @@ RCPP_MODULE(Mutations){
     .method("get_chromosome",&CNA::get_chromosome, "Get the chromosome of the CNA")
 
 //' @name CNA$get_position_in_chromosome
-//' @title Get the position in chromosome where the CNA occurs.
+//' @title Getting the CNA chromosome position
+//' @description This method returns the position in chromosome
+//'   where the CNA occurs.
 //' @return The position in chromosome where the CNA occurs.
 //' @examples
 //' # create an amplification CNA
@@ -271,7 +287,8 @@ RCPP_MODULE(Mutations){
             "Get the CNA position in the chromosome")
 
 //' @name CNA$get_length
-//' @title Get the CNA length.
+//' @title Getting the CNA length
+//' @description This method returns the CNA length.
 //' @return The CNA length.
 //' @examples
 //' # create an amplification CNA
@@ -282,7 +299,12 @@ RCPP_MODULE(Mutations){
     .method("get_length",&CNA::get_length, "Get the CNA length")
 
 //' @name CNA$get_allele
-//' @title Get the allele in which CNA occurs.
+//' @title Getting the CNA allele
+//' @description This method returns the identifier of the allele in
+//'    which the CNA is occurs.
+//' @details If the CNA is an amplification corresponds to the new
+//'    allele identifier. If, instead, the CNA is a deletion is the
+//'    identifier of the allele on which the deletion occurs.
 //' @return The allele in which CNA occurs.
 //' @examples
 //' # create an amplification CNA
@@ -293,7 +315,9 @@ RCPP_MODULE(Mutations){
     .method("get_allele",&CNA::get_allele, "Get the alteration allele")
 
 //' @name CNA$get_src_allele
-//' @title Get the allele from which CNA is copied.
+//' @title Getting the CNA source allele
+//' @description This method returns the identifier of the allele from
+//'    which the CNA is copied.
 //' @return The allele from which CNA is copied.
 //' @examples
 //' # create an amplification CNA
@@ -310,10 +334,10 @@ RCPP_MODULE(Mutations){
     .method("get_src_allele",&CNA::get_src_allele, "Get the source allele (for amplifications)")
 
 //' @name CNA$get_dataframe
-//' @title Get a data frame representing the CNA.
-//' @description This method returns a data frame that represents the CNA and whose
-//'   columns are `chr`, `chr_pos`, `length`, `alt_base`, `allele`,
-//'   `src_allele`, and `type`.
+//' @title Getting the CNA dataframe
+//' @description This method builds a dataframe representing the CNA.
+//' @details The dataframe contains the  columns "`chr`", "`chr_pos`",
+//'   "`length`", "`alt_base`", "`allele`"", "`src_allele`", and "`type`".
 //' @examples
 //' # create an amplification CNA
 //' amp_cna <- Amplification("X", 20002, 100)
@@ -328,10 +352,11 @@ RCPP_MODULE(Mutations){
     .method("show",&CNA::show);
 
 //' @name MutationEngine
-//' @title Mutation engines generate phylogenetic forests
+//' @title Generating phylogenetic forests
 //' @description A mutation engine can label every node of a descendants
 //'   forest by mutations and produce a consistent phylogenetic forest.
-//'   The mutations are randomly generated according to three factors:
+//' @details The mutations are randomly generated according to three
+//'   factors:
 //'     - the mutational rates of the species involved in the descendants
 //'       forest
 //'     - the genotycal characterization of the mutants involved in the
@@ -355,9 +380,9 @@ RCPP_MODULE(Mutations){
   class_<MutationEngine>("MutationEngine")
 
 //' @name MutationEngine$infinite_sites_model
-//' @title A flag to enable/disable the infinite sites model.
+//' @title Switching on and off the infinite sites model.
 //' @description This property enables/disables the infinite sites model.
-//'   When it is `TRUE`, the infinite sites model is enabled and
+//' @details When it is `TRUE`, the infinite sites model is enabled and
 //'   new mutations are exclusively placed in mutation-free loci.
 //' @examples
 //' # create a demostrative mutation engine
@@ -375,10 +400,9 @@ RCPP_MODULE(Mutations){
               "A flag to enable/disable the infinite sites model")
 
 //' @name MutationEngine$add_exposure
-//' @title Add an exposure to the mutation engine.
+//' @title Adding an exposure to the mutation engine
 //' @description This method adds an exposure to the mutation engine.
-//'
-//'   The exposure will be used to establish the probability
+//' @details The exposure will be used to establish the probability
 //'   for a passenger mutation to occur depending on its context.
 //'
 //'   Each exposure is associated to a time that is the simulated
@@ -414,11 +438,11 @@ RCPP_MODULE(Mutations){
               &MutationEngine::add_exposure), "Add an exposure")
 
 //' @name MutationEngine$add_mutant
-//' @title Add a mutant specification to the mutation engine.
+//' @title Adding a mutant specification
 //' @description This method adds a mutant specification to the mutation engine.
-//'   The users must use it to specify the name and the genomic characterization
-//'   (i.e., SNVs, indels, and CNAs) of all the simulated mutants together with
-//'   the mutation rates of its species.
+//' @details The users must use it to specify the name and the genomic
+//'   characterization (i.e., SNVs, indels, and CNAs) of all the simulated
+//'   mutants together with the mutation rates of its species.
 //' @param mutant_name The mutant name.
 //' @param passenger_rates The list of the passenger rates whose names are the
 //'   epigenetic states of the species or a single rate, if the mutant
@@ -458,10 +482,11 @@ RCPP_MODULE(Mutations){
             "Add mutant")
 
 //' @name MutationEngine$place_mutations
-//' @title Place the mutations on a samples forest
-//' @description This method labels each node of a samples forest by the
-//'   mutations occuring for the first time in the cell represented by the
-//'   node itself and produces a phylogenetic forest.
+//' @title Placing the mutations
+//' @description This methods places mutations on a samples forest.
+//' @details Each node of a samples forest is labelled by the
+//'   mutations occuring in the cell represented by the node itself
+//'   and produces a phylogenetic forest.
 //' @param samples_forest A samples forest.
 //' @param num_of_preneoplatic_SNVs The number of pre-neoplastic SNVs.
 //' @param preneoplatic_SNV_signature_name The name of the SNV signature
@@ -538,13 +563,14 @@ RCPP_MODULE(Mutations){
             "Place mutations on a SamplesForest")
 
 //' @name MutationEngine$get_active_germline
-//' @title Get a data frame describing the active germline subject
-//' @description This method returns a data frame containing the
-//'   active germline subject. The column `sample` reports the
-//'   subject name; the columns `pop` and `super_pop` contain the
-//'   subject population and super population, respectively;
+//' @title Getting the active germline subject
+//' @description This method returns the active germline subject.
+//' @details The active germline subject is returned as a
+//'   dataframe in which the column `sample` reports the
+//'   subject name, the columns `pop` and `super_pop` contain the
+//'   subject population and super population, respectively, and
 //'   the column `gender` declares the subject gender.
-//' @return A data frame the active germline subject.
+//' @return A dataframe the active germline subject.
 //' @seealso [MutationEngine$get_germline_subjects()] to get the
 //'   available germline subjects; [MutationEngine$set_germline_subject()]
 //'   to set the active germline subject.
@@ -552,14 +578,14 @@ RCPP_MODULE(Mutations){
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # get the active germline subject data frame
+//' # get the active germline subject dataframe
 //' head(m_engine$get_active_germline(), 5)
     .method("get_active_germline", &MutationEngine::get_active_germline)
 
 //' @name MutationEngine$set_germline_subject
-//' @title Set the germline subject
-//' @description This method sets the germline subject. The subject
-//'   must be one among those reported by
+//' @title Setting the germline subject
+//' @description This method sets the germline subject.
+//' @details The subject must be one among those reported by
 //'   [MutationEngine$get_germline_subjects()].
 //' @return Set the germline subject.
 //' @seealso [MutationEngine$get_germline_subjects()] to get the
@@ -569,18 +595,19 @@ RCPP_MODULE(Mutations){
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # set the active germline subject data frame
+//' # set the active germline subject dataframe
 //' m_engine$set_germline_subject("NA18941")
     .method("set_germline_subject", &MutationEngine::set_germline_subject)
 
 //' @name MutationEngine$get_germline_subjects
-//' @title Get a data frame reporting the available germline subjects
-//' @description This method returns a data frame containing the
-//'   avaiable germline subjects. The column `sample` reports the
-//'   subject name; the columns `pop` and `super_pop` contain the
-//'   subject population and super population, respectively;
-//'   the column `gender` declares the subject gender.
-//' @return A data frame the avaiable germline subjects.
+//' @title Getting the germline subjects
+//' @description This method returns the available germline subjects.
+//' @details The germline subjects method returns a dataframe
+//'   containing the avaiable germline subjects. The column `sample`
+//'   reports the subject name; the columns `pop` and `super_pop`
+//'   contain the subject population and super population,
+//'   respectively; the column `gender` declares the subject gender.
+//' @return A dataframe the avaiable germline subjects.
 //' @seealso [MutationEngine$get_active_germline()] to get the
 //'   available germline subjects; [MutationEngine$set_germline_subject()]
 //'   to set the active germline.
@@ -588,107 +615,114 @@ RCPP_MODULE(Mutations){
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # get the active germline subject data frame
+//' # get the active germline subject dataframe
 //' head(m_engine$get_germline_subjects(), 5)
     .method("get_germline_subjects", &MutationEngine::get_germline_subjects)
 
 //' @name MutationEngine$get_population_descritions
-//' @title Get a data frame containing the population descriptions
-//' @description This method returns a data frame describing the
-//'   populations. The column `code` contains the population codes;
-//'   the columns `description` and `long description` report a
-//'   brief and a long description for the populations,
-//'   respectively.
-//' @return A data frame containing the population descriptions.
+//' @title Getting the population descriptions
+//' @description This method returns the population descriptions.
+//' @details The population descriptions are stored in a
+//'   dataframe describing the populations. The column `code`
+//'   contains the population codes; the columns `description`
+//'   and `long description` report a brief and a long
+//'   description for the populations, respectively.
+//' @return A dataframe containing the population descriptions.
 //' @examples
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # get the active germline subject data frame
+//' # get the active germline subject dataframe
 //' head(m_engine$get_population_descritions(), 5)
     .method("get_population_descritions", &MutationEngine::get_population_descritions)
 
 //' @name MutationEngine$get_SNV_signatures
-//' @title Get a data frame containing the available SNV
-//'   signatures
-//' @description This method returns a data frame containing
-//'   the available SNV signatures and the corresponding
-//'   mutation probability. The first column ("Type")
-//'   describes a mutation in a context, while each of the
-//'   remaining columns contains the probabilities of the
-//'   mutations for one of the available SNV signatures.
-//' @return A data frame containing the available SNV
+//' @title Getting the SNV signatures
+//' @description This method returns the available SNV
+//'   signatures.
+//' @details The signatures are returned in a dataframe
+//'   containing the available SNV signatures and the
+//'   corresponding mutation probability. The first column
+//'   ("Type") describes a mutation in a context, while each
+//'   of the remaining columns contains the probabilities
+//'   of the mutations for one of the available SNV
+//'   signatures.
+//' @return A dataframe containing the available SNV
 //'   signatures.
 //' @examples
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # get the indel data frame
+//' # get the indel dataframe
 //' head(m_engine$get_SNV_signatures(), 5)
     .method("get_SNV_signatures",
             &MutationEngine::get_SNV_signatures_dataframe,
-            "Get the SNV signatures data frame")
+            "Get the SNV signatures dataframe")
 
 //' @name MutationEngine$get_indel_signatures
-//' @title Get a data frame containing the available indel
-//'   signatures
-//' @description This method returns a data frame containing
-//'   the available indel signatures and the corresponding
-//'   mutation probability. The first column ("Type")
-//'   describes a mutation in a context, while each of the
-//'   remaining columns contains the probabilities of the
-//'   mutations for one of the available indel signatures.
-//' @return A data frame containing the available  indel
+//' @title Getting the indel signatures
+//' @description This method returns the available indel
+//'   signatures.
+//' @details The signatures are returned in a dataframe
+//'   containing the available indel signatures together with
+//'   the corresponding mutation probability. The first column
+//'   ("Type") describes a mutation in a context, while each
+//'   of the remaining columns contains the probabilities of
+//'   the mutations for one of the available indel signatures.
+//' @return A dataframe containing the available  indel
 //'   signatures.
 //' @examples
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # get the indel data frame
+//' # get the indel dataframe
 //' head(m_engine$get_indel_signatures(), 5)
     .method("get_indel_signatures",
             &MutationEngine::get_indel_signatures_dataframe,
-            "Get the indel signatures data frame")
+            "Get the indel signatures dataframe")
 
 //' @name MutationEngine$get_known_drivers
-//' @title Get the data frame of the known driver mutations
-//' @description This method returns a data frame reporting
+//' @title Getting the known driver mutations
+//' @description This method returns the known driver
+//'   mutations.
+//' @details The mutation are returned in a dataframe reporting
 //'   the known driver mutations together with their types,
-//'   associated tumors, affected genes, and code name. The
+//'   associated tumours, affected genes, and code name. The
 //'   first three columns ("`chr`", "`from`", and "`to`")
 //'   report the mutation chromosome, the initial position
 //'   and the final position, respectively. The next three
 //'   columns ("`ref`", "`alt`", and "`mutation_type`")
 //'   describe the reference sequence, the altered sequence,
 //'   and the type of the mutation. The last three columns
-//'   ("`tumor_type`", "`driver_gene`", and "`driver_code`")
-//'   detail the tumor type associated to the mutation, the
+//'   ("`tumour_type`", "`driver_gene`", and "`driver_code`")
+//'   detail the tumour type associated to the mutation, the
 //'   affected gene, and the driver code, which can be used
 //'   to specify the mutation when adding mutants to the
 //'   mutation engine.
-//' @return A data frame containing the known driver.
+//' @return A dataframe containing the known driver.
 //' @seealso [MutationEngine$add_mutant()]
 //' @examples
 //' # build a mutation engine
 //' m_engine <- build_mutation_engine(setup_code = "demo")
 //'
-//' # get the known driver data frame
+//' # get the known driver dataframe
 //' head(m_engine$get_known_drivers(), 5)
     .method("get_known_drivers",
             &MutationEngine::get_known_driver_mutations,
-            "Get the known driver data frame")
+            "Get the known driver dataframe")
 
     .method("show", &MutationEngine::show);
 
 //' @name build_mutation_engine
-//' @title Create a mutation engine object
-//' @details This function downloads and sets up the data requires by
-//'   by a mutation engine object and build it.
+//' @title Creating a mutation engine
+//' @description This function downloads and sets up the data
+//'   requires by a mutation engine. Finally, it builds mutation
+//'   engine itself.
 //'
-//'   There are two building modalities: the first one is more general,
-//'   but it requires to specify all the data sources; the second one
-//'   adopts some pre-set configurations, but it is more convient than
-//'   the former in many cases.
+//' @details There are two building modalities: the first one is more
+//'   general, but it requires to specify all the data sources; the
+//'   second one adopts some pre-set configurations, but it is more
+//'   convient than the former in many cases.
 //'
 //'   The first building modality requires to specify the directory in
 //'   which the data must be saved, the path or URL of the reference
@@ -742,8 +776,8 @@ RCPP_MODULE(Mutations){
 //' @param max_repetition_storage The maximum number of repetitions per type
 //'   stored in the repeated sequence index (optional: default value is
 //'   500000).
-//' @param tumor_type The type of tumor. This is currently used to select the
-//'   admissible passenger CNAs. If any passenger CNA in the dataset is
+//' @param tumour_type The type of tumour. This is currently used to select
+//'   the admissible passenger CNAs. If any passenger CNA in the dataset is
 //'   admissible, use the the empty string `""` (optional: default value is
 //'   `""`).
 //' @seealso [MutationEngine$get_germline_subjects()] to get the available
@@ -831,12 +865,13 @@ RCPP_MODULE(Mutations){
                         _["germline_subject"] = "", _["context_sampling"] = 100,
                         _["max_motif_size"] = 50,
                         _["max_repetition_storage"] = 500000,
-                        _["tumor_type"] = ""),
+                        _["tumour_type"] = ""),
            "Create a MutationEngine");
 
 //' @name get_mutation_engine_codes
-//' @title Get the supported codes for predefined set-up
-//' @return A data frame reporting the code and a description for each
+//' @title Getting the supported set-up codes
+//' @description This method returns the supported codes for predefined set-up.
+//' @return A dataframe reporting the code and a description for each
 //'   supported predefined set-up.
 //' @seealso [build_mutation_engine()] to build a mutation engine
 //' @export
@@ -847,10 +882,10 @@ RCPP_MODULE(Mutations){
            "Get mutation engine supported codes");
 
 //' @name PhylogeneticForest
-//' @title The phylogenetic forest of cells in samples.
-//' @description Represents the phylogenetic forest of the
-//'   cells sampled during the computation. The leaves of
-//'   this forest are the sampled cells.
+//' @title The phylogenetic forest of cells in samples
+//' @description This class represents the phylogenetic forest of the
+//'   cells sampled during the computation.
+//' @details The leaves of his forest are the sampled cells.
 //'   This class is analoguous to the class [SamplesForest],
 //'   but each node is labelled with the mutations occuring
 //'   for the first time on the cell represented by the node
@@ -859,7 +894,7 @@ RCPP_MODULE(Mutations){
 //' @field get_coalescent_cells Retrieve most recent common ancestors\itemize{
 //' \item \emph{Parameter:} \code{cell_ids} - The list of the identifiers of the
 //'   cells whose most recent common ancestors are aimed (optional).
-//' \item \emph{Return:} A data frame representing, for each of the identified
+//' \item \emph{Return:} A dataframe representing, for each of the identified
 //'   cells, the identified (column `cell_id`), whenever the
 //'   node is not a root, the ancestor identifier (column
 //'   `ancestor`), whenever the node was sampled, i.e., it is
@@ -876,7 +911,7 @@ RCPP_MODULE(Mutations){
 //'   occurs for the first time.
 //' }
 //' @field get_germline_mutations Gets the germinal SNVs and indels\itemize{
-//' \item \emph{Return:} A data frame reporting `chr` (i.e., the
+//' \item \emph{Return:} A dataframe reporting `chr` (i.e., the
 //'   chromosome), `chr_pos`" (i.e., the position in the chromosome),
 //'   `allele` (in which the SNV occurs), `ref`, `alt`, `type` (i.e., either
 //'   `"SNV"` or `"indel"`) and `class` (i.e., `"germinal"`).
@@ -885,7 +920,7 @@ RCPP_MODULE(Mutations){
 //' \item \emph{Return:} The name of the subject whose germline is used.
 //' }
 //' @field get_nodes Get the forest nodes \itemize{
-//' \item \emph{Return:} A data frame representing, for each node
+//' \item \emph{Return:} A dataframe representing, for each node
 //'   in the forest, the identified (column `id`),
 //'   whenever the node is not a root, the ancestor
 //'   identifier (column `ancestor`), whenever the node
@@ -896,7 +931,7 @@ RCPP_MODULE(Mutations){
 //'   and the birth time (column `birth_time`).
 //' }
 //' @field get_sampled_cell_CNAs Gets the CNAs of the sampled cells \itemize{
-//' \item \emph{Returns:} A data frame reporting `cell_id`, `type` (`"A"` for
+//' \item \emph{Returns:} A dataframe reporting `cell_id`, `type` (`"A"` for
 //'   amplifications and `"D"` for deletions), `chr`, `begin`
 //'   (i.e., the first CNA locus in the chromosome), `end` (i.e., the
 //'   last CNA locus in the chromosome), `allele`, `src allele`
@@ -906,7 +941,7 @@ RCPP_MODULE(Mutations){
 //' }
 //' @field get_sampled_cell_mutations Gets the SNVs and the indels of the
 //'   sampled cells\itemize{
-//' \item \emph{Returns:} A data frame reporting `cell_id`, `chr`, (i.e., the
+//' \item \emph{Returns:} A dataframe reporting `cell_id`, `chr`, (i.e., the
 //'   mutation chromosome), `begin` (i.e., position in the chromosome),
 //'   `allele` (in which the SNV occurs), `ref`, `alt`, `type` (i.e., either
 //'   `"SNV"` or `"indel"`), `cause`, and `class` (i.e., `"driver"`,
@@ -914,16 +949,16 @@ RCPP_MODULE(Mutations){
 //'   in the sampled cell genomes.
 //' }
 //' @field get_samples_info Retrieve information about the samples \itemize{
-//' \item \emph{Returns:} A data frame containing, for each sample collected
+//' \item \emph{Returns:} A dataframe containing, for each sample collected
 //'   during the simulation, the columns "`name`", "`time`", "`ymin`",
-//'   "`xmin`", "`ymax`", "`xmax`", "`tumor_cells`", and
-//'   "`tumor_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
+//'   "`xmin`", "`ymax`", "`xmax`", "`tumour_cells`", and
+//'   "`tumour_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
 //'   "`xmax`" report the boundaries of the sample bounding box, while
-//'   "`tumor_cells`" and "`tumor_cells_in_bbox`" are the number of tumor
-//'   cells in the sample and in the bounding box, respectively.
+//'   "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of
+//'   tumour cells in the sample and in the bounding box, respectively.
 //' }
 //' @field get_species_info Gets the species data\itemize{
-//' \item \emph{Returns:} A data frame reporting `mutant` and `epistate`
+//' \item \emph{Returns:} A dataframe reporting `mutant` and `epistate`
 //'   for each registered species.
 //' }
 //' @field get_sticks Compute the forest sticks \itemize{
@@ -943,8 +978,9 @@ RCPP_MODULE(Mutations){
   class_<PhylogeneticForest>("PhylogeneticForest")
 
 //' @name PhylogeneticForest$get_nodes
-//' @title Get the nodes of the forest
-//' @return A data frame representing, for each node
+//' @title Getting the forest nodes
+//' @description This method returns the nodes of the forest.
+//' @return A dataframe representing, for each node
 //'   in the forest, the identified (column `cell_id`),
 //'   whenever the node is not a root, the ancestor
 //'   identifier (column `ancestor`), whenever the
@@ -958,9 +994,10 @@ RCPP_MODULE(Mutations){
             "Get the nodes of the forest")
 
 //' @name PhylogeneticForest$get_coalescent_cells
-//' @title Retrieve most recent common ancestors
+//' @title Retrieving most recent common ancestors
 //' @description This method retrieves the most recent common ancestors
-//'   of a set of cells. If the optional parameter `cell_ids` is
+//'   of a set of cells.
+//' @details If the optional parameter `cell_ids` is
 //'   used, this method find the most recent common ancestors of
 //'   the cells having an identifier among those in `cell_ids`.
 //'   If, otherwise, the optional parameter is not used, this
@@ -968,7 +1005,7 @@ RCPP_MODULE(Mutations){
 //'   leaves.
 //' @param cell_ids The list of the identifiers of the cells whose
 //'   most recent common ancestors are aimed (optional).
-//' @return A data frame representing, for each of the identified
+//' @return A dataframe representing, for each of the identified
 //'   cells, the identified (column `cell_id`), whenever the
 //'   node is not a root, the ancestor identifier (column
 //'   `ancestor`), whenever the node was sampled, i.e., it is
@@ -986,7 +1023,9 @@ RCPP_MODULE(Mutations){
             "Get the most recent common ancestor of all the forest trees")
 
 //' @name PhylogeneticForest$get_subforest_for
-//' @title Build a subforest using as leaves some of the original samples
+//' @title Building sub-forests
+//' @description This method builds a sub-forest using as leaves some 
+//'   of the original samples.
 //' @param sample_names The names of the samples whose cells will be used
 //'   as leaves of the new forest
 //' @return A samples forest built on the samples mentioned in `sample_names`
@@ -995,42 +1034,45 @@ RCPP_MODULE(Mutations){
             "Get the sub-forest for some of the original samples")
 
 //' @name PhylogeneticForest$get_samples_info
-//' @title Retrieve information about the samples
+//' @title Retrieving sample information
 //' @description This method retrieves information about
 //'   the samples whose cells were used as leaves
 //'   of the samples forest.
-//' @return A data frame containing, for each sample collected
+//' @return A dataframe containing, for each sample collected
 //'   during the simulation, the columns "`name`", "`time`", "`ymin`",
-//'   "`xmin`", "`ymax`", "`xmax`", "`tumor_cells`", and
-//'   "`tumor_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
+//'   "`xmin`", "`ymax`", "`xmax`", "`tumour_cells`", and
+//'   "`tumour_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
 //'   "`xmax`" report the boundaries of the sample bounding box, while
-//'   "`tumor_cells`" and "`tumor_cells_in_bbox`" are the number of tumor
-//'   cells in the sample and in the bounding box, respectively.
+//'   "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of
+//'   tumour cells in the sample and in the bounding box, respectively.
 //' @seealso [SamplesForest$get_samples_info()] for usage examples,
 //'   [Simulation$get_samples_info()]
     .method("get_samples_info", &PhylogeneticForest::get_samples_info,
             "Get some pieces of information about the samples")
 
 //' @name PhylogeneticForest$get_species_info
-//' @title Gets the species
-//' @return A data frame reporting `mutant` and `epistate`
+//' @title Gettingting the species
+//' @description This method returns the simulated species.
+//' @return A dataframe reporting `mutant` and `epistate`
 //'   for each registered species.
     .method("get_species_info", &PhylogeneticForest::get_species_info,
             "Get the recorded species")
 
 //' @name PhylogeneticForest$get_germline_subject
-//' @title Gets the germline subject name
+//' @title Gettingting the germline subject name
+//' @description This method returns the name of the germline subject.
 //' @return The name of the subject whose germline is used.
     .method("get_germline_subject", &PhylogeneticForest::get_germline_subject,
             "Get the germline subject name")
 
 //' @name PhylogeneticForest$get_sampled_cell_CNAs
-//' @title Gets the CNAs of the sampled cells
-//' @description This method returns a data frame representing all the CNAs
+//' @title Gettingting the sampled cells CNAs
+//' @description This method returns the CNAs of the sample cells.
+//' @details This method builds a dataframe representing all the CNAs
 //'   in the cells sampled during the simulation and represented by
 //'   the leaves of the phylogenetic forest.
 //' @param cell_id The identifier of the cell whose CNAs are aimed (optional).
-//' @return A data frame reporting `cell_id`, `type` (`"A"` for amplifications
+//' @return A dataframe reporting `cell_id`, `type` (`"A"` for amplifications
 //'   and `"D"` for deletions), `chr`, `begin` (i.e., the first CNA
 //'   locus in the chromosome), `end` (i.e., last CNA locus in the chromosome),
 //'   `allele`, `src allele` (the allele origin for amplifications, `NA` for
@@ -1045,22 +1087,24 @@ RCPP_MODULE(Mutations){
             "Get the CNAs of all the sampled cells")
 
 //' @name PhylogeneticForest$get_sampled_cell_mutations
-//' @title Gets the mutations of the sampled cells
-//' @description This method returns a data frame representing all the SNV
+//' @title Gettingting the sampled cells mutations
+//' @description This method returns the mutations of the sample cells.
+//' @details This method builds a dataframe representing all the SNV
 //'   and the indel mutations in the cells sampled during the simulation
 //'   and represented by the leaves of the phylogenetic forest.
-//'   The data frame also reports the allele in which the mutations occur to
+//'   The dataframe also reports the allele in which the mutations occur to
 //'   support double occurrencies due to CNAs.
 //' @param cell_id The identifier of the cell whose mutations are aimed
 //'   (optional).
-//' @return A data frame reporting `cell_id`, `chr`, (i.e., the mutation
+//' @return A dataframe reporting `cell_id`, `chr`, (i.e., the mutation
 //'   chromosome), `chr_pos` (i.e., position in the chromosome), `allele`
 //'   (in which the mutation occurs), `ref`, `alt`, `type` (i.e., either
 //'   `"SNV"` or `"indel"`), `cause`, and `class` (i.e., `"driver"`,
 //'   `"passenger"`, `"germinal"` or `"preneoplastic"`) for each mutation
 //'   in the sampled cell genomes.
 //' @seealso `vignette("mutations")` for usage examples
-    .method("get_sampled_cell_mutations", (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
+    .method("get_sampled_cell_mutations",
+            (List (PhylogeneticForest::*)(const Races::Mutants::CellId&) const)
                 (&PhylogeneticForest::get_sampled_cell_SIDs),
             "Get the SNVs and the indels of a sampled cell")
     .method("get_sampled_cell_mutations", (List (PhylogeneticForest::*)() const)
@@ -1068,12 +1112,13 @@ RCPP_MODULE(Mutations){
             "Get the SNVs and indels of all the sampled cells")
 
 //' @name PhylogeneticForest$get_germline_mutations
-//' @title Gets the germinal SNVs and indels
-//' @description This method returns a data frame representing all the germinal
+//' @title Gettingting the germinal mutations
+//' @description This method returns the forest SNVs and indels.
+//' @details Its builds a dataframe representing all the germinal
 //'   SNVs and indels of the cells represented in the phylogenetic forest.
-//'   The data frame also reports the allele in which the mutations occur to
+//'   The dataframe also reports the allele in which the mutations occur to
 //'   support double occurrencies due to CNAs.
-//' @return A data frame reporting `chr`, `chr_pos` (i.e., the position in
+//' @return A dataframe reporting `chr`, `chr_pos` (i.e., the position in
 //'   the chromosome), `allele` (in which the mutation occurs), `ref`, `alt`,
 //'   `cause`, `type` (i.e., either `"SNV"` or `"indel"`) and `class` (i.e.,
 //'   `"germinal"`).
@@ -1082,15 +1127,16 @@ RCPP_MODULE(Mutations){
             "Get the germinal SNVs and indels")
 
 //' @name PhylogeneticForest$get_sticks
-//' @title Compute the forest sticks
-//' @description A _crucial node_ of a forest is a root of the forest, a node
+//' @title Computing the forest sticks
+//' @description This method computes the sticks of the forest.
+//' @details A _crucial node_ of a forest is a root of the forest, a node
 //'   whose parent belongs to a different species, or the most recent common
 //'   ancestor of two crucial nodes.
 //'
 //'   A _stick_ is a path of the forest in which the only crucial nodes are
 //'   the first and the last one.
 //'
-//'   This method return the list of the forest sticks. Each stick is
+//'   This method returns the list of the forest sticks. Each stick is
 //'   represented by the sequence of cell identifiers labelling the nodes in
 //'   the stick.
 //' @param birth_threshold The maximum birth time for the cells associated to
@@ -1106,17 +1152,19 @@ RCPP_MODULE(Mutations){
             "Get the forest sticks")
 
 //' @name PhylogeneticForest$get_exposures
-//' @title Gets the timed exposure data frame
-//' @description This method returns a data frame representing the exposure
+//' @title Gettingting the timed exposure dataframe
+//' @description This method returns a dataframe representing the exposure
 //'   evolution over time.
-//' @return A data frame reporting `time`, `signature`, `exposure` and,
+//' @return A dataframe reporting `time`, `signature`, `exposure` and,
 //'   `type`.
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_exposures", &PhylogeneticForest::get_timed_exposures,
-            "Get the timed exposure data frame")
+            "Get the timed exposure dataframe")
 
 //' @name PhylogeneticForest$get_first_occurrences
-//' @title Gets the identifier of the cell in which a mutation occurs for the first time
+//' @title Gettingting the mutation first occurrences
+//' @description This method returns the identifier of the cell in which a mutation occurs
+//'   for the first time.
 //' @param mutation A mutation being a SNV, a indel, or a CNA.
 //' @return The identifier of the cell in which a mutation occurs for the first time.
 //' @seealso `vignette("mutations")` for usage examples
@@ -1125,7 +1173,8 @@ RCPP_MODULE(Mutations){
             "Get the identifier of the cell in which the mutation occurs for the first time")
 
 //' @name PhylogeneticForest$save
-//' @title Save a phylogenetic forest in a file
+//' @title Saving a phylogenetic forest
+//' @description This method saves a phylogenetic forest in a file.
 //' @param filename The path of the file in which the phylogenetic
 //'   forest must be saved.
     .method("save", &PhylogeneticForest::save,
@@ -1136,7 +1185,8 @@ RCPP_MODULE(Mutations){
             "Describe the PhylogeneticForest");
 
 //' @name load_phylogenetic_forest
-//' @title Load a phylogenetic forest from a file
+//' @title Loading a phylogenetic forest
+//' @description This method loads a phylogenetic forest from a file.
 //' @param filename The path of the file from which the phylogenetic
 //'   forest must be load.
 //' @return The load phylogenetic forest

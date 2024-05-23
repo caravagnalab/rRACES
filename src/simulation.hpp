@@ -98,14 +98,14 @@ public:
     IntegerVector ymin(samples.size()), ymax(samples.size()),
                   xmin(samples.size()), xmax(samples.size()),
                   num_of_cells(samples.size()),
-                  tumor_in_bbox(samples.size());
+                  tumour_in_bbox(samples.size());
 
     size_t i{0};
     for (const auto& sample : samples) {
         sample_name[i] = sample.get_name();
         time[i] = sample.get_time();
         num_of_cells[i] = sample.get_cell_ids().size();
-        tumor_in_bbox[i] = sample.get_tumor_cells_in_bbox();
+        tumour_in_bbox[i] = sample.get_tumour_cells_in_bbox();
         const auto& bounding_box = sample.get_bounding_box();
         xmin[i] = bounding_box.lower_corner.x;
         xmax[i] = bounding_box.upper_corner.x;
@@ -117,8 +117,8 @@ public:
     return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin,
                              _["ymin"]=ymin, _["xmax"]=xmax,
                              _["ymax"]=ymax,
-                             _["tumor_cells"]=num_of_cells,
-                             _["tumor_cells_in_bbox"]=tumor_in_bbox,
+                             _["tumour_cells"]=num_of_cells,
+                             _["tumour_cells_in_bbox"]=tumour_in_bbox,
                              _["time"]=time);
   }
 
@@ -344,7 +344,7 @@ public:
 
   SamplesForest get_samples_forest() const;
 
-  TissueRectangle get_tumor_bounding_box() const;
+  TissueRectangle get_tumour_bounding_box() const;
 
   TissueRectangle search_sample(const Rcpp::IntegerVector& minimum_cell_vector,
                                 const uint16_t& width, const uint16_t& height) const;
