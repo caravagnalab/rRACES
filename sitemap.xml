@@ -10,10 +10,16 @@
     <loc>https://caravagnalab.github.io/rRACES/articles/SCOUT.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/custom_engine.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/growth_models.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/infinite_site_model.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/mutations.html</loc>
@@ -22,10 +28,22 @@
     <loc>https://caravagnalab.github.io/rRACES/articles/rRACES.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/run_until.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/sample_partition.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/sampling.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/sequencing.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/three_sampling.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/articles/time_series.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/articles/tissue_simulation.html</loc>
@@ -142,9 +160,6 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine.html</loc>
   </url>
   <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutations.html</loc>
-  </url>
-  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_coalescent_cells.html</loc>
   </url>
   <url>
@@ -188,6 +203,24 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SNV.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-birth_time.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-epistate.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-mutant.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-mutations.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-species.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_coalescent_cells.html</loc>

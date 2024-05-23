@@ -5,7 +5,8 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="rRACES">
+<meta name="description" content="What is a growth model and which growth models are implemented by rRACES
+">
 <title>Growth Models • rRACES</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -18,7 +19,8 @@
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Growth Models">
-<meta property="og:description" content="rRACES">
+<meta property="og:description" content="What is a growth model and which growth models are implemented by rRACES
+">
 <meta property="og:image" content="https://caravagnalab.github.io/rRACES/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -53,10 +55,10 @@
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/tissue_simulation.html">Tissue simulation</a>
     <a class="dropdown-item" href="../articles/sampling.html">Tissue sampling</a>
-    <a class="dropdown-item" href="../articles/growth_models.html">Growth Models</a>
     <a class="dropdown-item" href="../articles/mutations.html">Simulating Mutations</a>
     <a class="dropdown-item" href="../articles/sequencing.html">Sequencing Simulation</a>
-    <a class="dropdown-item" href="../articles/SCOUT.html">SCOUT</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
       </ul>
@@ -92,11 +94,11 @@
 
     
     
-<p>rRACES/RACES supports two growth models: the “border”-growth model
-and the homogeneous-growth model.</p>
+<p>rRACES/RACES simulate the tumour growth according to two alternative
+models: the “border”-growth model and the homogeneous-growth model.</p>
 <p>The former exclusively admits duplication of cells that have space to
 duplicate (i.e., cells on the cancer border or near by death cells). The
-latter allows cell duplications everywhere in the tumor.</p>
+latter allows cell duplications everywhere in the tumour.</p>
 <p>The “border”-growth model is the default one. However, users can
 switch to the homogeneous growth model by assigning the
 <code>Simulation</code>’s <code>duplicate_internal_cells</code> Boolean
@@ -276,7 +278,7 @@ example.</p>
 <span></span>
 <span><span class="co"># Let the simulation evolve until "B+" consists of 5000 cells</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B+"</span>, <span class="fl">5000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [██████████████████████████████████████--] 94% [00m:00s] Cells: 69389 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.9</span> <span class="op">*</span> <span class="va">bbox_width</span> <span class="op">*</span> <span class="va">bbox_width</span></span>
 <span></span>
@@ -332,44 +334,7 @@ always greater in it, than in the homogeneous-growth model.</p>
 forest are strictly related in the “border” growth model, whereas they
 appear to be loosely related in the homogeneous growth model. This
 features can be easily spotted in the forest plots when the sample
-<code>S_2_1</code> is selected near the external tumor border.</p>
-</div>
-<div class="section level3">
-<h3 id="storing-samples-forests">Storing Samples Forests<a class="anchor" aria-label="anchor" href="#storing-samples-forests"></a>
-</h3>
-<p>A samples forest can be saved in a file by using the method
-<code>SamplesForest$save()</code>.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># check the file existence. It should not exists.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span>
-<span></span>
-<span><span class="co"># save the samples forest in the file "samples_forest.sff"</span></span>
-<span><span class="va">forest</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># check the file existence. It now exists.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
-<p>The saved samples forest can successively be load by using the
-function <code><a href="../reference/load_samples_forest.html">load_samples_forest()</a></code>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># load the samples forest from "samples_forest.sff" and store it in `forest2`</span></span>
-<span><span class="va">forest2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_samples_forest.html">load_samples_forest</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># let us now compare the samples forests stored in `forest` and `forest2`;</span></span>
-<span><span class="co"># they should be the same.</span></span>
-<span><span class="va">forest</span></span>
-<span><span class="co">#&gt; SamplesForest</span></span>
-<span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 4759</span></span>
-<span><span class="co">#&gt;   # of leaves: 949</span></span>
-<span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
-<span><span class="va">forest2</span></span>
-<span><span class="co">#&gt; SamplesForest</span></span>
-<span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 4759</span></span>
-<span><span class="co">#&gt;   # of leaves: 949</span></span>
-<span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span></code></pre></div>
+<code>S_2_1</code> is selected near the external tumour border.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -35,10 +35,10 @@ renames and reorders columns to match the desired output format."><meta property
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/tissue_simulation.html">Tissue simulation</a>
     <a class="dropdown-item" href="../articles/sampling.html">Tissue sampling</a>
-    <a class="dropdown-item" href="../articles/growth_models.html">Growth Models</a>
     <a class="dropdown-item" href="../articles/mutations.html">Simulating Mutations</a>
     <a class="dropdown-item" href="../articles/sequencing.html">Sequencing Simulation</a>
-    <a class="dropdown-item" href="../articles/SCOUT.html">SCOUT</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/index.html">More articles...</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -91,9 +91,36 @@ renames and reorders columns to match the desired output format.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example data frame in wide format</span></span></span>
+<span class="r-in"><span><span class="va">seq_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>chr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"chr1"</span>, <span class="st">"chr2"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          chr_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          ref <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"C"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          alt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"T"</span>, <span class="st">"G"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          causes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SBS5"</span>, <span class="st">"SBS1"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          classes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"germinal"</span>, <span class="st">"passneger"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          Sample.A.occurrences <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">90</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          Sample.A.coverage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          Sample.A.VAF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          normal_sample.occurrences <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">45</span>, <span class="fl">52</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          normal_sample.coverage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">100</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                          normal_sample.VAF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.45</span>, <span class="fl">0.52</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">seq_results</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    chr chr_pos ref alt causes   classes Sample.A.occurrences Sample.A.coverage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 chr1     100   A   T   SBS5  germinal                   10               100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 chr2     200   C   G   SBS1 passneger                   90               100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Sample.A.VAF normal_sample.occurrences normal_sample.coverage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1          0.1                        45                    100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2          0.9                        52                    100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   normal_sample.VAF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1              0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2              0.52</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Convert to long format</span></span></span>
 <span class="r-in"><span><span class="fu">seq_to_long</span><span class="op">(</span><span class="va">seq_results</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'seq_results' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    chr from ref ALT causes   classes NV  DP  VAF   sample_name  to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 chr1  100   A   T   SBS5  germinal 10 100 0.10      Sample.A 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 chr2  200   C   G   SBS1 passneger 90 100 0.90      Sample.A 200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 chr1  100   A   T   SBS5  germinal 45 100 0.45 normal_sample 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 chr2  200   C   G   SBS1 passneger 52 100 0.52 normal_sample 200</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
