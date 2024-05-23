@@ -11,6 +11,8 @@
 #' @export
 #'
 #' @examples
+#' library(rRACES)
+#' library(dplyr)
 #'sim <- new(Simulation, "homogeneous_test",seed = sample(x = 1:5000,size = 1,replace = F),
 #'            save_snapshot = F)
 #' sim$duplicate_internal_cells <- T
@@ -30,38 +32,39 @@
 #' forest = sim$get_samples_forest()
 #' get_events_table(forest)
 
-
-get_events_table <- function(forest) {
-
-  sticks <- forest$get_sticks()
-
-  events_table <- lapply(seq_along(sticks), function(i) {
-
-    gen <- forest$get_nodes() %>% dplyr::as_tibble() %>%
-      dplyr::filter(.data$cell_id == sticks[[i]][length(sticks[[i]])]) %>%
-      dplyr::pull(.data$mutant)
-
-    epi <- forest$get_nodes() %>% dplyr::as_tibble() %>%
-      dplyr::filter(.data$cell_id == sticks[[i]][length(sticks[[i]])]) %>%
-      dplyr::pull(.data$epistate)
-
-    if (epi != "") {
-      change <- paste0(ifelse(epi == "+", "-", "+"), " -> ", epi)
-      dplyr::tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]),
-                    obs = paste0(gen, " ", change))
-    } else{
-      dplyr::tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]),
-                    obs = gen)
-    }
-
-  }) %>% dplyr::bind_rows()
-
-  dplyr::as_tibble(forest$get_nodes()) %>%
-    dplyr::full_join(events_table, by = "cell_id") %>%
-    dplyr::mutate(obs = ifelse(is.na(obs), "Subclonal", obs)) %>%
-    unique()
+get_events_table = function(forest){
+  
+  sticks = forest$get_sticks()
+  
+  if(length(sticks) > 0){
+    events_table = lapply(1:length(sticks), function(i){
+      
+      gen = forest$get_nodes() %>% as_tibble() %>% 
+        filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>% pull(mutant)
+      
+      epi = forest$get_nodes() %>% as_tibble() %>% 
+        filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>% pull(epistate)
+      
+      if (epi != "") {
+        change = paste0(ifelse(epi == "+", "-", "+"), " -> ", epi)
+        tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]),
+               label = paste0(gen, " ", change))
+      } else{
+        tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]), label = gen
+        )
+      }
+      
+    }) %>% bind_rows()
+    
+    as_tibble(forest$get_nodes()) %>% full_join(events_table, by = "cell_id") %>% 
+      mutate(label = ifelse(is.na(label),"Subclonal",label)) %>% 
+      mutate(label = ifelse(cell_id == 0,"Truncal",label)) %>% 
+      unique()
+    
+  }else{
+    
+    NULL
+  }
+  
 }
-
-
-
 

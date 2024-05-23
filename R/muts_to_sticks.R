@@ -8,12 +8,14 @@
 #'   placed.
 #' @param seq_results Table annotating mutations genome coordinates and causes
 #'   (the output of `simulate_seq()`).
-#' @param labels Table annotating the sticks (output of `get_events_table()`).
+#' @param labels Table annotating the sticks (it can be the output of `get_events_table()`).
 #'
 #' @return A `tidyverse` tibble object
 #' @export
 #'
 #' @examples
+#' library(rRACES)
+#' library(dplyr)
 #' sim <- new(Simulation)
 #' sim$update_tissue("Liver", 2e3, 2e3)
 #'
@@ -46,43 +48,61 @@
 #'
 #' labels = get_events_table(forest)
 #'
-#' seq_results = simulate_seq(phylo_forest, coverage = 5,
-#'                            epi_FACS = F, write_SAM = F)
+#' seq_results = simulate_seq(phylo_forest, coverage = 100, write_SAM = F)
 #'
 #' muts_to_sticks(phylo_forest, seq_results, labels)
 
-muts_to_sticks <- function(phylo_forest, seq_results, labels) {
-
-  seq_results <- seq_results %>%
-    dplyr::mutate(id = paste0("chr", .data$chr, ":", .data$chr_pos,
-                              ":", .data$ref, ":", .data$alt)) %>%
-    filter(.data$classes != "germinal") %>% dplyr::as_tibble()
-
-
-  if (sum(grepl(x = colnames(seq_results), pattern = "P.VAF")) > 0) {
-    colnames(seq_results)[grep(x = colnames(seq_results),
-                               pattern = "P.VAF")] <- "VAF_p"
-    colnames(seq_results)[grep(x = colnames(seq_results),
-                               pattern = "N.VAF")] <- "VAF_n"
-    colnames(seq_results)[grep(x = colnames(seq_results),
-                               pattern = "P.coverage")] <- "Depth_p"
-    colnames(seq_results)[grep(x = colnames(seq_results),
-                               pattern = "N.coverage")] <- "Depth_n"
+muts_to_sticks = function(phylo_forest,seq_results,labels = NULL){
+  
+  sampled_snvs = phylo_forest$get_sampled_cell_mutations() %>% as_tibble() %>% 
+    dplyr::select(-cell_id) %>% unique() %>% 
+    mutate(id = paste0(
+      "chr",
+      chr,
+      ":",
+      chr_pos,
+      ":",
+      ref,
+      ":",
+      alt
+    ))
+  
+  
+  seq_results = seq_results %>% 
+    mutate(id = paste0(
+      "chr",
+      chr,
+      ":",
+      chr_pos,
+      ":",
+      ref,
+      ":",
+      alt
+    )) %>% as_tibble()
+  
+  if("classes" %in% colnames(seq_results)){
+    
+    seq_results = seq_results %>% filter(classes != "germinal")
+    
   }
-
-  seq_results <- seq_results %>% dplyr::as_tibble() %>% dplyr::rowwise() %>%
-    dplyr::mutate(cell_id =
-                    phylo_forest$get_first_occurrences(SNV(.data$chr,
-                                                           .data$chr_pos,
-                                                           .data$alt,
-                                                           .data$ref))[[1]]) %>%
-    dplyr::ungroup()
-
-
-  map <- dplyr::full_join(seq_results, labels, by = "cell_id") %>%
-    filter(!is.na(.data$chr)) %>%
-    dplyr::mutate(obs = ifelse(.data$classes == "pre-neoplastic",
-                               "pre-neoplastic", .data$obs))
-
+  
+  
+  seq_results = seq_results %>% as_tibble() %>% rowwise() %>%
+    mutate(cell_id = phylo_forest$get_first_occurrences(SNV(
+      chr, chr_pos, alt, ref
+    ))[[1]]) %>%
+    ungroup()
+  
+  if(!is.null(labels)){
+    map = full_join(seq_results,labels, by = "cell_id") %>% 
+      filter(!is.na(chr)) 
+  }else{
+    
+    map = seq_results 
+    
+  }
+  
   return(map)
+  
 }
+
