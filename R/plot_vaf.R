@@ -61,8 +61,8 @@ plot_vaf = function(muts,colors = NULL,vaf_cut = 0.02){
       
     }else{
       
-      cls = ggsci::pal_simpsons()(labels %>% pull(label) %>% unique() %>% length())
-      names(cls) = labels %>% arrange(desc(cell_id)) %>% pull(label) %>% unique()
+      cls = ggsci::pal_simpsons()(muts %>% pull(label) %>% unique() %>% length())
+      names(cls) = muts %>% arrange(desc(cell_id)) %>% pull(label) %>% unique()
       cls["Subclonal"] = "gainsboro"
       
     }
