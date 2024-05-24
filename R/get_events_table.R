@@ -48,7 +48,7 @@ get_events_table = function(forest){
       if (epi != "") {
         change = paste0(ifelse(epi == "+", "-", "+"), " -> ", epi)
         tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]),
-               label = paste0(gen, " ", change))
+               label = paste0(gen, " ", change,"(",sort(sticks[[i]])[length(sticks[[i]])],")"))
       } else{
         tibble(cell_id = sort(sticks[[i]][2:length(sticks[[i]])]), label = gen
         )
