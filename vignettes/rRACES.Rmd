@@ -123,15 +123,4 @@ that gives the user the flexibility to code a custom evolutionary process.
 
 ## Cheatsheet
 
-<a href="https://github.com/caravagnalab/rRACES/blob/06e28114d5db423fac2a4c42d1b5a04bf44091d0/vignettes/img/cheatsheet.pdf?raw=true"><img src="https://github.com/caravagnalab/rRACES/blob/434f364bcfdff4bbfa612ac67b6557b9d872d71b/img/vignettes/cheatsheet.png?raw=true" height="252" alt="thumbnail of rRACES cheatsheet"/></a>
-
-
-<!-- The best way to learn to use rRACES is to go thorough three  vignettes that define the standard workflow: -->
-
-<!-- -   [*tissue simulation:*](tissue_simulation.html) simulate the spatio-temporal stochastic process of tumour evolution to define a tissue; -->
-<!-- -   [*sampling:*](sampling.html) determine the sampling strategy for the simulated tissue; -->
-<!-- -   [*growth models:*](growth_models.html) select one the supported growth models;  -->
-<!-- -   [*mutation simulation:*](mutations.html) simulate mutations on samples forests;  -->
-<!-- -   *molecular data genereation*: generating realistic sequencing data based on sampling and simulation. -->
-
-
+<a href="https://raw.githubusercontent.com/caravagnalab/rRACES/main/nobuild/rRACES-cheatsheet.pdf?raw=true"><img src="img/cheatsheet.png" height="252" alt="thumbnail of rRACES cheatsheet"/></a>
