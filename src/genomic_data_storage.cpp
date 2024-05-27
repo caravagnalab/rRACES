@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <regex>
 
 #include <Rcpp.h>
 
@@ -249,6 +250,44 @@ GenomicDataStorage::GenomicDataStorage(const std::string& directory,
   germline_storage = GermlineStorage(germline_path);
 }
 
+GenomicDataStorage::GenomicDataStorage(const std::string& directory,
+                                       const std::string& reference_source,
+                                       const std::string& SBS_signatures_source,
+                                       const std::string& indel_signatures_source,
+                                       const std::string& driver_mutations_source,
+                                       const std::string& passenger_CNAs_source,
+                                       const std::string& germline_source,
+                                       const std::string& rs_index_URL):
+    GenomicDataStorage(directory, reference_source, SBS_signatures_source,
+                       indel_signatures_source, driver_mutations_source,
+                       passenger_CNAs_source, germline_source)
+{
+  using namespace Rcpp;
+
+  if (std::filesystem::exists(this->directory / "rs_index_50_500000.rsif")
+        || rs_index_URL == "") {
+    return;
+  }
+
+  Rcout << "Downloading pre-built repeated sequence index..." << std::endl << std::flush;
+
+  std::string rs_index_path = to_string(download_file(rs_index_URL));
+
+  std::regex targz_end("\\.tar\\.gz$");
+
+  if (std::regex_search(rs_index_path, targz_end)) {
+    Rcout << "Pre-built repeated sequence index downloaded" << std::endl << std::flush;
+
+    Function untar("untar");
+    untar(_["tarfile"] = to_string(rs_index_path),
+          _["exdir"] = to_string(directory));
+
+    std::filesystem::remove(rs_index_path);
+  } else {
+    Rcout << "Pre-built repeated sequence index not available" << std::endl << std::flush;
+  }
+}
+
 std::filesystem::path GenomicDataStorage::get_destination_path(const std::string& url) const
 {
   try {
@@ -436,6 +475,8 @@ std::filesystem::path GenomicDataStorage::retrieve_germline()
   Function untar("untar");
   untar(_["tarfile"] = to_string(downloaded_file),
         _["exdir"] = to_string(directory));
+
+  std::filesystem::remove(downloaded_file);
 
   return germline_path;
 }

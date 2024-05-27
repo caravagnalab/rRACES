@@ -18,6 +18,7 @@
 #include <fstream>
 #include <filesystem>
 #include <sstream>
+#include <regex>
 
 #include <Rcpp.h>
 
@@ -50,6 +51,17 @@ struct MutationEngineSetup
   std::string drivers_url;
   std::string passenger_CNAs_url;
   std::string germline_url;
+  std::string rs_index_url;
+
+  static std::string get_endian_label()
+  {
+      union {
+          uint32_t i;
+          char c[4];
+      } bint = {0x01020304};
+  
+      return (bint.c[0] == 1?"BE":"LE");
+  }
 
   MutationEngineSetup(const std::string& description,
                       const std::filesystem::path& directory,
@@ -58,13 +70,22 @@ struct MutationEngineSetup
                       const std::string& indel_signatures_url,
                       const std::string& drivers_url,
                       const std::string& passenger_CNAs_url,
-                      const std::string& germline_url):
+                      const std::string& germline_url,
+                      const std::string& rs_index_url):
     description(description), directory(directory), reference_url(reference_url),
     SBS_signatures_url(SBS_signatures_url),
     indel_signatures_url(indel_signatures_url),
     drivers_url(drivers_url),
     passenger_CNAs_url(passenger_CNAs_url), germline_url(germline_url)
-  {}
+  {
+    std::regex size_t_regex("<SIZE_T_SIZE>");
+    std::regex endianess_regex("<ENDIANESS>");
+
+    this->rs_index_url = std::regex_replace(rs_index_url, size_t_regex,
+                                            std::to_string(sizeof(size_t)));
+    this->rs_index_url = std::regex_replace(this->rs_index_url, endianess_regex,
+                                            get_endian_label());
+  }
 };
 
 std::map<std::string, MutationEngineSetup> supported_setups{
@@ -77,7 +98,9 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
-      "https://www.dropbox.com/scl/fi/g9oloxkip18tr1rm6wjve/germline_data_demo.tar.gz?rlkey=15jshuld3bqgyfcs7fa0bzqeo&dl=1"
+      "https://www.dropbox.com/scl/fi/g9oloxkip18tr1rm6wjve/germline_data_demo.tar.gz?rlkey=15jshuld3bqgyfcs7fa0bzqeo&dl=1",
+      "https://www.dropbox.com/scl/fi/k2q2wfbmqxidxt458nfgo/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_demo.tar.gz?"
+        "rlkey=fwav02kpgiu8ufnyaggu2adn6&st=d7d8ge3k&dl=1"
     }
   },
   {
@@ -89,7 +112,9 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg38.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg38.csv",
-      "https://www.dropbox.com/scl/fi/3rs2put4wde3objxmhvjc/germline_data_hg38.tar.gz?rlkey=imawitklf8d6zphz9ugriv4qm&dl=1"
+      "https://www.dropbox.com/scl/fi/3rs2put4wde3objxmhvjc/germline_data_hg38.tar.gz?rlkey=imawitklf8d6zphz9ugriv4qm&dl=1",
+      "https://www.dropbox.com/scl/fi/1e1evfby9djsl5isg2v8e/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_hg38.tar.gz?"
+            "rlkey=rgc9ong6yt7fnqp3ja2b5yej9&st=gln3um26&dl=1"
     }
   },
   {
@@ -101,7 +126,9 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
-      "https://www.dropbox.com/scl/fi/ckj7k0db0v1qf0o8la2yx/germline_data_hg19.tar.gz?rlkey=aanaz7n9v1bvmfvuqvqamc76o&dl=1"
+      "https://www.dropbox.com/scl/fi/ckj7k0db0v1qf0o8la2yx/germline_data_hg19.tar.gz?rlkey=aanaz7n9v1bvmfvuqvqamc76o&dl=1",
+      "https://www.dropbox.com/scl/fi/q83tgs2zqtwsb0hk3qkt0/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_hg19.tar.gz?"
+            "rlkey=m74l7iy7unc6mb2eezsw6g0xv&st=xcifp1wi&dl=1"
     }
   }
 };
@@ -118,6 +145,25 @@ GenomicDataStorage setup_storage(const std::string& directory,
                              indel_signatures_source,
                              drivers_source, passengers_CNA_source,
                              germline_source);
+
+  storage.save_sources();
+
+  return storage;
+}
+
+GenomicDataStorage setup_storage(const std::string& directory,
+                                 const std::string& reference_source,
+                                 const std::string& SBS_signatures_source,
+                                 const std::string& indel_signatures_source,
+                                 const std::string& drivers_source,
+                                 const std::string& passengers_CNA_source,
+                                 const std::string& germline_source,
+                                 const std::string& rs_index_url)
+{
+  GenomicDataStorage storage(directory, reference_source, SBS_signatures_source,
+                             indel_signatures_source,
+                             drivers_source, passengers_CNA_source,
+                             germline_source, rs_index_url);
 
   storage.save_sources();
 
@@ -150,7 +196,8 @@ GenomicDataStorage setup_storage(const std::string& setup_code)
                        code_it->second.indel_signatures_url,
                        code_it->second.drivers_url,
                        code_it->second.passenger_CNAs_url,
-                       code_it->second.germline_url);
+                       code_it->second.germline_url,
+                       code_it->second.rs_index_url);
 }
 
 Rcpp::List MutationEngine::get_supported_setups()

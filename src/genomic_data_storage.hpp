@@ -186,6 +186,15 @@ public:
                      const std::string& passenger_CNAs_source,
                      const std::string& germline_source);
 
+  GenomicDataStorage(const std::string& directory,
+                     const std::string& reference_source,
+                     const std::string& SBS_signatures_source,
+                     const std::string& indel_signatures_source,
+                     const std::string& driver_mutations_source,
+                     const std::string& passenger_CNAs_source,
+                     const std::string& germline_source,
+                     const std::string& rs_index_URL);
+
   inline std::filesystem::path get_directory() const
   {
     return directory;
