@@ -99,8 +99,8 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
       "https://www.dropbox.com/scl/fi/g9oloxkip18tr1rm6wjve/germline_data_demo.tar.gz?rlkey=15jshuld3bqgyfcs7fa0bzqeo&dl=1",
-      "https://www.dropbox.com/scl/fi/k2q2wfbmqxidxt458nfgo/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_demo.tar.gz?"
-        "rlkey=fwav02kpgiu8ufnyaggu2adn6&st=d7d8ge3k&dl=1"
+      "https://www.dropbox.com/scl/fi/yi4q6q099lww2pnlox9m0/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_demo.tar.gz?"
+        "rlkey=1qrg7wv4pmy3oltnfcs6o55ym&st=gw17cmqe&dl=1"
     }
   },
   {
@@ -113,8 +113,8 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg38.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg38.csv",
       "https://www.dropbox.com/scl/fi/3rs2put4wde3objxmhvjc/germline_data_hg38.tar.gz?rlkey=imawitklf8d6zphz9ugriv4qm&dl=1",
-      "https://www.dropbox.com/scl/fi/1e1evfby9djsl5isg2v8e/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_hg38.tar.gz?"
-            "rlkey=rgc9ong6yt7fnqp3ja2b5yej9&st=gln3um26&dl=1"
+      "https://www.dropbox.com/scl/fi/uw84j2wfrk9ib3jyftp1e/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_hg38.tar.gz?"
+        "rlkey=yuyvkb47v4r1xnzhytjhu1xq1&st=mjbwgpvu&dl=1"
     }
   },
   {
@@ -127,8 +127,8 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
       "https://www.dropbox.com/scl/fi/ckj7k0db0v1qf0o8la2yx/germline_data_hg19.tar.gz?rlkey=aanaz7n9v1bvmfvuqvqamc76o&dl=1",
-      "https://www.dropbox.com/scl/fi/q83tgs2zqtwsb0hk3qkt0/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_hg19.tar.gz?"
-            "rlkey=m74l7iy7unc6mb2eezsw6g0xv&st=xcifp1wi&dl=1"
+      "https://www.dropbox.com/scl/fi/q6d1qlii4n1cqk2di0ugf/rs_50_500000_<SIZE_T_SIZE>_<ENDIANESS>_hg19.tar.gz?"
+        "rlkey=haaz2neap821ohe1fa4v4zrgm&st=px7xepx5&dl=1"
     }
   }
 };
