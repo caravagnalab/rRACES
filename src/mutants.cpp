@@ -793,6 +793,42 @@ RCPP_MODULE(Mutants){
   .method("get_rates", &Simulation::get_rates,
           "Get the rates of a species")
 
+//' @name Simulation$get_rates_update_history
+//' @title Retrieving the rates update history
+//' @description This method retrieves the simulation rates 
+//'   update history.
+//' @return A dataframe containing the event rates updates. The dataframe
+//'   contains the columns "`time`", "`mutant`", "`epistate`", "`event`",
+//'   and "`rate`". Each row reports an update in the rate of an event 
+//'   in a species.
+//' @seealso [Simulation$update_rates()], [Simulation$get_rates()]
+//' @examples
+//' sim <- new(Simulation)
+//' sim$add_mutant(name = "A",
+//'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                death_rates = c("+" = 0.1, "-" = 0.01))
+//'
+//' sim$place_cell("A+", 500, 500)
+//'
+//' sim$death_activation_level <- 100
+//' sim$run_up_to_size(species = "A-", num_of_cells = 5000)
+//'
+//' # Set the death and epigenetic switch rates of "A-" to 0
+//' sim$update_rates("A-", c(switch=0, death=0))
+//'
+//' sim$run_up_to_size(species = "A+", num_of_cells = 5000)
+//'
+//' # Set the death rate of "A+" to 0.5
+//' sim$update_rates("A+", c(death=0.5))
+//'
+//' sim$run_up_to_time(sim$get_clock()+1)
+//'
+//' # get the rates update history
+//' sim$get_rates_update_history()
+  .method("get_rates_update_history", &Simulation::get_rates_update_history,
+          "Get the rates update history")
+
 //' @name Simulation$get_samples_info
 //' @title Retrieving sample information
 //' @description This method retrieves information about
@@ -1233,6 +1269,7 @@ RCPP_MODULE(Mutants){
   .method("var", &Simulation::get_var,
           "Get a variable representing a simulation quantity");
 
+/*
 //' @name recover_simulation
 //' @title Loading a simulation
 //' @description This method loads a simulation from the disk.
@@ -1273,6 +1310,7 @@ RCPP_MODULE(Mutants){
 //' unlink("recover_simulation_test", recursive = TRUE)
   function("recover_simulation", &Simulation::load,
            "Recover a simulation");
+*/
 
 //' @name SamplesForest
 //' @title The sample cell ancestor forest

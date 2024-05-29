@@ -68,6 +68,12 @@ class Simulation
   std::string name;      //!< The simulation name
   bool save_snapshots;   //!< A flag to preserve binary dump after object destruction
 
+  using EventRateUpdateMap = std::map<std::string, double>;
+  using SpeciesRateUpdateMap = std::map<Races::Mutants::SpeciesId, EventRateUpdateMap>;
+  using RateUpdateHistory = std::map<Races::Time, SpeciesRateUpdateMap>;
+
+  RateUpdateHistory rate_update_history;
+
   void init(const SEXP& sexp);
 
   static bool has_names(const Rcpp::List& list, std::vector<std::string> aimed_names);
@@ -87,6 +93,7 @@ class Simulation
   find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
                    const uint16_t& width, const uint16_t& height) const;
 
+  void add_mutant_rate_history(const Races::Mutants::MutantProperties& mutant_propeties);
 public:
 
   template<typename SAMPLES>
@@ -150,11 +157,10 @@ public:
   }
 
   void add_mutant(const std::string& mutant, const Rcpp::List& epigenetic_rates,
-                    const Rcpp::List& growth_rates, const Rcpp::List& death_rates);
+                  const Rcpp::List& growth_rates, const Rcpp::List& death_rates);
 
-  void add_mutant(const std::string& mutant, const double& growth_rate, const double& death_rate);
-
-  Rcpp::List add_mutant(const Rcpp::List& prova);
+  void add_mutant(const std::string& mutant, const double& growth_rate,
+                  const double& death_rate);
 
   inline Races::Time get_clock() const
   {
@@ -260,6 +266,8 @@ public:
   Rcpp::IntegerVector get_tissue_size() const;
 
   Rcpp::List get_rates(const std::string& species_name) const;
+
+  Rcpp::List get_rates_update_history() const;
 
   void update_rates(const std::string& species_name, const Rcpp::List& list);
 

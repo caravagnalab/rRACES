@@ -50,7 +50,6 @@ reference:
   - plot_state
   - plot_timeseries
   - plot_tissue
-  - recover_simulation
 - title: "Mutation simulation interface"
   desc:  "Mutation simulation classes and methods"
   contents:

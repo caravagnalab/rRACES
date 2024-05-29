@@ -496,6 +496,23 @@ Simulation::~Simulation()
   }
 }
 
+void Simulation::add_mutant_rate_history(const Races::Mutants::MutantProperties& mutant_propeties)
+{
+  auto& timed_update = rate_update_history[sim_ptr->get_time()];
+  for (const auto& species : mutant_propeties.get_species()) {
+    auto& species_update = timed_update[species.get_id()];
+
+    const auto event_rates = species.get_rates();
+    for (const auto& [event_name, event_code]: event_names) {
+        auto found = event_rates.find(event_code);
+
+        if (found != event_rates.end()) {
+            species_update[event_name] = found->second;
+        }
+    }
+  }
+}
+
 void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& epigenetic_rates,
                             const Rcpp::List& growth_rates, const Rcpp::List& death_rates)
 {
@@ -542,6 +559,8 @@ void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& ep
   }
 
   sim_ptr->add_mutant(real_mutant);
+
+  add_mutant_rate_history(real_mutant);
 }
 
 void Simulation::add_mutant(const std::string& mutant_name, const double& growth_rate,
@@ -559,6 +578,8 @@ void Simulation::add_mutant(const std::string& mutant_name, const double& growth
   real_mutant[""].set_rate(CellEventType::DEATH, death_rate);
 
   sim_ptr->add_mutant(real_mutant);
+
+  add_mutant_rate_history(real_mutant);
 }
 
 Rcpp::List Simulation::get_species() const
@@ -598,6 +619,36 @@ Rcpp::List Simulation::get_species() const
                             _["growth_rate"]=duplication_rates,
                             _["death_rate"]=death_rates,
                             _["switch_rate"]=switch_rates);
+}
+
+Rcpp::List Simulation::get_rates_update_history() const
+{
+  using namespace Rcpp;
+  using namespace Races::Mutants;
+
+  CharacterVector mutant_names, epi_states, event_names;
+  NumericVector rates, times;
+
+  const auto& tissue = sim_ptr->tissue();
+  for (const auto& [time, species_rate_updates] : rate_update_history) {
+    for (const auto& [species_id, event_rate_updates] : species_rate_updates) {
+      const auto& species = tissue.get_species(species_id);
+      const std::string mutant_name = sim_ptr->find_mutant_name(species.get_mutant_id());
+      const auto& m_signature = species.get_methylation_signature();
+      const auto epi_state = MutantProperties::signature_to_string(m_signature);
+      for (const auto& [event_name, rate] : event_rate_updates) {
+        times.push_back(time);
+        mutant_names.push_back(mutant_name.c_str());
+        epi_states.push_back(epi_state.c_str());
+        event_names.push_back(event_name.c_str());
+        rates.push_back(rate);
+      }
+    }
+  }
+
+  return DataFrame::create(_["time"]=times, _["mutant"]=mutant_names,
+                           _["epistate"]=epi_states, _["event"]=event_names,
+                           _["rate"]=rates);
 }
 
 void Simulation::place_cell(const std::string& species_name,
@@ -1095,6 +1146,8 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
                             "with the names attribute");
   }
 
+  auto& species_update = rate_update_history[sim_ptr->get_time()][species.get_id()];
+
   CharacterVector nv = rates.names();
   for (int i=0; i<nv.size(); i++) {
     auto event_name = as<std::string>(nv[i]);
@@ -1102,13 +1155,16 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
     if (event_it == event_names.end()) {
       handle_unknown_event(event_name);
     }
+    double rate = as<double>(rates[i]);
     if (event_it->second == Races::Mutants::CellEventType::EPIGENETIC_SWITCH) {
       auto switched_id = get_switched_species(sim_ptr->tissue(), species);
 
-      species.set_epigenetic_rate_to(switched_id, as<double>(rates[i]));
+      species.set_epigenetic_rate_to(switched_id, rate);
     } else {
-      species.set_rate(event_it->second, as<double>(rates[i]));
+      species.set_rate(event_it->second, rate);
     }
+
+    species_update[event_name] = rate;
   }
 }
 
