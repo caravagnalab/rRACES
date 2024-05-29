@@ -178,6 +178,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_nodes.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_reference_path.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_CNAs.html</loc>
   </url>
   <url>
@@ -197,6 +200,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-save.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-set_reference_path.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest.html</loc>
@@ -290,6 +296,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_rates.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_rates_update_history.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_samples_forest.html</loc>
@@ -425,9 +434,6 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_tissue.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/seq_to_long.html</loc>
