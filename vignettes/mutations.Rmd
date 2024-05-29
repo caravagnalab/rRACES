@@ -417,3 +417,16 @@ loaded_phylo_forest <- load_phylogenetic_forest("phylo_forest.sff")
 loaded_phylo_forest
 ```
 
+### Getting and Setting the Reference Genome Path
+
+The phylogenetic forest object contains the reference genome FASTA file path.
+The methods `PhylogeneticForest$get_reference_path()` and
+`PhylogeneticForest$set_reference_path()` can be used to get the path and
+set it, respectively.
+```{r}
+phylo_forest$get_reference_path()
+
+phylo_forest$set_reference_path("demo/reference.fasta")
+
+phylo_forest$get_reference_path()
+```

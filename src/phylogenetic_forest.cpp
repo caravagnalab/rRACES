@@ -28,7 +28,7 @@ PhylogeneticForest::PhylogeneticForest():
 
 PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
                                        const std::string& germline_subject,
-                                       const std::filesystem::path& reference_path,
+                                       const std::filesystem::path reference_path,
                                        const TimedMutationalExposure& timed_SBS_exposures,
                                        const TimedMutationalExposure& timed_indel_exposures):
     Races::Mutations::PhylogeneticForest(orig), germline_subject(germline_subject),
@@ -41,7 +41,7 @@ PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticFores
 
 PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
                                        const std::string& germline_subject,
-                                       const std::filesystem::path& reference_path,
+                                       const std::filesystem::path reference_path,
                                        const TimedMutationalExposure& timed_SBS_exposures,
                                        const TimedMutationalExposure& timed_indel_exposures):
    Races::Mutations::PhylogeneticForest(std::move(orig)), germline_subject(germline_subject),
@@ -430,6 +430,16 @@ Rcpp::List PhylogeneticForest::get_timed_exposures() const
 
   return DataFrame::create(_["time"]=times, _["signature"]=sig_names,
                            _["exposure"]=probs, _["type"]=types);
+}
+
+void PhylogeneticForest::set_reference_path(const std::string reference_path)
+{
+  if (!std::filesystem::exists(reference_path)) {
+    throw std::runtime_error("The reference genome file \""+ reference_path
+                             + "\" does not exists.");
+  }
+
+  this->reference_path = std::filesystem::absolute(std::filesystem::path(reference_path));
 }
 
 void PhylogeneticForest::save(const std::string& filename) const

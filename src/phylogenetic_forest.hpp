@@ -41,13 +41,13 @@ class PhylogeneticForest : public Races::Mutations::PhylogeneticForest
 
   PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
                      const std::string& germline_subject,
-                     const std::filesystem::path& reference_path,
+                     const std::filesystem::path reference_path,
                      const TimedMutationalExposure& timed_SBS_exposures,
                      const TimedMutationalExposure& timed_indel_exposures);
 
   PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
                      const std::string& germline_subject,
-                     const std::filesystem::path& reference_path,
+                     const std::filesystem::path reference_path,
                      const TimedMutationalExposure& timed_SBS_exposures,
                      const TimedMutationalExposure& timed_indel_exposures);
 public:
@@ -92,10 +92,12 @@ public:
 
   Rcpp::List get_timed_exposures() const;
 
-  inline std::filesystem::path get_reference_path() const
+  inline std::string get_reference_path() const
   {
     return reference_path;
   }
+
+  void set_reference_path(const std::string reference_path);
 
   inline const std::string& get_germline_subject() const
   {

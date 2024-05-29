@@ -1051,7 +1051,7 @@ RCPP_MODULE(Mutations){
             "Get some pieces of information about the samples")
 
 //' @name PhylogeneticForest$get_species_info
-//' @title Gettingting the species
+//' @title Getting the species
 //' @description This method returns the simulated species.
 //' @return A dataframe reporting `mutant` and `epistate`
 //'   for each registered species.
@@ -1059,14 +1059,14 @@ RCPP_MODULE(Mutations){
             "Get the recorded species")
 
 //' @name PhylogeneticForest$get_germline_subject
-//' @title Gettingting the germline subject name
+//' @title Getting the germline subject name
 //' @description This method returns the name of the germline subject.
 //' @return The name of the subject whose germline is used.
     .method("get_germline_subject", &PhylogeneticForest::get_germline_subject,
             "Get the germline subject name")
 
 //' @name PhylogeneticForest$get_sampled_cell_CNAs
-//' @title Gettingting the sampled cells CNAs
+//' @title Getting the sampled cells CNAs
 //' @description This method returns the CNAs of the sample cells.
 //' @details This method builds a dataframe representing all the CNAs
 //'   in the cells sampled during the simulation and represented by
@@ -1087,7 +1087,7 @@ RCPP_MODULE(Mutations){
             "Get the CNAs of all the sampled cells")
 
 //' @name PhylogeneticForest$get_sampled_cell_mutations
-//' @title Gettingting the sampled cells mutations
+//' @title Getting the sampled cells mutations
 //' @description This method returns the mutations of the sample cells.
 //' @details This method builds a dataframe representing all the SNV
 //'   and the indel mutations in the cells sampled during the simulation
@@ -1112,7 +1112,7 @@ RCPP_MODULE(Mutations){
             "Get the SNVs and indels of all the sampled cells")
 
 //' @name PhylogeneticForest$get_germline_mutations
-//' @title Gettingting the germinal mutations
+//' @title Getting the germinal mutations
 //' @description This method returns the forest SNVs and indels.
 //' @details Its builds a dataframe representing all the germinal
 //'   SNVs and indels of the cells represented in the phylogenetic forest.
@@ -1152,7 +1152,7 @@ RCPP_MODULE(Mutations){
             "Get the forest sticks")
 
 //' @name PhylogeneticForest$get_exposures
-//' @title Gettingting the timed exposure dataframe
+//' @title Getting the timed exposure dataframe
 //' @description This method returns a dataframe representing the exposure
 //'   evolution over time.
 //' @return A dataframe reporting `time`, `signature`, `exposure` and,
@@ -1162,7 +1162,7 @@ RCPP_MODULE(Mutations){
             "Get the timed exposure dataframe")
 
 //' @name PhylogeneticForest$get_first_occurrences
-//' @title Gettingting the mutation first occurrences
+//' @title Getting the mutation first occurrences
 //' @description This method returns the identifier of the cell in which a mutation occurs
 //'   for the first time.
 //' @param mutation A mutation being a SNV, a indel, or a CNA.
@@ -1171,6 +1171,24 @@ RCPP_MODULE(Mutations){
     .method("get_first_occurrences", (Rcpp::List (PhylogeneticForest::*)(const SEXP&) const)
                 (&PhylogeneticForest::get_first_occurrence),
             "Get the identifier of the cell in which the mutation occurs for the first time")
+
+//' @name PhylogeneticForest$get_reference_path
+//' @title Getting the reference genome path
+//' @description This method returns the reference genome path.
+//' @return The reference genome path.
+//' @seealso [PhylogeneticForest$set_reference_path()]
+    .method("get_reference_path", (std::string (PhylogeneticForest::*)() const)
+                (&PhylogeneticForest::get_reference_path),
+            "Get the reference genome path")
+
+//' @name PhylogeneticForest$set_reference_path
+//' @title Setting the reference genome path
+//' @description This method returns the reference genome path.
+//' @return The reference genome path.
+//' @seealso [PhylogeneticForest$get_reference_path()]
+    .method("set_reference_path", (void (PhylogeneticForest::*)(const std::string))
+                (&PhylogeneticForest::set_reference_path),
+            "Set the reference genome path")
 
 //' @name PhylogeneticForest$save
 //' @title Saving a phylogenetic forest

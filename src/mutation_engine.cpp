@@ -811,7 +811,7 @@ inline std::ifstream::pos_type filesize(const std::filesystem::path& fasta_filen
 }
 
 void retrieve_missing_references(const std::string& mutant_name,
-                                 const std::filesystem::path& fasta_filename,
+                                 const std::filesystem::path fasta_filename,
                                  std::list<SIDSpec>& SNVs)
 {
   Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
