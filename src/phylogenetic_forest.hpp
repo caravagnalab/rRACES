@@ -78,6 +78,8 @@ public:
 
   PhylogeneticForest get_subforest_for(const std::vector<std::string>& sample_names) const;
 
+  Rcpp::List get_absolute_chromosome_positions() const;
+
   Rcpp::List get_germline_SIDs() const;
 
   Rcpp::List get_sampled_cell_SIDs() const;

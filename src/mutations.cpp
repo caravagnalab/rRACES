@@ -72,7 +72,7 @@ RCPP_MODULE(Mutations){
 
 //' @name Mutation$get_alt
 //' @title Getting the mutation altered sequence
-//' @description This method returns the sequence after the mutation occurs. 
+//' @description This method returns the sequence after the mutation occurs.
 //' @return The sequence after the mutation occurs.
 //' @examples
 //' snv <- SNV("X", 20002, "T", "A")
@@ -83,7 +83,7 @@ RCPP_MODULE(Mutations){
 
 //' @name Mutation$get_cause
 //' @title Getting the mutation cause
-//' @description This method returns the mutation cause. 
+//' @description This method returns the mutation cause.
 //' @details Evey mutation is associated to a cause depending on whether
 //'   it is part of a genomic characterization of a mutant or it is caused
 //'   by a specific profile. This method returns such a cause whenever it is
@@ -105,7 +105,7 @@ RCPP_MODULE(Mutations){
 
 //' @name Mutation$get_dataframe
 //' @title Getting the mutation dataframe
-//' @description This method builds a dataframe representing the mutation. 
+//' @description This method builds a dataframe representing the mutation.
 //' @details The dataframe has the columns `chr`, `chr_pos`, `ref`, `alt`,
 //'   `type` (i.e., "`SNV`" and "`indel`"), and `cause`.
 //' @examples
@@ -118,7 +118,7 @@ RCPP_MODULE(Mutations){
 
 //' @name SNV
 //' @title Creating a SNV
-//' @description This function creates SNVs. 
+//' @description This function creates SNVs.
 //' @param chr The name of the chromosome in which the SNV occurs.
 //' @param chr_pos The position in the chromosome where the SNV occurs.
 //' @param alt The base after the mutation.
@@ -150,7 +150,7 @@ RCPP_MODULE(Mutations){
 
 //' @name Mutation
 //' @title Creating a SNV or a indel
-//' @description This function creates SNVs and indels. 
+//' @description This function creates SNVs and indels.
 //' @details It generalizes the function `SNV()` by building SNVs and
 //'   indels. However, it requires the reference sequence specification
 //'   whereas `SNV()` can deduce it from the reference sequence itself.
@@ -971,6 +971,11 @@ RCPP_MODULE(Mutations){
 //'   as leaves of the new forest.
 //' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
 //' }
+//' @field get_absolute_chromosome_positions Get the absolute chromosome positions \itemize{
+//' \item \emph{Returns:} A dataframe reporting the name (column "`chr`"), the length
+//'   (column "`length`"), the initial absolute position (column "`from`"),
+//'   and the final absolute position (column "`to`") of each chromosome.
+//' }
 //' @field save Save a phylogenetic forest in a file \itemize{
 //' \item \emph{Parameter:} \code{filename} - The path of the file in which the phylogenetic
 //'   forest must be saved.
@@ -1024,7 +1029,7 @@ RCPP_MODULE(Mutations){
 
 //' @name PhylogeneticForest$get_subforest_for
 //' @title Building sub-forests
-//' @description This method builds a sub-forest using as leaves some 
+//' @description This method builds a sub-forest using as leaves some
 //'   of the original samples.
 //' @param sample_names The names of the samples whose cells will be used
 //'   as leaves of the new forest
@@ -1118,13 +1123,26 @@ RCPP_MODULE(Mutations){
 //'   SNVs and indels of the cells represented in the phylogenetic forest.
 //'   The dataframe also reports the allele in which the mutations occur to
 //'   support double occurrencies due to CNAs.
-//' @return A dataframe reporting `chr`, `chr_pos` (i.e., the position in
-//'   the chromosome), `allele` (in which the mutation occurs), `ref`, `alt`,
-//'   `cause`, `type` (i.e., either `"SNV"` or `"indel"`) and `class` (i.e.,
-//'   `"germinal"`).
+//' @return A dataframe reporting "`chr`", "`chr_pos`" (i.e., the position in
+//'   the chromosome), "`allele`" (in which the mutation occurs), "`ref`",
+//'   "`alt`", "`cause`", "`type`" (i.e., either `"SNV"` or `"indel"`) and
+//'   "`class`" (i.e., `"germinal"`).
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_germline_mutations", &PhylogeneticForest::get_germline_SIDs,
             "Get the germinal SNVs and indels")
+
+//' @name PhylogeneticForest$get_absolute_chromosome_positions
+//' @title Getting the absolute chromosome positions
+//' @description This method returns the absolute chromosome positions.
+//' @details Its builds a dataframe reporting the name, the length, and the
+//'   initial and final absolute positions of each chromosome in the
+//'   reference genome.
+//' @return A dataframe reporting the name (column "`chr`"), the length
+//'   (column "`length`"), the initial absolute position (column "`from`"),
+//'   and the final absolute position (column "`to`") of each chromosome.
+    .method("get_absolute_chromosome_positions",
+            &PhylogeneticForest::get_absolute_chromosome_positions,
+            "Get the absolute chromosome positions")
 
 //' @name PhylogeneticForest$get_sticks
 //' @title Computing the forest sticks

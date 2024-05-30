@@ -168,6 +168,35 @@ void fill_CNA_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
   }
 }
 
+Rcpp::List PhylogeneticForest::get_absolute_chromosome_positions() const
+{
+  const auto& germline = get_germline_mutations();
+
+  auto abspos = germline.get_absolute_chromosome_positions();
+
+  using namespace Rcpp;
+
+  NumericVector lengths(abspos.size()), froms(abspos.size()),
+                tos(abspos.size());
+  CharacterVector names(abspos.size());
+
+  size_t index{0};
+  size_t pos{1};
+  for (const auto& [chr_id, from]: abspos) {
+    names[index] = Races::Mutations::GenomicPosition::chrtos(chr_id);
+    auto chr_length = germline.get_chromosome(chr_id).size();
+    lengths[index] = chr_length;
+    froms[index] = pos;
+    pos += chr_length;
+    tos[index] = (pos - 1);
+    ++index;
+  }
+
+  return DataFrame::create(_["chr"]=names,
+                           _["length"]=lengths, _["from"]=froms,
+                           _["to"]=tos);
+}
+
 Rcpp::List PhylogeneticForest::get_germline_SIDs() const
 {
   const auto& germline = get_germline_mutations();
