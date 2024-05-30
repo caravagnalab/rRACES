@@ -132,7 +132,7 @@ multiple time-points.</p></li>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">60000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█████████████████████████████████-------] 82% [00m:00s] Cells: 49785 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
+<span><span class="co">#&gt;  [██████████████████████████████████------] 84% [00m:00s] Cells: 50403 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="va">current</span></span></code></pre></div>
@@ -281,7 +281,7 @@ as the sampling times, and the MRCAs of each sample in the tree.</p>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">place_cell</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">60000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [████████████████████████████████--------] 79% [00m:00s] Cells: 47513 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
+<span><span class="co">#&gt;  [██████████████████████████████████------] 83% [00m:00s] Cells: 50293 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span></code></pre></div>
 <p>We include a new mutant and let it grow. This new mutant has much
 higher growth rates than its ancestor.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -290,7 +290,7 @@ higher growth rates than its ancestor.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">10000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█████████████████████-------------------] 51% [00m:00s] Cells: 94259 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [█████████████████████████████-----------] 71% [00m:00s] Cells: 99847 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="va">current</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="va">current</span></span></code></pre></div>
@@ -432,7 +432,7 @@ subclonal expansions.</p>
 <span></span>
 <span><span class="co"># let it grow more time units</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B+"</span>, <span class="fl">7000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█████████████████████████---------------] 62% [00m:00s] Cells: 50768 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span></code></pre></div>
 <p><img src="sampling_files/figure-html/unnamed-chunk-27-1.png" width="288"></p>

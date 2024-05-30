@@ -160,6 +160,9 @@
     <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine.html</loc>
   </url>
   <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_absolute_chromosome_positions.html</loc>
+  </url>
+  <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_coalescent_cells.html</loc>
   </url>
   <url>
@@ -434,6 +437,9 @@
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/plot_tissue.html</loc>
+  </url>
+  <url>
+    <loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc>
   </url>
   <url>
     <loc>https://caravagnalab.github.io/rRACES/reference/seq_to_long.html</loc>
