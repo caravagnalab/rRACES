@@ -344,7 +344,7 @@ RCPP_MODULE(Mutants){
 //' @name Simulation$choose_cell_in
 //' @title Picking one cell in a mutant
 //' @description This method chooses one cell among those of a mutant.
-//' @details It randomly chooses one of the cells of a mutant. 
+//' @details It randomly chooses one of the cells of a mutant.
 //'   Optionally, the lower and upper corners of a tissue rectangular
 //'   selection can be provided to obtain one cell in the rectangle.
 //' @param mutant The mutant of the cell to choose.
@@ -544,7 +544,7 @@ RCPP_MODULE(Mutants){
 
 //' @name Simulation$get_cells
 //' @title Getting the tissue cells
-//' @description This method returns information about tumour tissue cells 
+//' @description This method returns information about tumour tissue cells
 //' @details It collects some data about the cells in the tissue
 //'   without altering the tissue itself. The pairs of optional parameters
 //'   `lower_corner` and `upper_corner` define a frame of the tissue in
@@ -795,11 +795,11 @@ RCPP_MODULE(Mutants){
 
 //' @name Simulation$get_rates_update_history
 //' @title Retrieving the rates update history
-//' @description This method retrieves the simulation rates 
+//' @description This method retrieves the simulation rates
 //'   update history.
 //' @return A dataframe containing the event rates updates. The dataframe
 //'   contains the columns "`time`", "`mutant`", "`epistate`", "`event`",
-//'   and "`rate`". Each row reports an update in the rate of an event 
+//'   and "`rate`". Each row reports an update in the rate of an event
 //'   in a species.
 //' @seealso [Simulation$update_rates()], [Simulation$get_rates()]
 //' @examples
@@ -1269,7 +1269,6 @@ RCPP_MODULE(Mutants){
   .method("var", &Simulation::get_var,
           "Get a variable representing a simulation quantity");
 
-/*
 //' @name recover_simulation
 //' @title Loading a simulation
 //' @description This method loads a simulation from the disk.
@@ -1310,7 +1309,6 @@ RCPP_MODULE(Mutants){
 //' unlink("recover_simulation_test", recursive = TRUE)
   function("recover_simulation", &Simulation::load,
            "Recover a simulation");
-*/
 
 //' @name SamplesForest
 //' @title The sample cell ancestor forest

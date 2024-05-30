@@ -344,6 +344,16 @@ Simulation Simulation::load(const std::string& directory_name)
 
   archive & *(simulation.sim_ptr);
 
+  auto ruh_path = std::filesystem::path(directory_name)/
+                            get_rates_update_history_file_name();
+
+  if (std::filesystem::exists(ruh_path)) {
+    Races::Archive::Binary::In ruh_archive(ruh_path);
+
+    ruh_archive & simulation.rate_update_history;
+  } else {
+    Rcpp::warning("The rates update history file is missing.");
+  }
   return simulation;
 }
 
@@ -511,6 +521,15 @@ void Simulation::add_mutant_rate_history(const Races::Mutants::MutantProperties&
         }
     }
   }
+
+  auto sim_path = sim_ptr->get_logger().get_directory();
+  if (!std::filesystem::exists(sim_path)) {
+    std::filesystem::create_directory(sim_path);
+  }
+
+  Races::Archive::Binary::Out ruh_archive(sim_path/get_rates_update_history_file_name());
+
+  ruh_archive & rate_update_history;
 }
 
 void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& epigenetic_rates,
@@ -1166,6 +1185,10 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
 
     species_update[event_name] = rate;
   }
+
+  Races::Archive::Binary::Out ruh_archive(get_rates_update_history_path());
+
+  ruh_archive & rate_update_history;
 }
 
 Rcpp::List

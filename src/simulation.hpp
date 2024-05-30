@@ -94,6 +94,17 @@ class Simulation
                    const uint16_t& width, const uint16_t& height) const;
 
   void add_mutant_rate_history(const Races::Mutants::MutantProperties& mutant_propeties);
+
+  inline static std::string get_rates_update_history_file_name()
+  {
+    return "rates_update_history.dat";
+  }
+
+  inline std::filesystem::path get_rates_update_history_path() const
+  {
+    return std::filesystem::absolute(sim_ptr->get_logger().get_directory()/
+                                        get_rates_update_history_file_name());
+  }
 public:
 
   template<typename SAMPLES>
