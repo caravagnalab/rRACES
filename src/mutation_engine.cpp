@@ -192,7 +192,13 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
 
   if (std::filesystem::exists(contex_index_filename)) {
     Archive::Binary::In archive(contex_index_filename);
-    archive.load(context_index, "context index", Rcpp::Rcout);
+    try {
+        archive.load(context_index, "context index", Rcpp::Rcout);
+    } catch (Races::Archive::WrongFileFormatDescr& ex) {
+        raise_error(ex, "context index");
+    } catch (Races::Archive::WrongFileFormatVersion& ex) {
+        raise_error(ex, "context index");
+    }
 
     return context_index;
   }
@@ -262,7 +268,13 @@ build_rs_index(const GenomicDataStorage& storage,
 
   if (std::filesystem::exists(rs_index_filename)) {
     Archive::Binary::In archive(rs_index_filename);
-    archive.load(rs_index, "RS index", Rcpp::Rcout);
+    try {
+        archive.load(rs_index, "RS index", Rcpp::Rcout);
+    } catch (Races::Archive::WrongFileFormatDescr& ex) {
+        raise_error(ex, "RS index");
+    } catch (Races::Archive::WrongFileFormatVersion& ex) {
+        raise_error(ex, "RS index");
+    }
 
     return rs_index;
   }

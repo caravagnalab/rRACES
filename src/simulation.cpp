@@ -342,7 +342,13 @@ Simulation Simulation::load(const std::string& directory_name)
 
   Races::Archive::Binary::In archive(snapshot_path);
 
-  archive & *(simulation.sim_ptr);
+  try {
+    archive & *(simulation.sim_ptr);
+  } catch (Races::Archive::WrongFileFormatDescr& ex) {
+    raise_error(ex, "tissue simulation");
+  } catch (Races::Archive::WrongFileFormatVersion& ex) {
+    raise_error(ex, "tissue simulation");
+  }
 
   auto ruh_path = std::filesystem::path(directory_name)/
                             get_rates_update_history_file_name();

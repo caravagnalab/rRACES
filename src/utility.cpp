@@ -136,3 +136,25 @@ std::string ordinal_suffix(const size_t& ord)
             return "th";
     }
 }
+
+void raise_error(const Races::Archive::WrongFileFormatDescr& exception,
+                 const std::string& file_description)
+{
+    const auto err_msg = "Wrong file format for the " + file_description 
+                            + " file \"" + to_string(exception.filepath)
+                            + "\". Remove it and retry.";
+    ::Rf_error("%s", err_msg.c_str());
+}
+
+void raise_error(const Races::Archive::WrongFileFormatVersion& exception,
+                 const std::string& file_description)
+{
+    const auto err_msg = "The " + file_description + " file \"" 
+                            + to_string(exception.filepath)
+                            + "\" is in the file format version "
+                            + std::to_string(exception.read_version)
+                            + ", expected version "
+                            + std::to_string(exception.expected_version)
+                            + ". Remove it and retry.";
+    ::Rf_error("%s", err_msg.c_str());
+}

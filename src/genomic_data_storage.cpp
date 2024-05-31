@@ -30,6 +30,7 @@
 
 
 #include "genomic_data_storage.hpp"
+#include "utility.hpp"
 
 
 GermlineSubject::GermlineSubject(const std::string& name, const std::string& population,
@@ -216,8 +217,13 @@ GermlineStorage::get_germline(const std::string& subject_name) const
 
   GenomeMutations germline;
 
-  iarchive.load(germline, "germline", Rcpp::Rcout);
-
+  try {
+    iarchive.load(germline, "germline", Rcpp::Rcout);
+  } catch (Races::Archive::WrongFileFormatDescr& ex) {
+    raise_error(ex, "germline");
+  } catch (Races::Archive::WrongFileFormatVersion& ex) {
+    raise_error(ex, "germline");
+  }
   return germline;
 }
 

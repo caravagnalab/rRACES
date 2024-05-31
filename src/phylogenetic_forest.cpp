@@ -22,6 +22,8 @@
 #include "cna.hpp"
 #include "simulation.hpp"
 
+#include "utility.hpp"
+
 PhylogeneticForest::PhylogeneticForest():
   Races::Mutations::PhylogeneticForest()
 {}
@@ -497,8 +499,14 @@ PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
 
   in_archive & forest.timed_exposures;
 
-  in_archive.load(static_cast<Races::Mutations::PhylogeneticForest&>(forest),
-                  "forest", Rcpp::Rcout);
+  try {
+    in_archive.load(static_cast<Races::Mutations::PhylogeneticForest&>(forest),
+                    "forest", Rcpp::Rcout);
+  } catch (Races::Archive::WrongFileFormatDescr& ex) {
+    raise_error(ex, "phylogenetic forest");
+  } catch (Races::Archive::WrongFileFormatVersion& ex) {
+    raise_error(ex, "phylogenetic forest");
+  }
 
   return forest;
 }

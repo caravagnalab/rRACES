@@ -24,6 +24,7 @@
 #include <Rcpp.h>
 
 #include <allele.hpp>
+#include <archive.hpp>
 
 std::filesystem::path get_tmp_dir_path(const std::string& base_name="rRACES");
 
@@ -36,5 +37,11 @@ inline std::string ordtostr(const size_t ord)
 {
     return std::to_string(ord) + ordinal_suffix(ord);
 }
+
+void raise_error(const Races::Archive::WrongFileFormatDescr& exception,
+                 const std::string& file_description);
+
+void raise_error(const Races::Archive::WrongFileFormatVersion& exception,
+                 const std::string& file_description);
 
 #endif // __RRACES_UTILITY__

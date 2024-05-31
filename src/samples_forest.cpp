@@ -18,6 +18,7 @@
 #include "samples_forest.hpp"
 
 #include "simulation.hpp"
+#include "utility.hpp"
 
 SamplesForest::SamplesForest():
   Races::Mutants::DescendantsForest()
@@ -54,7 +55,13 @@ SamplesForest SamplesForest::load(const std::string& filename)
 
   Races::Archive::Binary::In in_archive(filename);
 
-  static_cast<Races::Mutants::DescendantsForest&>(forest) = Races::Mutants::DescendantsForest::load(in_archive);
+  try {
+    static_cast<Races::Mutants::DescendantsForest&>(forest) = Races::Mutants::DescendantsForest::load(in_archive);
+  } catch (Races::Archive::WrongFileFormatDescr& ex) {
+    raise_error(ex, "descendants forest");
+  } catch (Races::Archive::WrongFileFormatVersion& ex) {
+    raise_error(ex, "descendants forest");
+  }
 
   return forest;
 }
