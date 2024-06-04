@@ -8,7 +8,8 @@
 #'   placed.
 #' @param seq_results Table annotating mutations genome coordinates and causes
 #'   (the output of `simulate_seq()`).
-#' @param labels Table annotating the sticks (it can be the output of `get_events_table()`).
+#' @param cell_labels Table annotating the sticks (it can be the output of `get_events_table()`).
+#' @param mutation_labels Table annotating user defined labels of the mutations.
 #'
 #' @return A `tidyverse` tibble object
 #' @export
@@ -50,9 +51,9 @@
 #'
 #' seq_results = simulate_seq(phylo_forest, coverage = 100, write_SAM = F)
 #'
-#' muts_to_sticks(phylo_forest, seq_results, labels)
+#' muts_to_sticks(phylo_forest, seq_results, cell_labels = labels)
 
-muts_to_sticks = function(phylo_forest,seq_results,labels = NULL){
+muts_to_sticks = function(phylo_forest,seq_results,mutation_labels = NULL,cell_labels = NULL){
   
   sampled_snvs = phylo_forest$get_sampled_cell_mutations() %>% as_tibble() %>% 
     dplyr::select(-cell_id) %>% unique() %>% 
@@ -86,19 +87,23 @@ muts_to_sticks = function(phylo_forest,seq_results,labels = NULL){
     
   }
   
-  
   seq_results = seq_results %>% as_tibble() %>% rowwise() %>%
     mutate(cell_id = phylo_forest$get_first_occurrences(SNV(
       chr, chr_pos, alt, ref
     ))[[1]]) %>%
     ungroup()
   
-  if(!is.null(labels)){
+  if(!is.null(cell_labels)){
     map = full_join(seq_results,labels, by = "cell_id") %>% 
       filter(!is.na(chr)) 
+  }else if(!is.null(mutation_labels)){
+    
+    map = full_join(seq_results,labels, by = "id") %>% 
+      filter(!is.na(chr)) 
+    
   }else{
     
-    map = seq_results 
+    map = seq_results
     
   }
   
