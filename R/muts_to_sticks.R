@@ -94,11 +94,11 @@ muts_to_sticks = function(phylo_forest,seq_results,mutation_labels = NULL,cell_l
     ungroup()
   
   if(!is.null(cell_labels)){
-    map = full_join(seq_results,labels, by = "cell_id") %>% 
+    map = full_join(seq_results,cell_labels, by = "cell_id") %>% 
       filter(!is.na(chr)) 
   }else if(!is.null(mutation_labels)){
     
-    map = full_join(seq_results,labels, by = "id") %>% 
+    map = full_join(seq_results,mutation_labels, by = "id") %>% 
       filter(!is.na(chr)) 
     
   }else{
