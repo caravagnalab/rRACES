@@ -49,7 +49,7 @@ plot_state <- function(simulation) {
 
   ggplot2::ggplot(counts) +
     ggplot2::geom_bar(stat = "identity",
-                      ggplot2::aes(x = "", 
+                      ggplot2::aes(x = "",
                                    y = .data$counts,
                                    fill = .data$species)) +
     ggplot2::coord_polar(theta = "y") +

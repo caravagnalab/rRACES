@@ -14,18 +14,19 @@
 ## You should have received a copy of the GNU General Public License
 ## along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-preprocess <- function(phylo_forest) {
+get_exposure_ends <- function(phylo_forest) {
   exposure <- phylo_forest$get_exposures()
 
   time_points <- exposure%>% dplyr::pull(time) %>% unique
-  sbses <- exposure %>% dplyr::pull(signature) %>% unique
+  signatures <- exposure %>% dplyr::pull(signature) %>% unique
   for (t in time_points) {
-    for (sbs in sbses) {
+    for (signature in signatures) {
       if (nrow(exposure %>%
-                 filter(.data$time == t,
-                        .data$signature == sbs)) == 0) {
-        exposure[nrow(exposure)+1,] <- c(as.numeric(t), sbs,
-                                         as.numeric(0), "SBS")
+                 dplyr::filter(.data$time == t,
+                               .data$signature == signature)) == 0) {
+        exposure[nrow(exposure)+1,] <- c(as.numeric(t), signature,
+                                         as.numeric(0), gsub("[0-9]*$","",
+                                                             signature))
       }
     }
   }
@@ -104,16 +105,16 @@ plot_exposure_timeline <- function(phylogenetic_forest, linewidth = 0.8,
                                    emphatize_switches = FALSE) {
   stopifnot(inherits(phylogenetic_forest, "Rcpp_PhylogeneticForest"))
 
-  exposure_df <- preprocess(phylogenetic_forest)
+  exposure_df <- get_exposure_ends(phylogenetic_forest)
 
   signames <- exposure_df %>% dplyr::pull(signature) %>% unique
-  all_colors <- rRACES:::get_signatures_colors()
-  colors <- all_colors[signames]
+  colors <- get_colors_for(signames)
 
   line_shift <- 0.005 * linewidth
 
   exposure_df <- exposure_df %>% dplyr::group_by(time,exposure) %>%
-    dplyr::mutate(line_pos = .data$exposure + line_shift * (row_number() - 1))
+    dplyr::mutate(line_pos = .data$exposure +
+                    line_shift * (dplyr::row_number() - 1))
 
   p <- ggplot2::ggplot(data = exposure_df,
                        ggplot2::aes(x = time, y = .data$line_pos,

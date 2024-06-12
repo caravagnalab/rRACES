@@ -49,7 +49,7 @@ plot_depth <- function(x) {
       y = "Counts",
       title = "Sequencing coverage"
     ) +
-    ggplot2::scale_fill_manual(values = c(`SNV` = "steelblue", 
+    ggplot2::scale_fill_manual(values = c(`SNV` = "steelblue",
                                           `indel` = "indianred3"))
 }
 
@@ -60,7 +60,7 @@ plot_signatures <- function(x) {
     dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
     dplyr::mutate(
       substitution = paste0(.data$ref, ">", .data$alt),
-      new_substitution = case_when(
+      new_substitution = dplyr::case_when(
         (.data$ref == "G" & .data$alt == "T") ~ "C>A",
         (.data$ref == "G" & .data$alt == "C") ~ "C>G",
         (.data$ref == "G" & .data$alt == "A") ~ "C>T",

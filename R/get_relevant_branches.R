@@ -1,14 +1,14 @@
 
-#' Get stick table
+#' Get relevant branch dataframe
 #'
 #' @description
 #' Get subset of forest nodes corresponding to phylogenetic branches containing
 #'  relevant biological events (drivers)
 #'
-#' @param forest The original forest object
-#' has been derived
+#' @param forest A forest
 #'
-#' @return A `tidyverse` tibble object
+#' @return A dataframe reporting all the forest nodes corresponding to
+#'  phylogenetic branches containing relevant biological events (drivers).
 #' @export
 #'
 #' @examples
@@ -32,9 +32,13 @@
 #' sim$sample_cells("Sampling", bbox$lower_corner, bbox$upper_corner)
 #'
 #' forest = sim$get_samples_forest()
-#' get_events_table(forest)
+#' get_relevant_branches(forest)
 
-get_events_table = function(forest) {
+get_relevant_branches <- function(forest) {
+  if (!inherits(forest, "Rcpp_SamplesForest") &&
+      !inherits(forest, "Rcpp_PhylogeneticForest")) {
+    stop("The parameter must be a forest.")
+  }
 
   sticks <- forest$get_sticks()
 
@@ -42,10 +46,12 @@ get_events_table = function(forest) {
     events_table <- lapply(1:length(sticks), function(i) {
 
       gen <- forest$get_nodes() %>% dplyr::as_tibble() %>%
-        filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>% pull(mutant)
+        dplyr::filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>%
+        dplyr::pull(mutant)
 
       epi <- forest$get_nodes() %>% dplyr::as_tibble() %>%
-        filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>% pull(epistate)
+        dplyr::filter(cell_id == sticks[[i]][length(sticks[[i]])]) %>%
+        dplyr::pull(epistate)
 
       if (epi != "") {
         change <- paste0(ifelse(epi == "+", "-", "+"), " -> ", epi)
@@ -63,8 +69,8 @@ get_events_table = function(forest) {
 
     dplyr::as_tibble(forest$get_nodes()) %>%
       dplyr::full_join(events_table, by = "cell_id") %>%
-      mutate(label = ifelse(is.na(label),"Subclonal",label)) %>%
-      mutate(label = ifelse(cell_id == 0,"Truncal",label)) %>%
+      dplyr::mutate(label = ifelse(is.na(label), "Subclonal", label)) %>%
+      dplyr::mutate(label = ifelse(cell_id == 0, "Truncal", label)) %>%
       unique()
 
   }else{

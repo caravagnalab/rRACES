@@ -1,13 +1,14 @@
 #' Annotate a plot of cell divisions.
 #'
 #' @description
-#' It annotates a plot of cell divisions where branches containing relevant biological events are
-#'   colored
+#' It annotates a plot of cell divisions where branches containing relevant
+#'   biological events are colored
 #'
 #' @param forest The original forest object has been derived.
 #' @param labels A data frame annotating the sticks (it can be the output of
-#'    `get_events_table()`).
-#' @param cls A custom list of colors for any stick. If NULL a deafult palette is chosen.
+#'   `get_relevant_branches()`).
+#' @param cls A custom list of colors for any stick. If NULL a deafult palette
+#'   is chosen.
 #'
 #' @return A `ggraph` tree plot.
 #' @export
@@ -32,7 +33,7 @@
 #' sim$sample_cells("Sampling", bbox$lower_corner, bbox$upper_corner)
 #' forest = sim$get_samples_forest()
 #'
-#' labels = get_events_table(forest)
+#' labels = get_relevant_branches(forest)
 #' plot_sticks(forest, labels)
 
 plot_sticks = function(forest, labels, cls = NULL) {
@@ -70,36 +71,34 @@ plot_sticks = function(forest, labels, cls = NULL) {
         sample = ifelse(is.na(.data$sample), "N/A", .data$sample),
         highlight = FALSE
       ) %>%
-      dplyr::full_join(labels %>% 
-                  dplyr::rename(to = cell_id) %>% 
-                  dplyr::select(c("to","label")), 
-                by = "to") %>% 
-      mutate(label = ifelse(is.na(label),"Subclonal",label))
-    
-    edges <- forest_data %>% dplyr::select("from", "to", 
+      dplyr::full_join(labels %>%
+                  dplyr::rename(to = cell_id) %>%
+                  dplyr::select(c("to", "label")),
+                by = "to") %>%
+      dplyr::mutate(label = ifelse(is.na(label), "Subclonal", label))
+
+    edges <- forest_data %>% dplyr::select("from", "to",
                                            "highlight")
     graph <- tidygraph::as_tbl_graph(edges, directed = TRUE)
-    graph <- graph %>% tidygraph::activate("nodes") %>% 
-      dplyr::left_join(forest_data %>% dplyr::rename(name = .data$to) %>% 
-                         dplyr::mutate(name = as.character(.data$name)), 
+    graph <- graph %>% tidygraph::activate("nodes") %>%
+      dplyr::left_join(forest_data %>% dplyr::rename(name = .data$to) %>%
+                         dplyr::mutate(name = as.character(.data$name)),
                        by = "name")
-    layout <- ggraph::create_layout(graph, layout = "tree", 
-                                    root = "WT") 
+    layout <- ggraph::create_layout(graph, layout = "tree",
+                                    root = "WT")
     max_Y <- max(layout$birth_time, na.rm = TRUE)
     layout$reversed_btime <- max_Y - layout$birth_time
     layout$y <- layout$reversed_btime
-    
+
     if (is.null(cls)) {
-      cls_name <- forest_data %>% dplyr::arrange(desc(to)) %>% pull(label) %>% 
-            unique()
-      cls <- RColorBrewer::brewer.pal(length(cls_name), "Dark2")
-      names(cls) <- cls_name
+      cls <- get_colors_for(forest_data %>% dplyr::arrange(desc(to)) %>%
+                                dplyr::pull(label) %>% unique())
       cls["Subclonal"] <- "gainsboro"
     }
-    ncells <- graph %>% tidygraph::activate(nodes) %>% dplyr::pull(.data$name) %>% 
+    ncells <- graph %>% tidygraph::activate(nodes) %>% dplyr::pull(.data$name) %>%
       length()
-    ncells_sampled <- graph %>% tidygraph::activate(nodes) %>% 
-      dplyr::filter(sample != "N/A") %>% dplyr::pull(.data$name) %>% 
+    ncells_sampled <- graph %>% tidygraph::activate(nodes) %>%
+      dplyr::filter(sample != "N/A") %>% dplyr::pull(.data$name) %>%
       length()
     nsamples <- forest$get_samples_info() %>% nrow()
     labels_every <- max_Y/10
@@ -108,17 +107,17 @@ plot_sticks = function(forest, labels, cls = NULL) {
     point_size <- c(0,rep(1,length(not_subclonal)))
     names(point_size) <- c("Subclonal", not_subclonal)
 
-    ggraph::ggraph(layout, "tree") + 
+    ggraph::ggraph(layout, "tree") +
       ggraph::geom_edge_link(edge_width = 0.5,
-                             ggplot2::aes(edge_color = ifelse(highlight, 
+                             ggplot2::aes(edge_color = ifelse(highlight,
                                                               "indianred3",
-                                                              "gainsboro"))) + 
-      
+                                                              "gainsboro"))) +
+
       ggraph::geom_node_point(ggplot2::aes(
         color = .data$label,
         size = .data$label
       )) +
-      ggplot2::scale_color_manual(values = cls, na.translate=FALSE)  + 
+      ggplot2::scale_color_manual(values = cls, na.translate=FALSE)  +
       ggplot2::theme_minimal() + ggplot2::theme(legend.position = "bottom") +
       ggplot2::labs(
         title = "Phylogenetic tree",

@@ -53,11 +53,6 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
   tissue_title <- simulation$get_tissue_name()
   tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
 
-  #
-  # cells %>%
-  #   group_by(mutant, epistate) %>%
-  #   summarise(n())
-
   color_map <- get_species_colors(simulation$get_species())
 
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,

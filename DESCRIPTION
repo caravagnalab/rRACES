@@ -28,8 +28,7 @@ Imports:
     rlang,
     ggmuller,
     ggraph,
-    tidygraph,
-    Polychrome
+    tidygraph
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests:

@@ -171,7 +171,7 @@ paths_to_sample <- function(forest_data, sample) {
     to_head <- to[1]
     to <- to[-1]
 
-    # Forward star 
+    # Forward star
     to_add <- forest_data %>%  dplyr::filter(to == to_head)
 
     if (to_add$from != to_head) {

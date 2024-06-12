@@ -5,7 +5,7 @@
 #'
 #' @param seq_res A data frame containing sequencing results in wide format.
 #' @param chromosomes A character vector specifying the chromosomes to
-#'   include in the plot (default: all).
+#'   include in the plot (default: all the chromosomes in `seq_res`).
 #' @param samples A character vector specifying the sample names to include
 #'   in the plot (default: NULL. It includes all samples except the
 #'   "normal_sample").
@@ -14,6 +14,7 @@
 #' @param cuts A numeric vector specifying the range of VAF values to
 #'   include in the plot (default: `c(0, 1)`).
 #' @return A ggplot2 object showing the histogram of VAF.
+#' @seealso `plot_VAF()`, `plot_VAF_marginals()`
 #' @export
 #'
 #' @examples
@@ -53,51 +54,78 @@
 #' phylo_forest <- m_engine$place_mutations(forest, 10)
 #'
 #' # simulating sequencing
-#' seq_results <- simulate_seq(
-#'   phylo_forest,
-#'   coverage = 10,
-#'   write_SAM = F
-#' )
+#' seq_results <- simulate_seq(phylo_forest, coverage = 10, write_SAM = F)
+#'
+#' library(dplyr)
+#'
+#' # filter germinal mutations and normal sample
+#' f_seq <- seq_results %>% select(!starts_with("normal")) %>%
+#'      dplyr::filter(causes!="germinal")
 #'
 #' # plotting histogram of the VAF
-#' plot_histogram_vaf(seq_results, colour_by="causes")
+#' plot_VAF_histogram(f_seq, cuts = c(0.02, 1))
+#'
+#' # plotting histogram of the VAF with labels
+#' plot_VAF_histogram(f_seq, labels = f_seq["causes"], cuts = c(0.02, 1))
 #'
 #' # deleting the mutation engine directory
 #' unlink('demo', recursive = T)
-plot_histogram_vaf <- function(
+plot_VAF_histogram <- function(
     seq_res,
-    chromosomes = paste0(c(1:22, "X", "Y")),
+    chromosomes = NULL,
     samples = NULL,
-    colour_by = "causes",
+    labels = NULL,
     cuts = c(0, 1)
 ) {
-  if (!(colour_by %in% c("classes", "causes")))
-    stop("Colour_by parameter can be either 'causes' or 'classes'")
-  if (any(!chromosomes %in% paste0(c(1:22, "X", "Y"))))
-    stop("Invalid chromosomes passed as input")
+  data <- seq_to_long(seq_res)
 
-  data <- seq_to_long(seq_res) %>%
+  if (!is.null(labels)) {
+    if (!is(labels, "data.frame")) {
+        stop("The parameter \"labels\" must be a data frame when non-NULL.")
+    }
+
+    if (length(labels) != 1) {
+        stop(paste0("The parameters \"labels\" must be a data frame ",
+                    "with one column when non-NULL."))
+    }
+
+    if (nrow(labels) != nrow(seq_res)) {
+        stop(paste0("The parameters \"seq_res\" and \"labels\"",
+                    " must have the same number of rows."))
+    }
+
+    data["labels"] <- labels
+    label_name <- names(labels)
+  }
+
+  chromosomes <- validate_chromosomes(seq_res, chromosomes)
+
+  data <- data %>%
     dplyr::mutate(chr = factor(chr, levels = chromosomes)) %>%
     dplyr::filter(chr %in% chromosomes) %>%
-    dplyr::filter(classes != "germinal") %>%
-    dplyr::filter(sample_name != "normal_sample") %>%
     dplyr::filter(VAF <= max(cuts), VAF >= min(cuts))
 
   if (!is.null(samples)) {
-    if (any(!samples %in% unique(data$sample_name)))
+    if (any(!samples %in% unique(data$sample_name))) {
       stop("Invalid sample name in samples parameter")
+    }
     data <- data %>% dplyr::filter(sample_name %in% samples)
   }
 
-  data$col <- data[[colour_by]]
+  if (!is.null(labels)) {
+    plot <- data %>%
+        ggplot2::ggplot(mapping = ggplot2::aes(x = VAF,
+                                               fill = labels)) +
+        ggplot2::labs(col = data$labels, fill = label_name)
+  } else {
+    plot <- data %>%
+        ggplot2::ggplot(mapping = ggplot2::aes(x = VAF))
+  }
 
-  data %>%
-    ggplot2::ggplot(mapping = ggplot2::aes(x = VAF, fill = col)) +
-    ggplot2::geom_histogram(binwidth = 0.01, alpha = 0.5,
-                            position = "identity") +
+  plot +
+    ggplot2::geom_histogram(binwidth = 0.01, alpha = 0.5) +
     ggplot2::facet_grid(sample_name ~ chr, scales = "free_y") +
     ggplot2::theme_bw() +
-    ggplot2::labs(col = colour_by, fill = colour_by) +
     ggplot2::scale_x_continuous(labels = scales::label_number(accuracy = 0.1)) +
     ggplot2::theme(legend.position = "bottom")
 }

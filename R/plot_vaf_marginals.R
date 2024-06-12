@@ -4,7 +4,8 @@
 #' Variant Allele Frequency (VAF) for pairs of samples on a specific chromosome.
 #'
 #' @param seq_res A data frame containing sequencing results in wide format.
-#' @param chromosome A character specifying the chromosome to analyze.
+#' @param chromosome A character specifying the chromosome to analyze (default:
+#'   all the chromosomes in `seq_res`).
 #' @param colour_by A character indicating whether to color the scatter points
 #'   by "causes" or "classes" (default: "causes").
 #' @param samples A character vector specifying the sample names to include
@@ -53,54 +54,94 @@
 #' phylo_forest <- m_engine$place_mutations(forest, 10)
 #'
 #' # simulating sequencing
-#' seq_results <- simulate_seq(
-#'   phylo_forest,
-#'   coverage = 10,
-#'   write_SAM = F
-#' )
+#' seq_results <- simulate_seq(phylo_forest, coverage = 10, write_SAM = F)
 #'
-#' # plotting marginals of the VAF
-#' plot_marginals(seq_results, colour_by="causes", chromosome="22")
+#' library(dplyr)
+#'
+#' # filter germinal mutations and normal sample
+#' f_seq <- seq_results %>% select(!starts_with("normal")) %>%
+#'      filter(causes!="germinal")
+#'
+#' # plotting VAR marginals
+#' plot_VAF_marginals(f_seq)
+#'
+#' # plotting VAF marginals and labelling it
+#' plot_VAF_marginals(f_seq, labels = f_seq["causes"])
 #'
 #' # deleting the mutation engine directory
 #' unlink('demo', recursive = T)
-plot_marginals <- function(seq_res, chromosome, colour_by = "causes",
-                           samples = NULL, cuts = c(0, 1)) {
-  if (!(colour_by %in% c("classes", "causes")))
-    stop("Colour_by parameter can be either 'causes' or 'classes'")
-  if (!chromosome %in% paste0(c(1:22, "X", "Y")))
-    stop("Invalid chr passed as input")
+plot_VAF_marginals <- function(seq_res, chromosomes = NULL, samples = NULL,
+                           labels = NULL, cuts = c(0, 1)) {
 
-  data <- seq_to_long(seq_res) %>%
-    dplyr::filter(chr == chromosome) %>%
-    dplyr::filter(classes != "germinal") %>%
+  data <- seq_to_long(seq_res)
+
+  if (!is.null(labels)) {
+    if (!is(labels, "data.frame")) {
+        stop("The parameter \"labels\" must be a data frame when non-NULL.")
+    }
+
+    if (length(labels) != 1) {
+        stop(paste0("The parameters \"labels\" must be a data frame ",
+                    "with one column when non-NULL."))
+    }
+
+    if (nrow(labels) != nrow(seq_res)) {
+        stop(paste0("The parameters \"seq_res\" and \"labels\"",
+                    " must have the same number of rows."))
+    }
+
+    data["labels"] <- labels
+    label_name <- names(labels)
+  }
+
+  chromosomes <- validate_chromosomes(seq_res, chromosomes)
+
+  data <- data %>%
+    dplyr::mutate(chr = factor(chr, levels = chromosomes)) %>%
+    dplyr::filter(chr %in% chromosomes) %>%
     dplyr::filter(sample_name != "normal_sample") %>%
     dplyr::filter(VAF <= max(cuts), VAF >= min(cuts))
 
   if (!is.null(samples)) {
-    if (any(!samples %in% unique(data$sample_name)))
+    if (any(!samples %in% unique(data$sample_name))) {
       stop("Invalid sample name in samples parameter")
+    }
     data <- data %>% dplyr::filter(sample_name %in% samples)
+  }
+
+  if (length(unique(data$sample_name))<2) {
+    stop("At least two samples are required.")
   }
 
   combinations <- utils::combn(unique(data$sample_name), m = 2)
 
   lapply(1:ncol(combinations), function(i) {
     couple <- combinations[, i]
-    d1 <- data %>% dplyr::filter(sample_name == couple[1]) %>%
-        dplyr::mutate(mut_id = paste(chr, from, to, sep = ":"))
-    d2 <- data %>% dplyr::filter(sample_name == couple[2]) %>%
-        dplyr::mutate(mut_id = paste(chr, from, to, sep = ":"))
+    d1 <- data %>% dplyr::filter(sample_name == couple[1]) #%>%
+      #  dplyr::mutate(mut_id = paste(chr, from, to, sep = ":"))
+    d2 <- data %>% dplyr::filter(sample_name == couple[2]) #%>%
+      #  dplyr::mutate(mut_id = paste(chr, from, to, sep = ":"))
 
-    djoin <- dplyr::full_join(d1, d2, by = "mut_id")
-    djoin$col <- djoin[[paste0(colour_by, ".x")]]
+    djoin <- dplyr::full_join(d1, d2, by = c("chr", "from", "ref", "alt"))
+    #djoin$col <- djoin[["labels.x"]]
 
-    djoin %>%
-      ggplot2::ggplot(mapping = ggplot2::aes(x = VAF.x, y = VAF.y, col = col)) +
+    plot <- djoin %>% dplyr::filter(!is.na(sample_name.y))
+
+    if (!is.null(labels)) {
+        plot <- djoin %>%
+          ggplot2::ggplot(mapping = ggplot2::aes(x = VAF.x, y = VAF.y,
+                                                 col = labels.x))
+    } else {
+        plot <- djoin %>%
+          ggplot2::ggplot(mapping = ggplot2::aes(x = VAF.x,
+                                                 y = VAF.y))
+    }
+
+    plot +
       ggplot2::geom_point(alpha = 0.7) +
       ggplot2::xlim(c(-0.01, 1.01)) +
       ggplot2::ylim(c(-0.01, 1.01)) +
-      ggplot2::labs(x = couple[1], y = couple[2], col = colour_by) +
+      ggplot2::labs(x = couple[1], y = couple[2], col = "labels") +
       ggplot2::theme_bw() +
       ggplot2::theme(legend.position = "bottom")
   })

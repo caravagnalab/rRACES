@@ -59,7 +59,7 @@ plot_timeseries <- function(simulation) {
                                      color = .data$species)) +
     ggplot2::labs(
       color = "Species",
-      alpha = "Epistate", 
+      alpha = "Epistate",
       title = paste0(sim_title, " (t = ", time, ")"),
       subtitle = paste("Tissue:", tissue_title, "[", tissue_size, "]"),
       caption = paste("Total number of cells", ncells)

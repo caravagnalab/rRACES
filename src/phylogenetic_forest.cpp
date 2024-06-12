@@ -368,7 +368,10 @@ Rcpp::List get_first_occurrence(const std::map<MUTATION_TYPE, std::set<Races::Mu
 
     if constexpr (std::is_base_of_v<MUTATION_TYPE, Races::Mutations::SID>) {
       if (germline.includes(mutation)) {
-        oss << mutation << " is a germinal mutation.";
+        Rcpp::List R_cell_ids(1);
+
+        R_cell_ids[0] = NA_INTEGER;
+        return R_cell_ids;
       } else {
         oss << "The mutation " << mutation << " does not occurs in the sampled cells.";
       }

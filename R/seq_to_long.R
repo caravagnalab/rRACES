@@ -7,7 +7,7 @@
 #'
 #' @param seq_results A data frame containing sequencing results in wide format.
 #' @return A data frame in long format with columns "`chr`", "`from`", "`to`",
-#' "`ALT`", "`NV`", "`DP`", "`VAF`", and "`sample_name`".
+#' "`ref`", "`alt`", "`NV`", "`DP`", "`VAF`", and "`sample_name`".
 #' @export
 #'
 #' @examples
@@ -51,7 +51,7 @@ seq_to_long <- function(seq_results) {
 
   # Rename and reorder columns
   seq_df %>%
-    dplyr::rename(chr = chr, from = chr_pos, DP = coverage,
-                  NV = occurences, ALT = alt) %>%
+    dplyr::rename(from = chr_pos, DP = coverage,
+                  NV = occurences) %>%
     dplyr::mutate(to = from)
 }

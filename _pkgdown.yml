@@ -59,9 +59,8 @@ reference:
   - starts_with("CNA")
   - Deletion
   - get_mutation_engine_codes
-  - get_events_table
+  - get_relevant_branches
   - load_phylogenetic_forest
-  - muts_to_sticks
   - starts_with("Mutation")
   - starts_with("MutationEngine")
   - starts_with("PhylogeneticForest")
@@ -74,12 +73,12 @@ reference:
   contents:
   - starts_with("BasicIlluminaSequencer")
   - starts_with("ErrorlessIlluminaSequencer")
-  - plot_BAF_gw
-  - plot_DR_gw
-  - plot_histogram_vaf
-  - plot_marginals
-  - plot_vaf
-  - plot_VAF_gw
+  - label_mutations
+  - plot_BAF
+  - plot_DR
+  - plot_VAF
+  - plot_VAF_histogram
+  - plot_VAF_marginals
   - starts_with("SampledCell")
   - simulate_seq
   - simulate_normal_seq
