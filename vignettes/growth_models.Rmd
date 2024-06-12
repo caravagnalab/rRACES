@@ -28,9 +28,9 @@ The former exclusively admits duplication of cells that have space to duplicate
 duplications everywhere in the tumour.
 
 The "border"-growth model is the default one. However, users can switch to the 
-homogeneous growth model by assigning the `Simulation`'s `duplicate_internal_cells` 
-Boolean field. By setting it to `TRUE`, the homogeneous-growth model is used. If, 
-instead, it is set to `FALSE`, the simulation evolves according with the 
+homogeneous growth model by assigning the `Simulation`'s `border_growth_model` 
+Boolean field. By setting it to `FALSE`, the homogeneous-growth model is used. If, 
+instead, it is set to `TRUE`, the simulation evolves according with the 
 "border"-growth model.
 
 In the remaining part of this article we clarify the differences between the 
@@ -40,7 +40,7 @@ of the very same cancer model.
 ### Homogeneous Growth
 
 First of all we need to create a new `Simulation` object and 
-enable duplication of internal cells.
+set `border_growth_model` to `FALSE`.
 
 ```{r}
 library(rRACES)
@@ -48,7 +48,7 @@ library(rRACES)
 sim <- new(Simulation, "Homogeneous Growth")
 
 # Set the homogeneous growth model
-sim$duplicate_internal_cells <- TRUE
+sim$border_growth_model <- FALSE
 
 # Set the death activation level to avoid drift
 sim$death_activation_level <- 50
@@ -151,8 +151,8 @@ We now build a simulation and use the "border" growth model.
 sim <- new(Simulation, "Border Growth")
 
 # Setting the "border" growth model is not needed as the
-# boder growth model is the default.
-sim$duplicate_internal_cells
+# border growth model is the default.
+sim$border_growth_model
 
 # Set the death activation level to avoid drift
 sim$death_activation_level <- 50

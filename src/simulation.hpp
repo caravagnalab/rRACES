@@ -339,14 +339,14 @@ public:
     sim_ptr->death_activation_level = death_activation_level;
   }
 
-  inline bool get_duplicate_internal_cells() const
+  inline bool is_border_growth_model() const
   {
-    return sim_ptr->duplicate_internal_cells;
+    return !sim_ptr->duplicate_internal_cells;
   }
 
-  inline void set_duplicate_internal_cells(const bool duplicate_internal_cells)
+  inline void set_border_growth_model(const bool border_growth_model)
   {
-    sim_ptr->duplicate_internal_cells = duplicate_internal_cells;
+    sim_ptr->duplicate_internal_cells = !border_growth_model;
   }
 
   inline Races::Time get_history_delta() const

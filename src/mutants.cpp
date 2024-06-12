@@ -105,7 +105,7 @@ RCPP_MODULE(Mutants){
 //'   and "`position_y`" of the choosen cell.
 //' }
 //' @field death_activation_level The number of cells that activates cell death in a species.
-//' @field duplicate_internal_cells Enable/disable duplication for internal cells.
+//' @field border_growth_model Switch between homogeneous and border driven growth models.
 //' @field get_added_cells Gets the cells manually added to the simulation \itemize{
 //' \item \emph{Returns:} A dataframe reporting "`mutant`", "`epistate`", "`position_x`",
 //'   "`position_y`", and "`time`" for each cells manually added to
@@ -472,30 +472,32 @@ RCPP_MODULE(Mutants){
                                       &Simulation::set_death_activation_level,
             "The number of cells in a species that activates cell death" )
 
-//' @name Simulation$duplicate_internal_cells
+//' @name Simulation$border_growth_model
 //' @title Internal cells duplication
-//' @description This method enables/disables duplication for internal cells.
-//' @details This Boolean flag enable/disable duplication of internal
-//'   cells. When it is set to `FALSE`, the border-growth model
+//' @description This property switches between homogeneous and border driven
+//'   growth models.
+//' @details This Boolean flag switches between homogeneous and border driven
+//'   growth models. When it is set to `TRUE`, the border-growth model
 //'   is used. Otherwise, the homogeneous-growth model is applied.
-//'   It is set to `FALSE` by default.
+//'   It is set to `TRUE` by default.
 //' @examples
 //' sim <- new(Simulation)
 //'
-//' # is the duplication of internal cells enabled? (by default, no)
-//' sim$duplicate_internal_cells
+//' # is the simulation using the border driven growth model 
+//' # (default: TRUE)
+//' sim$border_growth_model
 //'
-//' # enable homogeneous-growth model
-//' sim$duplicate_internal_cells <- TRUE
+//' # switch to the homogeneous-growth model
+//' sim$border_growth_model <- FALSE
 //'
-//' # now it should be set to `TRUE`
-//' sim$duplicate_internal_cells
+//' # now it is set to `FALSE`
+//' sim$border_growth_model
 //'
-//' # enable boder-growth model
-//' sim$duplicate_internal_cells <- FALSE
-  .property("duplicate_internal_cells", &Simulation::get_duplicate_internal_cells,
-                                        &Simulation::set_duplicate_internal_cells,
-            "Enable/disable duplication for internal cells" )
+//' # switch back to the border-growth model
+//' sim$border_growth_model <- FALSE
+  .property("border_growth_model", &Simulation::is_border_growth_model,
+                                   &Simulation::set_border_growth_model,
+            "Switch between homogeneous and border driven growth models." )
 
 //' @name Simulation$get_clock
 //' @title Getting the simulated time
