@@ -14,7 +14,7 @@
 #' @param cuts A numeric vector specifying the range of VAF values to
 #'   include in the plot (default: `c(0, 1)`).
 #' @return A ggplot2 object showing the histogram of VAF.
-#' @seealso `plot_VAF()`, `plot_VAF_marginals()`
+#' @seealso `plot_VAF_marginals()`, `plot_VAF()`
 #' @export
 #'
 #' @examples
@@ -62,10 +62,10 @@
 #' f_seq <- seq_results %>% select(!starts_with("normal")) %>%
 #'      dplyr::filter(causes!="germinal")
 #'
-#' # plotting histogram of the VAF
+#' # plotting the VAF histogram
 #' plot_VAF_histogram(f_seq, cuts = c(0.02, 1))
 #'
-#' # plotting histogram of the VAF with labels
+#' # plotting the VAF histogram with labels
 #' plot_VAF_histogram(f_seq, labels = f_seq["causes"], cuts = c(0.02, 1))
 #'
 #' # deleting the mutation engine directory

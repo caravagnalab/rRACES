@@ -9,6 +9,7 @@
 #'   in the plot (default: NULL, i.e., all the chromosomes).
 #' @param N The number of mutations to sample for plotting (default: 5000).
 #' @return A ggplot2 object showing the DR distribution across the genome.
+#' @seealso `plot_VAF()`, `plot_BAF()`
 #' @export
 #'
 #' @examples
@@ -119,6 +120,7 @@ plot_DR <- function(
 #'   in the plot (default: c(0, 1)).
 #' @param N The number of mutations to sample for plotting (default: 5000).
 #' @return A ggplot2 object showing the BAF distribution across the genome.
+#' @seealso `plot_VAF()`, `plot_DR()`
 #' @export
 #'
 #' @examples
@@ -228,6 +230,7 @@ plot_BAF <- function(
 #'   in the plot (default: c(0, 1)).
 #' @param N The number of mutations to sample for plotting (default: 5000).
 #' @return A ggplot2 object showing the VAF distribution across the genome.
+#' @seealso `plot_BAF()`, `plot_DR()`, `plot_VAF_histogram()`
 #' @export
 #'
 #' @examples

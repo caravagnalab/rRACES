@@ -48,8 +48,8 @@ We can simulate the sequencing of these samples with coverage
 of 2.5X by as it follows.
 
 ```{r}
-# let us simulate a 2.5x sequencing of the four sample
-seq_results <- simulate_seq(phylo_forest, coverage = 2.5)
+# let us simulate a 100x sequencing of the four sample
+seq_results <- simulate_seq(phylo_forest, coverage = 100)
 
 # let us load the dplyr library to filter the `simulate_seq` output
 library(dplyr)
@@ -73,6 +73,56 @@ mutation, the sequencing coverage of the mutation locus,
 and the ratio between these two last columns
 (columns `<sample name> occurrences`, `<sample name> coverage`,
 and `<sample name> VAF`, respectively).
+
+### Plotting Sequencing Data
+
+rRACES/RACE provides functions to plot the Variant Allele
+Frequency (VAF), the B-Allele Frequency (BAF),
+and the Depth Ratio (DR) of a sample.
+
+```{r}
+library(dplyr)
+
+# filter germinal mutations
+f_seq <- seq_results %>% filter(causes!="germinal")
+
+# plot the VAF of the mutations sequenced on the sample S_2_2
+# over the reference genome
+plot_VAF(f_seq, sample="S_2_2")
+
+# plot the BAF of the mutations sequenced on the sample S_2_2
+# over the reference genome
+plot_BAF(f_seq, sample="S_2_2")
+
+# plot the DR of the mutations sequenced on the sample S_2_2
+# over the reference genome
+plot_DR(f_seq, sample="S_2_2")
+```
+
+The VAF and the VAF marginal distributions can be
+plot too.
+
+```{r}
+# filter the normal sample
+f_seq <- f_seq %>% select(!starts_with("normal"))
+
+# plotting the VAF histogram
+plot_VAF_histogram(f_seq, cuts = c(0.02, 1))
+
+# plotting the VAF marginals
+plot_VAF_marginals(f_seq, samples = c("S_1_1", "S_1_2", "S_2_2"))
+```
+
+The VAF and the VAF marginal plots can be labelled.
+
+```{r}
+# plotting the VAF histogram with labels
+plot_VAF_histogram(f_seq, labels = f_seq["classes"], cuts = c(0.02, 1))
+
+# plotting the VAF marginals and labelling it
+plot_VAF_marginals(f_seq, samples = c("S_1_1", "S_1_2", "S_2_2"),
+                   labels = f_seq["classes"])
+```
 
 ### Saving the Simulated Reads
 

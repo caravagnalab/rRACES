@@ -15,6 +15,7 @@
 #'   in the plot (default: `c(0, 1)`).
 #' @return A list of ggplot2 objects showing scatter plots of VAF marginals
 #'   for pairs of samples.
+#' @seealso `plot_VAF_histogram()`, `plot_VAF()`
 #' @export
 #'
 #' @examples
@@ -62,10 +63,10 @@
 #' f_seq <- seq_results %>% select(!starts_with("normal")) %>%
 #'      filter(causes!="germinal")
 #'
-#' # plotting VAR marginals
+#' # plotting the VAR marginals
 #' plot_VAF_marginals(f_seq)
 #'
-#' # plotting VAF marginals and labelling it
+#' # plotting the VAF marginals and labelling it
 #' plot_VAF_marginals(f_seq, labels = f_seq["causes"])
 #'
 #' # deleting the mutation engine directory

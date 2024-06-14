@@ -48,7 +48,7 @@
 #' phylo_forest <- m_engine$place_mutations(forest, 100)
 #'
 #' # simulate sequencing
-#' seq_results <- simulate_seq(phylo_forest, coverage = 2, write_SAM = F)
+#' seq_results <- simulate_seq(phylo_forest, coverage = 100, write_SAM = F)
 #'
 #' library(dplyr)
 #'
