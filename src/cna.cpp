@@ -20,28 +20,28 @@
 #include "utility.hpp"
 
 // amplification
-CNA::CNA(const Races::Mutations::GenomicPosition& initial_position,
-         const Races::Mutations::CNA::Length& length,
-         const Races::Mutations::AlleleId& allele,
-         const Races::Mutations::AlleleId& src_allele):
-    Races::Mutations::CNA(initial_position, length,
-                          Races::Mutations::CNA::Type::AMPLIFICATION,
+CNA::CNA(const RACES::Mutations::GenomicPosition& initial_position,
+         const RACES::Mutations::CNA::Length& length,
+         const RACES::Mutations::AlleleId& allele,
+         const RACES::Mutations::AlleleId& src_allele):
+    RACES::Mutations::CNA(initial_position, length,
+                          RACES::Mutations::CNA::Type::AMPLIFICATION,
                           src_allele, allele)
 {}
 
 // deleletion
-CNA::CNA(const Races::Mutations::GenomicPosition& initial_position,
-         const Races::Mutations::CNA::Length& length,
-         const Races::Mutations::AlleleId& allele):
-    Races::Mutations::CNA(initial_position, length,
-                          Races::Mutations::CNA::Type::DELETION,
+CNA::CNA(const RACES::Mutations::GenomicPosition& initial_position,
+         const RACES::Mutations::CNA::Length& length,
+         const RACES::Mutations::AlleleId& allele):
+    RACES::Mutations::CNA(initial_position, length,
+                          RACES::Mutations::CNA::Type::DELETION,
                           allele, allele)
 {}
 
 CNA::CNA()
 {}
 
-SEXP wrap_allele_id(const Races::Mutations::AlleleId& allele_id)
+SEXP wrap_allele_id(const RACES::Mutations::AlleleId& allele_id)
 {
     if (allele_id == RANDOM_ALLELE) {
         return Rcpp::wrap(NA_INTEGER);
@@ -51,7 +51,7 @@ SEXP wrap_allele_id(const Races::Mutations::AlleleId& allele_id)
 
 SEXP CNA::get_src_allele() const
 {
-    if (type == Races::Mutations::CNA::Type::AMPLIFICATION) {
+    if (type == RACES::Mutations::CNA::Type::AMPLIFICATION) {
         return wrap_allele_id(source);
     }
     return Rcpp::wrap(NA_INTEGER);
@@ -65,7 +65,7 @@ SEXP CNA::get_allele() const
 Rcpp::List CNA::get_dataframe() const
 {
     using namespace Rcpp;
-    using namespace Races::Mutations;
+    using namespace RACES::Mutations;
 
     return DataFrame::create(_["chr"]=get_chromosome(),
                              _["chr_pos"]=get_position_in_chromosome(),
@@ -101,7 +101,7 @@ CNA CNA::build_CNA(const std::string type, const SEXP chromosome, const SEXP pos
                    const SEXP length, const SEXP allele, const SEXP src_allele)
 {
     using namespace Rcpp;
-    using namespace Races::Mutations;
+    using namespace RACES::Mutations;
 
     auto chr_name = as<std::string>(chromosome);
     auto chr_id = GenomicPosition::stochr(chr_name);

@@ -24,15 +24,15 @@
 
 #include <Rcpp.h>
 
-class SampledCell : private Races::Mutations::PhylogeneticForest::const_node
+class SampledCell : private RACES::Mutations::PhylogeneticForest::const_node
 {
 public:
-    SampledCell(const Races::Mutations::PhylogeneticForest& forest,
-         const Races::Mutants::CellId& cell_id);
+    SampledCell(const RACES::Mutations::PhylogeneticForest& forest,
+         const RACES::Mutants::CellId& cell_id);
 
     inline std::string epistate() const
     {
-        using namespace Races::Mutants;
+        using namespace RACES::Mutants;
 
         return MutantProperties::signature_to_string(get_methylation_signature());
     }
@@ -47,7 +47,7 @@ public:
         return mutant() + epistate();
     }
 
-    inline const Races::Time& birth_time() const
+    inline const RACES::Time& birth_time() const
     {
         return get_birth_time();
     }

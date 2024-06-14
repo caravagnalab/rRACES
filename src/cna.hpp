@@ -25,27 +25,27 @@
 #include <Rcpp.h>
 
 
-class CNA : public Races::Mutations::CNA
+class CNA : public RACES::Mutations::CNA
 {
     // amplification
-    CNA(const Races::Mutations::GenomicPosition& initial_position,
-        const Races::Mutations::CNA::Length& length,
-        const Races::Mutations::AlleleId& allele,
-        const Races::Mutations::AlleleId& src_allele);
+    CNA(const RACES::Mutations::GenomicPosition& initial_position,
+        const RACES::Mutations::CNA::Length& length,
+        const RACES::Mutations::AlleleId& allele,
+        const RACES::Mutations::AlleleId& src_allele);
 
     // deleletion
-    CNA(const Races::Mutations::GenomicPosition& initial_position,
-        const Races::Mutations::CNA::Length& length,
-        const Races::Mutations::AlleleId& allele);
+    CNA(const RACES::Mutations::GenomicPosition& initial_position,
+        const RACES::Mutations::CNA::Length& length,
+        const RACES::Mutations::AlleleId& allele);
 public:
     CNA();
 
     inline std::string get_chromosome() const
     {
-        return Races::Mutations::GenomicPosition::chrtos(chr_id);
+        return RACES::Mutations::GenomicPosition::chrtos(chr_id);
     }
 
-    inline const Races::Mutations::ChrPosition& get_position_in_chromosome() const
+    inline const RACES::Mutations::ChrPosition& get_position_in_chromosome() const
     {
         return get_initial_position();
     }
@@ -61,7 +61,7 @@ public:
 
     inline std::string get_type() const
     {
-        if (type == Races::Mutations::CNA::Type::AMPLIFICATION) {
+        if (type == RACES::Mutations::CNA::Type::AMPLIFICATION) {
             return "A";
         }
         return "D";

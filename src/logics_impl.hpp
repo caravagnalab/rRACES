@@ -27,20 +27,20 @@ class Simulation;
 namespace Logics
 {
 
-class Variable: public Races::Mutants::Logics::Variable
+class Variable: public RACES::Mutants::Logics::Variable
 {
 public: 
-  Variable(Races::Mutants::Logics::Variable&& variable);
+  Variable(RACES::Mutants::Logics::Variable&& variable);
 
   void show() const;
 
   friend class Simulation;
 };
 
-class Expression : public Races::Mutants::Logics::Expression
+class Expression : public RACES::Mutants::Logics::Expression
 {
 public:
-  Expression(Races::Mutants::Logics::Expression&& expression);
+  Expression(RACES::Mutants::Logics::Expression&& expression);
 
   void show() const;
 };
@@ -49,10 +49,10 @@ SEXP sum(const SEXP& lhs, const SEXP& rhs);
 SEXP subtract(const SEXP& lhs, const SEXP& rhs);
 SEXP multiply(const SEXP& lhs, const SEXP& rhs);
 
-class Relation : public Races::Mutants::Logics::Relation
+class Relation : public RACES::Mutants::Logics::Relation
 {
 public:
-  Relation(Races::Mutants::Logics::Relation&& relation);
+  Relation(RACES::Mutants::Logics::Relation&& relation);
 
   void show() const;
 };
@@ -66,10 +66,10 @@ SEXP ne(const SEXP& lhs, const SEXP& rhs);
 SEXP lt(const SEXP& lhs, const SEXP& rhs);
 SEXP le(const SEXP& lhs, const SEXP& rhs);
 
-class Formula: public Races::Mutants::Logics::Formula
+class Formula: public RACES::Mutants::Logics::Formula
 {
 public:
-  Formula(Races::Mutants::Logics::Formula&& Formula);
+  Formula(RACES::Mutants::Logics::Formula&& Formula);
 
   void show() const;
 };

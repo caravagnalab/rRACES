@@ -25,31 +25,31 @@
 #include "utility.hpp"
 
 PhylogeneticForest::PhylogeneticForest():
-  Races::Mutations::PhylogeneticForest()
+  RACES::Mutations::PhylogeneticForest()
 {}
 
-PhylogeneticForest::PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
+PhylogeneticForest::PhylogeneticForest(const RACES::Mutations::PhylogeneticForest& orig,
                                        const std::string& germline_subject,
                                        const std::filesystem::path reference_path,
                                        const TimedMutationalExposure& timed_SBS_exposures,
                                        const TimedMutationalExposure& timed_indel_exposures):
-    Races::Mutations::PhylogeneticForest(orig), germline_subject(germline_subject),
+    RACES::Mutations::PhylogeneticForest(orig), germline_subject(germline_subject),
     reference_path(reference_path)
 {
-    using namespace Races::Mutations;
+    using namespace RACES::Mutations;
     timed_exposures[MutationType::Type::SBS] = timed_SBS_exposures;
     timed_exposures[MutationType::Type::INDEL] = timed_indel_exposures;
 }
 
-PhylogeneticForest::PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
+PhylogeneticForest::PhylogeneticForest(RACES::Mutations::PhylogeneticForest&& orig,
                                        const std::string& germline_subject,
                                        const std::filesystem::path reference_path,
                                        const TimedMutationalExposure& timed_SBS_exposures,
                                        const TimedMutationalExposure& timed_indel_exposures):
-   Races::Mutations::PhylogeneticForest(std::move(orig)), germline_subject(germline_subject),
+   RACES::Mutations::PhylogeneticForest(std::move(orig)), germline_subject(germline_subject),
    reference_path(reference_path)
 {
-    using namespace Races::Mutations;
+    using namespace RACES::Mutations;
     timed_exposures[MutationType::Type::SBS] = timed_SBS_exposures;
     timed_exposures[MutationType::Type::INDEL] = timed_indel_exposures;
 }
@@ -66,12 +66,12 @@ PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::
   forest.reference_path = reference_path;
   forest.timed_exposures = timed_exposures;
 
-  static_cast<Races::Mutations::PhylogeneticForest&>(forest) = Races::Mutations::PhylogeneticForest::get_subforest_for(sample_names);
+  static_cast<RACES::Mutations::PhylogeneticForest&>(forest) = RACES::Mutations::PhylogeneticForest::get_subforest_for(sample_names);
 
   return forest;
 }
 
-size_t count_mutations(const Races::Mutations::GenomeMutations& mutations)
+size_t count_mutations(const RACES::Mutations::GenomeMutations& mutations)
 {
   size_t counter{0};
   for (const auto& [chr_id, chromosome]: mutations.get_chromosomes()) {
@@ -85,7 +85,7 @@ size_t count_mutations(const Races::Mutations::GenomeMutations& mutations)
   return counter;
 }
 
-size_t count_mutations(const std::map<Races::Mutants::CellId, std::shared_ptr<Races::Mutations::CellGenomeMutations>>& genome_mutations)
+size_t count_mutations(const std::map<RACES::Mutants::CellId, std::shared_ptr<RACES::Mutations::CellGenomeMutations>>& genome_mutations)
 {
   size_t counter{0};
   for (const auto& [cell_id, mutations_ptr]: genome_mutations) {
@@ -95,7 +95,7 @@ size_t count_mutations(const std::map<Races::Mutants::CellId, std::shared_ptr<Ra
   return counter;
 }
 
-size_t count_CNAs(const Races::Mutations::GenomeMutations& mutations)
+size_t count_CNAs(const RACES::Mutations::GenomeMutations& mutations)
 {
   size_t counter{0};
   for (const auto& [chr_id, chromosome]: mutations.get_chromosomes()) {
@@ -105,7 +105,7 @@ size_t count_CNAs(const Races::Mutations::GenomeMutations& mutations)
   return counter;
 }
 
-size_t count_CNAs(const std::map<Races::Mutants::CellId, std::shared_ptr<Races::Mutations::CellGenomeMutations>>& genome_mutations)
+size_t count_CNAs(const std::map<RACES::Mutants::CellId, std::shared_ptr<RACES::Mutations::CellGenomeMutations>>& genome_mutations)
 {
   size_t counter{0};
   for (const auto& [cell_id, mutations_ptr]: genome_mutations) {
@@ -115,14 +115,14 @@ size_t count_CNAs(const std::map<Races::Mutants::CellId, std::shared_ptr<Races::
   return counter;
 }
 
-void fill_mutation_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
+void fill_mutation_lists(const RACES::Mutations::CellGenomeMutations& cell_mutations,
                          Rcpp::IntegerVector& cell_ids, Rcpp::CharacterVector& chr_names,
                          Rcpp::IntegerVector& chr_pos, Rcpp::IntegerVector& alleles,
                          Rcpp::CharacterVector& ref, Rcpp::CharacterVector& alt,
                          Rcpp::CharacterVector& types, Rcpp::CharacterVector& causes,
                          Rcpp::CharacterVector& classes, size_t& index)
 {
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
     for (const auto& [allele_id, allele]: chromosome.get_alleles()) {
@@ -145,7 +145,7 @@ void fill_mutation_lists(const Races::Mutations::CellGenomeMutations& cell_mutat
   }
 }
 
-void fill_CNA_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
+void fill_CNA_lists(const RACES::Mutations::CellGenomeMutations& cell_mutations,
                     Rcpp::IntegerVector& cell_ids, Rcpp::CharacterVector& chr_names,
                     Rcpp::IntegerVector& CNA_begins, Rcpp::IntegerVector& CNA_ends,
                     Rcpp::IntegerVector& src_alleles, Rcpp::IntegerVector& dst_alleles,
@@ -155,10 +155,10 @@ void fill_CNA_lists(const Races::Mutations::CellGenomeMutations& cell_mutations,
   for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
     for (const auto& cna: chromosome.get_CNAs()) {
       cell_ids[index] = cell_mutations.get_id();
-      chr_names[index] = Races::Mutations::GenomicPosition::chrtos(chr_id);
+      chr_names[index] = RACES::Mutations::GenomicPosition::chrtos(chr_id);
       CNA_begins[index] = cna.get_initial_position();
       CNA_ends[index] = cna.get_final_position();
-      bool is_amp = cna.type == Races::Mutations::CNA::Type::AMPLIFICATION;
+      bool is_amp = cna.type == RACES::Mutations::CNA::Type::AMPLIFICATION;
       src_alleles[index] = (is_amp? cna.source: NA_INTEGER);
       dst_alleles[index] = cna.dest;
       classes[index] = cna.get_nature_description();
@@ -185,7 +185,7 @@ Rcpp::List PhylogeneticForest::get_absolute_chromosome_positions() const
   size_t index{0};
   size_t pos{1};
   for (const auto& [chr_id, from]: abspos) {
-    names[index] = Races::Mutations::GenomicPosition::chrtos(chr_id);
+    names[index] = RACES::Mutations::GenomicPosition::chrtos(chr_id);
     auto chr_length = germline.get_chromosome(chr_id).size();
     lengths[index] = chr_length;
     froms[index] = pos;
@@ -223,7 +223,7 @@ Rcpp::List PhylogeneticForest::get_germline_SIDs() const
     for (const auto& [allele_id, allele] : chr.get_alleles()) {
       for (const auto& [f_pos, fragment] : allele.get_fragments()) {
         for (const auto& [mutation_pos, mutation] : fragment.get_mutations()) {
-          chr_names[index] = Races::Mutations::GenomicPosition::chrtos(chr_id);
+          chr_names[index] = RACES::Mutations::GenomicPosition::chrtos(chr_id);
           chr_pos[index] = mutation.position;
           alleles[index] = allele_id;
           ref[index] = mutation.ref;
@@ -268,7 +268,7 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_SIDs() const
                            _["cause"]=causes, _["class"]=classes);
 }
 
-Rcpp::List PhylogeneticForest::get_sampled_cell_SIDs(const Races::Mutants::CellId& cell_id) const
+Rcpp::List PhylogeneticForest::get_sampled_cell_SIDs(const RACES::Mutants::CellId& cell_id) const
 {
   auto mutation_it = get_leaves_mutations().find(cell_id);
 
@@ -279,7 +279,7 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_SIDs(const Races::Mutants::CellI
   return get_SID_dataframe(*(mutation_it->second));
 }
 
-Rcpp::List PhylogeneticForest::get_SID_dataframe(const Races::Mutations::CellGenomeMutations& cell_mutations)
+Rcpp::List PhylogeneticForest::get_SID_dataframe(const RACES::Mutations::CellGenomeMutations& cell_mutations)
 {
   size_t num_of_mutations = count_mutations(cell_mutations);
 
@@ -326,7 +326,7 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_CNAs() const
                            _["class"]=classes);
 }
 
-Rcpp::List PhylogeneticForest::get_sampled_cell_CNAs(const Races::Mutants::CellId& cell_id) const
+Rcpp::List PhylogeneticForest::get_sampled_cell_CNAs(const RACES::Mutants::CellId& cell_id) const
 {
   auto mutation_it = get_leaves_mutations().find(cell_id);
 
@@ -357,8 +357,8 @@ Rcpp::List PhylogeneticForest::get_sampled_cell_CNAs(const Races::Mutants::CellI
 }
 
 template<typename MUTATION_TYPE, typename R_MUTATION>
-Rcpp::List get_first_occurrence(const std::map<MUTATION_TYPE, std::set<Races::Mutants::CellId>>& mutation_first_cells,
-                                const Races::Mutations::GenomeMutations& germline,
+Rcpp::List get_first_occurrence(const std::map<MUTATION_TYPE, std::set<RACES::Mutants::CellId>>& mutation_first_cells,
+                                const RACES::Mutations::GenomeMutations& germline,
                                 const R_MUTATION& mutation)
 {
   auto first_cell_it = mutation_first_cells.find(mutation);
@@ -366,7 +366,7 @@ Rcpp::List get_first_occurrence(const std::map<MUTATION_TYPE, std::set<Races::Mu
   if (first_cell_it == mutation_first_cells.end()) {
     std::ostringstream oss;
 
-    if constexpr (std::is_base_of_v<MUTATION_TYPE, Races::Mutations::SID>) {
+    if constexpr (std::is_base_of_v<MUTATION_TYPE, RACES::Mutations::SID>) {
       if (germline.includes(mutation)) {
         Rcpp::List R_cell_ids(1);
 
@@ -419,7 +419,7 @@ Rcpp::List PhylogeneticForest::get_first_occurrence(const SEXP& mutation) const
              "SNV, Indel, or CNA objects.");
 }
 
-void fill_timed_exposures(const std::map<Races::Time, Races::Mutations::MutationalExposure>& mutation_timed_exposures,
+void fill_timed_exposures(const std::map<RACES::Time, RACES::Mutations::MutationalExposure>& mutation_timed_exposures,
                           const std::string& mutation_type_name,
                           size_t& index, Rcpp::NumericVector& times, Rcpp::NumericVector& probs,
                           Rcpp::CharacterVector& sig_names, Rcpp::CharacterVector& types)
@@ -439,8 +439,8 @@ void fill_timed_exposures(const std::map<Races::Time, Races::Mutations::Mutation
 Rcpp::List PhylogeneticForest::get_timed_exposures() const
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
-  using namespace Races::Mutations;
+  using namespace RACES::Mutants;
+  using namespace RACES::Mutations;
 
   size_t dataframe_size{0};
   for (const auto& [type, mutation_timed_exposures] : timed_exposures) {
@@ -478,20 +478,20 @@ void PhylogeneticForest::set_reference_path(const std::string reference_path)
 
 void PhylogeneticForest::save(const std::string& filename) const
 {
-  Races::Archive::Binary::Out out_archive(filename);
+  RACES::Archive::Binary::Out out_archive(filename);
 
   auto ref_str = to_string(reference_path);
 
   out_archive & ref_str
               & timed_exposures;
 
-  out_archive.save(static_cast<const Races::Mutations::PhylogeneticForest&>(*this),
+  out_archive.save(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this),
                    "forest", Rcpp::Rcout);
 }
 
 PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
 {
-  Races::Archive::Binary::In in_archive(filename);
+  RACES::Archive::Binary::In in_archive(filename);
 
   std::string reference_path;
 
@@ -503,11 +503,11 @@ PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
   in_archive & forest.timed_exposures;
 
   try {
-    in_archive.load(static_cast<Races::Mutations::PhylogeneticForest&>(forest),
+    in_archive.load(static_cast<RACES::Mutations::PhylogeneticForest&>(forest),
                     "forest", Rcpp::Rcout);
-  } catch (Races::Archive::WrongFileFormatDescr& ex) {
+  } catch (RACES::Archive::WrongFileFormatDescr& ex) {
     raise_error(ex, "phylogenetic forest");
-  } catch (Races::Archive::WrongFileFormatVersion& ex) {
+  } catch (RACES::Archive::WrongFileFormatVersion& ex) {
     raise_error(ex, "phylogenetic forest");
   }
 

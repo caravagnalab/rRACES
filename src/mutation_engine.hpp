@@ -44,9 +44,9 @@ class MutationEngine
     size_t max_repetition_storage;
     std::string tumour_type;
 
-    Races::Mutations::ContextIndex<AbsGenotypePosition> context_index;
-    Races::Mutations::RSIndex rs_index;
-    Races::Mutations::MutationEngine<AbsGenotypePosition, std::mt19937_64> m_engine;
+    RACES::Mutations::ContextIndex<AbsGenotypePosition> context_index;
+    RACES::Mutations::RSIndex rs_index;
+    RACES::Mutations::MutationEngine<AbsGenotypePosition, std::mt19937_64> m_engine;
 
     GermlineSubject get_germline_subject(const std::string& subject_name) const;
 

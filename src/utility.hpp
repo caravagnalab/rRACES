@@ -28,7 +28,7 @@
 
 std::filesystem::path get_tmp_dir_path(const std::string& base_name="rRACES");
 
-Races::Mutations::AlleleId get_allele_id(const SEXP allele_id,
+RACES::Mutations::AlleleId get_allele_id(const SEXP allele_id,
                                          const std::string& parameter_name);
 
 std::string ordinal_suffix(const size_t& ord);
@@ -38,10 +38,10 @@ inline std::string ordtostr(const size_t ord)
     return std::to_string(ord) + ordinal_suffix(ord);
 }
 
-void raise_error(const Races::Archive::WrongFileFormatDescr& exception,
+void raise_error(const RACES::Archive::WrongFileFormatDescr& exception,
                  const std::string& file_description);
 
-void raise_error(const Races::Archive::WrongFileFormatVersion& exception,
+void raise_error(const RACES::Archive::WrongFileFormatVersion& exception,
                  const std::string& file_description);
 
 #endif // __RRACES_UTILITY__

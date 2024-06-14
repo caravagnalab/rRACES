@@ -32,45 +32,45 @@
 
 struct PlainChooser
 {
-  std::shared_ptr<Races::Mutants::Evolutions::Simulation> sim_ptr;
+  std::shared_ptr<RACES::Mutants::Evolutions::Simulation> sim_ptr;
   std::string mutant_name;
 
-  PlainChooser(const std::shared_ptr<Races::Mutants::Evolutions::Simulation>& sim_ptr,
+  PlainChooser(const std::shared_ptr<RACES::Mutants::Evolutions::Simulation>& sim_ptr,
                const std::string& mutant_name);
 
-  inline const Races::Mutants::Evolutions::CellInTissue& operator()()
+  inline const RACES::Mutants::Evolutions::CellInTissue& operator()()
   {
     return sim_ptr->choose_cell_in(mutant_name,
-                                   Races::Mutants::CellEventType::DUPLICATION);
+                                   RACES::Mutants::CellEventType::DUPLICATION);
   }
 };
 
 struct RectangularChooser : public PlainChooser
 {
-  Races::Mutants::RectangleSet rectangle;
+  RACES::Mutants::RectangleSet rectangle;
 
-  RectangularChooser(const std::shared_ptr<Races::Mutants::Evolutions::Simulation>& sim_ptr,
+  RectangularChooser(const std::shared_ptr<RACES::Mutants::Evolutions::Simulation>& sim_ptr,
                      const std::string& mutant_name,
-                     const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                     const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner);
+                     const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                     const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner);
 
-  inline const Races::Mutants::Evolutions::CellInTissue& operator()()
+  inline const RACES::Mutants::Evolutions::CellInTissue& operator()()
   {
     return sim_ptr->choose_cell_in(mutant_name, rectangle,
-                                   Races::Mutants::CellEventType::DUPLICATION);
+                                   RACES::Mutants::CellEventType::DUPLICATION);
   }
 };
 
 
 class Simulation
 {
-  std::shared_ptr<Races::Mutants::Evolutions::Simulation> sim_ptr;  //!< The pointer to a RACES simulation object
+  std::shared_ptr<RACES::Mutants::Evolutions::Simulation> sim_ptr;  //!< The pointer to a RACES simulation object
   std::string name;      //!< The simulation name
   bool save_snapshots;   //!< A flag to preserve binary dump after object destruction
 
   using EventRateUpdateMap = std::map<std::string, double>;
-  using SpeciesRateUpdateMap = std::map<Races::Mutants::SpeciesId, EventRateUpdateMap>;
-  using RateUpdateHistory = std::map<Races::Time, SpeciesRateUpdateMap>;
+  using SpeciesRateUpdateMap = std::map<RACES::Mutants::SpeciesId, EventRateUpdateMap>;
+  using RateUpdateHistory = std::map<RACES::Time, SpeciesRateUpdateMap>;
 
   RateUpdateHistory rate_update_history;
 
@@ -80,20 +80,20 @@ class Simulation
 
   static bool has_names_in(const Rcpp::List& list, std::set<std::string> aimed_names);
 
-  static std::vector<Races::Mutants::Evolutions::Direction> get_possible_directions();
+  static std::vector<RACES::Mutants::Evolutions::Direction> get_possible_directions();
 
-  Rcpp::List get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                 const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
-                 const std::set<Races::Mutants::SpeciesId> &species_filter,
+  Rcpp::List get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
+                 const std::set<RACES::Mutants::SpeciesId> &species_filter,
                  const std::set<std::string> &epigenetic_filter) const;
 
-  Rcpp::List wrap_a_cell(const Races::Mutants::Evolutions::CellInTissue& cell) const;
+  Rcpp::List wrap_a_cell(const RACES::Mutants::Evolutions::CellInTissue& cell) const;
 
   std::vector<TissueRectangle>
   find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
                    const uint16_t& width, const uint16_t& height) const;
 
-  void add_mutant_rate_history(const Races::Mutants::MutantProperties& mutant_propeties);
+  void add_mutant_rate_history(const RACES::Mutants::MutantProperties& mutant_propeties);
 
   inline static std::string get_rates_update_history_file_name()
   {
@@ -151,8 +151,8 @@ public:
   ~Simulation();
 
   inline void update_tissue(const std::string& name,
-                            const Races::Mutants::Evolutions::AxisSize& width,
-                            const Races::Mutants::Evolutions::AxisSize& height)
+                            const RACES::Mutants::Evolutions::AxisSize& width,
+                            const RACES::Mutants::Evolutions::AxisSize& height)
   {
     auto history_delta = get_history_delta();
   
@@ -161,8 +161,8 @@ public:
     set_history_delta(history_delta);
   }
 
-  inline void update_tissue(const Races::Mutants::Evolutions::AxisSize& width,
-                            const Races::Mutants::Evolutions::AxisSize& height)
+  inline void update_tissue(const RACES::Mutants::Evolutions::AxisSize& width,
+                            const RACES::Mutants::Evolutions::AxisSize& height)
   {
     update_tissue(get_tissue_name(), width, height);
   }
@@ -173,17 +173,17 @@ public:
   void add_mutant(const std::string& mutant, const double& growth_rate,
                   const double& death_rate);
 
-  inline Races::Time get_clock() const
+  inline RACES::Time get_clock() const
   {
     return sim_ptr->get_time();
   }
 
   void place_cell(const std::string& species_name,
-                  const Races::Mutants::Evolutions::AxisPosition& x,
-                  const Races::Mutants::Evolutions::AxisPosition& y);
+                  const RACES::Mutants::Evolutions::AxisPosition& x,
+                  const RACES::Mutants::Evolutions::AxisPosition& y);
 
-  size_t count_history_sample_in(const Races::Time& minimum_time,
-                                 const Races::Time& maximum_time) const;
+  size_t count_history_sample_in(const RACES::Time& minimum_time,
+                                 const RACES::Time& maximum_time) const;
 
   Rcpp::List get_added_cells() const;
 
@@ -194,26 +194,26 @@ public:
     return get_count_history(0);
   }
 
-  Rcpp::List get_count_history(const Races::Time& minimum_time) const;
+  Rcpp::List get_count_history(const RACES::Time& minimum_time) const;
 
-  Rcpp::List get_count_history(const Races::Time& minimum_time,
-                         const Races::Time& maximum_time) const;
+  Rcpp::List get_count_history(const RACES::Time& minimum_time,
+                         const RACES::Time& maximum_time) const;
 
   Rcpp::List get_cells() const;
 
-  Rcpp::List get_cell(const Races::Mutants::Evolutions::AxisPosition& x,
-                const Races::Mutants::Evolutions::AxisPosition& y) const;
+  Rcpp::List get_cell(const RACES::Mutants::Evolutions::AxisPosition& x,
+                const RACES::Mutants::Evolutions::AxisPosition& y) const;
 
-  Rcpp::List get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                 const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const;
+  Rcpp::List get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const;
 
   Rcpp::List get_cells(const SEXP& first_param, const SEXP& second_param) const;
 
   Rcpp::List get_cells(const std::vector<std::string>& species_filter,
                  const std::vector<std::string>& epigenetic_filter) const;
 
-  Rcpp::List get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                 const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+  Rcpp::List get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                  const std::vector<std::string>& mutant_filter,
                  const std::vector<std::string>& epigenetic_filter) const;
 
@@ -225,12 +225,12 @@ public:
   }
 
   inline void schedule_mutation(const std::string& src, const std::string& dst,
-                                         const Races::Time& time)
+                                         const RACES::Time& time)
   {
     sim_ptr->schedule_mutation(src, dst, time);
   }
 
-  void run_up_to_time(const Races::Time& time);
+  void run_up_to_time(const RACES::Time& time);
 
   void run_up_to_size(const std::string& species_name, const size_t& num_of_cells);
 
@@ -242,12 +242,12 @@ public:
   void sample_cells(const std::string& sample_name, const size_t& num_of_cells) const;
 
   void sample_cells(const std::string& sample_name,
-                    const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                    const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const;
+                    const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                    const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const;
 
   void sample_cells(const std::string& sample_name,
-                    const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                    const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+                    const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                    const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                     const size_t& num_of_cells) const;
 
   Rcpp::List get_firings() const;
@@ -257,10 +257,10 @@ public:
     return get_firing_history(0);
   }
 
-  Rcpp::List get_firing_history(const Races::Time& minimum_time) const;
+  Rcpp::List get_firing_history(const RACES::Time& minimum_time) const;
 
-  Rcpp::List get_firing_history(const Races::Time& minimum_time,
-                          const Races::Time& maximum_time) const;
+  Rcpp::List get_firing_history(const RACES::Time& minimum_time,
+                          const RACES::Time& maximum_time) const;
 
   Rcpp::List get_species() const;
 
@@ -285,7 +285,7 @@ public:
   template<typename CHOOSER, std::enable_if_t<std::is_base_of_v<PlainChooser, CHOOSER>, bool> = true>
   Rcpp::List choose_border_cell_in(CHOOSER& chooser)
   {
-    namespace RS = Races::Mutants::Evolutions;
+    namespace RS = RACES::Mutants::Evolutions;
 
     const auto directions = get_possible_directions();
 
@@ -314,17 +314,17 @@ public:
   Rcpp::List choose_border_cell_in(const std::string& mutant_name);
 
   Rcpp::List choose_border_cell_in(const std::string& mutant_name,
-                             const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                             const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner);
+                             const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                             const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner);
 
   Rcpp::List choose_cell_in(const std::string& mutant_name);
 
   Rcpp::List choose_cell_in(const std::string& mutant_name,
-                      const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                      const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner);
+                      const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                      const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner);
 
-  void mutate_progeny(const Races::Mutants::Evolutions::AxisPosition& x,
-                      const Races::Mutants::Evolutions::AxisPosition& y,
+  void mutate_progeny(const RACES::Mutants::Evolutions::AxisPosition& x,
+                      const RACES::Mutants::Evolutions::AxisPosition& y,
                       const std::string& mutated_mutant);
 
   void mutate_progeny(const Rcpp::List& cell_position, const std::string& mutated_mutant);
@@ -349,12 +349,12 @@ public:
     sim_ptr->duplicate_internal_cells = !border_growth_model;
   }
 
-  inline Races::Time get_history_delta() const
+  inline RACES::Time get_history_delta() const
   {
     return sim_ptr->get_statistics().get_history_delta();
   }
 
-  inline void set_history_delta(const Races::Time history_time_delta)
+  inline void set_history_delta(const RACES::Time history_time_delta)
   {
     sim_ptr->get_statistics().set_history_delta(history_time_delta);
   }

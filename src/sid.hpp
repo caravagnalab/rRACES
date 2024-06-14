@@ -25,12 +25,12 @@
 
 #include <Rcpp.h>
 
-class SID : public Races::Mutations::MutationSpec<Races::Mutations::SID>
+class SID : public RACES::Mutations::MutationSpec<RACES::Mutations::SID>
 {
 
-    SID(const Races::Mutations::ChromosomeId& chromosome_id,
-        const Races::Mutations::ChrPosition& chromosomic_position,
-        const Races::Mutations::AlleleId allele_id,
+    SID(const RACES::Mutations::ChromosomeId& chromosome_id,
+        const RACES::Mutations::ChrPosition& chromosomic_position,
+        const RACES::Mutations::AlleleId allele_id,
         const std::string& ref, const std::string& alt,
         const std::string& cause="");
 
@@ -39,10 +39,10 @@ public:
 
     inline std::string get_chromosome() const
     {
-        return Races::Mutations::GenomicPosition::chrtos(chr_id);
+        return RACES::Mutations::GenomicPosition::chrtos(chr_id);
     }
 
-    inline const Races::Mutations::ChrPosition& get_position_in_chromosome() const
+    inline const RACES::Mutations::ChrPosition& get_position_in_chromosome() const
     {
         return position;
     }

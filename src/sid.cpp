@@ -19,17 +19,17 @@
 
 #include "utility.hpp"
 
-SID::SID(const Races::Mutations::ChromosomeId& chromosome_id,
-         const Races::Mutations::ChrPosition& chromosomic_position,
-         const Races::Mutations::AlleleId allele_id,
+SID::SID(const RACES::Mutations::ChromosomeId& chromosome_id,
+         const RACES::Mutations::ChrPosition& chromosomic_position,
+         const RACES::Mutations::AlleleId allele_id,
          const std::string& ref, const std::string& alt, 
          const std::string& cause):
-    Races::Mutations::MutationSpec<Races::Mutations::SID>(allele_id, chromosome_id,
+    RACES::Mutations::MutationSpec<RACES::Mutations::SID>(allele_id, chromosome_id,
                                                           chromosomic_position,
                                                           ref, alt, cause)
 {}
 
-std::string alleletostr(const Races::Mutations::AlleleId& allele_id)
+std::string alleletostr(const RACES::Mutations::AlleleId& allele_id)
 {
     if (allele_id == RANDOM_ALLELE) {
         return "random";
@@ -38,7 +38,7 @@ std::string alleletostr(const Races::Mutations::AlleleId& allele_id)
     return std::to_string(allele_id);
 }
 
-SEXP wrap_allele(const Races::Mutations::AlleleId& allele_id)
+SEXP wrap_allele(const RACES::Mutations::AlleleId& allele_id)
 {
     Rcpp::StringVector allele_v(1);
 
@@ -66,7 +66,7 @@ SEXP SID::get_cause() const
 Rcpp::List SID::get_dataframe() const
 {
     using namespace Rcpp;
-    using namespace Races::Mutations;
+    using namespace RACES::Mutations;
 
     return DataFrame::create(_["chr"]=get_chromosome(),
                              _["chr_pos"]=position,
@@ -126,7 +126,7 @@ SID SID::build_SID(const SEXP chromosome_name,
                    const SEXP allele_id, const SEXP cause)
 {
     using namespace Rcpp;
-    using namespace Races::Mutations;
+    using namespace RACES::Mutations;
 
     auto chr_name = as<std::string>(chromosome_name);
     auto chr_id = GenomicPosition::stochr(chr_name);
@@ -141,7 +141,7 @@ SID SID::build_SID(const SEXP chromosome_name,
     auto alt_base_str = Rcpp::as<std::string>(alt_base);
 
     auto cause_str = Rcpp::as<std::string>(cause);
-    return SID(chr_id, static_cast<Races::Mutations::ChrPosition>(pos),
+    return SID(chr_id, static_cast<RACES::Mutations::ChrPosition>(pos),
                get_allele_id(allele_id, "allele"), ref_base_str,
                alt_base_str, cause_str);
 }

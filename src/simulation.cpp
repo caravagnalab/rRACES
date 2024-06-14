@@ -35,7 +35,7 @@ struct RTest : public SIMULATION_TEST
       SIMULATION_TEST(args...), counter{0}
   {}
 
-  bool operator()(const Races::Mutants::Evolutions::Simulation& simulation)
+  bool operator()(const RACES::Mutants::Evolutions::Simulation& simulation)
   {
     if (++counter >= 10000) {
       counter = 0;
@@ -46,38 +46,38 @@ struct RTest : public SIMULATION_TEST
       }
     }
 
-    using namespace Races::Mutants::Evolutions;
+    using namespace RACES::Mutants::Evolutions;
 
     return SIMULATION_TEST::operator()(simulation);
   }
 };
 
-const std::map<std::string, Races::Mutants::CellEventType> event_names{
-  {"death",  Races::Mutants::CellEventType::DEATH},
-  {"growth", Races::Mutants::CellEventType::DUPLICATION},
-  {"switch", Races::Mutants::CellEventType::EPIGENETIC_SWITCH},
+const std::map<std::string, RACES::Mutants::CellEventType> event_names{
+  {"death",  RACES::Mutants::CellEventType::DEATH},
+  {"growth", RACES::Mutants::CellEventType::DUPLICATION},
+  {"switch", RACES::Mutants::CellEventType::EPIGENETIC_SWITCH},
 };
 
-size_t count_events(const Races::Mutants::Evolutions::SpeciesStatistics& statistics,
-                    const Races::Mutants::CellEventType& event)
+size_t count_events(const RACES::Mutants::Evolutions::SpeciesStatistics& statistics,
+                    const RACES::Mutants::CellEventType& event)
 {
   switch(event)
   {
-    case Races::Mutants::CellEventType::DEATH:
+    case RACES::Mutants::CellEventType::DEATH:
       return statistics.killed_cells;
-    case Races::Mutants::CellEventType::DUPLICATION:
+    case RACES::Mutants::CellEventType::DUPLICATION:
       return statistics.num_duplications;
-    case Races::Mutants::CellEventType::EPIGENETIC_SWITCH:
+    case RACES::Mutants::CellEventType::EPIGENETIC_SWITCH:
       return statistics.num_of_epigenetic_events();
     default:
       ::Rf_error("get_counts: unsupported event");
   }
 }
 
-inline std::string get_signature_string(const Races::Mutants::Evolutions::Species& species)
+inline std::string get_signature_string(const RACES::Mutants::Evolutions::Species& species)
 {
   const auto& signature = species.get_methylation_signature();
-  return Races::Mutants::MutantProperties::signature_to_string(signature);
+  return RACES::Mutants::MutantProperties::signature_to_string(signature);
 }
 
 void handle_unknown_event(const std::string& event)
@@ -108,11 +108,11 @@ void handle_unknown_event(const std::string& event)
   throw std::domain_error(oss.str());
 }
 
-std::set<Races::Mutants::SpeciesId>
-get_species_ids_from_mutant_name(const Races::Mutants::Evolutions::Tissue& tissue,
+std::set<RACES::Mutants::SpeciesId>
+get_species_ids_from_mutant_name(const RACES::Mutants::Evolutions::Tissue& tissue,
                                  const std::set<std::string>& mutant_name)
 {
-  std::set<Races::Mutants::SpeciesId > species_ids;
+  std::set<RACES::Mutants::SpeciesId > species_ids;
 
   for (const auto& species: tissue) {
     if (mutant_name.count(species.get_mutant_name())>0) {
@@ -123,8 +123,8 @@ get_species_ids_from_mutant_name(const Races::Mutants::Evolutions::Tissue& tissu
   return species_ids;
 }
 
-Races::Mutants::Evolutions::PositionInTissue
-get_position_in_tissue(const std::vector<Races::Mutants::Evolutions::AxisPosition>& position)
+RACES::Mutants::Evolutions::PositionInTissue
+get_position_in_tissue(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& position)
 {
   if (position.size()==2) {
     return {position[0], position[1]};
@@ -133,9 +133,9 @@ get_position_in_tissue(const std::vector<Races::Mutants::Evolutions::AxisPositio
   ::Rf_error("rRACES supports only 2 dimensional space so far");
 }
 
-Races::Mutants::RectangleSet
-get_rectangle(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-              const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner)
+RACES::Mutants::RectangleSet
+get_rectangle(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+              const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner)
 {
   auto l_position = get_position_in_tissue(lower_corner);
   auto u_position = get_position_in_tissue(upper_corner);
@@ -143,14 +143,14 @@ get_rectangle(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower
   return {l_position, u_position};
 }
 
-size_t count_driver_mutated_cells(const Races::Mutants::Evolutions::Tissue& tissue,
-                                  const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                                  const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
-                                  const std::set<Races::Mutants::SpeciesId>& species_filter,
+size_t count_driver_mutated_cells(const RACES::Mutants::Evolutions::Tissue& tissue,
+                                  const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                  const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
+                                  const std::set<RACES::Mutants::SpeciesId>& species_filter,
                                   const std::set<std::string>& epigenetic_filter)
 {
-  using namespace Races::Mutants;
-  using namespace Races::Mutants::Evolutions;
+  using namespace RACES::Mutants;
+  using namespace RACES::Mutants::Evolutions;
 
   if (lower_corner.size() != upper_corner.size()) {
     ::Rf_error("lower_corner and upper_corner must have the same size");
@@ -188,9 +188,9 @@ size_t count_driver_mutated_cells(const Races::Mutants::Evolutions::Tissue& tiss
   return total;
 }
 
-std::vector<Races::Mutants::Evolutions::Direction> Simulation::get_possible_directions()
+std::vector<RACES::Mutants::Evolutions::Direction> Simulation::get_possible_directions()
 {
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   std::vector<RS::Direction> directions;
   for (const auto &x_move : {RS::Direction::X_UP, RS::Direction::X_DOWN, RS::Direction::X_NULL}) {
@@ -206,17 +206,17 @@ std::vector<Races::Mutants::Evolutions::Direction> Simulation::get_possible_dire
 }
 
 
-PlainChooser::PlainChooser(const std::shared_ptr<Races::Mutants::Evolutions::Simulation>& sim_ptr,
+PlainChooser::PlainChooser(const std::shared_ptr<RACES::Mutants::Evolutions::Simulation>& sim_ptr,
                            const std::string& mutant_name):
   sim_ptr(sim_ptr), mutant_name(mutant_name)
 {}
 
 
 RectangularChooser::RectangularChooser(
-          const std::shared_ptr<Races::Mutants::Evolutions::Simulation>& sim_ptr,
+          const std::shared_ptr<RACES::Mutants::Evolutions::Simulation>& sim_ptr,
           const std::string& mutant_name,
-          const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-          const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner):
+          const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+          const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner):
   PlainChooser(sim_ptr, mutant_name), rectangle(get_rectangle(lower_corner, upper_corner))
 {}
 
@@ -255,15 +255,15 @@ bool Simulation::has_names_in(const Rcpp::List& list, std::set<std::string> aime
 }
 
 Rcpp::List
-Simulation::get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                      const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
-                      const std::set<Races::Mutants::SpeciesId> &species_filter,
+Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                      const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
+                      const std::set<RACES::Mutants::SpeciesId> &species_filter,
                       const std::set<std::string> &epigenetic_filter) const
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   if (lower_corner.size() != 2) {
     ::Rf_error("The lower corner must be a vector having size 2");
@@ -313,10 +313,10 @@ Simulation::get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition
                             _["position_y"]=y_pos);
 }
 
-Rcpp::List Simulation::wrap_a_cell(const Races::Mutants::Evolutions::CellInTissue& cell) const
+Rcpp::List Simulation::wrap_a_cell(const RACES::Mutants::Evolutions::CellInTissue& cell) const
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   const auto& species = sim_ptr->tissue().get_species(cell.get_species_id());
 
@@ -331,7 +331,7 @@ Rcpp::List Simulation::wrap_a_cell(const Races::Mutants::Evolutions::CellInTissu
 
 Simulation Simulation::load(const std::string& directory_name)
 {
-  using namespace Races::Mutants::Evolutions;
+  using namespace RACES::Mutants::Evolutions;
 
   Simulation simulation;
 
@@ -340,13 +340,13 @@ Simulation Simulation::load(const std::string& directory_name)
 
   auto snapshot_path = BinaryLogger::find_last_snapshot_in(directory_name);
 
-  Races::Archive::Binary::In archive(snapshot_path);
+  RACES::Archive::Binary::In archive(snapshot_path);
 
   try {
     archive & *(simulation.sim_ptr);
-  } catch (Races::Archive::WrongFileFormatDescr& ex) {
+  } catch (RACES::Archive::WrongFileFormatDescr& ex) {
     raise_error(ex, "tissue simulation");
-  } catch (Races::Archive::WrongFileFormatVersion& ex) {
+  } catch (RACES::Archive::WrongFileFormatVersion& ex) {
     raise_error(ex, "tissue simulation");
   }
 
@@ -354,7 +354,7 @@ Simulation Simulation::load(const std::string& directory_name)
                             get_rates_update_history_file_name();
 
   if (std::filesystem::exists(ruh_path)) {
-    Races::Archive::Binary::In ruh_archive(ruh_path);
+    RACES::Archive::Binary::In ruh_archive(ruh_path);
 
     ruh_archive & simulation.rate_update_history;
   } else {
@@ -387,7 +387,7 @@ void Simulation::init(const SEXP& sexp)
 {
   using namespace Rcpp;
 
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   switch (TYPEOF(sexp)) {
     case INTSXP:
@@ -425,7 +425,7 @@ void Simulation::init(const SEXP& sexp)
 }
 
 Simulation::Simulation():
-  sim_ptr(std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_dir_path())),
+  sim_ptr(std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path())),
   name(get_default_name()), save_snapshots(false)
 {}
 
@@ -439,9 +439,9 @@ Simulation::Simulation(const SEXP& sexp):
     name = get_default_name();
 
     if (save_snapshots) {
-      sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(name);
+      sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(name);
     } else {
-      sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_dir_path());
+      sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path());
     }
 
     return;
@@ -488,16 +488,16 @@ Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
   name = as<std::string>(first_param);
   int seed = as<int>(second_param);
 
-  sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(name, seed);
+  sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(name, seed);
 }
 
 Simulation::Simulation(const std::string& simulation_name, const int& seed, const bool& save_snapshots):
   name(simulation_name), save_snapshots(save_snapshots)
 {
   if (save_snapshots) {
-    sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(simulation_name, seed);
+    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(simulation_name, seed);
   } else {
-    sim_ptr = std::make_shared<Races::Mutants::Evolutions::Simulation>(get_tmp_dir_path(), seed);
+    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path(), seed);
   }
 }
 
@@ -512,7 +512,7 @@ Simulation::~Simulation()
   }
 }
 
-void Simulation::add_mutant_rate_history(const Races::Mutants::MutantProperties& mutant_propeties)
+void Simulation::add_mutant_rate_history(const RACES::Mutants::MutantProperties& mutant_propeties)
 {
   auto& timed_update = rate_update_history[sim_ptr->get_time()];
   for (const auto& species : mutant_propeties.get_species()) {
@@ -533,7 +533,7 @@ void Simulation::add_mutant_rate_history(const Races::Mutants::MutantProperties&
     std::filesystem::create_directory(sim_path);
   }
 
-  Races::Archive::Binary::Out ruh_archive(sim_path/get_rates_update_history_file_name());
+  RACES::Archive::Binary::Out ruh_archive(sim_path/get_rates_update_history_file_name());
 
   ruh_archive & rate_update_history;
 }
@@ -542,7 +542,7 @@ void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& ep
                             const Rcpp::List& growth_rates, const Rcpp::List& death_rates)
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   if (mutant_name.find('+')!=std::string::npos
       || mutant_name.find('-')!=std::string::npos) {
@@ -591,7 +591,7 @@ void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& ep
 void Simulation::add_mutant(const std::string& mutant_name, const double& growth_rate,
                             const double& death_rate)
 {
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   if (mutant_name == "Wild-type") {
     ::Rf_error("\"Wild-type\" is a reserved mutant name.");
@@ -616,7 +616,7 @@ Rcpp::List Simulation::get_species() const
   NumericVector switch_rates(num_of_rows), duplication_rates(num_of_rows),
                 death_rates(num_of_rows);
 
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   size_t i{0};
   for (const auto& species: sim_ptr->tissue()) {
@@ -649,7 +649,7 @@ Rcpp::List Simulation::get_species() const
 Rcpp::List Simulation::get_rates_update_history() const
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   CharacterVector mutant_names, epi_states, event_names;
   NumericVector rates, times;
@@ -677,8 +677,8 @@ Rcpp::List Simulation::get_rates_update_history() const
 }
 
 void Simulation::place_cell(const std::string& species_name,
-                            const Races::Mutants::Evolutions::AxisPosition& x,
-                            const Races::Mutants::Evolutions::AxisPosition& y)
+                            const RACES::Mutants::Evolutions::AxisPosition& x,
+                            const RACES::Mutants::Evolutions::AxisPosition& y)
 {
   if (sim_ptr->tissue().num_of_mutated_cells()>0) {
     Rcpp::warning("Warning: the tissue already contains a cell.");
@@ -691,7 +691,7 @@ void Simulation::place_cell(const std::string& species_name,
 
 Rcpp::List Simulation::get_cells() const
 {
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   std::vector<RS::AxisPosition> upper_corner = sim_ptr->tissue().size();
   upper_corner.resize(2);
@@ -703,20 +703,20 @@ Rcpp::List Simulation::get_cells() const
   return get_cells({0,0}, upper_corner);
 }
 
-Rcpp::List Simulation::get_cell(const Races::Mutants::Evolutions::AxisPosition& x,
-                          const Races::Mutants::Evolutions::AxisPosition& y) const
+Rcpp::List Simulation::get_cell(const RACES::Mutants::Evolutions::AxisPosition& x,
+                          const RACES::Mutants::Evolutions::AxisPosition& y) const
 {
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   const RS::CellInTissue& cell = sim_ptr->tissue()({x,y});
 
   return wrap_a_cell(cell);
 }
 
-Rcpp::List Simulation::get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                           const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const
+Rcpp::List Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                           const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
 {
-  std::set<Races::Mutants::SpeciesId> species_ids;
+  std::set<RACES::Mutants::SpeciesId> species_ids;
 
   for (const auto& species: sim_ptr->tissue()) {
     species_ids.insert(species.get_id());
@@ -728,7 +728,7 @@ Rcpp::List Simulation::get_cells(const std::vector<Races::Mutants::Evolutions::A
 Rcpp::List Simulation::get_cells(const SEXP& first_param, const SEXP& second_param) const
 {
   using namespace Rcpp;
-  using namespace Races::Mutants::Evolutions;
+  using namespace RACES::Mutants::Evolutions;
 
   if (TYPEOF(first_param)!=TYPEOF(second_param)) {
     std::ostringstream oss;
@@ -763,7 +763,7 @@ Rcpp::List Simulation::get_cells(const SEXP& first_param, const SEXP& second_par
 Rcpp::List Simulation::get_cells(const std::vector<std::string>& species_filter,
                            const std::vector<std::string>& epigenetic_filter) const
 {
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   std::vector<RS::AxisPosition> upper_corner = sim_ptr->tissue().size();
   upper_corner.resize(2);
@@ -775,8 +775,8 @@ Rcpp::List Simulation::get_cells(const std::vector<std::string>& species_filter,
   return get_cells({0,0}, upper_corner, species_filter, epigenetic_filter);
 }
 
-Rcpp::List Simulation::get_cells(const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                           const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+Rcpp::List Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                           const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                            const std::vector<std::string>& mutant_filter,
                            const std::vector<std::string>& epigenetic_filter) const
 {
@@ -791,7 +791,7 @@ Rcpp::List Simulation::get_cells(const std::vector<Races::Mutants::Evolutions::A
 Rcpp::List Simulation::get_counts() const
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   size_t num_of_rows = sim_ptr->tissue().num_of_species();
 
@@ -811,10 +811,10 @@ Rcpp::List Simulation::get_counts() const
                             _["counts"]=counts);
 }
 
-std::map<Races::Mutants::SpeciesId, std::string>
-get_species_id2name(const Races::Mutants::Evolutions::Tissue& tissue)
+std::map<RACES::Mutants::SpeciesId, std::string>
+get_species_id2name(const RACES::Mutants::Evolutions::Tissue& tissue)
 {
-  std::map<Races::Mutants::SpeciesId, std::string> id2name;
+  std::map<RACES::Mutants::SpeciesId, std::string> id2name;
   for (const auto& species : tissue) {
     id2name[species.get_id()] = species.get_name();
   }
@@ -825,9 +825,9 @@ get_species_id2name(const Races::Mutants::Evolutions::Tissue& tissue)
 Rcpp::List Simulation::get_added_cells() const
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   size_t num_of_rows = sim_ptr->get_added_cells().size();
 
@@ -852,16 +852,16 @@ Rcpp::List Simulation::get_added_cells() const
 }
 
 // sorting LineageEdge by time
-struct TimedLineageEdge : public Races::Mutants::Evolutions::LineageEdge
+struct TimedLineageEdge : public RACES::Mutants::Evolutions::LineageEdge
 {
-  Races::Time time;
+  RACES::Time time;
 
   TimedLineageEdge():
-    Races::Mutants::Evolutions::LineageEdge(), time(0)
+    RACES::Mutants::Evolutions::LineageEdge(), time(0)
   {}
 
-  TimedLineageEdge(const Races::Mutants::Evolutions::LineageEdge& edge, const Races::Time& time):
-    Races::Mutants::Evolutions::LineageEdge(edge), time(time)
+  TimedLineageEdge(const RACES::Mutants::Evolutions::LineageEdge& edge, const RACES::Time& time):
+    RACES::Mutants::Evolutions::LineageEdge(edge), time(time)
   {}
 };
 
@@ -876,7 +876,7 @@ struct TimedLineageEdgeCmp
   }
 };
 
-std::vector<TimedLineageEdge> sorted_timed_edges(const Races::Mutants::Evolutions::Simulation& simulation)
+std::vector<TimedLineageEdge> sorted_timed_edges(const RACES::Mutants::Evolutions::Simulation& simulation)
 {
   const auto& lineage_graph = simulation.get_lineage_graph();
   const size_t num_of_edges = lineage_graph.num_of_edges();
@@ -923,33 +923,33 @@ Rcpp::List Simulation::get_lineage_graph() const
                             _["first_cross"]=first_cross);
 }
 
-inline void validate_non_empty_tissue(const Races::Mutants::Evolutions::Tissue& tissue)
+inline void validate_non_empty_tissue(const RACES::Mutants::Evolutions::Tissue& tissue)
 {
   if (tissue.num_of_cells()==0) {
     ::Rf_error("The tissue does not contain any cell.");
   }
 }
 
-void Simulation::run_up_to_time(const Races::Time& time)
+void Simulation::run_up_to_time(const RACES::Time& time)
 {
   validate_non_empty_tissue(sim_ptr->tissue());
 
-  Races::UI::ProgressBar bar(Rcpp::Rcout);
+  RACES::UI::ProgressBar bar(Rcpp::Rcout);
 
-  RTest<Races::Mutants::Evolutions::TimeTest> ending_test{time};
+  RTest<RACES::Mutants::Evolutions::TimeTest> ending_test{time};
 
   sim_ptr->run(ending_test, bar);
 }
 
 void Simulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
 {
-  Races::UI::ProgressBar bar(Rcpp::Rcout);
+  RACES::UI::ProgressBar bar(Rcpp::Rcout);
 
   validate_non_empty_tissue(sim_ptr->tissue());
 
   const auto& species_id = sim_ptr->tissue().get_species(species_name).get_id();
 
-  RTest<Races::Mutants::Evolutions::SpeciesCountTest> ending_test{species_id, num_of_cells};
+  RTest<RACES::Mutants::Evolutions::SpeciesCountTest> ending_test{species_id, num_of_cells};
 
   sim_ptr->run(ending_test, bar);
 }
@@ -957,7 +957,7 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
 void Simulation::run_up_to_event(const std::string& event, const std::string& species_name,
                                  const size_t& num_of_events)
 {
-  Races::UI::ProgressBar bar(Rcpp::Rcout);
+  RACES::UI::ProgressBar bar(Rcpp::Rcout);
 
   validate_non_empty_tissue(sim_ptr->tissue());
 
@@ -965,7 +965,7 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
     handle_unknown_event(event);
   }
 
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   const auto& species_id = sim_ptr->tissue().get_species(species_name).get_id();
 
@@ -978,9 +978,9 @@ void Simulation::run_until(const Logics::Formula& formula)
 {
   validate_non_empty_tissue(sim_ptr->tissue());
 
-  Races::UI::ProgressBar bar(Rcpp::Rcout);
+  RACES::UI::ProgressBar bar(Rcpp::Rcout);
 
-  RTest<Races::Mutants::Evolutions::FormulaTest> ending_test{formula};
+  RTest<RACES::Mutants::Evolutions::FormulaTest> ending_test{formula};
 
   sim_ptr->run(ending_test, bar);
 }
@@ -997,7 +997,7 @@ Rcpp::List Simulation::get_firings() const
                            _["epistate"]=df["epistate"], _["fired"]=df["fired"]);
 }
 
-Rcpp::List Simulation::get_firing_history(const Races::Time& minimum_time) const
+Rcpp::List Simulation::get_firing_history(const RACES::Time& minimum_time) const
 {
   if (sim_ptr->get_statistics().get_history().size()==0) {
     return get_firing_history(0,0);
@@ -1008,8 +1008,8 @@ Rcpp::List Simulation::get_firing_history(const Races::Time& minimum_time) const
   return get_firing_history(minimum_time, last_time_sample);
 }
 
-size_t Simulation::count_history_sample_in(const Races::Time& minimum_time,
-                                           const Races::Time& maximum_time) const
+size_t Simulation::count_history_sample_in(const RACES::Time& minimum_time,
+                                           const RACES::Time& maximum_time) const
 {
   size_t num_of_samples{0};
   const auto& history = sim_ptr->get_statistics().get_history();
@@ -1023,8 +1023,8 @@ size_t Simulation::count_history_sample_in(const Races::Time& minimum_time,
   return num_of_samples;
 }
 
-Rcpp::List Simulation::get_firing_history(const Races::Time& minimum_time,
-                                          const Races::Time& maximum_time) const
+Rcpp::List Simulation::get_firing_history(const RACES::Time& minimum_time,
+                                          const RACES::Time& maximum_time) const
 {
   using namespace Rcpp;
 
@@ -1066,7 +1066,7 @@ Rcpp::List Simulation::get_firing_history(const Races::Time& minimum_time,
                            _["time"]=times);
 }
 
-Rcpp::List Simulation::get_count_history(const Races::Time& minimum_time) const
+Rcpp::List Simulation::get_count_history(const RACES::Time& minimum_time) const
 {
   if (sim_ptr->get_statistics().get_history().size()==0) {
     return get_count_history(0,0);
@@ -1077,8 +1077,8 @@ Rcpp::List Simulation::get_count_history(const Races::Time& minimum_time) const
   return get_count_history(minimum_time, last_time_sample);
 }
 
-Rcpp::List Simulation::get_count_history(const Races::Time& minimum_time,
-                                   const Races::Time& maximum_time) const
+Rcpp::List Simulation::get_count_history(const RACES::Time& minimum_time,
+                                   const RACES::Time& maximum_time) const
 {
   using namespace Rcpp;
 
@@ -1123,9 +1123,9 @@ Rcpp::IntegerVector Simulation::get_tissue_size() const
 }
 
 
-Races::Mutants::SpeciesId
-get_switched_species(const Races::Mutants::Evolutions::Tissue& tissue,
-                     const Races::Mutants::Evolutions::Species& species)
+RACES::Mutants::SpeciesId
+get_switched_species(const RACES::Mutants::Evolutions::Tissue& tissue,
+                     const RACES::Mutants::Evolutions::Species& species)
 {
   auto mutant = tissue.get_mutant_species(species.get_mutant_id());
 
@@ -1162,7 +1162,7 @@ Rcpp::List Simulation::get_rates(const std::string& species_name) const
 void Simulation::update_rates(const std::string& species_name, const Rcpp::List& rates)
 {
   using namespace Rcpp;
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   auto& species = sim_ptr->tissue().get_species(species_name);
 
@@ -1181,7 +1181,7 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
       handle_unknown_event(event_name);
     }
     double rate = as<double>(rates[i]);
-    if (event_it->second == Races::Mutants::CellEventType::EPIGENETIC_SWITCH) {
+    if (event_it->second == RACES::Mutants::CellEventType::EPIGENETIC_SWITCH) {
       auto switched_id = get_switched_species(sim_ptr->tissue(), species);
 
       species.set_epigenetic_rate_to(switched_id, rate);
@@ -1192,22 +1192,22 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
     species_update[event_name] = rate;
   }
 
-  Races::Archive::Binary::Out ruh_archive(get_rates_update_history_path());
+  RACES::Archive::Binary::Out ruh_archive(get_rates_update_history_path());
 
   ruh_archive & rate_update_history;
 }
 
 Rcpp::List
 Simulation::choose_cell_in(const std::string& mutant_name,
-                           const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                           const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner)
+                           const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                           const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner)
 {
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   if (sim_ptr->duplicate_internal_cells) {
     const auto rectangle = get_rectangle(lower_corner, upper_corner);
     const auto& cell = sim_ptr->choose_cell_in(mutant_name, rectangle,
-                                               Races::Mutants::CellEventType::DUPLICATION);
+                                               RACES::Mutants::CellEventType::DUPLICATION);
 
     return wrap_a_cell(cell);
   }
@@ -1217,11 +1217,11 @@ Simulation::choose_cell_in(const std::string& mutant_name,
 
 Rcpp::List Simulation::choose_cell_in(const std::string& mutant_name)
 {
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   if (sim_ptr->duplicate_internal_cells) {
     const auto& cell = sim_ptr->choose_cell_in(mutant_name,
-                                                Races::Mutants::CellEventType::DUPLICATION);
+                                                RACES::Mutants::CellEventType::DUPLICATION);
     return wrap_a_cell(cell);
   }
 
@@ -1236,8 +1236,8 @@ Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name)
 }
 
 Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name,
-                                             const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                                             const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner)
+                                             const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                             const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner)
 {
     const auto rectangle = get_rectangle(lower_corner, upper_corner);
     const auto& cell = sim_ptr->choose_border_cell_in(mutant_name, rectangle);
@@ -1245,13 +1245,13 @@ Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name,
     return wrap_a_cell(cell);
 }
 
-void Simulation::mutate_progeny(const Races::Mutants::Evolutions::AxisPosition& x,
-                                const Races::Mutants::Evolutions::AxisPosition& y,
+void Simulation::mutate_progeny(const RACES::Mutants::Evolutions::AxisPosition& x,
+                                const RACES::Mutants::Evolutions::AxisPosition& y,
                                 const std::string& mutated_mutant)
 {
   auto pos_in_tissue = get_position_in_tissue({x,y});
 
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
   sim_ptr->simulate_mutation(pos_in_tissue, mutated_mutant);
 }
@@ -1261,9 +1261,9 @@ void Simulation::mutate_progeny(const Rcpp::List& cell_position,
 {
   using namespace Rcpp;
 
-  namespace RS = Races::Mutants::Evolutions;
+  namespace RS = RACES::Mutants::Evolutions;
 
-  std::vector<Races::Mutants::Evolutions::AxisPosition> vector_position;
+  std::vector<RACES::Mutants::Evolutions::AxisPosition> vector_position;
 
   for (const std::string axis : {"x", "y"}) {
     auto field = "position_"+axis;
@@ -1279,10 +1279,10 @@ void Simulation::mutate_progeny(const Rcpp::List& cell_position,
 }
 
 void Simulation::sample_cells(const std::string& sample_name,
-                              const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                              const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const
+                              const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                              const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
 {
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   if (sample_name == "normal_sample") {
     ::Rf_error("Sample name \"normal_sample\" is reserved.");
@@ -1291,7 +1291,7 @@ void Simulation::sample_cells(const std::string& sample_name,
   auto bounding_box = get_rectangle(lower_corner, upper_corner);
   auto num_of_cells = bounding_box.size();
 
-  Races::Mutants::Evolutions::SampleSpecification spec(sample_name, bounding_box, num_of_cells);
+  RACES::Mutants::Evolutions::SampleSpecification spec(sample_name, bounding_box, num_of_cells);
 
   sim_ptr->sample_tissue(spec);
 }
@@ -1299,7 +1299,7 @@ void Simulation::sample_cells(const std::string& sample_name,
 void Simulation::sample_cells(const std::string& sample_name,
                               const size_t& num_of_cells) const
 {
-    std::vector<Races::Mutants::Evolutions::AxisPosition> lower_corner, upper_corner;
+    std::vector<RACES::Mutants::Evolutions::AxisPosition> lower_corner, upper_corner;
 
     for (const auto axis_size : sim_ptr->tissue().size()) {
         lower_corner.push_back(0);
@@ -1310,11 +1310,11 @@ void Simulation::sample_cells(const std::string& sample_name,
 }
 
 void Simulation::sample_cells(const std::string& sample_name,
-                              const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                              const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+                              const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                              const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                               const size_t& num_of_cells) const
 {
-  using namespace Races::Mutants;
+  using namespace RACES::Mutants;
 
   if (sample_name == "normal_sample") {
     ::Rf_error("Sample name \"normal_sample\" is reserved.");
@@ -1322,7 +1322,7 @@ void Simulation::sample_cells(const std::string& sample_name,
 
   auto bounding_box = get_rectangle(lower_corner, upper_corner);
 
-  Races::Mutants::Evolutions::SampleSpecification spec(sample_name, bounding_box, num_of_cells);
+  RACES::Mutants::Evolutions::SampleSpecification spec(sample_name, bounding_box, num_of_cells);
 
   sim_ptr->sample_tissue(spec);
 }
@@ -1332,12 +1332,12 @@ SamplesForest Simulation::get_samples_forest() const
   return SamplesForest(*sim_ptr);
 }
 
-std::map<Races::Mutants::SpeciesId, size_t>
-count_cells_in(const Races::Mutants::Evolutions::Tissue& tissue,
+std::map<RACES::Mutants::SpeciesId, size_t>
+count_cells_in(const RACES::Mutants::Evolutions::Tissue& tissue,
                const uint16_t& init_x, const uint16_t& init_y,
                const uint16_t& width, const uint16_t& height)
 {
-  std::map<Races::Mutants::SpeciesId, size_t> counter;
+  std::map<RACES::Mutants::SpeciesId, size_t> counter;
   auto sizes = tissue.size();
 
   uint16_t x_max = std::min(static_cast<uint16_t>(init_x+width), sizes[0]);
@@ -1347,7 +1347,7 @@ count_cells_in(const Races::Mutants::Evolutions::Tissue& tissue,
     for (uint16_t y=init_y; y<y_max; ++y) {
       auto cell_proxy = tissue({x,y});
       if (!cell_proxy.is_wild_type()) {
-        const Races::Mutants::Evolutions::CellInTissue& cell = cell_proxy;
+        const RACES::Mutants::Evolutions::CellInTissue& cell = cell_proxy;
 
         const auto species_id = cell.get_species_id();
 
@@ -1366,8 +1366,8 @@ count_cells_in(const Races::Mutants::Evolutions::Tissue& tissue,
 }
 
 inline
-std::map<Races::Mutants::SpeciesId, size_t>
-count_cells_in(const Races::Mutants::Evolutions::Tissue& tissue,
+std::map<RACES::Mutants::SpeciesId, size_t>
+count_cells_in(const RACES::Mutants::Evolutions::Tissue& tissue,
                const TissueRectangle& tumour_bounding_box,
                const uint16_t& grid_x, const uint16_t& grid_y,
                const uint16_t& width, const uint16_t& height)
@@ -1383,7 +1383,7 @@ TissueRectangle get_tissue_rectangle(const TissueRectangle& tumour_bounding_box,
                                      const uint16_t& grid_x, const uint16_t& grid_y,
                                      const uint16_t& width, const uint16_t& height)
 {
-  using namespace Races::Mutants::Evolutions;
+  using namespace RACES::Mutants::Evolutions;
 
   const uint16_t x = grid_x*width+tumour_bounding_box.lower_corner.x,
                  y = grid_y*height+tumour_bounding_box.lower_corner.y;
@@ -1391,11 +1391,11 @@ TissueRectangle get_tissue_rectangle(const TissueRectangle& tumour_bounding_box,
   return TissueRectangle(PositionInTissue{x,y}, width, height);
 }
 
-std::set<Races::Mutants::SpeciesId>
-collect_species_of(const Races::Mutants::Evolutions::Simulation& simulation,
+std::set<RACES::Mutants::SpeciesId>
+collect_species_of(const RACES::Mutants::Evolutions::Simulation& simulation,
                    const std::string& mutant_name)
 {
-  std::set<Races::Mutants::SpeciesId> species_ids;
+  std::set<RACES::Mutants::SpeciesId> species_ids;
 
   if (mutant_name.back()!='+' && mutant_name.back()!='-') {
     const auto& tissue = simulation.tissue();
@@ -1414,7 +1414,7 @@ collect_species_of(const Races::Mutants::Evolutions::Simulation& simulation,
 
 TissueRectangle Simulation::get_tumour_bounding_box() const
 {
-  using namespace Races::Mutants::Evolutions;
+  using namespace RACES::Mutants::Evolutions;
   const auto& tissue = sim_ptr->tissue();
   const auto tissue_sizes = tissue.size();
 
@@ -1423,7 +1423,7 @@ TissueRectangle Simulation::get_tumour_bounding_box() const
 
   for (uint16_t grid_x=0; grid_x<tissue_sizes[0]; ++grid_x) {
     for (uint16_t grid_y=0; grid_y<tissue_sizes[1]; ++grid_y) {
-      Races::Mutants::Evolutions::PositionInTissue pos{grid_x, grid_y};
+      RACES::Mutants::Evolutions::PositionInTissue pos{grid_x, grid_y};
       if (!tissue(pos).is_wild_type()) {
         if (grid_x < lower_corner.x) {
           lower_corner.x = grid_x;
@@ -1455,17 +1455,17 @@ inline T div_ceil(const T& dividend, const T& divisor)
 struct SpeciesConstraint
 {
   const std::string species_name;
-  const Races::Mutants::SpeciesId species_id;
+  const RACES::Mutants::SpeciesId species_id;
   const size_t min_num_of_cells;
 
   SpeciesConstraint(const std::string& species_name,
-                   const Races::Mutants::SpeciesId& species_id,
+                   const RACES::Mutants::SpeciesId& species_id,
                    const size_t min_num_of_cells):
     species_name(species_name), species_id(species_id),
     min_num_of_cells(min_num_of_cells)
   {}
 
-  bool is_satified(const std::map<Races::Mutants::SpeciesId, size_t>& num_of_cells) const
+  bool is_satified(const std::map<RACES::Mutants::SpeciesId, size_t>& num_of_cells) const
   {
     auto found = num_of_cells.find(species_id);
 
@@ -1478,7 +1478,7 @@ struct SpeciesConstraint
 };
 
 std::list<SpeciesConstraint>
-get_species_constraints(const Races::Mutants::Evolutions::Simulation& simulation,
+get_species_constraints(const RACES::Mutants::Evolutions::Simulation& simulation,
                         const Rcpp::IntegerVector& minimum_cell_vector)
 {
   std::list<SpeciesConstraint> species_constraints;
@@ -1521,24 +1521,24 @@ get_species_constraints(const Races::Mutants::Evolutions::Simulation& simulation
 struct MutantConstraint
 {
   const std::string mutant_name;
-  const std::set<Races::Mutants::SpeciesId> species_ids;
+  const std::set<RACES::Mutants::SpeciesId> species_ids;
   const size_t min_num_of_cells;
 
   MutantConstraint(const std::string& mutant_name,
-                   const std::set<Races::Mutants::SpeciesId>& species_ids,
+                   const std::set<RACES::Mutants::SpeciesId>& species_ids,
                    const size_t& min_num_of_cells):
     mutant_name(mutant_name), species_ids(species_ids),
     min_num_of_cells(min_num_of_cells)
   {}
 
   MutantConstraint(const std::string& mutant_name,
-                  std::set<Races::Mutants::SpeciesId>&& species_ids,
+                  std::set<RACES::Mutants::SpeciesId>&& species_ids,
                   size_t&& min_num_of_cells):
     mutant_name(mutant_name), species_ids(std::move(species_ids)),
     min_num_of_cells(min_num_of_cells)
   {}
 
-  bool is_satified(const std::map<Races::Mutants::SpeciesId, size_t>& num_of_cells) const
+  bool is_satified(const std::map<RACES::Mutants::SpeciesId, size_t>& num_of_cells) const
   {
     size_t total{0};
 
@@ -1555,7 +1555,7 @@ struct MutantConstraint
 };
 
 std::list<MutantConstraint>
-get_mutant_constraints(const Races::Mutants::Evolutions::Simulation& simulation,
+get_mutant_constraints(const RACES::Mutants::Evolutions::Simulation& simulation,
                        const Rcpp::IntegerVector& minimum_cell_vector)
 {
   std::list<MutantConstraint> mutant_constraints;
@@ -1583,7 +1583,7 @@ get_mutant_constraints(const Races::Mutants::Evolutions::Simulation& simulation,
   return mutant_constraints;
 }
 
-bool constraints_satisfied(const std::map<Races::Mutants::SpeciesId, size_t>& cell_counts,
+bool constraints_satisfied(const std::map<RACES::Mutants::SpeciesId, size_t>& cell_counts,
                            const std::list<SpeciesConstraint>& species_constraints,
                            const std::list<MutantConstraint>& mutant_constraints)
 {
@@ -1758,7 +1758,7 @@ Logics::Variable Simulation::get_var(const std::string& name) const
   std::string event_name(name.substr(dot_pos+1));
   std::string species_name{name.substr(0, dot_pos)};
 
-  const auto event_id = Races::Mutants::Evolutions::CellEvent::get_event_id(event_name);
+  const auto event_id = RACES::Mutants::Evolutions::CellEvent::get_event_id(event_name);
 
   return Logics::Variable(sim_ptr->get_event_variable(species_name, event_id));
 }

@@ -37,7 +37,7 @@
 
 #include "genomic_data_storage.hpp"
 
-using SIDSpec = Races::Mutations::MutationSpec<Races::Mutations::SID>;
+using SIDSpec = RACES::Mutations::MutationSpec<RACES::Mutations::SID>;
 using SID_iterator = std::list<std::list<SIDSpec>::iterator>;
 
 struct MutationEngineSetup
@@ -178,11 +178,11 @@ get_context_index_path(const GenomicDataStorage& storage, const size_t context_s
 }
 
 template<typename ABSOLUTE_GENOTYPE_POSITION = uint32_t>
-Races::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITION>
+RACES::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITION>
 build_contex_index(const GenomicDataStorage& storage, const size_t context_sampling)
 {
-  using namespace Races;
-  using namespace Races::Mutations;
+  using namespace RACES;
+  using namespace RACES::Mutations;
 
   using Index = ContextIndex<ABSOLUTE_GENOTYPE_POSITION>;
 
@@ -194,9 +194,9 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
     Archive::Binary::In archive(contex_index_filename);
     try {
         archive.load(context_index, "context index", Rcpp::Rcout);
-    } catch (Races::Archive::WrongFileFormatDescr& ex) {
+    } catch (RACES::Archive::WrongFileFormatDescr& ex) {
         raise_error(ex, "context index");
-    } catch (Races::Archive::WrongFileFormatVersion& ex) {
+    } catch (RACES::Archive::WrongFileFormatVersion& ex) {
         raise_error(ex, "context index");
     }
 
@@ -251,13 +251,13 @@ get_rs_index_path(const GenomicDataStorage& storage,
                                                 + ".rsif");
 }
 
-Races::Mutations::RSIndex
+RACES::Mutations::RSIndex
 build_rs_index(const GenomicDataStorage& storage,
                const size_t max_motif_size,
                const size_t max_repetition_storage)
 {
-  using namespace Races;
-  using namespace Races::Mutations;
+  using namespace RACES;
+  using namespace RACES::Mutations;
 
   using Index = RSIndex;
 
@@ -270,9 +270,9 @@ build_rs_index(const GenomicDataStorage& storage,
     Archive::Binary::In archive(rs_index_filename);
     try {
         archive.load(rs_index, "RS index", Rcpp::Rcout);
-    } catch (Races::Archive::WrongFileFormatDescr& ex) {
+    } catch (RACES::Archive::WrongFileFormatDescr& ex) {
         raise_error(ex, "RS index");
-    } catch (Races::Archive::WrongFileFormatVersion& ex) {
+    } catch (RACES::Archive::WrongFileFormatVersion& ex) {
         raise_error(ex, "RS index");
     }
 
@@ -314,12 +314,12 @@ build_rs_index(const GenomicDataStorage& storage,
 }
 
 template<typename ABSOLUTE_GENOTYPE_POSITION>
-std::map<Races::Mutations::ChromosomeId, size_t>
-get_num_of_alleles(const Races::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITION>& context_index,
+std::map<RACES::Mutations::ChromosomeId, size_t>
+get_num_of_alleles(const RACES::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITION>& context_index,
                    const size_t& default_num_of_alleles,
                    const std::map<std::string, size_t>& alleles_num_exceptions)
 {
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   const auto chr_regions = context_index.get_chromosome_regions();
 
@@ -342,18 +342,18 @@ get_num_of_alleles(const Races::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITI
 
 
 template<typename MUTATION_TYPE,
-        std::enable_if_t<std::is_base_of_v<Races::Mutations::MutationType, MUTATION_TYPE>, bool> = true>
-std::map<std::string, Races::Mutations::Signature<MUTATION_TYPE>>
+        std::enable_if_t<std::is_base_of_v<RACES::Mutations::MutationType, MUTATION_TYPE>, bool> = true>
+std::map<std::string, RACES::Mutations::Signature<MUTATION_TYPE>>
 load_signature(const GenomicDataStorage& storage)
 {
   std::ifstream is(storage.get_signatures_path<MUTATION_TYPE>());
 
-  return Races::Mutations::Signature<MUTATION_TYPE>::read_from_stream(is);
+  return RACES::Mutations::Signature<MUTATION_TYPE>::read_from_stream(is);
 }
 
-Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRow& row, const size_t& row_num)
+RACES::Mutations::GenomicRegion get_CNA_region(const RACES::IO::CSVReader::CSVRow& row, const size_t& row_num)
 {
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   ChromosomeId chr_id;
   try {
@@ -393,12 +393,12 @@ Races::Mutations::GenomicRegion get_CNA_region(const Races::IO::CSVReader::CSVRo
 }
 
 
-std::vector<Races::Mutations::CNA> load_passenger_CNAs(const std::filesystem::path& CNAs_csv,
+std::vector<RACES::Mutations::CNA> load_passenger_CNAs(const std::filesystem::path& CNAs_csv,
                                                        const std::string& tumour_type)
 {
-  std::vector<Races::Mutations::CNA> CNAs;
+  std::vector<RACES::Mutations::CNA> CNAs;
 
-  Races::IO::CSVReader csv_reader(CNAs_csv, true, '\t');
+  RACES::IO::CSVReader csv_reader(CNAs_csv, true, '\t');
 
   size_t row_num{2};
   for (const auto& row : csv_reader) {
@@ -582,8 +582,8 @@ void MutationEngine::add_exposure(const double& time, const Rcpp::List& exposure
   m_engine.add(time, c_exposure);
 }
 
-const Races::Mutations::SID&
-get_mutation_from_name(const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+const RACES::Mutations::SID&
+get_mutation_from_name(const std::map<std::string, RACES::Mutations::SID>& driver_code_map,
                        const Rcpp::CharacterVector& R_mutation_code)
 {
     const auto mutation_code = Rcpp::as<std::string>(R_mutation_code);
@@ -597,7 +597,7 @@ get_mutation_from_name(const std::map<std::string, Races::Mutations::SID>& drive
     return found->second;
 }
 
-SIDSpec get_mutation_from_list(const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+SIDSpec get_mutation_from_list(const std::map<std::string, RACES::Mutations::SID>& driver_code_map,
                                const Rcpp::List& SID_spec, const size_t index)
 {
     const size_t spec_size = static_cast<size_t>(SID_spec.size());
@@ -613,7 +613,7 @@ SIDSpec get_mutation_from_list(const std::map<std::string, Races::Mutations::SID
                                 + " is not an mutation specification");
     }
 
-    Races::Mutations::AlleleId allele_id = RANDOM_ALLELE;
+    RACES::Mutations::AlleleId allele_id = RANDOM_ALLELE;
 
     if (spec_size>1) {
         if (TYPEOF(SID_spec[1])!=REALSXP) {
@@ -622,7 +622,7 @@ SIDSpec get_mutation_from_list(const std::map<std::string, Races::Mutations::SID
                                 + " is not an mutation specification");
         }
 
-        allele_id = Rcpp::as<Races::Mutations::AlleleId>(SID_spec[1]);
+        allele_id = Rcpp::as<RACES::Mutations::AlleleId>(SID_spec[1]);
     }
 
     return SIDSpec(allele_id, get_mutation_from_name(driver_code_map, SID_spec[0]));
@@ -630,8 +630,8 @@ SIDSpec get_mutation_from_list(const std::map<std::string, Races::Mutations::SID
 
 void
 get_mutation_spec(std::list<SIDSpec>& c_sids,
-                  std::list<Races::Mutations::CNA>& c_cnas,
-                  const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                  std::list<RACES::Mutations::CNA>& c_cnas,
+                  const std::map<std::string, RACES::Mutations::SID>& driver_code_map,
                   const Rcpp::List& rcpp_list, const size_t& index)
 {
     switch (TYPEOF(rcpp_list[index])) {
@@ -659,7 +659,7 @@ get_mutation_spec(std::list<SIDSpec>& c_sids,
                 if ( s4obj.is("Rcpp_CNA")) {
                     const auto cna = Rcpp::as<CNA>(rcpp_list[index]);
 
-                    c_cnas.push_back(static_cast<const Races::Mutations::CNA&>(cna));
+                    c_cnas.push_back(static_cast<const RACES::Mutations::CNA&>(cna));
 
                     return;
                 }
@@ -676,8 +676,8 @@ get_mutation_spec(std::list<SIDSpec>& c_sids,
 
 void
 get_mutation_lists(std::list<SIDSpec>& c_sids,
-                   std::list<Races::Mutations::CNA>& c_cnas,
-                   const std::map<std::string, Races::Mutations::SID>& driver_code_map,
+                   std::list<RACES::Mutations::CNA>& c_cnas,
+                   const std::map<std::string, RACES::Mutations::SID>& driver_code_map,
                    const Rcpp::List& rcpp_list)
 {
     const size_t list_size = static_cast<size_t>(rcpp_list.size());
@@ -723,10 +723,10 @@ bool contains_passenger_rates(const Rcpp::List& list)
   return true;
 }
 
-Races::Mutations::PassengerRates
+RACES::Mutations::PassengerRates
 get_passenger_rates(const Rcpp::List& list)
 {
-  Races::Mutations::PassengerRates p_rates;
+  RACES::Mutations::PassengerRates p_rates;
 
   if (!list.hasAttribute("names")) {
     throw std::runtime_error("Passenger rates list must be a named list whose names "
@@ -751,10 +751,10 @@ get_passenger_rates(const Rcpp::List& list)
   return p_rates;
 }
 
-std::map<std::string, Races::Mutations::PassengerRates>
+std::map<std::string, RACES::Mutations::PassengerRates>
 get_epistate_passenger_rates(const Rcpp::List& list)
 {
-  std::map<std::string, Races::Mutations::PassengerRates> ep_rates;
+  std::map<std::string, RACES::Mutations::PassengerRates> ep_rates;
 
   if (!list.hasAttribute("names")) {
     throw std::runtime_error("Epistate passenger rates list must be a "
@@ -780,17 +780,17 @@ get_epistate_passenger_rates(const Rcpp::List& list)
   return ep_rates;
 }
 
-struct FilterNonChromosomeSequence : public Races::IO::FASTA::SequenceFilter
+struct FilterNonChromosomeSequence : public RACES::IO::FASTA::SequenceFilter
 {
-    Races::Mutations::ChromosomeId last_chr_id;
+    RACES::Mutations::ChromosomeId last_chr_id;
 
     inline bool operator()(const std::string& header)
     {
-        return !Races::IO::FASTA::is_chromosome_header(header, last_chr_id);
+        return !RACES::IO::FASTA::is_chromosome_header(header, last_chr_id);
     }
 };
 
-void check_wrong_chromosome_SNV(const std::map<Races::Mutations::ChromosomeId, SID_iterator>& SNV_partition)
+void check_wrong_chromosome_SNV(const std::map<RACES::Mutations::ChromosomeId, SID_iterator>& SNV_partition)
 {
   if (SNV_partition.size()>0) {
     std::ostringstream oss;
@@ -826,9 +826,9 @@ void retrieve_missing_references(const std::string& mutant_name,
                                  const std::filesystem::path fasta_filename,
                                  std::list<SIDSpec>& SNVs)
 {
-  Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout);
 
-  std::map<Races::Mutations::ChromosomeId, SID_iterator> SNV_partition;
+  std::map<RACES::Mutations::ChromosomeId, SID_iterator> SNV_partition;
 
   size_t SNV_to_check{0};
   for (auto it=SNVs.begin(); it != SNVs.end(); ++it) {
@@ -838,7 +838,7 @@ void retrieve_missing_references(const std::string& mutant_name,
     }
   }
 
-  Races::IO::FASTA::Sequence chr_seq;
+  RACES::IO::FASTA::Sequence chr_seq;
 
   FilterNonChromosomeSequence filter;
 
@@ -846,7 +846,7 @@ void retrieve_missing_references(const std::string& mutant_name,
 
   const auto fasta_size = filesize(fasta_filename);
   std::ifstream fasta_stream(fasta_filename);
-  while (SNV_to_check>0 && Races::IO::FASTA::Sequence::read(fasta_stream, chr_seq, filter, progress_bar)) {
+  while (SNV_to_check>0 && RACES::IO::FASTA::Sequence::read(fasta_stream, chr_seq, filter, progress_bar)) {
     auto chr_id = filter.last_chr_id;
 
     progress_bar.set_progress((100*fasta_stream.tellg())/fasta_size);
@@ -886,7 +886,7 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
                                 const Rcpp::List& drivers)
 {
   std::list<SIDSpec> c_sids;
-  std::list<Races::Mutations::CNA> c_cnas;
+  std::list<RACES::Mutations::CNA> c_cnas;
 
   const auto& driver_storage = m_engine.get_driver_storage();
   get_mutation_lists(c_sids, c_cnas, driver_storage.get_mutations(), drivers);
@@ -912,7 +912,7 @@ MutationEngine::place_mutations(const SamplesForest& forest,
                                 const std::string& preneoplatic_indel_signature_name,
                                 const int seed)
 {
-  Races::UI::ProgressBar progress_bar(Rcpp::Rcout);
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout);
 
   progress_bar.set_message("Placing mutations");
 
@@ -923,7 +923,7 @@ MutationEngine::place_mutations(const SamplesForest& forest,
                                                preneoplatic_indel_signature_name);
   progress_bar.set_message("Mutations placed");
 
-  using MutationType = Races::Mutations::MutationType;
+  using MutationType = RACES::Mutations::MutationType;
 
   const auto& const_m_engine = m_engine;
 
@@ -936,7 +936,7 @@ Rcpp::List MutationEngine::get_SNV_signatures_dataframe() const
 {
   Rcpp::Function read_delim("read.delim");
 
-  return read_delim(to_string(storage.get_signatures_path<Races::Mutations::SBSType>()),
+  return read_delim(to_string(storage.get_signatures_path<RACES::Mutations::SBSType>()),
                     Rcpp::_["quote"]="");
 }
 
@@ -944,7 +944,7 @@ Rcpp::List MutationEngine::get_indel_signatures_dataframe() const
 {
   Rcpp::Function read_delim("read.delim");
 
-  return read_delim(to_string(storage.get_signatures_path<Races::Mutations::IDType>()),
+  return read_delim(to_string(storage.get_signatures_path<RACES::Mutations::IDType>()),
                     Rcpp::_["quote"]="");
 }
 
@@ -1012,9 +1012,9 @@ void MutationEngine::show() const
 
   Rcout << std::endl << " Timed Exposure" << std::endl;
 
-  show_timed_exposures<Races::Mutations::SBSType>();
+  show_timed_exposures<RACES::Mutations::SBSType>();
   Rcout << std::endl;
-  show_timed_exposures<Races::Mutations::IDType>();
+  show_timed_exposures<RACES::Mutations::IDType>();
   Rcout << std::endl;
 }
 
@@ -1046,10 +1046,10 @@ void MutationEngine::set_context_sampling(const size_t& context_sampling)
 
 void MutationEngine::reset(const bool full)
 {
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   MutationalProperties mutational_properties;
-  std::map<MutationType::Type, std::map<Races::Time, MutationalExposure>> timed_exposures;
+  std::map<MutationType::Type, std::map<RACES::Time, MutationalExposure>> timed_exposures;
 
   if (!full) {
     mutational_properties = m_engine.get_mutational_properties();
@@ -1082,7 +1082,7 @@ void MutationEngine::reset(const bool full)
 
   auto germline = germline_storage.get_germline(germline_subject);
 
-  m_engine = Races::Mutations::MutationEngine(context_index, rs_index,
+  m_engine = RACES::Mutations::MutationEngine(context_index, rs_index,
                                               SBS_signatures,
                                               indel_signatures,
                                               mutational_properties, germline,

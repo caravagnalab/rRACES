@@ -30,22 +30,22 @@
 
 class MutationEngine;
 
-class PhylogeneticForest : public Races::Mutations::PhylogeneticForest
+class PhylogeneticForest : public RACES::Mutations::PhylogeneticForest
 {
   std::string germline_subject;
   std::filesystem::path reference_path;
 
-  using TimedMutationalExposure = std::map<Races::Time, Races::Mutations::MutationalExposure>;
+  using TimedMutationalExposure = std::map<RACES::Time, RACES::Mutations::MutationalExposure>;
 
-  std::map<Races::Mutations::MutationType::Type, TimedMutationalExposure> timed_exposures;
+  std::map<RACES::Mutations::MutationType::Type, TimedMutationalExposure> timed_exposures;
 
-  PhylogeneticForest(const Races::Mutations::PhylogeneticForest& orig,
+  PhylogeneticForest(const RACES::Mutations::PhylogeneticForest& orig,
                      const std::string& germline_subject,
                      const std::filesystem::path reference_path,
                      const TimedMutationalExposure& timed_SBS_exposures,
                      const TimedMutationalExposure& timed_indel_exposures);
 
-  PhylogeneticForest(Races::Mutations::PhylogeneticForest&& orig,
+  PhylogeneticForest(RACES::Mutations::PhylogeneticForest&& orig,
                      const std::string& germline_subject,
                      const std::filesystem::path reference_path,
                      const TimedMutationalExposure& timed_SBS_exposures,
@@ -55,24 +55,24 @@ public:
 
   inline Rcpp::List get_nodes() const
   {
-    return ForestCore::get_nodes(static_cast<const Races::Mutations::PhylogeneticForest&>(*this));
+    return ForestCore::get_nodes(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this));
   }
 
   Rcpp::List get_samples_info() const;
 
   inline Rcpp::List get_species_info() const
   {
-    return ForestCore::get_species_info(static_cast<const Races::Mutations::PhylogeneticForest&>(*this));
+    return ForestCore::get_species_info(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this));
   }
 
   inline Rcpp::List get_coalescent_cells() const
   {
-    return ForestCore::get_coalescent_cells(static_cast<const Races::Mutations::PhylogeneticForest&>(*this));
+    return ForestCore::get_coalescent_cells(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this));
   }
 
-  inline Rcpp::List get_coalescent_cells(const std::list<Races::Mutants::CellId>& cell_ids) const
+  inline Rcpp::List get_coalescent_cells(const std::list<RACES::Mutants::CellId>& cell_ids) const
   {
-    return ForestCore::get_coalescent_cells(static_cast<const Races::Mutations::PhylogeneticForest&>(*this),
+    return ForestCore::get_coalescent_cells(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this),
                                             cell_ids);
   }
 
@@ -84,11 +84,11 @@ public:
 
   Rcpp::List get_sampled_cell_SIDs() const;
 
-  Rcpp::List get_sampled_cell_SIDs(const Races::Mutants::CellId& cell_ids) const;
+  Rcpp::List get_sampled_cell_SIDs(const RACES::Mutants::CellId& cell_ids) const;
 
   Rcpp::List get_sampled_cell_CNAs() const;
 
-  Rcpp::List get_sampled_cell_CNAs(const Races::Mutants::CellId& cell_ids) const;
+  Rcpp::List get_sampled_cell_CNAs(const RACES::Mutants::CellId& cell_ids) const;
 
   Rcpp::List get_first_occurrence(const SEXP& mutation) const;
 
@@ -110,7 +110,7 @@ public:
 
   static PhylogeneticForest load(const std::string& filename);
 
-  static Rcpp::List get_SID_dataframe(const Races::Mutations::CellGenomeMutations& cell_mutations);
+  static Rcpp::List get_SID_dataframe(const RACES::Mutations::CellGenomeMutations& cell_mutations);
 
   void show() const;
 

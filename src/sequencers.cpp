@@ -18,7 +18,7 @@
 #include "sequencers.hpp"
 
 ErrorlessIlluminaSequencer::ErrorlessIlluminaSequencer():
-    Races::Sequencers::Illumina::ErrorLessSequencer()
+    RACES::Sequencers::Illumina::ErrorLessSequencer()
 {}
 
 void ErrorlessIlluminaSequencer::show() const
@@ -28,7 +28,7 @@ void ErrorlessIlluminaSequencer::show() const
 }
 
 BasicIlluminaSequencer::BasicIlluminaSequencer(const double error_rate, const int seed):
-    Races::Sequencers::Illumina::BasicSequencer<>(error_rate,seed)
+    RACES::Sequencers::Illumina::BasicSequencer<>(error_rate,seed)
 {}
 
 void BasicIlluminaSequencer::show() const

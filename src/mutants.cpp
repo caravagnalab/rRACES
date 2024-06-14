@@ -26,8 +26,8 @@
 
 using namespace Rcpp;
 
-namespace RE = Races::Mutants::Evolutions;
-namespace RC = Races::Mutants;
+namespace RE = RACES::Mutants::Evolutions;
+namespace RC = RACES::Mutants;
 
 RCPP_MODULE(Mutants){
 
@@ -1082,14 +1082,14 @@ RCPP_MODULE(Mutants){
 //' sim$get_samples_info()
   .method("sample_cells",
           (void (Simulation::*)(const std::string&,
-                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner,
+                                const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                                 const size_t& num_of_cells) const)(&Simulation::sample_cells),
           "Sample a rectangular region of the tissue")
   .method("sample_cells",
           (void (Simulation::*)(const std::string&,
-                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& lower_corner,
-                                const std::vector<Races::Mutants::Evolutions::AxisPosition>& upper_corner) const)(&Simulation::sample_cells),
+                                const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const)(&Simulation::sample_cells),
           "Sample a rectangular region of the tissue")
   .method("sample_cells",
           (void (Simulation::*)(const std::string&,
@@ -1442,7 +1442,7 @@ RCPP_MODULE(Mutants){
 //'
 //' forest$get_coalescent_cells()
     .method("get_coalescent_cells",
-            (List (SamplesForest::*)(const std::list<Races::Mutants::CellId>&) const)
+            (List (SamplesForest::*)(const std::list<RACES::Mutants::CellId>&) const)
                 (&SamplesForest::get_coalescent_cells),
             "Get the most recent common ancestor of some cells")
     .method("get_coalescent_cells",
@@ -1585,9 +1585,9 @@ RCPP_MODULE(Mutants){
 //' # search for the forest sticks whose corresponding cells have
 //' # birth times 120.2 time units at most
 //' forest$get_sticks(120.2)
-    .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (SamplesForest::*)(const double) const)(&SamplesForest::get_sticks),
+    .method("get_sticks", (std::list<std::list<RACES::Mutants::CellId>> (SamplesForest::*)(const double) const)(&SamplesForest::get_sticks),
             "Get the forest sticks")
-    .method("get_sticks", (std::list<std::list<Races::Mutants::CellId>> (SamplesForest::*)() const)(&SamplesForest::get_sticks),
+    .method("get_sticks", (std::list<std::list<RACES::Mutants::CellId>> (SamplesForest::*)() const)(&SamplesForest::get_sticks),
             "Get the forest sticks")
 
 //' @name SamplesForest$save

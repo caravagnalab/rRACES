@@ -38,22 +38,22 @@ std::string join(const std::set<std::string>& S, const char& sep=';')
   return oss.str();
 }
 
-std::set<std::string> get_descriptions(const std::set<Races::Mutations::Mutation::Nature>& nature_set)
+std::set<std::string> get_descriptions(const std::set<RACES::Mutations::Mutation::Nature>& nature_set)
 {
   std::set<std::string> nature_strings;
 
   for (const auto& nature: nature_set) {
-    nature_strings.insert(Races::Mutations::Mutation::get_nature_description(nature));
+    nature_strings.insert(RACES::Mutations::Mutation::get_nature_description(nature));
   }
 
   return nature_strings;
 }
 
 void add_SNV_data(Rcpp::DataFrame& df,
-                  const Races::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
+                  const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
 {
   using namespace Rcpp;
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   size_t num_of_mutations = sample_statistics.get_data().size();
 
@@ -92,7 +92,7 @@ void add_SNV_data(Rcpp::DataFrame& df,
 }
 
 void add_sample_statistics(Rcpp::DataFrame& df,
-                           const Races::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
+                           const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
 {
   if (df.nrows()==0) {
     add_SNV_data(df, sample_statistics);
@@ -105,7 +105,7 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   }
 
   using namespace Rcpp;
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   DoubleVector VAF(num_of_mutations);
   IntegerVector occurrences(num_of_mutations), coverages(num_of_mutations);
@@ -133,7 +133,7 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   df.push_back(VAF, sample_name+".VAF");
 }
 
-Rcpp::List get_result_dataframe(const Races::Mutations::SequencingSimulations::SampleSetStatistics& sample_set_statistics)
+Rcpp::List get_result_dataframe(const RACES::Mutations::SequencingSimulations::SampleSetStatistics& sample_set_statistics)
 {
   auto df = Rcpp::DataFrame::create();
 
@@ -145,14 +145,14 @@ Rcpp::List get_result_dataframe(const Races::Mutations::SequencingSimulations::S
 }
 
 void
-split_by_labels(std::list<Races::Mutations::SampleGenomeMutations>& FACS_samples,
+split_by_labels(std::list<RACES::Mutations::SampleGenomeMutations>& FACS_samples,
                 const Rcpp::Function& labelling_function,
-                const Races::Mutations::SampleGenomeMutations& sample_mutations,
+                const RACES::Mutations::SampleGenomeMutations& sample_mutations,
                 const PhylogeneticForest& forest)
 {
-    using namespace Races::Mutants;
-    using namespace Races::Mutants::Evolutions;
-    using namespace Races::Mutations;
+    using namespace RACES::Mutants;
+    using namespace RACES::Mutants::Evolutions;
+    using namespace RACES::Mutations;
 
     std::map<std::string, SampleGenomeMutations*> labelled_samples;
 
@@ -181,7 +181,7 @@ split_by_labels(std::list<Races::Mutations::SampleGenomeMutations>& FACS_samples
 }
 
 void
-apply_FACS_labels(std::list<Races::Mutations::SampleGenomeMutations>& sample_mutations_list,
+apply_FACS_labels(std::list<RACES::Mutations::SampleGenomeMutations>& sample_mutations_list,
                   const SEXP& labelling_function,
                   const PhylogeneticForest& forest)
 {
@@ -190,7 +190,7 @@ apply_FACS_labels(std::list<Races::Mutations::SampleGenomeMutations>& sample_mut
             break;
         case CLOSXP:
         {
-            std::list<Races::Mutations::SampleGenomeMutations> FACS_samples;
+            std::list<RACES::Mutations::SampleGenomeMutations> FACS_samples;
             Rcpp::Function l_function = Rcpp::as<Rcpp::Function>(labelling_function);
 
             for (const auto& sample_mutations : sample_mutations_list) {
@@ -206,12 +206,12 @@ apply_FACS_labels(std::list<Races::Mutations::SampleGenomeMutations>& sample_mut
     } 
 }
 
-std::set<Races::Mutations::ChromosomeId>
-get_genome_chromosome_ids(const std::list<Races::Mutations::SampleGenomeMutations>& mutations_list)
+std::set<RACES::Mutations::ChromosomeId>
+get_genome_chromosome_ids(const std::list<RACES::Mutations::SampleGenomeMutations>& mutations_list)
 {
     for (const auto& sample_mutations : mutations_list) {
         for (const auto& mutations : sample_mutations.mutations) {
-            std::set<Races::Mutations::ChromosomeId> ids;
+            std::set<RACES::Mutations::ChromosomeId> ids;
             for (const auto& [chr_id, chr_mutations] : mutations->get_chromosomes()) {
                 ids.insert(chr_id);
             }
@@ -223,12 +223,12 @@ get_genome_chromosome_ids(const std::list<Races::Mutations::SampleGenomeMutation
     return {};
 }
 
-std::set<Races::Mutations::ChromosomeId>
-get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
+std::set<RACES::Mutations::ChromosomeId>
+get_relevant_chr_set(std::list<RACES::Mutations::SampleGenomeMutations> mutations_list,
                      SEXP& chromosome_ids)
 {
   using namespace Rcpp;
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   switch (TYPEOF(chromosome_ids)) {
     case NILSXP:
@@ -278,11 +278,11 @@ get_relevant_chr_set(std::list<Races::Mutations::SampleGenomeMutations> mutation
   }
 }
 
-Races::Mutations::SequencingSimulations::SampleSetStatistics
-simulate_seq(Races::Mutations::SequencingSimulations::ReadSimulator<>& simulator,
+RACES::Mutations::SequencingSimulations::SampleSetStatistics
+simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator,
              SEXP& sequencer,
-             std::list<Races::Mutations::SampleGenomeMutations> mutations_list,
-             const std::set<Races::Mutations::ChromosomeId>& chromosome_ids,
+             std::list<RACES::Mutations::SampleGenomeMutations> mutations_list,
+             const std::set<RACES::Mutations::ChromosomeId>& chromosome_ids,
              const double& coverage, const double purity,
              const std::string& base_name, std::ostream& progress_bar_stream)
 {
@@ -328,7 +328,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                         const double& purity, const bool& with_normal_sample,
                         const int& rnd_seed)
 {
-  using namespace Races::Mutations::SequencingSimulations;
+  using namespace RACES::Mutations::SequencingSimulations;
 
   ReadSimulator<> simulator;
 
@@ -371,7 +371,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
   if (with_normal_sample) {
     const auto& germline = forest.get_germline_mutations();
     mutations_list.emplace_back("normal_sample", germline);
-    auto germline_structure_ptr = std::make_shared<Races::Mutations::CellGenomeMutations>(germline.duplicate_structure());
+    auto germline_structure_ptr = std::make_shared<RACES::Mutations::CellGenomeMutations>(germline.duplicate_structure());
     mutations_list.back().mutations.push_back(germline_structure_ptr);
   }
 
@@ -393,7 +393,7 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
                                const std::string& output_dir, const bool& write_SAM,
                                const bool& update_SAM_dir, const int& rnd_seed)
 {
-  using namespace Races::Mutations::SequencingSimulations;
+  using namespace RACES::Mutations::SequencingSimulations;
 
   ReadSimulator<> simulator;
 
@@ -431,9 +431,9 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
 
   const auto& germline = forest.get_germline_mutations();
 
-  std::list<Races::Mutations::SampleGenomeMutations> mutations_list;
+  std::list<RACES::Mutations::SampleGenomeMutations> mutations_list;
   mutations_list.emplace_back("normal_sample", germline);
-  auto germline_structure_ptr = std::make_shared<Races::Mutations::CellGenomeMutations>(germline.duplicate_structure());
+  auto germline_structure_ptr = std::make_shared<RACES::Mutations::CellGenomeMutations>(germline.duplicate_structure());
   mutations_list.front().mutations.push_back(germline_structure_ptr);
 
   const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);

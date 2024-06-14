@@ -22,7 +22,7 @@
 
 #include <sequencer.hpp>
 
-class ErrorlessIlluminaSequencer : public Races::Sequencers::Illumina::ErrorLessSequencer
+class ErrorlessIlluminaSequencer : public RACES::Sequencers::Illumina::ErrorLessSequencer
 {
 public:
     ErrorlessIlluminaSequencer();
@@ -30,7 +30,7 @@ public:
     void show() const;
 };
 
-class BasicIlluminaSequencer : public Races::Sequencers::Illumina::BasicSequencer<>
+class BasicIlluminaSequencer : public RACES::Sequencers::Illumina::BasicSequencer<>
 {
 public:
     BasicIlluminaSequencer(const double error_rate, const int seed=0);

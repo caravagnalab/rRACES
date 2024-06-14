@@ -64,7 +64,7 @@ class GermlineStorage
     return get_path()/("germline_" + subject_name + ".dat");
   }
 
-  Races::Mutations::GenomeMutations build_germline(const std::string& subject_name) const;
+  RACES::Mutations::GenomeMutations build_germline(const std::string& subject_name) const;
 
 public:
 
@@ -79,12 +79,12 @@ public:
 
   std::vector<GermlineSubject> get_population() const;
 
-  std::map<Races::Mutations::ChromosomeId, size_t>
+  std::map<RACES::Mutations::ChromosomeId, size_t>
   get_alleles_per_chromosome(const std::string& gender) const;
 
   GermlineSubject get_subject(const std::string& subject_name) const;
 
-  Races::Mutations::GenomeMutations get_germline(const std::string& subject_name) const;
+  RACES::Mutations::GenomeMutations get_germline(const std::string& subject_name) const;
 
   Rcpp::List get_subject_df(const std::string& subject_name) const;
   
@@ -194,10 +194,10 @@ public:
   std::filesystem::path get_reference_path() const;
 
   template<typename MUTATION_TYPE,
-           std::enable_if_t<std::is_base_of_v<Races::Mutations::MutationType, MUTATION_TYPE>, bool> = true>
+           std::enable_if_t<std::is_base_of_v<RACES::Mutations::MutationType, MUTATION_TYPE>, bool> = true>
   std::filesystem::path get_signatures_path(const bool& downloaded) const
   {
-    if constexpr(std::is_base_of_v<MUTATION_TYPE, Races::Mutations::SBSType>) {
+    if constexpr(std::is_base_of_v<MUTATION_TYPE, RACES::Mutations::SBSType>) {
       if (downloaded) {
         return directory/std::string("SBS_signatures.txt");
       } else {
@@ -205,7 +205,7 @@ public:
       }
     }
 
-    if constexpr(std::is_base_of_v<MUTATION_TYPE, Races::Mutations::IDType>) {
+    if constexpr(std::is_base_of_v<MUTATION_TYPE, RACES::Mutations::IDType>) {
       if (downloaded) {
         return directory/std::string("indel_signatures.txt");
       } else {
@@ -217,14 +217,14 @@ public:
   }
 
   template<typename MUTATION_TYPE,
-           std::enable_if_t<std::is_base_of_v<Races::Mutations::MutationType, MUTATION_TYPE>, bool> = true>
+           std::enable_if_t<std::is_base_of_v<RACES::Mutations::MutationType, MUTATION_TYPE>, bool> = true>
   std::filesystem::path get_signatures_path() const
   {
-    if constexpr(std::is_base_of_v<MUTATION_TYPE, Races::Mutations::SBSType>) {
+    if constexpr(std::is_base_of_v<MUTATION_TYPE, RACES::Mutations::SBSType>) {
       return get_signatures_path<MUTATION_TYPE>(SBS_signatures_downloaded);
     }
 
-    if constexpr(std::is_base_of_v<MUTATION_TYPE, Races::Mutations::IDType>) {
+    if constexpr(std::is_base_of_v<MUTATION_TYPE, RACES::Mutations::IDType>) {
       return get_signatures_path<MUTATION_TYPE>(indel_signatures_downloaded);
     }
 

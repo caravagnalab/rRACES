@@ -81,7 +81,7 @@ std::vector<GermlineSubject> GermlineStorage::get_population() const
 {
   std::list<GermlineSubject> s_list;
 
-  Races::IO::CSVReader csv_reader(get_population_file(), true, '\t');
+  RACES::IO::CSVReader csv_reader(get_population_file(), true, '\t');
 
   for (const auto& row : csv_reader) {
     s_list.emplace_back(row.get_field(0), row.get_field(1),
@@ -111,14 +111,14 @@ Rcpp::List GermlineStorage::get_population_descritions_df() const
                   _["quote"]="", _["header"]=true, _["sep"] = "\t");
 }
 
-std::map<Races::Mutations::ChromosomeId, size_t>
+std::map<RACES::Mutations::ChromosomeId, size_t>
 GermlineStorage::get_alleles_per_chromosome(const std::string& gender) const
 {
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   std::map<ChromosomeId, size_t> alleles_per_chromosome;
 
-  Races::IO::CSVReader csv_reader(get_alleles_file(), true, '\t');
+  RACES::IO::CSVReader csv_reader(get_alleles_file(), true, '\t');
 
   const auto& header = csv_reader.get_header();
   auto found = find(header.begin(), header.end(), gender);
@@ -160,7 +160,7 @@ Rcpp::List GermlineStorage::get_subject_df(const std::string& subject_name) cons
 {
   using namespace Rcpp;
 
-  Races::IO::CSVReader csv_reader(get_population_file(), true, '\t');
+  RACES::IO::CSVReader csv_reader(get_population_file(), true, '\t');
 
   for (const auto& row : csv_reader) {
     if (row.get_field(0) == subject_name) {
@@ -181,10 +181,10 @@ Rcpp::List GermlineStorage::get_subject_df(const std::string& subject_name) cons
                            + "\" unknown.");
 }
 
-Races::Mutations::GenomeMutations
+RACES::Mutations::GenomeMutations
 GermlineStorage::build_germline(const std::string& subject_name) const
 {
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   auto bin_path = get_binary_file(subject_name);
 
@@ -195,17 +195,17 @@ GermlineStorage::build_germline(const std::string& subject_name) const
   auto germline = GermlineMutations::load(get_file(), num_of_alleles,
                                           subject.name, Rcpp::Rcout);
 
-  Races::Archive::Binary::Out oarchive(bin_path);
+  RACES::Archive::Binary::Out oarchive(bin_path);
 
   oarchive.save(germline, "germline", Rcpp::Rcout);
 
   return germline;
 }
 
-Races::Mutations::GenomeMutations
+RACES::Mutations::GenomeMutations
 GermlineStorage::get_germline(const std::string& subject_name) const
 {
-  using namespace Races::Mutations;
+  using namespace RACES::Mutations;
 
   auto bin_path = get_binary_file(subject_name);
 
@@ -213,15 +213,15 @@ GermlineStorage::get_germline(const std::string& subject_name) const
     return build_germline(subject_name);
   }
 
-  Races::Archive::Binary::In iarchive(bin_path);
+  RACES::Archive::Binary::In iarchive(bin_path);
 
   GenomeMutations germline;
 
   try {
     iarchive.load(germline, "germline", Rcpp::Rcout);
-  } catch (Races::Archive::WrongFileFormatDescr& ex) {
+  } catch (RACES::Archive::WrongFileFormatDescr& ex) {
     raise_error(ex, "germline");
-  } catch (Races::Archive::WrongFileFormatVersion& ex) {
+  } catch (RACES::Archive::WrongFileFormatVersion& ex) {
     raise_error(ex, "germline");
   }
   return germline;
@@ -243,9 +243,9 @@ GenomicDataStorage::GenomicDataStorage(const std::string& directory,
   std::filesystem::create_directory(directory);
 
   retrieve_reference();
-  retrieve_file<Races::Mutations::SBSType>("SBS");
+  retrieve_file<RACES::Mutations::SBSType>("SBS");
   SBS_signatures_downloaded = true;
-  retrieve_file<Races::Mutations::IDType>("indel");
+  retrieve_file<RACES::Mutations::IDType>("indel");
   indel_signatures_downloaded = true;
 
   retrieve_drivers();
