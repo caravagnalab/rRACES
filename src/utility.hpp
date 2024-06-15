@@ -38,6 +38,24 @@ inline std::string ordtostr(const size_t ord)
     return std::to_string(ord) + ordinal_suffix(ord);
 }
 
+template<typename RESULT_TYPE = int,
+         std::enable_if_t<std::is_integral_v<RESULT_TYPE>, bool> = true>
+RESULT_TYPE get_random_seed(const SEXP seed)
+{
+    switch (TYPEOF(seed)) {
+        case REALSXP:
+            return Rcpp::as<RESULT_TYPE>(seed);
+        case NILSXP:
+            return R::runif(std::numeric_limits<RESULT_TYPE>::min(),
+                            std::numeric_limits<RESULT_TYPE>::max());
+        default:
+            break;
+    }
+
+    throw std::domain_error("The seed must be either a "
+                            "number or NILL.");
+}
+
 void raise_error(const RACES::Archive::WrongFileFormatDescr& exception,
                  const std::string& file_description);
 

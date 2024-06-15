@@ -326,7 +326,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                         const bool& update_SAM_dir,
                         const SEXP& FACS_labelling_function,
                         const double& purity, const bool& with_normal_sample,
-                        const int& rnd_seed)
+                        const SEXP& seed)
 {
   using namespace RACES::Mutations::SequencingSimulations;
 
@@ -354,12 +354,13 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
     SAM_mode = ReadSimulator<>::Mode::UPDATE;
   }
 
+  auto c_seed = get_random_seed<int>(seed);
   if (insert_size==0) {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                SAM_mode, rnd_seed);
+                                SAM_mode, c_seed);
   } else {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                insert_size, SAM_mode, rnd_seed);
+                                insert_size, SAM_mode, c_seed);
   }
 
   simulator.enable_SAM_writing(write_SAM);
@@ -391,7 +392,7 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
                                SEXP& chromosome_ids, const double& coverage,
                                const int& read_size, const int& insert_size,
                                const std::string& output_dir, const bool& write_SAM,
-                               const bool& update_SAM_dir, const int& rnd_seed)
+                               const bool& update_SAM_dir, const SEXP& seed)
 {
   using namespace RACES::Mutations::SequencingSimulations;
 
@@ -419,12 +420,13 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
     SAM_mode = ReadSimulator<>::Mode::UPDATE;
   }
 
+  auto c_seed = get_random_seed<int>(seed);
   if (insert_size==0) {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                SAM_mode, rnd_seed);
+                                SAM_mode, c_seed);
   } else {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                insert_size, SAM_mode, rnd_seed);
+                                insert_size, SAM_mode, c_seed);
   }
 
   simulator.enable_SAM_writing(write_SAM);

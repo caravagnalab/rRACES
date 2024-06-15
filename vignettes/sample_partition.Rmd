@@ -23,6 +23,15 @@ knitr::opts_chunk$set(
 > *Note:* This article presents advanced topics on sequencing simulation.
 > Refer to `vignette("sequencing")` for an introduction on the subject.
 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
+
 
 The sequencing simulation supports sample partition
 analoguous to [FACS](https://www.sinobiological.com/category/fcm-facs-facs).
@@ -94,7 +103,7 @@ birth_time_labelling <- function(cell) {
     if (cell$birth_time>421) {
         return("YOUNG");
     }
-    
+
     if (cell$birth_time>321) {
         return("MIDDLE_AGED");
     }

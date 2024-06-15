@@ -16,6 +16,9 @@
 #'   based on phylogenetic sticks (column "`label`").
 #' @export
 #' @examples
+#' # set the seed of the random number generator
+#' set.seed(0)
+#'
 #' # simulate a tissue
 #' sim <- new(Simulation)
 #'
@@ -45,7 +48,7 @@
 #'
 #' m_engine$add_exposure(time = 0, c(SBS1 = 0.2,SBS5 = 0.8))
 #'
-#' phylo_forest <- m_engine$place_mutations(forest, 100)
+#' phylo_forest <- m_engine$place_mutations(forest, 100, 10)
 #'
 #' # simulate sequencing
 #' seq_results <- simulate_seq(phylo_forest, coverage = 100, write_SAM = F)

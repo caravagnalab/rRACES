@@ -19,6 +19,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
 
 The mutation engine places mutation on the sampled cell genome according to the
 [infinite sites model](https://en.wikipedia.org/wiki/Infinite_sites_model) by default.
@@ -31,6 +39,10 @@ whether it satisfies the infinite site model.
 ```{r, echo=FALSE,  results='hide', message=FALSE}
 library(rRACES)
 
+# set the seed of the random number generator
+set.seed(0)
+
+# create a simulation
 sim <- new(Simulation)
 
 sim$death_activation_level <- 20

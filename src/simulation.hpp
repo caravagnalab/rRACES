@@ -146,7 +146,7 @@ public:
 
   Simulation(const SEXP& first_param, const SEXP& second_param);
 
-  Simulation(const std::string& simulation_name, const int& seed, const bool& save_snapshots);
+  Simulation(const std::string& simulation_name, const SEXP& seed, const bool& save_snapshots);
 
   ~Simulation();
 

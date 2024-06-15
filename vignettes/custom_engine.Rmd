@@ -20,25 +20,33 @@ knitr::opts_chunk$set(
 )
 ```
 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
 
 rRACES/RACES can simulate genomic mutations on the cells represented in
 a `SamplesForest` according to the specified SBS and indel mutational signatures
-(see `vignette["mutations"]`). 
-This task is achieved by the mutation engine which uses two indices on the 
+(see `vignette["mutations"]`).
+This task is achieved by the mutation engine which uses two indices on the
 reference genome to place the most probable mutations according to
 signatures: the _context index_ and the _repeted sequence index_.
 
-The function `build_mutation_engine()` builds the mutation engine and 
+The function `build_mutation_engine()` builds the mutation engine and
 these two indices.
 
 ## Customizing the mutation engine
 
 While the most convient way to invoke `build_mutation_engine()` is by using
 the parameter `setup_code` (see `vignette["mutations"]`), the are cases
-in which a custom set-up is required. In these cases, 
+in which a custom set-up is required. In these cases,
 the function `build_mutation_engine()` can be called by specifying the name
 of the set-up directory, the path or URL of the reference sequence, the
-signature files, the driver mutation file, the passenger CNAs file, and 
+signature files, the driver mutation file, the passenger CNAs file, and
 the germline data directory.
 
 ```{r}
@@ -90,7 +98,7 @@ to occur in such a context (see [@alexandrov2020repertoire]). Hence, the
 function `build_mutation_engine()` builds
 a context index of the reference sequence to place SNVs on the forest
 cells. The complete context index of a sequence whose size is up to 4Gbps
-takes 4 times the length of the sequence itself both in memory and on the disk 
+takes 4 times the length of the sequence itself both in memory and on the disk
 because 4 bytes per nucleotide are required to store the context position.
 For instance, the complete contex index of a human genome takes about 12GBytes.
 In order to avoid such requirement in memory and disk space,
@@ -130,12 +138,12 @@ utils:::format.object_size(file.size("demo/context_index_50.cif"), "auto")
 
 ### The Repeated Sequence Index
 
-Analoguosly to the SBS signatures, the ID (indel) signatures fixes, for 
+Analoguosly to the SBS signatures, the ID (indel) signatures fixes, for
 some kinds of repeated sequences, the probability for an indel
 to occur in them (see [@alexandrov2020repertoire]). Thus, the `MutationEngine`
 function also builds an index for the repeated sequences in the reference.
 As in the case of the SBS signatures, the ID signatures can be memory eager.
-To mitigate the memory requirement, the function `build_mutation_engine()` 
+To mitigate the memory requirement, the function `build_mutation_engine()`
 accepts as parameters the maximum size of the considered indel
 (the parameter `max_index_size`) and the maximum number of reference position
 stored per repetition type (the parameter `max_repetition_storage`).

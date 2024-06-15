@@ -19,12 +19,22 @@ knitr::opts_chunk$set(
 )
 ```
 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
+
 We build a tumour with three populations branching.
 
 ```{r, fig.height=4, fig.width=3}
 library(rRACES)
-library(dplyr)
-library(ggplot2)
+
+# set the seed of the random number generator
+set.seed(0)
 
 sim <- new(Simulation, "Three Populations")
 
@@ -65,7 +75,7 @@ Second mutant starts.
 # New submutant
 sim$add_mutant(name = "B", growth_rates = 0.13, death_rates = 0.01)
 sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-sim$run_up_to_size("B", 400)
+sim$run_up_to_size("B", 1000)
 
 plot_tissue(sim)
 plot_muller(sim)
@@ -116,6 +126,8 @@ sample.
 ```{r,  fig.height=12, fig.width=17}
 # Tree data
 forest <- sim$get_samples_forest()
+
+library(dplyr)
 
 plot_forest(forest) %>%
   annotate_forest(forest)

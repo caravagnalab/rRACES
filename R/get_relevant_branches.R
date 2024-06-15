@@ -12,6 +12,9 @@
 #' @export
 #'
 #' @examples
+#' # set the seed of the random number generator
+#' set.seed(0)
+#'
 #' sim <- new(Simulation)
 #'
 #' sim$add_mutant(name = "A",

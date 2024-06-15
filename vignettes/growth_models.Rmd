@@ -20,26 +20,35 @@ knitr::opts_chunk$set(
 )
 ```
 
-rRACES/RACES simulate the tumour growth according to two alternative models: 
-the "border"-growth model and the homogeneous-growth model. 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
 
-The former exclusively admits duplication of cells that have space to duplicate 
+rRACES/RACES simulate the tumour growth according to two alternative models:
+the "border"-growth model and the homogeneous-growth model.
+
+The former exclusively admits duplication of cells that have space to duplicate
 (i.e., cells on the cancer border or near by death cells). The latter allows cell
 duplications everywhere in the tumour.
 
-The "border"-growth model is the default one. However, users can switch to the 
-homogeneous growth model by assigning the `Simulation`'s `border_growth_model` 
-Boolean field. By setting it to `FALSE`, the homogeneous-growth model is used. If, 
-instead, it is set to `TRUE`, the simulation evolves according with the 
+The "border"-growth model is the default one. However, users can switch to the
+homogeneous growth model by assigning the `Simulation`'s `border_growth_model`
+Boolean field. By setting it to `FALSE`, the homogeneous-growth model is used. If,
+instead, it is set to `TRUE`, the simulation evolves according with the
 "border"-growth model.
 
-In the remaining part of this article we clarify the differences between the 
-supported growth models by showing that they produce different evolutions 
+In the remaining part of this article we clarify the differences between the
+supported growth models by showing that they produce different evolutions
 of the very same cancer model.
 
 ### Homogeneous Growth
 
-First of all we need to create a new `Simulation` object and 
+First of all we need to create a new `Simulation` object and
 set `border_growth_model` to `FALSE`.
 
 ```{r}
@@ -54,8 +63,8 @@ sim$border_growth_model <- FALSE
 sim$death_activation_level <- 50
 ```
 
-Add a mutant `A` with epigenetic state, let the 
-simulation evolve until there are 1300 cells of species `A+`, 
+Add a mutant `A` with epigenetic state, let the
+simulation evolve until there are 1300 cells of species `A+`,
 take two samples, and let the simulation evolve again for 15 time units.
 
 ```{r}
@@ -85,8 +94,8 @@ sim$sample_cells("S_1_2",
 sim$run_up_to_time(sim$get_clock() + 15)
 ```
 
-Add a new mutant "B", let one of the cells in "A" 
-generate a cell in "B", let the simulation evolve until there 
+Add a new mutant "B", let one of the cells in "A"
+generate a cell in "B", let the simulation evolve until there
 are 5000 cells in "B+", and take again two samples.
 
 ```{r}
@@ -119,7 +128,6 @@ Finally, let us build the ancestor forest of the samples.
 
 ```{r, fig.width=14}
 library(dplyr)
-library(ggplot2)
 
 forest <- sim$get_samples_forest()
 
@@ -159,7 +167,7 @@ sim$death_activation_level <- 50
 ```
 
 Let us repeat what we did in the homogeneous growth model
-example. 
+example.
 
 
 ```{r}
@@ -243,14 +251,14 @@ plot_forest(forest, highlight = "S_2_2") %>%
 
 It is easy to see the differences in the analoguous plots of the above examples.
 
-First of all, the cancer growth is slower when subject to the "border"-growth model 
-than when the homogeneous-growth model is used. This is due to the fact that 
-the internal cells cannot duplicate in the former growth model, thus, the number of 
-cells active for duplication is always greater in it, than in the homogeneous-growth 
+First of all, the cancer growth is slower when subject to the "border"-growth model
+than when the homogeneous-growth model is used. This is due to the fact that
+the internal cells cannot duplicate in the former growth model, thus, the number of
+cells active for duplication is always greater in it, than in the homogeneous-growth
 model.
 
-Moreover, spacial closeness and closeness in the samples ancestor forest 
-are strictly related in the "border" growth model, whereas they appear to be loosely 
+Moreover, spacial closeness and closeness in the samples ancestor forest
+are strictly related in the "border" growth model, whereas they appear to be loosely
 related in the homogeneous growth model.
 This features can be easily spotted in the forest plots when
 the sample `S_2_1` is selected near the external tumour border.

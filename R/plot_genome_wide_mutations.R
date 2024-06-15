@@ -13,6 +13,9 @@
 #' @export
 #'
 #' @examples
+#' # set the seed of the random number generator
+#' set.seed(0)
+#'
 #' sim <- new(Simulation)
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,
@@ -32,7 +35,7 @@
 #' m_engine$add_mutant(mutant_name="A", passenger_rates=c(SNV=5e-8))
 #' m_engine$add_exposure(c(SBS1 = 0.2, SBS5 = 0.8))
 #'
-#' phylo_forest <- m_engine$place_mutations(forest, 10)
+#' phylo_forest <- m_engine$place_mutations(forest, 10, 10)
 #'
 #' seq_results <- simulate_seq(
 #'   phylo_forest,
@@ -124,6 +127,9 @@ plot_DR <- function(
 #' @export
 #'
 #' @examples
+#' # set the seed of the random number generator
+#' set.seed(0)
+#'
 #' sim <- new(Simulation)
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,
@@ -143,7 +149,7 @@ plot_DR <- function(
 #' m_engine$add_mutant(mutant_name="A", passenger_rates=c(SNV=5e-8))
 #' m_engine$add_exposure(c(SBS1 = 0.2, SBS5 = 0.8))
 #'
-#' phylo_forest <- m_engine$place_mutations(forest, 10)
+#' phylo_forest <- m_engine$place_mutations(forest, 10, 10)
 #'
 #' seq_results <- simulate_seq(
 #'   phylo_forest,
@@ -234,6 +240,9 @@ plot_BAF <- function(
 #' @export
 #'
 #' @examples
+#' # set the seed of the random number generator
+#' set.seed(0)
+#'
 #' sim <- new(Simulation)
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,
@@ -253,7 +262,7 @@ plot_BAF <- function(
 #' m_engine$add_mutant(mutant_name="A", passenger_rates=c(SNV=5e-8))
 #' m_engine$add_exposure(c(SBS1 = 0.2, SBS5 = 0.8))
 #'
-#' phylo_forest <- m_engine$place_mutations(forest, 10)
+#' phylo_forest <- m_engine$place_mutations(forest, 10, 10)
 #'
 #' seq_results <- simulate_seq(
 #'   phylo_forest,

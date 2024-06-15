@@ -19,9 +19,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rRACES)
-```
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
 
 To simulate a tissue the following steps are required:
 
@@ -53,9 +58,17 @@ million cells - and sets the name of the simulation to be
 A simulation custom name can be specified as it follows.
 
 ```{r, eval = TRUE}
+library(rRACES)
+
+# set the seed of the random number generator
+set.seed(0)
+
 # Call your simulation "Test"
 sim <- new(Simulation, "Test")
 ```
+
+The `set.seed()` call is not mandatory and can be avoided; however, it is
+highly suggested to guarantee the simulation repeatability.
 
 In order to save the simulation progresses in the disk and recover it in
 the future, use the optional Boolean parameter `save_snapshots`. By

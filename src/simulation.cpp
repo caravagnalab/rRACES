@@ -406,10 +406,11 @@ void Simulation::init(const SEXP& sexp)
     case STRSXP: {
       name = as<std::string>(sexp);
 
+      auto seed = get_random_seed<int>(R_NilValue);
       if (save_snapshots) {
-        sim_ptr = std::make_shared<RS::Simulation>(name);
+        sim_ptr = std::make_shared<RS::Simulation>(name, seed);
       } else {
-        sim_ptr = std::make_shared<RS::Simulation>(get_tmp_dir_path());
+        sim_ptr = std::make_shared<RS::Simulation>(get_tmp_dir_path(), seed);
       }
       break;
     }
@@ -425,7 +426,8 @@ void Simulation::init(const SEXP& sexp)
 }
 
 Simulation::Simulation():
-  sim_ptr(std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path())),
+  sim_ptr(std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path(),
+                                                                   get_random_seed<int>(R_NilValue))),
   name(get_default_name()), save_snapshots(false)
 {}
 
@@ -438,10 +440,11 @@ Simulation::Simulation(const SEXP& sexp):
     save_snapshots = as<bool>(sexp);
     name = get_default_name();
 
+    auto seed = get_random_seed<int>(R_NilValue);
     if (save_snapshots) {
-      sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(name);
+      sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(name, seed);
     } else {
-      sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path());
+      sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path(), seed);
     }
 
     return;
@@ -491,13 +494,15 @@ Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
   sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(name, seed);
 }
 
-Simulation::Simulation(const std::string& simulation_name, const int& seed, const bool& save_snapshots):
+Simulation::Simulation(const std::string& simulation_name, const SEXP& seed, const bool& save_snapshots):
   name(simulation_name), save_snapshots(save_snapshots)
 {
+  int c_seed = get_random_seed<int>(seed);
+
   if (save_snapshots) {
-    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(simulation_name, seed);
+    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(simulation_name, c_seed);
   } else {
-    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path(), seed);
+    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path(), c_seed);
   }
 }
 

@@ -36,6 +36,10 @@ RCPP_MODULE(Logics){
 //'
 //' @examples
 //' # build a simulation and add two species to it
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -75,6 +79,10 @@ RCPP_MODULE(Logics){
 //'
 //' @examples
 //' # build a simulation and add two species to it
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                growth_rates = 0.2,
@@ -129,6 +137,10 @@ RCPP_MODULE(Logics){
 //'
 //' @examples
 //' # build a simulation and add two species to it
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),

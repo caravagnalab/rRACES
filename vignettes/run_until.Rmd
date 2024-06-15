@@ -24,6 +24,15 @@ knitr::opts_chunk$set(
 > Refer to `vignette("tissue_simulation")` for an introduction of the
 > subject.
 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
+
 rRACES implements a first order unquantified logic having variables
 representing the cardinality of the species, the number of events
 fired in a species (being duplications, deaths, or switches), and
@@ -53,6 +62,9 @@ variable is returned.
 
 ```{r}
 library(rRACES)
+
+# set the seed of the random number generator
+set.seed(0)
 
 # build a simulation and add two species to it
 sim <- new(Simulation)

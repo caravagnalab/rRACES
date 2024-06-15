@@ -17,6 +17,8 @@
 
 #include "sequencers.hpp"
 
+#include "utility.hpp"
+
 ErrorlessIlluminaSequencer::ErrorlessIlluminaSequencer():
     RACES::Sequencers::Illumina::ErrorLessSequencer()
 {}
@@ -27,8 +29,10 @@ void ErrorlessIlluminaSequencer::show() const
                 << get_platform_name() << "\")" << std::endl;
 }
 
-BasicIlluminaSequencer::BasicIlluminaSequencer(const double error_rate, const int seed):
-    RACES::Sequencers::Illumina::BasicSequencer<>(error_rate,seed)
+BasicIlluminaSequencer::BasicIlluminaSequencer(const double error_rate,
+                                               const SEXP seed):
+    RACES::Sequencers::Illumina::BasicSequencer<>(error_rate,
+                                                  get_random_seed<int>(seed))
 {}
 
 void BasicIlluminaSequencer::show() const

@@ -289,9 +289,9 @@ RCPP_MODULE(Mutants){
   .constructor("Create a simulation whose name is \"races_<year>_<hour><minute><second>\"")
   .constructor<SEXP>("Create a simulation")
   .constructor<SEXP, SEXP>("Crete a simulation")
-  .constructor<std::string, int, bool>("Crete a simulation: the first parameter is the simulation name; "
-                                       "the second one is the random seed; the third one is a Boolean flag "
-                                       "to enable/disable simulation saves")
+  .constructor<std::string, SEXP, bool>("Crete a simulation: the first parameter is the simulation name; "
+                                        "the second one is the random seed; the third one is a Boolean flag "
+                                        "to enable/disable simulation saves")
 
 //' @name Simulation$place_cell
 //' @title Placing one cell in the tissue
@@ -300,6 +300,10 @@ RCPP_MODULE(Mutants){
 //' @param x The position on the x axis of the cell.
 //' @param y The position on the y axis of the cell.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -324,6 +328,10 @@ RCPP_MODULE(Mutants){
 //' @param growth_rates The duplication rates of the mutant species.
 //' @param death_rates The death rates of the mutant species.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //'
 //' # create the two species "A+" and "A-". They both have mutant "A".
@@ -353,6 +361,10 @@ RCPP_MODULE(Mutants){
 //' @return A list reporting `cell_id`, `mutant`, `epistate`, `position_x`,
 //'   and `position_y` of the choosen cell.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -398,6 +410,10 @@ RCPP_MODULE(Mutants){
 //' @param dest The name of the mutant to which the mutation leads.
 //' @param time The simulated time at which the mutation will occurs.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -419,6 +435,10 @@ RCPP_MODULE(Mutants){
 //' @return A dataframe reporting `mutant`, `epistate`, `growth_rate`,
 //'   `death_rate`, and `switch_rate` for each registered species.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
@@ -434,6 +454,10 @@ RCPP_MODULE(Mutants){
 //' @description This method returns the samples forest.
 //' @return The samples forest having as leaves the sampled cells
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
@@ -461,6 +485,10 @@ RCPP_MODULE(Mutants){
 //'   if and only if that $S$ has reached the death activation level at
 //'   least once during the simulation.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //'
 //' # get the simulation death activation level
@@ -481,6 +509,10 @@ RCPP_MODULE(Mutants){
 //'   is used. Otherwise, the homogeneous-growth model is applied.
 //'   It is set to `TRUE` by default.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //'
 //' # is the simulation using the border driven growth model 
@@ -504,6 +536,10 @@ RCPP_MODULE(Mutants){
 //' @description This method returns the current simulation time.
 //' @return The time simulated by the simulation.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -525,6 +561,10 @@ RCPP_MODULE(Mutants){
 //' @return A dataframe reporting `cell_id`, `mutant`, `epistate`, `position_x`,
 //'   and `position_y` of the aimed cell.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -565,6 +605,10 @@ RCPP_MODULE(Mutants){
 //'   "`position_x`", and "`position_y`" for each cells satisfying the provided
 //'   filters and laying in the input frame.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -613,6 +657,10 @@ RCPP_MODULE(Mutants){
 //' @return The simulation name, which corresponds to the name of the directory
 //'   in which the simulation is saving its progresses.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //'
 //' # Expecting "test"
@@ -630,6 +678,10 @@ RCPP_MODULE(Mutants){
 //' @return A dataframe reporting `ancestor`, `progeny`, and `first_occurrence`
 //'   of each species-to-species transition.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -651,6 +703,10 @@ RCPP_MODULE(Mutants){
 //' @description This method returns the tissue name.
 //' @return The name of the simulated tissue.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$update_tissue("Liver", 1200, 900)
 //'
@@ -663,6 +719,10 @@ RCPP_MODULE(Mutants){
 //' @description This method returns the size of the simulated tissue.
 //' @return The vector `c(x_size, y_size)` of the simulated tissue.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$update_tissue("Liver", 1200, 900)
 //'
@@ -678,6 +738,10 @@ RCPP_MODULE(Mutants){
 //'   `position_y`, and `time` for each cells manually added to
 //'   the simulation.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -703,6 +767,10 @@ RCPP_MODULE(Mutants){
 //' @return A dataframe reporting `mutant`, `epistate`, `counts` for each
 //'   species in the simulation.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
@@ -721,6 +789,10 @@ RCPP_MODULE(Mutants){
 //' @return A dataframe reporting `mutant`, `epistate`, `counts`,
 //'   and `time` for each species, and for each sampled time.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
@@ -741,6 +813,10 @@ RCPP_MODULE(Mutants){
 //' @return A dataframe reporting `event`, `mutant`, `epistate`, and `fired`
 //'   for each event type, mutant, and epigenetic states.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -762,6 +838,10 @@ RCPP_MODULE(Mutants){
 //'   and `time` for each event type, for each species, and for each
 //'   sampled time.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -783,6 +863,10 @@ RCPP_MODULE(Mutants){
 //' @param species The species whose rates are aimed.
 //' @return The list of the species rates.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
@@ -805,6 +889,10 @@ RCPP_MODULE(Mutants){
 //'   in a species.
 //' @seealso [Simulation$update_rates()], [Simulation$get_rates()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -846,6 +934,10 @@ RCPP_MODULE(Mutants){
 //'   [SamplesForest$get_samples_info()],
 //'   [PhylogeneticForest$get_samples_info()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
@@ -877,6 +969,10 @@ RCPP_MODULE(Mutants){
 //'   time series data samples.
 //' @seealso `Simulation`
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //'
 //' # get the delta time between two time series samples (0 by default)
@@ -899,6 +995,10 @@ RCPP_MODULE(Mutants){
 //' @param mutated_mutant The mutant of the mutated cell.
 //' @seealso `Simulation`, [Simulation$choose_cell_in()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -933,6 +1033,10 @@ RCPP_MODULE(Mutants){
 //' @seealso `Simulation`, [Simulation$run_up_to_event()],
 //'    [Simulation$run_up_to_size()], [Simulation$run_until()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$place_cell("A", 500, 500)
@@ -952,6 +1056,10 @@ RCPP_MODULE(Mutants){
 //' @seealso `Simulation`, [Simulation$run_up_to_time()],
 //'    [Simulation$run_up_to_size()], [Simulation$run_until()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -974,6 +1082,10 @@ RCPP_MODULE(Mutants){
 //' @seealso `Simulation`, [Simulation$run_up_to_time()],
 //'    [Simulation$run_up_to_event()], [Simulation$run_until()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -996,6 +1108,10 @@ RCPP_MODULE(Mutants){
 //' @seealso `Simulation`, [Simulation$var()], [Simulation$run_up_to_time()],
 //'    [Simulation$run_up_to_event()], [Simulation$run_up_to_size()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -1060,6 +1176,10 @@ RCPP_MODULE(Mutants){
 //'   (optional).
 //' @seealso [Simulation$get_samples_info()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
@@ -1102,6 +1222,10 @@ RCPP_MODULE(Mutants){
 //' @param species The species whose rates must be updated.
 //' @param rates The list of rates to be updated.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -1120,6 +1244,10 @@ RCPP_MODULE(Mutants){
 //' @param width The width of the new tissue.
 //' @param height The height of the new tissue.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //'
 //' # set the tissue size, but not the name
@@ -1150,6 +1278,10 @@ RCPP_MODULE(Mutants){
 //'   be found, the corresponding rectangle.
 //' @seealso `Simulation`
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$death_activation_level <- 50
 //' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
@@ -1179,16 +1311,20 @@ RCPP_MODULE(Mutants){
 //' @param height The height of the searched sample.
 //' @param n_samples The number of searched samples.
 //' @param seed The seed of the random generator the select the samples
-//'     among those satisfying the constraints (default: 0).
+//'     among those satisfying the constraints (optional).
 //' @return A vector of `n_samples` rectangular tissue samples that
 //'     satisfy the aimed constraints.
 //' @seealso `Simulation`
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$death_activation_level <- 50
 //' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
-//' sim$run_up_to_size(species = "A", num_of_cells = 500)
+//' sim$run_up_to_size(species = "A", num_of_cells = 50)
 //'
 //' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
@@ -1243,6 +1379,10 @@ RCPP_MODULE(Mutants){
 //' @seealso `Simulation`, [Simulation$run_until()]
 //' @examples
 //' # build a simulation and add two species to it
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -1382,6 +1522,9 @@ RCPP_MODULE(Mutants){
 //'   "`mutant`"), the epistate (column "`epistate`"),
 //'   and the birth time (column "`birth_time`").
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
 //' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
@@ -1425,6 +1568,10 @@ RCPP_MODULE(Mutants){
 //'   (column "`mutant`"), the epistate (column "`epistate`"),
 //'   and the birth time (column "`birth_time`").
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
@@ -1457,6 +1604,10 @@ RCPP_MODULE(Mutants){
 //'   as leaves of the new forest
 //' @return A samples forest built on the samples mentioned in `sample_names`
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
@@ -1496,6 +1647,10 @@ RCPP_MODULE(Mutants){
 //' @seealso [PhylogeneticForest$get_samples_info()] for usage examples,
 //'   [Simulation$sample_cells()], [Simulation$get_samples_info()]
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A", growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1546,19 +1701,24 @@ RCPP_MODULE(Mutants){
 //'   stick from the higher to the deeper in the forest.
 //' @seealso [PhylogeneticForest$get_sticks()]
 //' @examples
+//' set.seed(0)
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
+//' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant(name = "A", growth_rate = 0.2,
 //'                death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
 //'
 //' sim$death_activation_level <- 100
-//' sim$run_up_to_size(species = "A", num_of_cells = 5000)
+//' sim$run_up_to_size(species = "A", num_of_cells = 100)
 //'
 //' sim$get_clock()
 //'
 //' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-//' sim$run_up_to_size(species = "B", num_of_cells = 50)
+//' sim$run_up_to_size(species = "B", num_of_cells = 100)
 //'
 //' sim$get_clock()
 //'

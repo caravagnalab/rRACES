@@ -33,7 +33,7 @@ public:
 class BasicIlluminaSequencer : public RACES::Sequencers::Illumina::BasicSequencer<>
 {
 public:
-    BasicIlluminaSequencer(const double error_rate, const int seed=0);
+    BasicIlluminaSequencer(const double error_rate, const SEXP seed=R_NilValue);
 
     void show() const;
 };

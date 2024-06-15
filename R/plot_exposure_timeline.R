@@ -90,7 +90,7 @@ get_exposure_ends <- function(phylo_forest) {
 #' m_engine$add_exposure(time = 50,
 #'                       c(SBS5 = 0.3, SBS2 = 0.2, SBS3 = 0.5,
 #'                         ID2 = 0.8, ID21 = 0.2))
-#' phylo_forest <- m_engine$place_mutations(forest, 500)
+#' phylo_forest <- m_engine$place_mutations(forest, 500, 10)
 #'
 #' # plotting the phylogenetic forest
 #' plot_exposure_timeline(phylo_forest)

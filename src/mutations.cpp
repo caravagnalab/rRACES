@@ -490,14 +490,17 @@ RCPP_MODULE(Mutations){
 //' @param samples_forest A samples forest.
 //' @param num_of_preneoplatic_SNVs The number of pre-neoplastic SNVs.
 //' @param preneoplatic_SNV_signature_name The name of the SNV signature
-//'   for the preneoplastic SNV generation. (optional)
+//'   for the preneoplastic SNV generation (optional).
 //' @param num_of_preneoplatic_indels The number of pre-neoplastic indels.
 //' @param preneoplatic_indel_signature_name The name of the indel signature
-//'   for the preneoplastic indel generation. (optional)
-//' @param seed The seed for random number generator. (optional)
+//'   for the preneoplastic indel generation.
+//' @param seed The seed for random number generator (optional).
 //' @return A phylogenetic forest whose structure corresponds to
 //'   `samples_forest`.
 //' @examples
+//' # set the seed of the random number generator
+//' set.seed(0)
+//'
 //' # create a simulation
 //' sim <- new(Simulation)
 //' sim$add_mutant("A", c(SNV = 0.2), 0.01)
@@ -530,11 +533,6 @@ RCPP_MODULE(Mutations){
 //' phylogenetic_forest
     .method("place_mutations",
             (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
-                                                    const size_t& num_of_preneoplatic_SNVs))(
-                                                        &MutationEngine::place_mutations),
-            "Place mutations on a SamplesForest")
-    .method("place_mutations",
-            (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
                                                     const size_t& num_of_preneoplatic_SNVs,
                                                     const size_t& num_of_preneoplatic_indels))(
                                                         &MutationEngine::place_mutations),
@@ -543,7 +541,7 @@ RCPP_MODULE(Mutations){
             (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
                                                     const size_t& num_of_preneoplatic_SNVs,
                                                     const size_t& num_of_preneoplatic_indels,
-                                                    const int seed))(&MutationEngine::place_mutations),
+                                                    const SEXP& seed))(&MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
     .method("place_mutations",
             (PhylogeneticForest (MutationEngine::*)(const SamplesForest& forest,
@@ -559,7 +557,7 @@ RCPP_MODULE(Mutations){
                                                     const std::string& preneoplatic_SNV_signature_name,
                                                     const size_t& num_of_preneoplatic_indels,
                                                     const std::string& preneoplatic_indel_signature_name,
-                                                    const int seed))(&MutationEngine::place_mutations),
+                                                    const SEXP& seed))(&MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
 
 //' @name MutationEngine$get_active_germline

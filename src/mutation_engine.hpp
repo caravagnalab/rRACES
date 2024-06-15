@@ -148,33 +148,41 @@ public:
                                               const size_t& num_of_preneoplatic_SNVs,
                                               const std::string& preneoplatic_SNV_signature_name,
                                               const size_t& num_of_preneoplatic_indels,
-                                              const std::string& preneoplatic_indel_signature_name)
+                                              const std::string& preneoplatic_indel_signature_name,
+                                              const SEXP& seed)
     {
         return place_mutations(forest, num_of_preneoplatic_SNVs, preneoplatic_SNV_signature_name,
-                               num_of_preneoplatic_indels, preneoplatic_indel_signature_name, 0);
+                               num_of_preneoplatic_indels, preneoplatic_indel_signature_name,
+                               get_random_seed<int>(seed));
     }
 
     inline PhylogeneticForest place_mutations(const SamplesForest& forest,
                                               const size_t& num_of_preneoplatic_SNVs,
-                                              const size_t& num_of_preneoplatic_indels)
+                                              const std::string& preneoplatic_SNV_signature_name,
+                                              const size_t& num_of_preneoplatic_indels,
+                                              const std::string& preneoplatic_indel_signature_name)
     {
-        return place_mutations(forest, num_of_preneoplatic_SNVs, num_of_preneoplatic_indels, 0);
+        return place_mutations(forest, num_of_preneoplatic_SNVs, preneoplatic_SNV_signature_name,
+                               num_of_preneoplatic_indels, preneoplatic_indel_signature_name,
+                               get_random_seed<int>(R_NilValue));
     }
 
     inline PhylogeneticForest place_mutations(const SamplesForest& forest,
                                               const size_t& num_of_preneoplatic_SNVs,
                                               const size_t& num_of_preneoplatic_indels,
-                                              const int seed)
+                                              const SEXP& seed)
     {
         return place_mutations(forest, num_of_preneoplatic_SNVs, "SBS1",
                                num_of_preneoplatic_indels, "ID1", seed);
     }
 
     inline PhylogeneticForest place_mutations(const SamplesForest& forest,
-                                              const size_t& num_of_preneoplatic_SNVs)
+                                              const size_t& num_of_preneoplatic_SNVs,
+                                              const size_t& num_of_preneoplatic_indels)
     {
         return place_mutations(forest, num_of_preneoplatic_SNVs, "SBS1",
-                               0, "ID1", 0);
+                               num_of_preneoplatic_indels, "ID1",
+                               get_random_seed<int>(R_NilValue));
     }
 
     Rcpp::List get_SNV_signatures_dataframe() const;

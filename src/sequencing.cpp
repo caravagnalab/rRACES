@@ -59,7 +59,7 @@ RCPP_MODULE(Sequencing){
 //' @description This method builds a basic model for Illumina sequencers.
 //' @param error_rate The error rate per base.
 //' @param seed The seed for the internal random generator
-//'   (default: `0`).
+//'   (optional).
 //' @examples
 //' # build a basic Illumina sequencer model in which errors occur
 //' # at rate 4e-3
@@ -67,6 +67,7 @@ RCPP_MODULE(Sequencing){
 //'
 //' sequencer
     .constructor<double>("Build a new Illumina sequencer")
+    .constructor<double, SEXP>("Build a new Illumina sequencer")
     .method("show", &BasicIlluminaSequencer::show,
             "Show a description for the sequencer")
 
@@ -111,8 +112,8 @@ RCPP_MODULE(Sequencing){
 //'   (default: `1`).
 //' @param with_normal_sample A Boolean flag to enable/disable the
 //'   analysis of a normal sample (default: `TRUE`).
-//' @param rnd_seed The random seed for the internal random generator
-//'   (default: `0`).
+//' @param seed The random seed for the internal random generator
+//'   (optional).
 //' @return A dataframe representing, for each of the observed SNVs
 //'   and indels, the chromosome and the position in which it occurs
 //'   (columns `chr` and `chr_pos`), the mutation reference and
@@ -135,7 +136,7 @@ RCPP_MODULE(Sequencing){
                         _["output_dir"] = "rRACES_SAM",
                         _["write_SAM"] = false, _["update_SAM"] = false,
                         _["cell_labelling"] = R_NilValue, _["purity"] = 1,
-                        _["with_normal_sample"] = true, _["rnd_seed"] = 0),
+                        _["with_normal_sample"] = true, _["seed"] = R_NilValue),
            "Simulate the sequencing of the samples in a phylogenetic forest");
 
 //' @name simulate_normal_seq
@@ -157,8 +158,8 @@ RCPP_MODULE(Sequencing){
 //' @param write_SAM A Boolean flag to enable/disable SAM generation
 //'   (default: `TRUE`).
 //' @param update_SAM Update the output directory (default: `FALSE`).
-//' @param rnd_seed The random seed for the internal random generator
-//'   (default: `0`).
+//' @param seed The random seed for the internal random generator
+//'   (optional).
 //' @return A dataframe representing, for each of the observed
 //'   SNVs, the chromosome and the position in which
 //'   it occurs (columns `chr` and `chr_pos`),
@@ -181,7 +182,7 @@ RCPP_MODULE(Sequencing){
                         _["read_size"] = 150, _["insert_size"] = 0,
                         _["output_dir"] = "rRACES_normal_SAM",
                         _["write_SAM"] = true, _["update_SAM"] = false,
-                        _["rnd_seed"] = 0),
+                        _["seed"] = R_NilValue),
            "Simulate the sequencing of a normal sample");
 
 //' @name SampledCell

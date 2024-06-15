@@ -19,17 +19,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(rRACES)
-library(dplyr)
-library(ggplot2)
-```
+> *Disclaimer:* RACES/rRACES internally implements the probability
+> distributions using the C++11 random number distribution classes whose
+> algorithms are not defined by the standard. Thus, the simulation
+> depends on the compiler used to compile rRACES, and because of that,
+> the results reported in this article may differ from those obtained by
+> the reader.
 
 Once one has familiarised on how a tumour evolution simulation can be
-programmed using rRACES (see `vignette("tissue_simulation")`), the next 
-step is to augment the simulation with sampling of tumour cells. 
-This mimics a realistic experimental design where we gather tumour
-sequencing data.
+programmed using rRACES (see `vignette("tissue_simulation")`), the next
+step is to augment the simulation with sampling of tumour cells. This
+mimics a realistic experimental design where we gather tumour sequencing
+data.
 
 This vignette introduces sampling using different type of models;
 starting from simpler up to more complex simulation scenarios we
@@ -46,6 +47,11 @@ consider:
 We consider a simple monoclonal model, without epimutants.
 
 ```{r, eval=TRUE}
+library(rRACES)
+
+# set the seed of the random number generator
+set.seed(0)
+
 # Monoclonal model, no epimutants
 sim <- new(Simulation, "Monoclonal")
 
@@ -78,6 +84,8 @@ bbox1_q <- bbox1_p + bbox_width
 bbox2_p <- c(500, 500)
 bbox2_q <- bbox2_p + bbox_width
 
+library(ggplot2)
+
 # View the boxes
 current +
   geom_rect(xmin = bbox1_p[1], xmax = bbox1_q[2],
@@ -94,26 +102,28 @@ sim$sample_cells("S_1_2", bottom_left = bbox2_p, top_right = bbox2_q)
 
 > *Note:* Sampling removes cells from the tissue, as if the tissue was
 > surgically resected. Therefore, cells that are mapped to the bounding
-> box after application of `Simulation$sample_cells()` are no longer part of the
-> simulation.
+> box after application of `Simulation$sample_cells()` are no longer
+> part of the simulation.
 
-A new call to `plot_tissue()` will show the box where the cells have been
-removed to be white.
+A new call to `plot_tissue()` will show the box where the cells have
+been removed to be white.
 
 ```{r,  fig.height=4, fig.width=3}
 plot_tissue(sim)
 ```
 
-This is also reflected by `Simulation$get_cells()`, which now will not find any
-tumour cell in the sampled region.
+This is also reflected by `Simulation$get_cells()`, which now will not
+find any tumour cell in the sampled region.
 
 ```{r}
+library(dplyr)
+
 # This should be empty
 sim$get_cells(c(400, 400), c(400 + bbox_width, 400 + bbox_width)) %>% head
 ```
 
-It should also be remarked that the sampling process exclusively collects 
-tumour cells, while it excludes wild-type cells.
+It should also be remarked that the sampling process exclusively
+collects tumour cells, while it excludes wild-type cells.
 
 ### Cell division tree for sampled cells
 
@@ -194,6 +204,9 @@ plot_forest(S_1_1_forest) %>%
 ## Randomised multi-region samples
 
 ```{r}
+# set the seed of the random number generator
+set.seed(0)
+
 sim <- new(Simulation, "Randomised")
 
 sim$add_mutant(name = "A", growth_rates = 0.1, death_rates = 0.01)
@@ -216,20 +229,22 @@ current <- plot_tissue(sim)
 current
 ```
 
-Since mutant start has been randomised by `Simulation$choose_cell_in()`, we have no
-exact idea of where to sample to obtain for example, $100$ of its cells.
-We can look visually at the simulation, but this is slow.
+Since mutant start has been randomised by `Simulation$choose_cell_in()`,
+we have no exact idea of where to sample to obtain for example, $100$ of
+its cells. We can look visually at the simulation, but this is slow.
 
-rRACES provides a `Simulation$search_sample()` function to sample bounding boxes that
-contain a desired number of cells. The function takes in input:
+rRACES provides a `Simulation$search_sample()` function to sample
+bounding boxes that contain a desired number of cells. The function
+takes in input:
 
 -   a bounding box size;
 -   the number $n$ of cells to sample for a species of interest.
 
-`Simulation$search_sample()` will attempt a fixed number of times to sample the box,
-starting from positions occupied by the species of interest. If a box
-that contains at least $n$ cells is not found within a number of
-attempts, then the one with the largest number of samples is returned.
+`Simulation$search_sample()` will attempt a fixed number of times to
+sample the box, starting from positions occupied by the species of
+interest. If a box that contains at least $n$ cells is not found within
+a number of attempts, then the one with the largest number of samples is
+returned.
 
 This allows to program sampling without having a clear idea of the
 tissue conformation.
@@ -288,8 +303,8 @@ plot_forest(forest) %>%
 
 ## Randomised cell sampling (Liquid biopsy)
 
-rRACES supports randomized cell sampling over the full tissue or
-a rectangle thereof.
+rRACES supports randomized cell sampling over the full tissue or a
+rectangle thereof.
 
 ```{r}
 # collect up to 2500 tumour cells randomly selected over the whole tissue
@@ -307,13 +322,15 @@ plot_forest(forest) %>%
   annotate_forest(forest)
 ```
 
-
 ## Two populations with epigenetic state
 
 We are now ready to simulate a model with epigenetic switches and
 subclonal expansions.
 
 ```{r,  fig.height=4, fig.width=3}
+# set the seed of the random number generator
+set.seed(0)
+
 sim <- new(Simulation, "Two Populations")
 
 sim$death_activation_level <- 20
@@ -396,10 +413,10 @@ plot_forest(forest) %>%
   annotate_forest(forest)
 ```
 
-
 ### Storing Samples Forests
 
-A samples forest can be saved in a file by using the method `SamplesForest$save()`.
+A samples forest can be saved in a file by using the method
+`SamplesForest$save()`.
 
 ```{r, echo=FALSE,  results='hide', message=FALSE}
 unlink("samples_forest.sff")

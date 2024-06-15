@@ -24,6 +24,15 @@ knitr::opts_chunk$set(
 unlink("rRACES_SAM", recursive = TRUE)
 ```
 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
+
 Once a phylogenetic forest has been computed, as detailed in
 `vignette("mutations")`, rRACES can simulate the sequencing of the
 samples in the forest and return the observed data.
@@ -48,8 +57,8 @@ We can simulate the sequencing of these samples with coverage
 of 2.5X by as it follows.
 
 ```{r}
-# let us simulate a 100x sequencing of the four sample
-seq_results <- simulate_seq(phylo_forest, coverage = 100)
+# let us simulate a 50x sequencing of the four sample
+seq_results <- simulate_seq(phylo_forest, coverage = 50)
 
 # let us load the dplyr library to filter the `simulate_seq` output
 library(dplyr)

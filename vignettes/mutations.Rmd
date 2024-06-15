@@ -20,6 +20,15 @@ knitr::opts_chunk$set(
 )
 ```
 
+> *Disclaimer:* RACES/rRACES internally implements the
+> probability distributions using the C++11 random number
+> distribution classes. The standard does not specify their
+> algorithms, and the class implementations are left free
+> for the compiler. Thus, the simulation output depends on
+> the compiler used to compile RACES, and because of that,
+> the results reported in this article may differ from
+> those obtained by the reader.
+
 rRACES/RACES can simulate genomic mutations on the cells represented in
 a `SamplesForest` according to the specified SBS and indel mutational
 signatures (see [@alexandrov2020repertoire]).
@@ -87,16 +96,16 @@ m_engine <- build_mutation_engine(setup_code = "demo")
 Once the mutation engine has been built, we can define mutant genotype and
 declare species mutation rates.
 
-Let us consider simulation peformed in Section "_Two populations with 
-epigenetic state_" of `vignette("sampling")`. It involves the two 
+Let us consider simulation peformed in Section "_Two populations with
+epigenetic state_" of `vignette("sampling")`. It involves the two
 mutants `A` and
 "B". Both of them has two possible epigenetic states, `+` and `-`, leading
 to the four the species `A+`, `A-`, `B+`, and `B-`, respectively.
 Each of these species has a passenger mutation rate that must be
 declated to the mutation engine before labeling the samples forest.
 Let 1e-9, 3e-8, 8e-7, and 5e-8 be the passenger SNV rates for the
-species `A+`, `A-`, `B+`, and `B-`, respectively. Let the indel 
-rates be 0 for all the species, but `A+` which has indel rate 1e-8. 
+species `A+`, `A-`, `B+`, and `B-`, respectively. Let the indel
+rates be 0 for all the species, but `A+` which has indel rate 1e-8.
 Furthermore, let 0, 1e-11, 0, and 0 be the passenger CNA rates of the same
 species, respectively.
 
@@ -296,7 +305,7 @@ The configurated mutation engine can be used to label each node in a
 samples forest by mutations.
 
 Since the mutation engine has be configurated to deal with the
-simulation peformed in Section "_Two populations with 
+simulation peformed in Section "_Two populations with
 epigenetic state_" of `vignette("sampling")`,
 we can load its samples forest from the file `"samples_forest.sff"`
 in saved that article.
