@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(rRACES)
 
-sim <- new(Simulation, "Test")
+sim <- Simulation("Test")
 
 sim$death_activation_level <- 50
 
@@ -129,7 +129,7 @@ We show this by re-simulating a tumour with two submutants.
 
 ```{r}
 # Example time-series on a new simulation, with coarse-grained time-series
-sim <- new(Simulation, "Finer Time Series")
+sim <- Simulation("Finer Time Series")
 
 sim$history_delta <- 1
 sim$death_activation_level <- 100

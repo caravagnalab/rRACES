@@ -40,7 +40,7 @@ RCPP_MODULE(Logics){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -83,7 +83,7 @@ RCPP_MODULE(Logics){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rates = 0.2,
 //'                death_rates = 0.1)
@@ -141,7 +141,7 @@ RCPP_MODULE(Logics){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),

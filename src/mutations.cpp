@@ -502,7 +502,7 @@ RCPP_MODULE(Mutations){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant("A", c(SNV = 0.2), 0.01)
 //' sim$place_cell("A", 500, 500)
 //'

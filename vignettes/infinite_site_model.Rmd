@@ -43,7 +43,7 @@ library(rRACES)
 set.seed(0)
 
 # create a simulation
-sim <- new(Simulation)
+sim <- Simulation()
 
 sim$death_activation_level <- 20
 

@@ -48,7 +48,7 @@ created.
 
 ```{r, eval=FALSE}
 # Default constructor
-sim <- new(Simulation)
+sim <- Simulation()
 ```
 
 This automatically builds a 1000x1000-cells tissue - which can host $1$
@@ -64,7 +64,7 @@ library(rRACES)
 set.seed(0)
 
 # Call your simulation "Test"
-sim <- new(Simulation, "Test")
+sim <- Simulation("Test")
 ```
 
 The `set.seed()` call is not mandatory and can be avoided; however, it is
@@ -78,7 +78,7 @@ saved in a directory whose name is the name of the simulation.
 ```{r, eval = FALSE}
 # The progresses of the simulation will saved in the "Test" folder.
 # If the directory "Test" already exists an exception is raised.
-sim <- new(Simulation, "Test", save_snapshots = TRUE)
+sim <- Simulation("Test", save_snapshots = TRUE)
 ```
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}

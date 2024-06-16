@@ -20,7 +20,7 @@
 #' set.seed(0)
 #'
 #' # simulate a tissue
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #'
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 1,

@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #'
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 1,

@@ -60,7 +60,7 @@ get_exposure_ends <- function(phylo_forest) {
 #'
 #' @return An editable ggplot plot.
 #' @examples
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #'
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,

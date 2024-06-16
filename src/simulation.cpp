@@ -506,6 +506,81 @@ Simulation::Simulation(const std::string& simulation_name, const SEXP& seed, con
   }
 }
 
+Simulation::Simulation(const std::string& simulation_name, const bool& seed, const bool& save_snapshots):
+  name(simulation_name), save_snapshots(save_snapshots)
+{
+  if (save_snapshots) {
+    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(simulation_name, seed);
+  } else {
+    sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path(), seed);
+  }
+}
+
+std::string get_string(const SEXP& parameter, const std::string parameter_name)
+{
+  using namespace Rcpp;
+
+  if (TYPEOF(parameter) != STRSXP) {
+    throw std::domain_error("The parameter \"" + parameter_name
+                            + "\" must be a string.");
+  }
+
+  return as<std::string>(parameter); 
+}
+
+bool get_bool(const SEXP& parameter, const std::string parameter_name)
+{
+  using namespace Rcpp;
+
+  if (TYPEOF(parameter) != LGLSXP) {
+    throw std::domain_error("The parameter \"" + parameter_name
+                           + "\" must be a Boolean value.");
+  }
+
+  return as<int>(parameter); 
+}
+
+size_t get_size(const SEXP& parameter, const std::string parameter_name)
+{
+  using namespace Rcpp;
+
+  if (TYPEOF(parameter) != INTSXP && TYPEOF(parameter) != REALSXP) {
+    throw std::domain_error("The parameter \"" + parameter_name
+                            + "\" must be a positive integer.");
+  }
+
+  auto c_value = as<long>(parameter); 
+
+  if (c_value <= 0) {
+    throw std::domain_error("The parameter \"" + parameter_name
+                            + "\" must be a positive integer.");
+  }
+
+  return static_cast<size_t>(c_value); 
+}
+
+Simulation
+Simulation::build_simulation(const SEXP& simulation_name, const SEXP& width, const SEXP& height, 
+                             const SEXP& save_snapshots, const SEXP& seed)
+{
+  std::string c_name;
+  if (TYPEOF(simulation_name) == NILSXP) {
+    c_name = to_string(get_tmp_dir_path());
+  } else {
+    c_name = get_string(simulation_name, "name");
+  }
+  auto c_width = get_size(width, "width");
+  auto c_height = get_size(height, "height");
+  auto c_save = get_bool(save_snapshots, "save_snapshots");
+  auto c_seed = get_random_seed<int>(seed);
+
+  Simulation sim(c_name, c_seed, c_save);
+
+  sim.update_tissue(c_width, c_height);
+
+  return sim;
+}
+
 Simulation::~Simulation()
 {
   if (sim_ptr.use_count()==1 && !save_snapshots) {

@@ -28,14 +28,19 @@ public:
     ErrorlessIlluminaSequencer();
 
     void show() const;
+
+    static ErrorlessIlluminaSequencer build_sequencer();
 };
 
 class BasicIlluminaSequencer : public RACES::Sequencers::Illumina::BasicSequencer<>
 {
 public:
-    BasicIlluminaSequencer(const double error_rate, const SEXP seed=R_NilValue);
+    BasicIlluminaSequencer(const double error_rate, const int seed=0);
 
     void show() const;
+
+    static BasicIlluminaSequencer build_sequencer(const SEXP error_rate,
+                                                  const SEXP seed);
 };
 
 RCPP_EXPOSED_CLASS(ErrorlessIlluminaSequencer)

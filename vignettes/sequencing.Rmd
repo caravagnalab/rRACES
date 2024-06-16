@@ -240,7 +240,7 @@ kind of sequencer.
 
 ```{r, eval=FALSE}
 # build an error-less Illumina sequencer
-no_error_seq <- new(ErrorlessIlluminaSequencer)
+no_error_seq <- ErrorlessIlluminaSequencer()
 
 # let us simulate a 2.5x sequencing of the four sample
 # on the error-less sequencer
@@ -257,7 +257,7 @@ in the read and from the position of the read on the genome.
 ```{r, eval=FALSE}
 # build a basic Illumina sequencer model in which errors occur
 # at rate 4e-3 per base
-basic_seq <- new(BasicIlluminaSequencer, 4e-3)
+basic_seq <- BasicIlluminaSequencer(4e-3)
 
 # let us simulate a 2.5x sequencing of the four sample
 # on the error-less sequencer

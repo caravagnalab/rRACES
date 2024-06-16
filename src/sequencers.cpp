@@ -29,10 +29,15 @@ void ErrorlessIlluminaSequencer::show() const
                 << get_platform_name() << "\")" << std::endl;
 }
 
+ErrorlessIlluminaSequencer
+ErrorlessIlluminaSequencer::build_sequencer()
+{
+    return ErrorlessIlluminaSequencer();
+}
+
 BasicIlluminaSequencer::BasicIlluminaSequencer(const double error_rate,
-                                               const SEXP seed):
-    RACES::Sequencers::Illumina::BasicSequencer<>(error_rate,
-                                                  get_random_seed<int>(seed))
+                                               const int seed):
+    RACES::Sequencers::Illumina::BasicSequencer<>(error_rate, seed)
 {}
 
 void BasicIlluminaSequencer::show() const
@@ -42,3 +47,25 @@ void BasicIlluminaSequencer::show() const
                 << std::to_string(get_error_rate()) << ")" << std::endl;
 }
 
+BasicIlluminaSequencer
+BasicIlluminaSequencer::build_sequencer(const SEXP error_rate,
+                                        const SEXP seed)
+{
+    using namespace Rcpp;
+
+    if (TYPEOF(error_rate) != INTSXP && TYPEOF(error_rate) != REALSXP) {
+        throw std::domain_error("The parameter \"error_rate\""
+                                " must be a positive real number.");
+    }
+
+    auto c_error_rate = as<double>(error_rate); 
+
+    if (c_error_rate<0) {
+        throw std::domain_error("The parameter \"error_rate\""
+                                " must be a positive real number.");
+    }
+
+    auto c_seed = get_random_seed<int>(seed);
+
+    return BasicIlluminaSequencer(c_error_rate, c_seed);
+}

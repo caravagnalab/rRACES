@@ -26,7 +26,7 @@
 #' @return A ggplot plot.
 #' @export
 #' @examples
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 #'                growth_rates = c("+" = 0.2, "-" = 0.08),

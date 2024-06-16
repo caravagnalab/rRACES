@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #' sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)

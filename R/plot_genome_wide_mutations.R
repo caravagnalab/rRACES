@@ -16,7 +16,7 @@
 #' # set the seed of the random number generator
 #' set.seed(0)
 #'
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,
 #'                death_rates = 0.0)
@@ -130,7 +130,7 @@ plot_DR <- function(
 #' # set the seed of the random number generator
 #' set.seed(0)
 #'
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,
 #'                death_rates = 0.0)
@@ -243,7 +243,7 @@ plot_BAF <- function(
 #' # set the seed of the random number generator
 #' set.seed(0)
 #'
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,
 #'                death_rates = 0.0)

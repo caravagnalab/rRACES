@@ -45,7 +45,7 @@ collapse_loops <- function(df_edges) {
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 #'                growth_rates = c("+" = 0.2, "-" = 0.08),

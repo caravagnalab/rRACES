@@ -54,7 +54,7 @@ set `border_growth_model` to `FALSE`.
 ```{r}
 library(rRACES)
 
-sim <- new(Simulation, "Homogeneous Growth")
+sim <- Simulation("Homogeneous Growth")
 
 # Set the homogeneous growth model
 sim$border_growth_model <- FALSE
@@ -156,7 +156,7 @@ plot_forest(forest, highlight = "S_2_2") %>%
 We now build a simulation and use the "border" growth model.
 
 ```{r}
-sim <- new(Simulation, "Border Growth")
+sim <- Simulation("Border Growth")
 
 # Setting the "border" growth model is not needed as the
 # border growth model is the default.

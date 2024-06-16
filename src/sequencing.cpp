@@ -39,12 +39,23 @@ RCPP_MODULE(Sequencing){
 //' @description This method builds an error-less Illumina sequencer model.
 //' @examples
 //' # build an error-less Illumina sequencer
-//' sequencer <- new(ErrorlessIlluminaSequencer)
+//' sequencer <- ErrorlessIlluminaSequencer()
 //'
 //' sequencer
-    .constructor("Build a new error-less Illumina sequencer")
     .method("show", &ErrorlessIlluminaSequencer::show,
             "Show a description for the sequencer");
+
+//' @name ErrorlessIlluminaSequencer
+//' @description This method builds an error-less Illumina 
+//'   sequencer model.
+//' @return A new error-less Illumina sequencer.
+//' @examples
+//' # build a sequencer model
+//' sequencer <- ErrorlessIlluminaSequencer()
+//' sequencer
+    function("ErrorlessIlluminaSequencer",
+             &ErrorlessIlluminaSequencer::build_sequencer,
+             "Build a new error-less Illumina sequencer");
 
 //' @name BasicIlluminaSequencer
 //' @title A basic Illumina sequencer class
@@ -54,20 +65,6 @@ RCPP_MODULE(Sequencing){
 //' @seealso `simulate_seq()`, `simulate_normal_seq()`, and
 //'   `vignette("sequencing")` for usage examples
   class_<BasicIlluminaSequencer>("BasicIlluminaSequencer")
-//' @name BasicIlluminaSequencer$new
-//' @title Building a new basic Illumina sequencer model
-//' @description This method builds a basic model for Illumina sequencers.
-//' @param error_rate The error rate per base.
-//' @param seed The seed for the internal random generator
-//'   (optional).
-//' @examples
-//' # build a basic Illumina sequencer model in which errors occur
-//' # at rate 4e-3
-//' sequencer <- new(BasicIlluminaSequencer, 4e-3)
-//'
-//' sequencer
-    .constructor<double>("Build a new Illumina sequencer")
-    .constructor<double, SEXP>("Build a new Illumina sequencer")
     .method("show", &BasicIlluminaSequencer::show,
             "Show a description for the sequencer")
 
@@ -77,13 +74,33 @@ RCPP_MODULE(Sequencing){
 //'   simulated illumina sequencer.
 //' @return The sequencing error rate of the simualted sequencer.
 //' @examples
-//' # build a basic Illumina sequencer model in which errors occur
+//' # build a basic Illumina sequencer model whose errors occur
 //' # at rate 4e-3
-//' sequencer <- new(BasicIlluminaSequencer, 4e-3)
+//' sequencer <- BasicIlluminaSequencer(4e-3)
 //'
 //' sequencer$get_error_rate()
-    .method("get_error_rate", (const double& (BasicIlluminaSequencer::*)())(&BasicIlluminaSequencer::get_error_rate),
+    .method("get_error_rate",
+            (const double& (BasicIlluminaSequencer::*)())(
+                &BasicIlluminaSequencer::get_error_rate),
             "Get the sequencer error rate");
+
+//' @name BasicIlluminaSequencer
+//' @description This method builds a basic Illumina sequencer model.
+//' @param error_rate The error rate of the sequencer model.
+//' @param seed The seed of the random error generator.
+//' @return A basic Illumina sequencer model.
+//' @examples
+//' # build a sequencer model having error rate 4e-3
+//' sequencer <- BasicIlluminaSequencer(error_rate=4e-3)
+//' sequencer
+//'
+//' # build a sequencer model having error rate 4e-3
+//' # and set the seed to 5
+//' sequencer <- BasicIlluminaSequencer(error_rate=4e-3, seed=5)
+//' sequencer
+    function("BasicIlluminaSequencer", &BasicIlluminaSequencer::build_sequencer,
+             List::create(_["error_rate"], _["seed"] = R_NilValue),
+             "Create a basic Illumina sequencer model");
 
 //' @name simulate_seq
 //' @title Simulating the sequencing

@@ -53,7 +53,7 @@ library(rRACES)
 set.seed(0)
 
 # Monoclonal model, no epimutants
-sim <- new(Simulation, "Monoclonal")
+sim <- Simulation("Monoclonal")
 
 sim$add_mutant(name = "A", growth_rates = 0.1, death_rates = 0.01)
 
@@ -207,7 +207,7 @@ plot_forest(S_1_1_forest) %>%
 # set the seed of the random number generator
 set.seed(0)
 
-sim <- new(Simulation, "Randomised")
+sim <- Simulation("Randomised")
 
 sim$add_mutant(name = "A", growth_rates = 0.1, death_rates = 0.01)
 
@@ -331,7 +331,7 @@ subclonal expansions.
 # set the seed of the random number generator
 set.seed(0)
 
-sim <- new(Simulation, "Two Populations")
+sim <- Simulation("Two Populations")
 
 sim$death_activation_level <- 20
 

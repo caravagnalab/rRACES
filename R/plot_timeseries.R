@@ -26,7 +26,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- new(Simulation)
+#' sim <- Simulation()
 #' sim$history_delta <- 1
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),

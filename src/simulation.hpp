@@ -148,6 +148,8 @@ public:
 
   Simulation(const std::string& simulation_name, const SEXP& seed, const bool& save_snapshots);
 
+  Simulation(const std::string& simulation_name, const bool& seed, const bool& save_snapshots);
+
   ~Simulation();
 
   inline void update_tissue(const std::string& name,
@@ -383,6 +385,10 @@ public:
                  const size_t num_of_samples, int seed) const;
 
   Logics::Variable get_var(const std::string& name) const;
+  
+  static Simulation build_simulation(const SEXP& simulation_name, const SEXP& width,
+                                     const SEXP& height, const SEXP& save_snapshots,
+                                     const SEXP& seed);
 };
 
 RCPP_EXPOSED_CLASS(Simulation)

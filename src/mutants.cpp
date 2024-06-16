@@ -241,58 +241,6 @@ RCPP_MODULE(Mutants){
 //' }
   class_<Simulation>("Simulation")
 
-//' @name Simulation$new
-//' @title Building a new simulation
-//' @description This method builds a new simulation.
-//' @param simulation_name The name of the simulation (optional).
-//' @param seed The seed for the pseudo-random generator (optional).
-//' @param save_snapshots A flag to save simulation snapshots on disk (optional,
-//'   default `FALSE`).
-//' @examples
-//' # create a Simulation object storing binary dump in a temporary directory.
-//' # The data are deleted from the disk as soon as the object is destroyed.
-//' sim <- new(Simulation, "test")
-//'
-//' # add a new species, place a cell in the tissue, and let the simulation evolve.
-//' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
-//' sim$place_cell("A", 500, 500)
-//' sim$run_up_to_time(30)
-//'
-//' # no directory "test" has been created
-//' "test" %in% list.files(".")
-//'
-//' # By using the optional parameter `save_snapshots`, we force the
-//' # simulation to save its progresses in a local directory whose name
-//' # is the name of the simulation, i.e., "test". This data will be
-//' # preserved when the simulation object will be destroyed.
-//' sim <- new(Simulation, "test", save_snapshots=TRUE)
-//'
-//' # as done above, we add a new species, place a cell in the tissue, and let the
-//' # simulation evolve.
-//' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
-//' sim$place_cell("A", 500, 500)
-//' sim$run_up_to_time(30)
-//'
-//' # the directory "test" exists and contains a binary dump of
-//' # sthe simulation.
-//' "test" %in% list.files(".")
-//'
-//' # let us manually delete the "test" directory
-//' unlink("test", recursive = TRUE)
-//'
-//' # we can also provide a random seed to the simulation...
-//' sim <- new(Simulation, "test", 13)
-//'
-//' # ...or creating a simulation without providing any name. By default, the
-//' # simulation name will have the following format `races_<date>_<hour>`.
-//' sim <- new(Simulation, 13)
-  .constructor("Create a simulation whose name is \"races_<year>_<hour><minute><second>\"")
-  .constructor<SEXP>("Create a simulation")
-  .constructor<SEXP, SEXP>("Crete a simulation")
-  .constructor<std::string, SEXP, bool>("Crete a simulation: the first parameter is the simulation name; "
-                                        "the second one is the random seed; the third one is a Boolean flag "
-                                        "to enable/disable simulation saves")
-
 //' @name Simulation$place_cell
 //' @title Placing one cell in the tissue
 //' @description This method places a cell in the tissue.
@@ -304,7 +252,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -332,7 +280,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //'
 //' # create the two species "A+" and "A-". They both have mutant "A".
 //' sim$add_mutant(name = "A",
@@ -365,7 +313,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -414,7 +362,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -439,7 +387,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
 //'
@@ -458,7 +406,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -489,7 +437,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //'
 //' # get the simulation death activation level
 //' sim$death_activation_level
@@ -513,7 +461,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //'
 //' # is the simulation using the border driven growth model 
 //' # (default: TRUE)
@@ -540,7 +488,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -565,7 +513,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -609,7 +557,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -661,7 +609,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //'
 //' # Expecting "test"
 //' sim$get_name()
@@ -682,7 +630,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -707,7 +655,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$update_tissue("Liver", 1200, 900)
 //'
 //' # get the tissue name, i.e., expecting "Liver"
@@ -723,7 +671,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$update_tissue("Liver", 1200, 900)
 //'
 //' # get the tissue size, i.e., expecting c(1200,900)
@@ -742,7 +690,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -771,7 +719,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_mutation(src = "A", dst = "B", time = 50)
@@ -793,7 +741,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_mutation(src = "A", dst = "B", time = 50)
@@ -817,7 +765,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -842,7 +790,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -867,7 +815,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -893,7 +841,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -938,7 +886,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -973,7 +921,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //'
 //' # get the delta time between two time series samples (0 by default)
 //' sim$history_delta
@@ -999,7 +947,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1037,7 +985,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$place_cell("A", 500, 500)
 //'
@@ -1060,7 +1008,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1086,7 +1034,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1112,7 +1060,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1180,7 +1128,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1226,7 +1174,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1248,7 +1196,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //'
 //' # set the tissue size, but not the name
 //' sim$update_tissue(1200, 900)
@@ -1282,7 +1230,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$death_activation_level <- 50
 //' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1320,7 +1268,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$death_activation_level <- 50
 //' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1383,7 +1331,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1418,7 +1366,7 @@ RCPP_MODULE(Mutants){
 //' @examples
 //' # create a simulation having name "recover_simulation_test" and
 //' # save its snapshots in a local directory
-//' sim <- new(Simulation, "recover_simulation_test",
+//' sim <- Simulation("recover_simulation_test",
 //'            save_snapshots=TRUE)
 //'
 //' # add the species of "A"
@@ -1451,6 +1399,58 @@ RCPP_MODULE(Mutants){
 //' unlink("recover_simulation_test", recursive = TRUE)
   function("recover_simulation", &Simulation::load,
            "Recover a simulation");
+
+//' @name Simulation
+//' @title Building a new simulation
+//' @description This method builds a new simulation.
+//' @param simulation_name The name of the simulation (default:
+//'     \"races_<year>_<hour><minute><second>\").
+//' @param width The width of the simulated tissue (default: 1000).
+//' @param save_snapshots A flag to save simulation snapshots on disk
+//'   (default: `FALSE`).
+//' @param seed The seed for the pseudo-random generator (optional).
+//' @examples
+//' # create a Simulation object storing binary dump in a temporary directory.
+//' # The data are deleted from the disk as soon as the object is destroyed.
+//' sim <- Simulation("test")
+//'
+//' # add a new species, place a cell in the tissue, and let the simulation evolve.
+//' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
+//' sim$place_cell("A", 500, 500)
+//' sim$run_up_to_time(30)
+//'
+//' # no directory "test" has been created
+//' "test" %in% list.files(".")
+//'
+//' # By using the optional parameter `save_snapshots`, we force the
+//' # simulation to save its progresses in a local directory whose name
+//' # is the name of the simulation, i.e., "test". This data will be
+//' # preserved when the simulation object will be destroyed.
+//' sim <- Simulation("test", save_snapshots=TRUE)
+//'
+//' # as done above, we add a new species, place a cell in the tissue, and let the
+//' # simulation evolve.
+//' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
+//' sim$place_cell("A", 500, 500)
+//' sim$run_up_to_time(30)
+//'
+//' # the directory "test" exists and contains a binary dump of
+//' # sthe simulation.
+//' "test" %in% list.files(".")
+//'
+//' # let us manually delete the "test" directory
+//' unlink("test", recursive = TRUE)
+//'
+//' # we can also provide a random seed to the simulation...
+//' sim <- Simulation("test", seed=13)
+//'
+//' # ...or creating a simulation without providing any name. By default, the
+//' # simulation name will have the following format `races_<date>_<hour>`.
+//' sim <- Simulation(seed=13)
+  function("Simulation", &Simulation::build_simulation,
+           List::create(_["name"] = R_NilValue, _["width"]=1000, _["height"]=1000,
+                        _["save_snapshots"] = false, _["seed"] = R_NilValue),
+            "Create a spacial simulation");
 
 //' @name SamplesForest
 //' @title The sample cell ancestor forest
@@ -1526,7 +1526,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1572,7 +1572,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1608,7 +1608,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1651,7 +1651,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A", growth_rate = 0.2,
 //'                death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1706,7 +1706,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- new(Simulation)
+//' sim <- Simulation()
 //' sim$add_mutant(name = "A", growth_rate = 0.2,
 //'                death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
