@@ -103,17 +103,15 @@ sim$get_name()
 sim$get_tissue_size()
 ```
 
-### Custom tissue
+### Custom Tissue Sizes
 
-We can change the tissue size and label it with a
-name that might appear in some plots.
+The tissue sizes can be specified during simulation creation using
+the parameters `width` and `height`.
 
 ```{r}
-# Set the tissue name and size to different values
-sim$update_tissue("Liver", 1200, 900)
-
-# Get the tissue name, i.e., "Liver"
-sim$get_tissue_name()
+# build a simulation whose tissue has width 1200 and
+# height 900
+sim <- Simulation("Test", width=1200, height=900)
 
 # Get the tissue size, i.e., c(1200,900)
 sim$get_tissue_size()

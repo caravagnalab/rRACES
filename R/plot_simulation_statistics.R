@@ -43,7 +43,6 @@ plot_firings <- function(simulation) {
   time <- simulation$get_clock() %>% round(digits = 3)
 
   sim_title <- simulation$get_name()
-  tissue_title <- simulation$get_tissue_name()
   tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
 
   ggplot2::ggplot(firings) +
@@ -57,7 +56,7 @@ plot_firings <- function(simulation) {
       x = "",
       y = "",
       title = paste0(sim_title, " (t = ", time, ")"),
-      subtitle = paste(tissue_title, "of size", tissue_size),
+      subtitle = paste("Tissue:", "[", tissue_size, "]"),
       caption = paste("Total number of events", firings$fired %>% sum())
     ) +
     my_theme() +

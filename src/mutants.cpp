@@ -180,9 +180,6 @@ RCPP_MODULE(Mutants){
 //' @field get_species Gets the species \itemize{
 //' \item \emph{Returns:} A dataframe describing the registered species.
 //' }
-//' @field get_tissue_name Gets the tissue name \itemize{
-//' \item \emph{Returns:} The name of the simulated tissue.
-//' }
 //' @field get_tissue_size Gets the size of the simulated tissue \itemize{
 //' \item \emph{Returns:} The vector `c(x_size, y_size)` of the simulated tissue.
 //' }
@@ -228,11 +225,6 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Parameter:} \code{rates} - The list of the rates to be updated.
 //' \item \emph{Returns:} The vector of the species names.
 //' }
-//' @field update_tissue Updates tissue name and size \itemize{
-//' \item \emph{Parameter:} \code{name} - The new name of the tissue (optional).
-//' \item \emph{Parameter:} \code{width} - The width of the new tissue.
-//' \item \emph{Parameter:} \code{height} - The height of the new tissue.
-//' }
 //' @field var Builds a variable representing a simulation quantity \itemize{
 //' \item \emph{Parameter:} \code{variable_description} - The description of
 //'    the variable to be built.
@@ -251,7 +243,7 @@ RCPP_MODULE(Mutants){
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
-//' # create a simulation
+//' # create a tissue simulation
 //' sim <- Simulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -646,22 +638,6 @@ RCPP_MODULE(Mutants){
   .method("get_lineage_graph", &Simulation::get_lineage_graph,
           "Get the simulation lineage graph")
 
-//' @name Simulation$get_tissue_name
-//' @title Getting the tissue name
-//' @description This method returns the tissue name.
-//' @return The name of the simulated tissue.
-//' @examples
-//' # set the seed of the random number generator
-//' set.seed(0)
-//'
-//' # create a simulation
-//' sim <- Simulation()
-//' sim$update_tissue("Liver", 1200, 900)
-//'
-//' # get the tissue name, i.e., expecting "Liver"
-//' sim$get_tissue_name()
-  .method("get_tissue_name", &Simulation::get_tissue_name, "Get the simulation tissue name")
-
 //' @name Simulation$get_tissue_size
 //' @title Getting the simulated tissue size
 //' @description This method returns the size of the simulated tissue.
@@ -670,12 +646,12 @@ RCPP_MODULE(Mutants){
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
-//' # create a simulation
-//' sim <- Simulation()
-//' sim$update_tissue("Liver", 1200, 900)
+//' # create a simulation having size 1200x900
+//' sim <- Simulation(width=1200, height=900)
 //'
 //' # get the tissue size, i.e., expecting c(1200,900)
 //' sim$get_tissue_size()
+//' @seealso `Simulation()`
   .method("get_tissue_size", &Simulation::get_tissue_size, "Get the simulation tissue size")
 
 //' @name Simulation$get_added_cells
@@ -1185,31 +1161,6 @@ RCPP_MODULE(Mutants){
   .method("update_rates", &Simulation::update_rates,
           "Update the rates of a species")
 
-//' @name Simulation$update_tissue
-//' @title Updating tissue name and size
-//' @description This method updates the tissue name and size.
-//' @param name The new name of the tissue (optional).
-//' @param width The width of the new tissue.
-//' @param height The height of the new tissue.
-//' @examples
-//' # set the seed of the random number generator
-//' set.seed(0)
-//'
-//' # create a simulation
-//' sim <- Simulation()
-//'
-//' # set the tissue size, but not the name
-//' sim$update_tissue(1200, 900)
-//'
-//' # set the tissue size and its name
-//' sim$update_tissue("Liver", 1200, 900)
-  .method("update_tissue", (void (Simulation::*)(const std::string&, const RE::AxisSize&,
-                                                 const RE::AxisSize&))(&Simulation::update_tissue),
-          "Update tissue name and size")
-  .method("update_tissue", (void (Simulation::*)(const RE::AxisSize&,
-                                                 const RE::AxisSize&))(&Simulation::update_tissue),
-          "Update tissue size")
-
 //' @name Simulation$search_sample
 //' @title Searching a rectangular tissue sample
 //' @description This method searches a rectangular tissue sample.
@@ -1404,8 +1355,9 @@ RCPP_MODULE(Mutants){
 //' @title Building a new simulation
 //' @description This method builds a new simulation.
 //' @param simulation_name The name of the simulation (default:
-//'     \"races_<year>_<hour><minute><second>\").
+//'     \"races\_<year>\_<hour><minute><second>\").
 //' @param width The width of the simulated tissue (default: 1000).
+//' @param height The height of the simulated tissue (default: 1000).
 //' @param save_snapshots A flag to save simulation snapshots on disk
 //'   (default: `FALSE`).
 //' @param seed The seed for the pseudo-random generator (optional).

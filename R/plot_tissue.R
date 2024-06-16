@@ -50,7 +50,6 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
   time <- simulation$get_clock() %>% round(digits = 3)
 
   sim_title <- simulation$get_name()
-  tissue_title <- simulation$get_tissue_name()
   tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
 
   color_map <- get_species_colors(simulation$get_species())
@@ -66,7 +65,7 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
                                   counts$counts %>% sum(),
                                   "(with", num_of_bins, "bins)"),
                   title = paste0(sim_title, " (t = ", time, ")"),
-                  subtitle = paste("Tissue:", tissue_title, "[",
+                  subtitle = paste("Tissue:", "[",
                                    tissue_size, "]")) +
     ggplot2::scale_fill_manual(values = color_map) +
     # ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
