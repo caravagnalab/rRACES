@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,6 +94,15 @@
 
     
     
+<blockquote>
+<p><em>Disclaimer:</em> RACES/rRACES internally implements the
+probability distributions using the C++11 random number distribution
+classes. The standard does not specify their algorithms, and the class
+implementations are left free for the compiler. Thus, the simulation
+output depends on the compiler used to compile RACES, and because of
+that, the results reported in this article may differ from those
+obtained by the reader.</p>
+</blockquote>
 <p>rRACES/RACES simulate the tumour growth according to two alternative
 models: the “border”-growth model and the homogeneous-growth model.</p>
 <p>The former exclusively admits duplication of cells that have space to
@@ -101,25 +110,27 @@ duplicate (i.e., cells on the cancer border or near by death cells). The
 latter allows cell duplications everywhere in the tumour.</p>
 <p>The “border”-growth model is the default one. However, users can
 switch to the homogeneous growth model by assigning the
-<code>Simulation</code>’s <code>duplicate_internal_cells</code> Boolean
-field. By setting it to <code>TRUE</code>, the homogeneous-growth model
-is used. If, instead, it is set to <code>FALSE</code>, the simulation
-evolves according with the “border”-growth model.</p>
+<code>SpatialSimulation</code>’s <code>border_growth_model</code>
+Boolean field. By setting it to <code>FALSE</code>, the
+homogeneous-growth model is used. If, instead, it is set to
+<code>TRUE</code>, the simulation evolves according with the
+“border”-growth model.</p>
 <p>In the remaining part of this article we clarify the differences
 between the supported growth models by showing that they produce
 different evolutions of the very same cancer model.</p>
 <div class="section level3">
 <h3 id="homogeneous-growth">Homogeneous Growth<a class="anchor" aria-label="anchor" href="#homogeneous-growth"></a>
 </h3>
-<p>First of all we need to create a new <code>Simulation</code> object
-and enable duplication of internal cells.</p>
+<p>First of all we need to create a new <code>SpatialSimulation</code>
+object and set <code>border_growth_model</code> to
+<code>FALSE</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rRACES</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"Homogeneous Growth"</span><span class="op">)</span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpatialSimulation.html">SpatialSimulation</a></span><span class="op">(</span><span class="st">"Homogeneous Growth"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Set the homogeneous growth model</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">duplicate_internal_cells</span> <span class="op">&lt;-</span> <span class="cn">TRUE</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="va">border_growth_model</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span>
 <span></span>
 <span><span class="co"># Set the death activation level to avoid drift</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">50</span></span></code></pre></div>
@@ -193,7 +204,6 @@ Muller plot.</p>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">forest</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">get_samples_forest</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -225,14 +235,15 @@ connecting cells in each sample.</p>
 <div class="section level3">
 <h3 id="border-growth">“Border” Growth<a class="anchor" aria-label="anchor" href="#border-growth"></a>
 </h3>
-<p>We now build a simulation and use the “border” growth model.</p>
+<p>We now build a spatial simulation and use the “border” growth
+model.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/new.html" class="external-link">new</a></span><span class="op">(</span><span class="va">Simulation</span>, <span class="st">"Border Growth"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpatialSimulation.html">SpatialSimulation</a></span><span class="op">(</span><span class="st">"Border Growth"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Setting the "border" growth model is not needed as the</span></span>
-<span><span class="co"># boder growth model is the default.</span></span>
-<span><span class="va">sim</span><span class="op">$</span><span class="va">duplicate_internal_cells</span></span>
-<span><span class="co">#&gt; [1] FALSE</span></span>
+<span><span class="co"># border growth model is the default.</span></span>
+<span><span class="va">sim</span><span class="op">$</span><span class="va">border_growth_model</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
 <span></span>
 <span><span class="co"># Set the death activation level to avoid drift</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="va">death_activation_level</span> <span class="op">&lt;-</span> <span class="fl">50</span></span></code></pre></div>
@@ -278,7 +289,7 @@ example.</p>
 <span></span>
 <span><span class="co"># Let the simulation evolve until "B+" consists of 5000 cells</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B+"</span>, <span class="fl">5000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [████████████████████████████████████----] 88% [00m:00s] Cells: 68672 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.9</span> <span class="op">*</span> <span class="va">bbox_width</span> <span class="op">*</span> <span class="va">bbox_width</span></span>
 <span></span>
@@ -330,7 +341,7 @@ above examples.</p>
 This is due to the fact that the internal cells cannot duplicate in the
 former growth model, thus, the number of cells active for duplication is
 always greater in it, than in the homogeneous-growth model.</p>
-<p>Moreover, spacial closeness and closeness in the samples ancestor
+<p>Moreover, spatial closeness and closeness in the samples ancestor
 forest are strictly related in the “border” growth model, whereas they
 appear to be loosely related in the homogeneous growth model. This
 features can be easily spotted in the forest plots when the sample

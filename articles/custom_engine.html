@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,6 +94,15 @@
 
     
     
+<blockquote>
+<p><em>Disclaimer:</em> RACES/rRACES internally implements the
+probability distributions using the C++11 random number distribution
+classes. The standard does not specify their algorithms, and the class
+implementations are left free for the compiler. Thus, the simulation
+output depends on the compiler used to compile RACES, and because of
+that, the results reported in this article may differ from those
+obtained by the reader.</p>
+</blockquote>
 <p>rRACES/RACES can simulate genomic mutations on the cells represented
 in a <code>SamplesForest</code> according to the specified SBS and indel
 mutational signatures (see <code>vignette["mutations"]</code>). This
@@ -101,19 +110,19 @@ task is achieved by the mutation engine which uses two indices on the
 reference genome to place the most probable mutations according to
 signatures: the <em>context index</em> and the <em>repeted sequence
 index</em>.</p>
-<p>The function <code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code> builds the mutation
-engine and these two indices.</p>
+<p>The function <code><a href="../reference/MutationEngine.html">MutationEngine()</a></code> builds the mutation engine
+and these two indices.</p>
 <div class="section level2">
 <h2 id="customizing-the-mutation-engine">Customizing the mutation engine<a class="anchor" aria-label="anchor" href="#customizing-the-mutation-engine"></a>
 </h2>
-<p>While the most convient way to invoke
-<code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code> is by using the parameter
-<code>setup_code</code> (see <code>vignette["mutations"]</code>), the
-are cases in which a custom set-up is required. In these cases, the
-function <code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code> can be called by
-specifying the name of the set-up directory, the path or URL of the
-reference sequence, the signature files, the driver mutation file, the
-passenger CNAs file, and the germline data directory.</p>
+<p>While the most convient way to invoke <code><a href="../reference/MutationEngine.html">MutationEngine()</a></code>
+is by using the parameter <code>setup_code</code> (see
+<code>vignette["mutations"]</code>), the are cases in which a custom
+set-up is required. In these cases, the function
+<code><a href="../reference/MutationEngine.html">MutationEngine()</a></code> can be called by specifying the name of
+the set-up directory, the path or URL of the reference sequence, the
+signature files, the driver mutation file, the passenger CNAs file, and
+the germline data directory.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"rRACES"</span><span class="op">)</span></span>
 <span></span>
@@ -140,7 +149,7 @@ passenger CNAs file, and the germline data directory.</p>
 <span>                       <span class="st">"d3bqgyfcs7fa0bzqeo&amp;dl=1"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># build a mutation engine and place all the files in the directory "Test"</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>directory <span class="op">=</span> <span class="st">"Test"</span>,</span>
+<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MutationEngine.html">MutationEngine</a></span><span class="op">(</span>directory <span class="op">=</span> <span class="st">"Test"</span>,</span>
 <span>                                  reference_src <span class="op">=</span> <span class="va">reference_url</span>,</span>
 <span>                                  SBS_signatures_src <span class="op">=</span> <span class="va">sbs_url</span>,</span>
 <span>                                  indel_signatures_src <span class="op">=</span> <span class="va">indel_url</span>,</span>
@@ -165,8 +174,8 @@ passenger CNAs file, and the germline data directory.</p>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving context index [████████████████████████████████████████] 100% [00m:00s] Context index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; Building repeated sequence index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:05s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:11s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:11s] RS index built</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [███████████████████████-----------------] 57% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:12s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [████████████████████████----------------] 58% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving germline [████████████████████████████████████████] 100% [00m:00s] Germline saved</span></span>
@@ -179,16 +188,16 @@ passenger CNAs file, and the germline data directory.</p>
 <p>The SBS signatures fixes, for every possible context (i.e., a triplet
 of consetutive nucleotides), the probability for a SNV to occur in such
 a context (see <span class="citation">(Alexandrov et al. 2020)</span>).
-Hence, the function <code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code> builds a
-context index of the reference sequence to place SNVs on the forest
-cells. The complete context index of a sequence whose size is up to
-4Gbps takes 4 times the length of the sequence itself both in memory and
-on the disk because 4 bytes per nucleotide are required to store the
-context position. For instance, the complete contex index of a human
-genome takes about 12GBytes. In order to avoid such requirement in
-memory and disk space, <code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code> allows to
-sample the reference genome contexts and to stores only some of the them
-in the context index. This is achieved by the optional parameter
+Hence, the function <code><a href="../reference/MutationEngine.html">MutationEngine()</a></code> builds a context index
+of the reference sequence to place SNVs on the forest cells. The
+complete context index of a sequence whose size is up to 4Gbps takes 4
+times the length of the sequence itself both in memory and on the disk
+because 4 bytes per nucleotide are required to store the context
+position. For instance, the complete contex index of a human genome
+takes about 12GBytes. In order to avoid such requirement in memory and
+disk space, <code><a href="../reference/MutationEngine.html">MutationEngine()</a></code> allows to sample the reference
+genome contexts and to stores only some of the them in the context
+index. This is achieved by the optional parameter
 <code>context_sampling</code> which specifies how many occurences of the
 same context must be identified before adding one of them to the context
 index. The larger the number of context sampling, the larger the context
@@ -196,9 +205,9 @@ index. On the other side, the lower the number of context sampling, the
 lower the number of sites in the refernce genome that can be affected by
 simulated mutations. The <code>context_sampling</code> is set to 100 by
 default, but it can be specified during the
-<code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code> call.</p>
+<code><a href="../reference/MutationEngine.html">MutationEngine()</a></code> call.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MutationEngine.html">MutationEngine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Downloading reference genome...</span></span>
 <span><span class="co">#&gt; Reference genome downloaded</span></span>
 <span><span class="co">#&gt; Decompressing reference file...done</span></span>
@@ -217,8 +226,8 @@ default, but it can be specified during the
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving context index [████████████████████████████████████████] 100% [00m:00s] Context index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; Building repeated sequence index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:05s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:11s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:11s] RS index built</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [████████████████████████----------------] 58% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:05s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:11s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [███████████████████████-----------------] 57% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving germline [████████████████████████████████████████] 100% [00m:00s] Germline saved</span></span>
@@ -230,12 +239,12 @@ default, but it can be specified during the
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
 <span><span class="co"># and setting context_sampling to 50</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>, context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
+<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MutationEngine.html">MutationEngine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>, context_sampling <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Building context index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█████████████████-----------------------] 40% [00m:01s] Processing chr. 22 [██████████████████████████████----------] 73% [00m:02s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:02s] Context index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█████████████████-----------------------] 40% [00m:01s] Processing chr. 22 [█████████████████████████████████-------] 81% [00m:02s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:02s] Context index built</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving context index [████████████████████████████████████████] 100% [00m:00s] Context index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [███████████████████---------------------] 46% [00m:01s] Loading RS index [████████████████████████████████████----] 89% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [████████████████------------------------] 39% [00m:01s] Loading RS index [█████████████████████████████████-------] 82% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span></code></pre></div>
 <p>Above call uses the already downloaded data in the directory
 <code>"demo"</code> to build the context and produces the file
@@ -255,17 +264,16 @@ occur in them (see <span class="citation">(Alexandrov et al.
 builds an index for the repeated sequences in the reference. As in the
 case of the SBS signatures, the ID signatures can be memory eager. To
 mitigate the memory requirement, the function
-<code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code> accepts as parameters the maximum
-size of the considered indel (the parameter <code>max_index_size</code>)
-and the maximum number of reference position stored per repetition type
-(the parameter <code>max_repetition_storage</code>). The larger the two
+<code><a href="../reference/MutationEngine.html">MutationEngine()</a></code> accepts as parameters the maximum size of
+the considered indel (the parameter <code>max_index_size</code>) and the
+maximum number of reference position stored per repetition type (the
+parameter <code>max_repetition_storage</code>). The larger the two
 parameters, the larger the repetition index. As far the building time
 concerns, the larger <code>max_index_size</code>, the longer takes the
 index construction. On the contrary, <code>max_repetition_storage</code>
 does not directly affects the computation time. By default, the two
 parameters are set to 50 and 500000, respectively. However, their values
-can be specified during the <code><a href="../reference/build_mutation_engine.html">build_mutation_engine()</a></code>
-call.</p>
+can be specified during the <code><a href="../reference/MutationEngine.html">MutationEngine()</a></code> call.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the size of the repeated index when the default parameter values</span></span>
 <span><span class="co"># are used</span></span>
@@ -275,12 +283,12 @@ call.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
 <span><span class="co"># and setting max_repetition_storage to 10,000,000</span></span>
-<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/build_mutation_engine.html">build_mutation_engine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>,</span>
+<span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MutationEngine.html">MutationEngine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>,</span>
 <span>                                  max_repetition_storage <span class="op">=</span> <span class="fl">10000000</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading context index [████████████████████████████████████████] 100% [00m:00s] Context index loaded</span></span>
 <span><span class="co">#&gt; Building repeated sequence index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:11s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:11s] RS index built</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [█---------------------------------------] 1% [00m:01s] Saving RS index [████████--------------------------------] 18% [00m:02s] Saving RS index [█████████████████-----------------------] 42% [00m:03s] Saving RS index [██████████████████████████--------------] 64% [00m:04s] Saving RS index [███████████████████████████████████-----] 87% [00m:05s] Saving RS index [████████████████████████████████████████] 100% [00m:06s] RS index saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:10s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:11s] RS index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [█---------------------------------------] 1% [00m:01s] Saving RS index [███████████-----------------------------] 25% [00m:02s] Saving RS index [█████████████████████-------------------] 51% [00m:03s] Saving RS index [███████████████████████████████---------] 75% [00m:04s] Saving RS index [████████████████████████████████████████] 100% [00m:05s] RS index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span></code></pre></div>
 <p>Above call uses the already downloaded data in the directory
