@@ -22,7 +22,7 @@
 #' # set the seed of the random number generator
 #' set.seed(0)
 #'
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.1,
 #'                death_rates = 0.0)
@@ -49,7 +49,7 @@
 #' forest <- sim$get_samples_forest()
 #'
 #' # placing mutations
-#' m_engine <- build_mutation_engine(setup_code = "demo")
+#' m_engine <- MutationEngine(setup_code = "demo")
 #'
 #' m_engine$add_mutant(mutant_name="A", passenger_rates=c(SNV=5e-8))
 #' m_engine$add_mutant(mutant_name="B", passenger_rates=c(SNV=5e-9))

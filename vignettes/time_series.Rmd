@@ -23,12 +23,10 @@ knitr::opts_chunk$set(
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 library(rRACES)
 
-sim <- Simulation("Test")
+# Create a spatial simulation whose tissue has size 1200x900
+sim <- SpatialSimulation("Test", width=1200, height=900)
 
 sim$death_activation_level <- 50
-
-# Set the tissue name and size to different values
-sim$update_tissue("Liver", 1200, 900)
 
 sim$add_mutant(name = "A",
                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
@@ -122,14 +120,14 @@ plot_timeseries(sim)
 ## Custom Time-Series
 
 If the default time-series is not enough coarse-grained, one can set
-`Simulation$history_delta` to increase the sampling rate of
-the state (by default, `Simulation$history_delta` is set to $0$).
+`SpatialSimulation$history_delta` to increase the sampling rate of
+the state (by default, `SpatialSimulation$history_delta` is set to $0$).
 
 We show this by re-simulating a tumour with two submutants.
 
 ```{r}
 # Example time-series on a new simulation, with coarse-grained time-series
-sim <- Simulation("Finer Time Series")
+sim <- SpatialSimulation("Finer Time Series")
 
 sim$history_delta <- 1
 sim$death_activation_level <- 100

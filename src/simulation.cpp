@@ -188,7 +188,7 @@ size_t count_driver_mutated_cells(const RACES::Mutants::Evolutions::Tissue& tiss
   return total;
 }
 
-std::vector<RACES::Mutants::Evolutions::Direction> Simulation::get_possible_directions()
+std::vector<RACES::Mutants::Evolutions::Direction> SpatialSimulation::get_possible_directions()
 {
   namespace RS = RACES::Mutants::Evolutions;
 
@@ -220,7 +220,7 @@ RectangularChooser::RectangularChooser(
   PlainChooser(sim_ptr, mutant_name), rectangle(get_rectangle(lower_corner, upper_corner))
 {}
 
-bool Simulation::has_names(const Rcpp::List& list, std::vector<std::string> aimed_names)
+bool SpatialSimulation::has_names(const Rcpp::List& list, std::vector<std::string> aimed_names)
 {
   if (aimed_names.size() != static_cast<size_t>(list.size())) {
     return false;
@@ -235,7 +235,7 @@ bool Simulation::has_names(const Rcpp::List& list, std::vector<std::string> aime
   return true;
 }
 
-bool Simulation::has_names_in(const Rcpp::List& list, std::set<std::string> aimed_names)
+bool SpatialSimulation::has_names_in(const Rcpp::List& list, std::set<std::string> aimed_names)
 {
   using namespace Rcpp;
 
@@ -255,7 +255,7 @@ bool Simulation::has_names_in(const Rcpp::List& list, std::set<std::string> aime
 }
 
 Rcpp::List
-Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                       const std::set<RACES::Mutants::SpeciesId> &species_filter,
                       const std::set<std::string> &epigenetic_filter) const
@@ -313,7 +313,7 @@ Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition
                             _["position_y"]=y_pos);
 }
 
-Rcpp::List Simulation::wrap_a_cell(const RACES::Mutants::Evolutions::CellInTissue& cell) const
+Rcpp::List SpatialSimulation::wrap_a_cell(const RACES::Mutants::Evolutions::CellInTissue& cell) const
 {
   using namespace Rcpp;
   using namespace RACES::Mutants;
@@ -329,11 +329,11 @@ Rcpp::List Simulation::wrap_a_cell(const RACES::Mutants::Evolutions::CellInTissu
                             _["position_y"]=cell.y);
 }
 
-Simulation Simulation::load(const std::string& directory_name)
+SpatialSimulation SpatialSimulation::load(const std::string& directory_name)
 {
   using namespace RACES::Mutants::Evolutions;
 
-  Simulation simulation;
+  SpatialSimulation simulation;
 
   simulation.save_snapshots = true;
   simulation.name = directory_name;
@@ -345,9 +345,9 @@ Simulation Simulation::load(const std::string& directory_name)
   try {
     archive & *(simulation.sim_ptr);
   } catch (RACES::Archive::WrongFileFormatDescr& ex) {
-    raise_error(ex, "tissue simulation");
+    raise_error(ex, "spatial simulation");
   } catch (RACES::Archive::WrongFileFormatVersion& ex) {
-    raise_error(ex, "tissue simulation");
+    raise_error(ex, "spatial simulation");
   }
 
   auto ruh_path = std::filesystem::path(directory_name)/
@@ -383,7 +383,7 @@ get_default_name()
   return "races_"+get_time_string();
 }
 
-void Simulation::init(const SEXP& sexp)
+void SpatialSimulation::init(const SEXP& sexp)
 {
   using namespace Rcpp;
 
@@ -425,13 +425,13 @@ void Simulation::init(const SEXP& sexp)
   }
 }
 
-Simulation::Simulation():
+SpatialSimulation::SpatialSimulation():
   sim_ptr(std::make_shared<RACES::Mutants::Evolutions::Simulation>(get_tmp_dir_path(),
                                                                    get_random_seed<int>(R_NilValue))),
   name(get_default_name()), save_snapshots(false)
 {}
 
-Simulation::Simulation(const SEXP& sexp):
+SpatialSimulation::SpatialSimulation(const SEXP& sexp):
   save_snapshots(false)
 {
   using namespace Rcpp;
@@ -453,7 +453,7 @@ Simulation::Simulation(const SEXP& sexp):
   init(sexp);
 }
 
-Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
+SpatialSimulation::SpatialSimulation(const SEXP& first_param, const SEXP& second_param):
   save_snapshots(false)
 {
   using namespace Rcpp;
@@ -494,7 +494,9 @@ Simulation::Simulation(const SEXP& first_param, const SEXP& second_param):
   sim_ptr = std::make_shared<RACES::Mutants::Evolutions::Simulation>(name, seed);
 }
 
-Simulation::Simulation(const std::string& simulation_name, const SEXP& seed, const bool& save_snapshots):
+SpatialSimulation::SpatialSimulation(const std::string& simulation_name,
+                                            const SEXP& seed,
+                                            const bool& save_snapshots):
   name(simulation_name), save_snapshots(save_snapshots)
 {
   int c_seed = get_random_seed<int>(seed);
@@ -506,7 +508,8 @@ Simulation::Simulation(const std::string& simulation_name, const SEXP& seed, con
   }
 }
 
-Simulation::Simulation(const std::string& simulation_name, const bool& seed, const bool& save_snapshots):
+SpatialSimulation::SpatialSimulation(const std::string& simulation_name, const bool& seed,
+                                     const bool& save_snapshots):
   name(simulation_name), save_snapshots(save_snapshots)
 {
   if (save_snapshots) {
@@ -559,9 +562,10 @@ size_t get_size(const SEXP& parameter, const std::string parameter_name)
   return static_cast<size_t>(c_value); 
 }
 
-Simulation
-Simulation::build_simulation(const SEXP& simulation_name, const SEXP& width, const SEXP& height, 
-                             const SEXP& save_snapshots, const SEXP& seed)
+SpatialSimulation
+SpatialSimulation::build_simulation(const SEXP& simulation_name, const SEXP& width,
+                                    const SEXP& height, const SEXP& save_snapshots,
+                                    const SEXP& seed)
 {
   std::string c_name;
   if (TYPEOF(simulation_name) == NILSXP) {
@@ -574,14 +578,14 @@ Simulation::build_simulation(const SEXP& simulation_name, const SEXP& width, con
   auto c_save = get_bool(save_snapshots, "save_snapshots");
   auto c_seed = get_random_seed<int>(seed);
 
-  Simulation sim(c_name, c_seed, c_save);
+  SpatialSimulation sim(c_name, c_seed, c_save);
 
   sim.update_tissue(c_width, c_height);
 
   return sim;
 }
 
-Simulation::~Simulation()
+SpatialSimulation::~SpatialSimulation()
 {
   if (sim_ptr.use_count()==1 && !save_snapshots) {
     auto dir = sim_ptr->get_logger().get_directory();
@@ -592,7 +596,7 @@ Simulation::~Simulation()
   }
 }
 
-void Simulation::add_mutant_rate_history(const RACES::Mutants::MutantProperties& mutant_propeties)
+void SpatialSimulation::add_mutant_rate_history(const RACES::Mutants::MutantProperties& mutant_propeties)
 {
   auto& timed_update = rate_update_history[sim_ptr->get_time()];
   for (const auto& species : mutant_propeties.get_species()) {
@@ -618,7 +622,7 @@ void Simulation::add_mutant_rate_history(const RACES::Mutants::MutantProperties&
   ruh_archive & rate_update_history;
 }
 
-void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& epigenetic_rates,
+void SpatialSimulation::add_mutant(const std::string& mutant_name, const Rcpp::List& epigenetic_rates,
                             const Rcpp::List& growth_rates, const Rcpp::List& death_rates)
 {
   using namespace Rcpp;
@@ -668,7 +672,7 @@ void Simulation::add_mutant(const std::string& mutant_name, const Rcpp::List& ep
   add_mutant_rate_history(real_mutant);
 }
 
-void Simulation::add_mutant(const std::string& mutant_name, const double& growth_rate,
+void SpatialSimulation::add_mutant(const std::string& mutant_name, const double& growth_rate,
                             const double& death_rate)
 {
   using namespace RACES::Mutants;
@@ -687,7 +691,7 @@ void Simulation::add_mutant(const std::string& mutant_name, const double& growth
   add_mutant_rate_history(real_mutant);
 }
 
-Rcpp::List Simulation::get_species() const
+Rcpp::List SpatialSimulation::get_species() const
 {
   using namespace Rcpp;
   size_t num_of_rows = sim_ptr->tissue().num_of_species();
@@ -726,7 +730,7 @@ Rcpp::List Simulation::get_species() const
                             _["switch_rate"]=switch_rates);
 }
 
-Rcpp::List Simulation::get_rates_update_history() const
+Rcpp::List SpatialSimulation::get_rates_update_history() const
 {
   using namespace Rcpp;
   using namespace RACES::Mutants;
@@ -756,7 +760,7 @@ Rcpp::List Simulation::get_rates_update_history() const
                            _["rate"]=rates);
 }
 
-void Simulation::place_cell(const std::string& species_name,
+void SpatialSimulation::place_cell(const std::string& species_name,
                             const RACES::Mutants::Evolutions::AxisPosition& x,
                             const RACES::Mutants::Evolutions::AxisPosition& y)
 {
@@ -769,7 +773,7 @@ void Simulation::place_cell(const std::string& species_name,
   sim_ptr->place_cell(species.get_id(), {x,y});
 }
 
-Rcpp::List Simulation::get_cells() const
+Rcpp::List SpatialSimulation::get_cells() const
 {
   namespace RS = RACES::Mutants::Evolutions;
 
@@ -783,7 +787,7 @@ Rcpp::List Simulation::get_cells() const
   return get_cells({0,0}, upper_corner);
 }
 
-Rcpp::List Simulation::get_cell(const RACES::Mutants::Evolutions::AxisPosition& x,
+Rcpp::List SpatialSimulation::get_cell(const RACES::Mutants::Evolutions::AxisPosition& x,
                           const RACES::Mutants::Evolutions::AxisPosition& y) const
 {
   namespace RS = RACES::Mutants::Evolutions;
@@ -793,7 +797,7 @@ Rcpp::List Simulation::get_cell(const RACES::Mutants::Evolutions::AxisPosition& 
   return wrap_a_cell(cell);
 }
 
-Rcpp::List Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+Rcpp::List SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                            const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
 {
   std::set<RACES::Mutants::SpeciesId> species_ids;
@@ -805,7 +809,7 @@ Rcpp::List Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::A
   return get_cells(lower_corner, upper_corner, species_ids, {"+", "-", ""});
 }
 
-Rcpp::List Simulation::get_cells(const SEXP& first_param, const SEXP& second_param) const
+Rcpp::List SpatialSimulation::get_cells(const SEXP& first_param, const SEXP& second_param) const
 {
   using namespace Rcpp;
   using namespace RACES::Mutants::Evolutions;
@@ -840,7 +844,7 @@ Rcpp::List Simulation::get_cells(const SEXP& first_param, const SEXP& second_par
   }
 }
 
-Rcpp::List Simulation::get_cells(const std::vector<std::string>& species_filter,
+Rcpp::List SpatialSimulation::get_cells(const std::vector<std::string>& species_filter,
                            const std::vector<std::string>& epigenetic_filter) const
 {
   namespace RS = RACES::Mutants::Evolutions;
@@ -855,7 +859,7 @@ Rcpp::List Simulation::get_cells(const std::vector<std::string>& species_filter,
   return get_cells({0,0}, upper_corner, species_filter, epigenetic_filter);
 }
 
-Rcpp::List Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+Rcpp::List SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                            const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                            const std::vector<std::string>& mutant_filter,
                            const std::vector<std::string>& epigenetic_filter) const
@@ -868,7 +872,7 @@ Rcpp::List Simulation::get_cells(const std::vector<RACES::Mutants::Evolutions::A
   return get_cells(lower_corner, upper_corner, species_ids, epigenetic_set);
 }
 
-Rcpp::List Simulation::get_counts() const
+Rcpp::List SpatialSimulation::get_counts() const
 {
   using namespace Rcpp;
   using namespace RACES::Mutants;
@@ -902,7 +906,7 @@ get_species_id2name(const RACES::Mutants::Evolutions::Tissue& tissue)
   return id2name;
 }
 
-Rcpp::List Simulation::get_added_cells() const
+Rcpp::List SpatialSimulation::get_added_cells() const
 {
   using namespace Rcpp;
   using namespace RACES::Mutants;
@@ -975,7 +979,7 @@ std::vector<TimedLineageEdge> sorted_timed_edges(const RACES::Mutants::Evolution
   return timed_edges;
 }
 
-Rcpp::List Simulation::get_lineage_graph() const
+Rcpp::List SpatialSimulation::get_lineage_graph() const
 {
   using namespace Rcpp;
   const auto species_id2name = get_species_id2name(sim_ptr->tissue());
@@ -1010,7 +1014,7 @@ inline void validate_non_empty_tissue(const RACES::Mutants::Evolutions::Tissue& 
   }
 }
 
-void Simulation::run_up_to_time(const RACES::Time& time)
+void SpatialSimulation::run_up_to_time(const RACES::Time& time)
 {
   validate_non_empty_tissue(sim_ptr->tissue());
 
@@ -1021,7 +1025,7 @@ void Simulation::run_up_to_time(const RACES::Time& time)
   sim_ptr->run(ending_test, bar);
 }
 
-void Simulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
+void SpatialSimulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
 {
   RACES::UI::ProgressBar bar(Rcpp::Rcout);
 
@@ -1034,7 +1038,7 @@ void Simulation::run_up_to_size(const std::string& species_name, const size_t& n
   sim_ptr->run(ending_test, bar);
 }
 
-void Simulation::run_up_to_event(const std::string& event, const std::string& species_name,
+void SpatialSimulation::run_up_to_event(const std::string& event, const std::string& species_name,
                                  const size_t& num_of_events)
 {
   RACES::UI::ProgressBar bar(Rcpp::Rcout);
@@ -1054,7 +1058,7 @@ void Simulation::run_up_to_event(const std::string& event, const std::string& sp
   sim_ptr->run(ending_test, bar);
 }
 
-void Simulation::run_until(const Logics::Formula& formula)
+void SpatialSimulation::run_until(const Logics::Formula& formula)
 {
   validate_non_empty_tissue(sim_ptr->tissue());
 
@@ -1065,7 +1069,7 @@ void Simulation::run_until(const Logics::Formula& formula)
   sim_ptr->run(ending_test, bar);
 }
 
-Rcpp::List Simulation::get_firings() const
+Rcpp::List SpatialSimulation::get_firings() const
 {
   using namespace Rcpp;
 
@@ -1077,7 +1081,7 @@ Rcpp::List Simulation::get_firings() const
                            _["epistate"]=df["epistate"], _["fired"]=df["fired"]);
 }
 
-Rcpp::List Simulation::get_firing_history(const RACES::Time& minimum_time) const
+Rcpp::List SpatialSimulation::get_firing_history(const RACES::Time& minimum_time) const
 {
   if (sim_ptr->get_statistics().get_history().size()==0) {
     return get_firing_history(0,0);
@@ -1088,7 +1092,7 @@ Rcpp::List Simulation::get_firing_history(const RACES::Time& minimum_time) const
   return get_firing_history(minimum_time, last_time_sample);
 }
 
-size_t Simulation::count_history_sample_in(const RACES::Time& minimum_time,
+size_t SpatialSimulation::count_history_sample_in(const RACES::Time& minimum_time,
                                            const RACES::Time& maximum_time) const
 {
   size_t num_of_samples{0};
@@ -1103,7 +1107,7 @@ size_t Simulation::count_history_sample_in(const RACES::Time& minimum_time,
   return num_of_samples;
 }
 
-Rcpp::List Simulation::get_firing_history(const RACES::Time& minimum_time,
+Rcpp::List SpatialSimulation::get_firing_history(const RACES::Time& minimum_time,
                                           const RACES::Time& maximum_time) const
 {
   using namespace Rcpp;
@@ -1146,7 +1150,7 @@ Rcpp::List Simulation::get_firing_history(const RACES::Time& minimum_time,
                            _["time"]=times);
 }
 
-Rcpp::List Simulation::get_count_history(const RACES::Time& minimum_time) const
+Rcpp::List SpatialSimulation::get_count_history(const RACES::Time& minimum_time) const
 {
   if (sim_ptr->get_statistics().get_history().size()==0) {
     return get_count_history(0,0);
@@ -1157,7 +1161,7 @@ Rcpp::List Simulation::get_count_history(const RACES::Time& minimum_time) const
   return get_count_history(minimum_time, last_time_sample);
 }
 
-Rcpp::List Simulation::get_count_history(const RACES::Time& minimum_time,
+Rcpp::List SpatialSimulation::get_count_history(const RACES::Time& minimum_time,
                                    const RACES::Time& maximum_time) const
 {
   using namespace Rcpp;
@@ -1195,7 +1199,7 @@ Rcpp::List Simulation::get_count_history(const RACES::Time& minimum_time,
                            _["count"]=counts, _["time"]=times);
 }
 
-Rcpp::IntegerVector Simulation::get_tissue_size() const
+Rcpp::IntegerVector SpatialSimulation::get_tissue_size() const
 {
   auto size_vect = sim_ptr->tissue().size();
 
@@ -1219,7 +1223,7 @@ get_switched_species(const RACES::Mutants::Evolutions::Tissue& tissue,
                           + "\" does not have an epigenetic status.");
 }
 
-Rcpp::List Simulation::get_rates(const std::string& species_name) const
+Rcpp::List SpatialSimulation::get_rates(const std::string& species_name) const
 {
   using namespace Rcpp;
 
@@ -1239,7 +1243,7 @@ Rcpp::List Simulation::get_rates(const std::string& species_name) const
   return rates;
 }
 
-void Simulation::update_rates(const std::string& species_name, const Rcpp::List& rates)
+void SpatialSimulation::update_rates(const std::string& species_name, const Rcpp::List& rates)
 {
   using namespace Rcpp;
   using namespace RACES::Mutants;
@@ -1278,7 +1282,7 @@ void Simulation::update_rates(const std::string& species_name, const Rcpp::List&
 }
 
 Rcpp::List
-Simulation::choose_cell_in(const std::string& mutant_name,
+SpatialSimulation::choose_cell_in(const std::string& mutant_name,
                            const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                            const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner)
 {
@@ -1295,7 +1299,7 @@ Simulation::choose_cell_in(const std::string& mutant_name,
   return choose_border_cell_in(mutant_name, lower_corner, upper_corner);
 }
 
-Rcpp::List Simulation::choose_cell_in(const std::string& mutant_name)
+Rcpp::List SpatialSimulation::choose_cell_in(const std::string& mutant_name)
 {
   namespace RS = RACES::Mutants::Evolutions;
 
@@ -1308,14 +1312,14 @@ Rcpp::List Simulation::choose_cell_in(const std::string& mutant_name)
   return choose_border_cell_in(mutant_name);
 }
 
-Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name)
+Rcpp::List SpatialSimulation::choose_border_cell_in(const std::string& mutant_name)
 {
     const auto& cell = sim_ptr->choose_border_cell_in(mutant_name);
 
     return wrap_a_cell(cell);
 }
 
-Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name,
+Rcpp::List SpatialSimulation::choose_border_cell_in(const std::string& mutant_name,
                                              const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                                              const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner)
 {
@@ -1325,7 +1329,7 @@ Rcpp::List Simulation::choose_border_cell_in(const std::string& mutant_name,
     return wrap_a_cell(cell);
 }
 
-void Simulation::mutate_progeny(const RACES::Mutants::Evolutions::AxisPosition& x,
+void SpatialSimulation::mutate_progeny(const RACES::Mutants::Evolutions::AxisPosition& x,
                                 const RACES::Mutants::Evolutions::AxisPosition& y,
                                 const std::string& mutated_mutant)
 {
@@ -1336,7 +1340,7 @@ void Simulation::mutate_progeny(const RACES::Mutants::Evolutions::AxisPosition& 
   sim_ptr->simulate_mutation(pos_in_tissue, mutated_mutant);
 }
 
-void Simulation::mutate_progeny(const Rcpp::List& cell_position,
+void SpatialSimulation::mutate_progeny(const Rcpp::List& cell_position,
                                 const std::string& mutated_mutant)
 {
   using namespace Rcpp;
@@ -1358,7 +1362,7 @@ void Simulation::mutate_progeny(const Rcpp::List& cell_position,
   return mutate_progeny(vector_position[0], vector_position[1], mutated_mutant);
 }
 
-void Simulation::sample_cells(const std::string& sample_name,
+void SpatialSimulation::sample_cells(const std::string& sample_name,
                               const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                               const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
 {
@@ -1376,7 +1380,7 @@ void Simulation::sample_cells(const std::string& sample_name,
   sim_ptr->sample_tissue(spec);
 }
 
-void Simulation::sample_cells(const std::string& sample_name,
+void SpatialSimulation::sample_cells(const std::string& sample_name,
                               const size_t& num_of_cells) const
 {
     std::vector<RACES::Mutants::Evolutions::AxisPosition> lower_corner, upper_corner;
@@ -1389,7 +1393,7 @@ void Simulation::sample_cells(const std::string& sample_name,
     sample_cells(sample_name, lower_corner, upper_corner, num_of_cells);
 }
 
-void Simulation::sample_cells(const std::string& sample_name,
+void SpatialSimulation::sample_cells(const std::string& sample_name,
                               const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                               const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                               const size_t& num_of_cells) const
@@ -1407,7 +1411,7 @@ void Simulation::sample_cells(const std::string& sample_name,
   sim_ptr->sample_tissue(spec);
 }
 
-SamplesForest Simulation::get_samples_forest() const
+SamplesForest SpatialSimulation::get_samples_forest() const
 {
   return SamplesForest(*sim_ptr);
 }
@@ -1492,7 +1496,7 @@ collect_species_of(const RACES::Mutants::Evolutions::Simulation& simulation,
   return species_ids;
 }
 
-TissueRectangle Simulation::get_tumour_bounding_box() const
+TissueRectangle SpatialSimulation::get_tumour_bounding_box() const
 {
   using namespace RACES::Mutants::Evolutions;
   const auto& tissue = sim_ptr->tissue();
@@ -1683,7 +1687,7 @@ bool constraints_satisfied(const std::map<RACES::Mutants::SpeciesId, size_t>& ce
 }
 
 std::vector<TissueRectangle>
-Simulation::find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
+SpatialSimulation::find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
                              const uint16_t& width, const uint16_t& height) const
 {
   auto species_constraints = get_species_constraints(*sim_ptr, minimum_cell_vector);
@@ -1716,7 +1720,7 @@ Simulation::find_all_samples(const Rcpp::IntegerVector& minimum_cell_vector,
 }
 
 std::vector<TissueRectangle>
-Simulation::search_samples(const Rcpp::IntegerVector& minimum_cell_vector,
+SpatialSimulation::search_samples(const Rcpp::IntegerVector& minimum_cell_vector,
                            const uint16_t& width, const uint16_t& height,
                            const size_t num_of_samples, const int seed) const
 {
@@ -1750,7 +1754,7 @@ Simulation::search_samples(const Rcpp::IntegerVector& minimum_cell_vector,
     return output;
 }
 
-TissueRectangle Simulation::search_sample(const Rcpp::IntegerVector& minimum_cell_vector,
+TissueRectangle SpatialSimulation::search_sample(const Rcpp::IntegerVector& minimum_cell_vector,
                                           const uint16_t& width, const uint16_t& height) const
 {
   auto species_constraints = get_species_constraints(*sim_ptr, minimum_cell_vector);
@@ -1822,7 +1826,7 @@ TissueRectangle Simulation::search_sample(const Rcpp::IntegerVector& minimum_cel
   throw std::runtime_error("No bounding box found!");
 }
 
-Logics::Variable Simulation::get_var(const std::string& name) const
+Logics::Variable SpatialSimulation::get_var(const std::string& name) const
 {
 
   if ( name == "Time") {

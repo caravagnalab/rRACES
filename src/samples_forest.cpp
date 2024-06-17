@@ -30,7 +30,7 @@ SamplesForest::SamplesForest(const RACES::Mutants::Evolutions::Simulation& simul
 
 Rcpp::List SamplesForest::get_samples_info() const
 {
- return Simulation::get_samples_info(get_samples());
+ return SpatialSimulation::get_samples_info(get_samples());
 }
 
 SamplesForest SamplesForest::get_subforest_for(const std::vector<std::string>& sample_names) const

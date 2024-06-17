@@ -60,7 +60,7 @@ get_exposure_ends <- function(phylo_forest) {
 #'
 #' @return An editable ggplot plot.
 #' @examples
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #'
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 0.2,
@@ -81,7 +81,7 @@ get_exposure_ends <- function(phylo_forest) {
 #'
 #' # placing mutations
 #'
-#' m_engine <- build_mutation_engine(setup_code = "demo")
+#' m_engine <- MutationEngine(setup_code = "demo")
 #'
 #' m_engine$add_mutant(mutant_name = "A",
 #'                     passenger_rates = c(SNV = 8e-8))

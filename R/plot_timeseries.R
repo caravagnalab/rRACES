@@ -26,7 +26,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #' sim$history_delta <- 1
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
@@ -38,7 +38,7 @@
 #' # Set the frequency of storing
 #' plot_timeseries(sim)
 plot_timeseries <- function(simulation) {
-  stopifnot(inherits(simulation, "Rcpp_Simulation"))
+  stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   counts <- simulation$get_count_history() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))

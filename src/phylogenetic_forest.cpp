@@ -56,7 +56,7 @@ PhylogeneticForest::PhylogeneticForest(RACES::Mutations::PhylogeneticForest&& or
 
 Rcpp::List PhylogeneticForest::get_samples_info() const
 {
-return Simulation::get_samples_info(get_samples());
+return SpatialSimulation::get_samples_info(get_samples());
 }
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const

@@ -36,11 +36,9 @@ library(rRACES)
 # set the seed of the random number generator
 set.seed(0)
 
-sim <- Simulation("Three Populations")
+sim <- SpatialSimulation("Three Populations", width=250, height=250)
 
 sim$death_activation_level <- 20
-
-sim$update_tissue(250, 250)
 
 sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 sim$place_cell("A", 125, 125)

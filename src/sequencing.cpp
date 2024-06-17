@@ -34,14 +34,7 @@ RCPP_MODULE(Sequencing){
 //' @seealso `simulate_seq()`, `simulate_normal_seq()`, and
 //'   `vignette("sequencing")` for usage examples
   class_<ErrorlessIlluminaSequencer>("ErrorlessIlluminaSequencer")
-//' @name ErrorlessIlluminaSequencer$new
-//' @title Building a new error-less Illumina sequencer model
-//' @description This method builds an error-less Illumina sequencer model.
-//' @examples
-//' # build an error-less Illumina sequencer
-//' sequencer <- ErrorlessIlluminaSequencer()
-//'
-//' sequencer
+
     .method("show", &ErrorlessIlluminaSequencer::show,
             "Show a description for the sequencer");
 

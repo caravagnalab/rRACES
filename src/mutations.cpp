@@ -386,7 +386,7 @@ RCPP_MODULE(Mutations){
 //'   new mutations are exclusively placed in mutation-free loci.
 //' @examples
 //' # create a demostrative mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # the infinite sites model is enabled by default
 //' m_engine$infinite_sites_model
@@ -418,7 +418,7 @@ RCPP_MODULE(Mutations){
 //'   The indel and SNV exposures can be specified in the same list.
 //' @examples
 //' # create a demostrative mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # add a default set of coefficients that will be used from simulated
 //' # time 0 up to the successive coefficient change. The indel and SNV
@@ -451,7 +451,7 @@ RCPP_MODULE(Mutations){
 //'   the mutant (optional).
 //' @examples
 //' # create a demostrative mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # add the mutant "A" characterized by one driver SNV on chromosome 22 and
 //' # two CNAs: an amplification and a deletion. The mutant has two epigenetic
@@ -502,7 +502,7 @@ RCPP_MODULE(Mutations){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant("A", c(SNV = 0.2), 0.01)
 //' sim$place_cell("A", 500, 500)
 //'
@@ -517,7 +517,7 @@ RCPP_MODULE(Mutations){
 //' samples_forest <- sim$get_samples_forest()
 //'
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # add the mutant "A" to the engine
 //' m_engine$add_mutant("A", c(SNV = 3e-9), list(SNV("22", 12028576, "G")))
@@ -574,7 +574,7 @@ RCPP_MODULE(Mutations){
 //'   to set the active germline subject.
 //' @examples
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # get the active germline subject dataframe
 //' head(m_engine$get_active_germline(), 5)
@@ -591,7 +591,7 @@ RCPP_MODULE(Mutations){
 //'   to get the active germline subject.
 //' @examples
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # set the active germline subject dataframe
 //' m_engine$set_germline_subject("NA18941")
@@ -611,7 +611,7 @@ RCPP_MODULE(Mutations){
 //'   to set the active germline.
 //' @examples
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # get the active germline subject dataframe
 //' head(m_engine$get_germline_subjects(), 5)
@@ -628,7 +628,7 @@ RCPP_MODULE(Mutations){
 //' @return A dataframe containing the population descriptions.
 //' @examples
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # get the active germline subject dataframe
 //' head(m_engine$get_population_descritions(), 5)
@@ -649,7 +649,7 @@ RCPP_MODULE(Mutations){
 //'   signatures.
 //' @examples
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # get the indel dataframe
 //' head(m_engine$get_SNV_signatures(), 5)
@@ -671,7 +671,7 @@ RCPP_MODULE(Mutations){
 //'   signatures.
 //' @examples
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # get the indel dataframe
 //' head(m_engine$get_indel_signatures(), 5)
@@ -701,7 +701,7 @@ RCPP_MODULE(Mutations){
 //' @seealso [MutationEngine$add_mutant()]
 //' @examples
 //' # build a mutation engine
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # get the known driver dataframe
 //' head(m_engine$get_known_drivers(), 5)
@@ -711,7 +711,7 @@ RCPP_MODULE(Mutations){
 
     .method("show", &MutationEngine::show);
 
-//' @name build_mutation_engine
+//' @name MutationEngine
 //' @title Creating a mutation engine
 //' @description This function downloads and sets up the data
 //'   requires by a mutation engine. Finally, it builds mutation
@@ -805,7 +805,7 @@ RCPP_MODULE(Mutations){
 //' # build a mutation engine and save the required files into the
 //' # directory "Test". The `drivers_url` parameter is optional, but
 //' # it is suggested to avoid passenger mutations on driver loci.
-//' m_engine <- build_mutation_engine(directory = "Test",
+//' m_engine <- MutationEngine(directory = "Test",
 //'                                   reference_src = reference_url,
 //'                                   SBS_signatures_src = sbs_url,
 //'                                   indel_signatures_src = indel_url,
@@ -817,21 +817,21 @@ RCPP_MODULE(Mutations){
 //' # previous construction, then the corresponding reference sequence,
 //' # the SBS file, and the previously built context index are loaded from
 //' # the set-up directory avoiding further computations.
-//' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
+//' m_engine <- MutationEngine("Test", reference_url, sbs_url,
 //'                                   indel_url, drivers_url,
 //'                                   passenger_CNAs_url, germline_url)
 //'
 //' # if the `context_sampling` parameter changes, a new context index is
 //' # built, while neither the reference sequence nor the SBS file are
 //' # downloaded again.
-//' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
+//' m_engine <- MutationEngine("Test", reference_url, sbs_url,
 //'                                   indel_url, drivers_url,
 //'                                   passenger_CNAs_url, germline_url,
 //'                                   context_sampling = 50)
 //'
 //' # a futher contruction with the same parameters avoids both downloads
 //' # and context index construction.
-//' m_engine <- build_mutation_engine("Test", reference_url, sbs_url,
+//' m_engine <- MutationEngine("Test", reference_url, sbs_url,
 //'                                   indel_url, drivers_url,
 //'                                   passenger_CNAs_url, germline_url,
 //'                                   context_sampling = 50)
@@ -842,11 +842,11 @@ RCPP_MODULE(Mutations){
 //' # `passenger_CNAs_src`, and `germline_src` can be avoided by providing
 //' # the `setup_code` parameter. The set-up code `demo` is provided among
 //' # those available for testing purpose.
-//' m_engine <- build_mutation_engine(setup_code = "demo")
+//' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # the `context_sampling` can be used also when a pre-defined set-up
 //' # configuration is adopted.
-//' m_engine <- build_mutation_engine(setup_code = "demo",
+//' m_engine <- MutationEngine(setup_code = "demo",
 //'                                   context_sampling = 50)
 //'
 //' m_engine
@@ -854,7 +854,7 @@ RCPP_MODULE(Mutations){
 //' # remove the "Test" and "demo" directories
 //' unlink("Test", recursive = TRUE)
 //' unlink("demo", recursive = TRUE)
-  function("build_mutation_engine", &MutationEngine::build_MutationEngine,
+  function("MutationEngine", &MutationEngine::build_MutationEngine,
            List::create(_["directory"] = "",
                         _["reference_src"] = "", _["SBS_signatures_src"] = "",
                         _["indel_signatures_src"] = "",
@@ -871,7 +871,7 @@ RCPP_MODULE(Mutations){
 //' @description This method returns the supported codes for predefined set-up.
 //' @return A dataframe reporting the code and a description for each
 //'   supported predefined set-up.
-//' @seealso [build_mutation_engine()] to build a mutation engine
+//' @seealso [MutationEngine()] to build a mutation engine
 //' @export
 //' @examples
 //' # get the list of supported mutation engine set-up codes

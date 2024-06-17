@@ -338,7 +338,7 @@
 
 
   #' @importFrom rlang .data
-  setMethod("show", "Rcpp_Simulation", function(object) {
+  setMethod("show", "Rcpp_SpatialSimulation", function(object) {
     # If it can be simulated
     sim_status <- (nrow(object$get_species())
                    & nrow(object$get_cells()))
@@ -374,7 +374,6 @@
       ),
       right = paste0(
         crayon::red("\u25A3 "),
-        object$get_tissue_name(),
         " [",
         paste(object$get_tissue_size(), collapse = "x"),
         "]",

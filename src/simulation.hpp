@@ -62,7 +62,7 @@ struct RectangularChooser : public PlainChooser
 };
 
 
-class Simulation
+class SpatialSimulation
 {
   std::shared_ptr<RACES::Mutants::Evolutions::Simulation> sim_ptr;  //!< The pointer to a RACES simulation object
   std::string name;      //!< The simulation name
@@ -140,17 +140,19 @@ public:
                              _["time"]=time);
   }
 
-  Simulation();
+  SpatialSimulation();
 
-  Simulation(const SEXP& sexp);
+  SpatialSimulation(const SEXP& sexp);
 
-  Simulation(const SEXP& first_param, const SEXP& second_param);
+  SpatialSimulation(const SEXP& first_param, const SEXP& second_param);
 
-  Simulation(const std::string& simulation_name, const SEXP& seed, const bool& save_snapshots);
+  SpatialSimulation(const std::string& simulation_name, const SEXP& seed,
+                    const bool& save_snapshots);
 
-  Simulation(const std::string& simulation_name, const bool& seed, const bool& save_snapshots);
+  SpatialSimulation(const std::string& simulation_name, const bool& seed,
+                    const bool& save_snapshots);
 
-  ~Simulation();
+  ~SpatialSimulation();
 
   inline void update_tissue(const std::string& name,
                             const RACES::Mutants::Evolutions::AxisSize& width,
@@ -361,7 +363,7 @@ public:
     sim_ptr->get_statistics().set_history_delta(history_time_delta);
   }
 
-  static Simulation load(const std::string& directory_name);
+  static SpatialSimulation load(const std::string& directory_name);
 
   SamplesForest get_samples_forest() const;
 
@@ -386,11 +388,11 @@ public:
 
   Logics::Variable get_var(const std::string& name) const;
   
-  static Simulation build_simulation(const SEXP& simulation_name, const SEXP& width,
-                                     const SEXP& height, const SEXP& save_snapshots,
-                                     const SEXP& seed);
+  static SpatialSimulation build_simulation(const SEXP& simulation_name, const SEXP& width,
+                                            const SEXP& height, const SEXP& save_snapshots,
+                                            const SEXP& seed);
 };
 
-RCPP_EXPOSED_CLASS(Simulation)
+RCPP_EXPOSED_CLASS(SpatialSimulation)
 
 #endif // __RRACES_SIMULATION__

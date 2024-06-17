@@ -72,7 +72,7 @@ RCPP_MODULE(Mutants){
   .property("upper_corner",&TissueRectangle::get_upper_corner, "The rectangle upper corner")
   .method("show",&TissueRectangle::show);
 
-//' @name Simulation
+//' @name SpatialSimulation
 //' @title Simulating the cell evolution on a tissue
 //' @description This class simulates the cell evolution on a tissue.
 //' @details The objects of this class can simulate the evolution
@@ -231,9 +231,9 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Returns:} A variable representing the simulation quantity
 //'   according to the parameter `variable_description`.
 //' }
-  class_<Simulation>("Simulation")
+  class_<SpatialSimulation>("SpatialSimulation")
 
-//' @name Simulation$place_cell
+//' @name SpatialSimulation$place_cell
 //' @title Placing one cell in the tissue
 //' @description This method places a cell in the tissue.
 //' @param species The name of the new cell species.
@@ -244,7 +244,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a tissue simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -252,9 +252,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # add into the tissue a cell of species "A+" in position (500,500)
 //' sim$place_cell("A+", 500, 500)
-  .method("place_cell", &Simulation::place_cell, "Place a cell in the tissue")
+  .method("place_cell", &SpatialSimulation::place_cell,
+          "Place a cell in the tissue")
 
-//' @name Simulation$add_mutant
+//' @name SpatialSimulation$add_mutant
 //' @title Adding a mutant and its species
 //' @description This method adds a mutant and its species to the
 //'   simulation.
@@ -272,7 +273,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //'
 //' # create the two species "A+" and "A-". They both have mutant "A".
 //' sim$add_mutant(name = "A",
@@ -282,14 +283,14 @@ RCPP_MODULE(Mutants){
 //'
 //' # create the species "C" its mutant is "C".
 //' sim$add_mutant(name = "C", growth_rate = 0.2, death_rate = 0.1)
-  .method("add_mutant", (void (Simulation::*)(const std::string&, const List&, const List&,
-                                                const List&))(&Simulation::add_mutant),
+  .method("add_mutant", (void (SpatialSimulation::*)(const std::string&, const List&, const List&,
+                                                const List&))(&SpatialSimulation::add_mutant),
           "Add a new species with epigenetic status")
-  .method("add_mutant", (void (Simulation::*)(const std::string&, const double&,
-                                                const double&))(&Simulation::add_mutant),
+  .method("add_mutant", (void (SpatialSimulation::*)(const std::string&, const double&,
+                                                const double&))(&SpatialSimulation::add_mutant),
           "Add a new species")
 
-//' @name Simulation$choose_cell_in
+//' @name SpatialSimulation$choose_cell_in
 //' @title Picking one cell in a mutant
 //' @description This method chooses one cell among those of a mutant.
 //' @details It randomly chooses one of the cells of a mutant.
@@ -305,7 +306,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -321,14 +322,14 @@ RCPP_MODULE(Mutants){
 //'
 //' # Randomly choose one cell in "B" in the tissue
 //' sim$choose_cell_in(mutant = "B")
-  .method("choose_cell_in", (List (Simulation::*)(const std::string&))(&Simulation::choose_cell_in),
+  .method("choose_cell_in", (List (SpatialSimulation::*)(const std::string&))(&SpatialSimulation::choose_cell_in),
           "Randomly choose one cell in a mutant")
-  .method("choose_cell_in", (List (Simulation::*)(const std::string&,
+  .method("choose_cell_in", (List (SpatialSimulation::*)(const std::string&,
                                                   const std::vector<RE::AxisPosition>&,
-                                                  const std::vector<RE::AxisPosition>&))(&Simulation::choose_cell_in),
+                                                  const std::vector<RE::AxisPosition>&))(&SpatialSimulation::choose_cell_in),
           "Randomly choose one cell having a specified mutant in a rectangular selection")
 
-//' @name Simulation$schedule_mutation
+//' @name SpatialSimulation$schedule_mutation
 //' @title Scheduling a mutant mutation
 //' @description This method schedules a mutant mutation
 //' @details The mutation can occur from any of the species of
@@ -354,7 +355,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -366,10 +367,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # schedule an evolution from mutant "A" to mutant "B" at time 50
 //' sim$schedule_mutation(src = "A", dst = "B", time = 50)
-  .method("schedule_mutation", &Simulation::schedule_mutation,
+  .method("schedule_mutation", &SpatialSimulation::schedule_mutation,
           "Add a timed mutation between two different species")
 
-//' @name Simulation$get_species
+//' @name SpatialSimulation$get_species
 //' @title Getting the species
 //' @description This method returns the simulated species.
 //' @return A dataframe reporting `mutant`, `epistate`, `growth_rate`,
@@ -379,17 +380,17 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
 //'
 //' # get the added species and their rates. In this case, "A"
 //' # and "B"
 //' sim$get_species()
-  .method("get_species", &Simulation::get_species,
+  .method("get_species", &SpatialSimulation::get_species,
           "Get the species added to the simulation")
 
-//' @name Simulation$get_samples_forest
+//' @name SpatialSimulation$get_samples_forest
 //' @title Getting the samples forest
 //' @description This method returns the samples forest.
 //' @return The samples forest having as leaves the sampled cells
@@ -398,7 +399,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -414,10 +415,10 @@ RCPP_MODULE(Mutants){
 //' forest <- sim$get_samples_forest()
 //'
 //' forest
-  .method("get_samples_forest", &Simulation::get_samples_forest,
+  .method("get_samples_forest", &SpatialSimulation::get_samples_forest,
           "Get the descendants forest having as leaves the sampled cells")
 
-//' @name Simulation$death_activation_level
+//' @name SpatialSimulation$death_activation_level
 //' @title Death activation level
 //' @description The number of cells that activates cell death in a species.
 //' @details This value is the minimum number of cells that
@@ -429,18 +430,18 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //'
 //' # get the simulation death activation level
 //' sim$death_activation_level
 //'
 //' # set the death activation level to 50
 //' sim$death_activation_level <- 50
-  .property("death_activation_level", &Simulation::get_death_activation_level,
-                                      &Simulation::set_death_activation_level,
+  .property("death_activation_level", &SpatialSimulation::get_death_activation_level,
+                                      &SpatialSimulation::set_death_activation_level,
             "The number of cells in a species that activates cell death" )
 
-//' @name Simulation$border_growth_model
+//' @name SpatialSimulation$border_growth_model
 //' @title Internal cells duplication
 //' @description This property switches between homogeneous and border driven
 //'   growth models.
@@ -453,7 +454,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //'
 //' # is the simulation using the border driven growth model 
 //' # (default: TRUE)
@@ -467,11 +468,11 @@ RCPP_MODULE(Mutants){
 //'
 //' # switch back to the border-growth model
 //' sim$border_growth_model <- FALSE
-  .property("border_growth_model", &Simulation::is_border_growth_model,
-                                   &Simulation::set_border_growth_model,
+  .property("border_growth_model", &SpatialSimulation::is_border_growth_model,
+                                   &SpatialSimulation::set_border_growth_model,
             "Switch between homogeneous and border driven growth models." )
 
-//' @name Simulation$get_clock
+//' @name SpatialSimulation$get_clock
 //' @title Getting the simulated time
 //' @description This method returns the current simulation time.
 //' @return The time simulated by the simulation.
@@ -480,7 +481,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -490,9 +491,9 @@ RCPP_MODULE(Mutants){
 //'
 //' # get the simulated time
 //' sim$get_clock()
-  .method("get_clock", &Simulation::get_clock, "Get the current simulation time")
+  .method("get_clock", &SpatialSimulation::get_clock, "Get the current simulation time")
 
-//' @name Simulation$get_cell
+//' @name SpatialSimulation$get_cell
 //' @title Getting one of the tissue cells
 //' @description This method collects some data of the aimed cell without altering
 //'   the tissue.
@@ -505,7 +506,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -520,11 +521,11 @@ RCPP_MODULE(Mutants){
 //'
 //' # collect all the cells in the tissue
 //' sim$get_cell(501, 502)
-  .method("get_cell", (List (Simulation::*)(const RE::AxisPosition&,
-                                            const RE::AxisPosition&) const)(&Simulation::get_cell),
+  .method("get_cell", (List (SpatialSimulation::*)(const RE::AxisPosition&,
+                                            const RE::AxisPosition&) const)(&SpatialSimulation::get_cell),
           "Get one cell from the simulated tissue")
 
-//' @name Simulation$get_cells
+//' @name SpatialSimulation$get_cells
 //' @title Getting the tissue cells
 //' @description This method returns information about tumour tissue cells
 //' @details It collects some data about the cells in the tissue
@@ -549,7 +550,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -578,20 +579,20 @@ RCPP_MODULE(Mutants){
 //' sim$get_cells(lower_corner=c(495,495), upper_corner=c(505,505),
 //'               mutant_filter=c("A"),epigenetic_filter=c("+","-"))
   .method("get_cells",
-          (List (Simulation::*)(const std::vector<RE::AxisPosition>&,
+          (List (SpatialSimulation::*)(const std::vector<RE::AxisPosition>&,
                                 const std::vector<RE::AxisPosition>&,
                                 const std::vector<std::string>&,
                                 const std::vector<std::string>&) const)
-                    (&Simulation::get_cells),
+                    (&SpatialSimulation::get_cells),
           "Get cells from the simulated tissue")
   .method("get_cells",
-          (List (Simulation::*)(const SEXP&, const SEXP&) const)
-                    (&Simulation::get_cells),
+          (List (SpatialSimulation::*)(const SEXP&, const SEXP&) const)
+                    (&SpatialSimulation::get_cells),
           "Get cells from the simulated tissue")
-  .method("get_cells", (List (Simulation::*)() const)(&Simulation::get_cells),
+  .method("get_cells", (List (SpatialSimulation::*)() const)(&SpatialSimulation::get_cells),
           "Get cells from the simulated tissue")
 
-//' @name Simulation$get_name
+//' @name SpatialSimulation$get_name
 //' @title Getting the simulation name
 //' @description This method returns the simulation name
 //' @return The simulation name, which corresponds to the name of the directory
@@ -601,13 +602,13 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //'
 //' # Expecting "test"
 //' sim$get_name()
-  .method("get_name", &Simulation::get_name, "Get the simulation name")
+  .method("get_name", &SpatialSimulation::get_name, "Get the simulation name")
 
-//' @name Simulation$get_lineage_graph
+//' @name SpatialSimulation$get_lineage_graph
 //' @title Getting the simulation lineage graph
 //' @description This method returns the lineage graph of the simulation.
 //' @details At the beginning of the computation only the species of the
@@ -622,7 +623,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -635,10 +636,10 @@ RCPP_MODULE(Mutants){
 //' sim$run_up_to_time(50)
 //'
 //' sim$get_lineage_graph()
-  .method("get_lineage_graph", &Simulation::get_lineage_graph,
+  .method("get_lineage_graph", &SpatialSimulation::get_lineage_graph,
           "Get the simulation lineage graph")
 
-//' @name Simulation$get_tissue_size
+//' @name SpatialSimulation$get_tissue_size
 //' @title Getting the simulated tissue size
 //' @description This method returns the size of the simulated tissue.
 //' @return The vector `c(x_size, y_size)` of the simulated tissue.
@@ -647,14 +648,14 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation having size 1200x900
-//' sim <- Simulation(width=1200, height=900)
+//' sim <- SpatialSimulation(width=1200, height=900)
 //'
 //' # get the tissue size, i.e., expecting c(1200,900)
 //' sim$get_tissue_size()
-//' @seealso `Simulation()`
-  .method("get_tissue_size", &Simulation::get_tissue_size, "Get the simulation tissue size")
+//' @seealso `SpatialSimulation()`
+  .method("get_tissue_size", &SpatialSimulation::get_tissue_size, "Get the simulation tissue size")
 
-//' @name Simulation$get_added_cells
+//' @name SpatialSimulation$get_added_cells
 //' @title Getting the cells manually added to the simulation
 //' @description This method returns the cells manually added to
 //'   the simulation.
@@ -666,7 +667,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -681,10 +682,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # counts the number of cells per species
 //' sim$get_added_cells()
-  .method("get_added_cells", &Simulation::get_added_cells,
+  .method("get_added_cells", &SpatialSimulation::get_added_cells,
           "Get the cells manually added to the simulation")
 
-//' @name Simulation$get_counts
+//' @name SpatialSimulation$get_counts
 //' @title Counting the cell number
 //' @description This method returns the number of cells per species
 //'   along the tumour simulation.
@@ -695,7 +696,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_mutation(src = "A", dst = "B", time = 50)
@@ -704,9 +705,9 @@ RCPP_MODULE(Mutants){
 //'
 //' # counts the number of cells per species
 //' sim$get_counts()
-  .method("get_counts", &Simulation::get_counts, "Get the current number of cells per species")
+  .method("get_counts", &SpatialSimulation::get_counts, "Get the current number of cells per species")
 
-//' @name Simulation$get_count_history
+//' @name SpatialSimulation$get_count_history
 //' @title Getting the history of the number of cells per species
 //' @description This method returns a dataframe reporting the number of
 //'   species cells in each sampled simulation time.
@@ -717,7 +718,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$add_mutant("B", growth_rate = 0.15, death_rate = 0.05)
 //' sim$schedule_mutation(src = "A", dst = "B", time = 50)
@@ -727,10 +728,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # get the history of species counts
 //' sim$get_count_history()
-  .method("get_count_history", (List (Simulation::*)() const)&Simulation::get_count_history,
+  .method("get_count_history", (List (SpatialSimulation::*)() const)&SpatialSimulation::get_count_history,
           "Get the number of simulated events per species along the computation")
 
-//' @name Simulation$get_firings
+//' @name SpatialSimulation$get_firings
 //' @title Getting the number of fired events
 //' @description This method returns a dataframe reporting the current
 //'   number of simulated events per species.
@@ -741,7 +742,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -751,10 +752,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # get the number of event fired per event and species
 //' sim$get_firings()
-  .method("get_firings", &Simulation::get_firings,
+  .method("get_firings", &SpatialSimulation::get_firings,
           "Get the current number of simulated events per species")
 
-//' @name Simulation$get_firing_history
+//' @name SpatialSimulation$get_firing_history
 //' @title Getting the fired event history
 //' @description This method returns a dataframe reporting the number of
 //'   events fired up to each sampled simulation time.
@@ -766,7 +767,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -778,10 +779,10 @@ RCPP_MODULE(Mutants){
 //' # get the number of event fired per event and species
 //' sim$get_firing_history()
   .method("get_firing_history",
-          (List (Simulation::*)() const)&Simulation::get_firing_history,
+          (List (SpatialSimulation::*)() const)&SpatialSimulation::get_firing_history,
           "Get the number of simulated events per species along the computation")
 
-//' @name Simulation$get_rates
+//' @name SpatialSimulation$get_rates
 //' @title Getting the species rates
 //' @description This method return the rates of a species.
 //' @param species The species whose rates are aimed.
@@ -791,7 +792,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -800,10 +801,10 @@ RCPP_MODULE(Mutants){
 //' # Get the rates of "A-". In this case c("growth"=0.08, "death"=0.01,
 //' # "switch"=0.02) is expected
 //' sim$get_rates("A-")
-  .method("get_rates", &Simulation::get_rates,
+  .method("get_rates", &SpatialSimulation::get_rates,
           "Get the rates of a species")
 
-//' @name Simulation$get_rates_update_history
+//' @name SpatialSimulation$get_rates_update_history
 //' @title Retrieving the rates update history
 //' @description This method retrieves the simulation rates
 //'   update history.
@@ -811,13 +812,13 @@ RCPP_MODULE(Mutants){
 //'   contains the columns "`time`", "`mutant`", "`epistate`", "`event`",
 //'   and "`rate`". Each row reports an update in the rate of an event
 //'   in a species.
-//' @seealso [Simulation$update_rates()], [Simulation$get_rates()]
+//' @seealso [SpatialSimulation$update_rates()], [SpatialSimulation$get_rates()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -840,10 +841,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # get the rates update history
 //' sim$get_rates_update_history()
-  .method("get_rates_update_history", &Simulation::get_rates_update_history,
+  .method("get_rates_update_history", &SpatialSimulation::get_rates_update_history,
           "Get the rates update history")
 
-//' @name Simulation$get_samples_info
+//' @name SpatialSimulation$get_samples_info
 //' @title Retrieving sample information
 //' @description This method retrieves information about
 //'   the samples collected along the simulation.
@@ -854,7 +855,7 @@ RCPP_MODULE(Mutants){
 //'   "`xmax`" report the boundaries of the sample bounding box, while
 //'   "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of tumour
 //'   cells in the sample and in the bounding box, respectively.
-//' @seealso [Simulation$sample_cells()],
+//' @seealso [SpatialSimulation$sample_cells()],
 //'   [SamplesForest$get_samples_info()],
 //'   [PhylogeneticForest$get_samples_info()]
 //' @examples
@@ -862,7 +863,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -884,10 +885,10 @@ RCPP_MODULE(Mutants){
 //' # samples, i.e, S1 and S2
 //' sim$get_samples_info()
   .method("get_samples_info",
-          (List (Simulation::*)() const)&Simulation::get_samples_info,
+          (List (SpatialSimulation::*)() const)&SpatialSimulation::get_samples_info,
           "Get some pieces of information about the collected samples")
 
-//' @name Simulation$history_delta
+//' @name SpatialSimulation$history_delta
 //' @title The delta time between time series samples
 //' @description This value is the maximum time between two successive
 //'   time series data samples.
@@ -897,18 +898,18 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //'
 //' # get the delta time between two time series samples (0 by default)
 //' sim$history_delta
 //'
 //' # set the delta time between two time series samples
 //' sim$death_activation_level <- 20
-  .property("history_delta", &Simulation::get_history_delta,
-                             &Simulation::set_history_delta,
+  .property("history_delta", &SpatialSimulation::get_history_delta,
+                             &SpatialSimulation::set_history_delta,
             "The sampling delta for the get_*_history functions" )
 
-//' @name Simulation$mutate_progeny
+//' @name SpatialSimulation$mutate_progeny
 //' @title Generating a mutated progeny
 //' @description This method generates a mutated progeny.
 //' @details It simulates both the duplication of the cell in the
@@ -917,13 +918,13 @@ RCPP_MODULE(Mutants){
 //'   The mutated cell will be located in the position of its parent.
 //' @param cell_position The position of the cell whose offspring will mutate.
 //' @param mutated_mutant The mutant of the mutated cell.
-//' @seealso `Simulation`, [Simulation$choose_cell_in()]
+//' @seealso `Simulation`, [SpatialSimulation$choose_cell_in()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -943,48 +944,48 @@ RCPP_MODULE(Mutants){
 //' # the output of `choose_cell_in` and `get_cell` can also be used
 //' # as input for `mutate_progeny`
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-  .method("mutate_progeny",  (void (Simulation::*)(const List&, const std::string&))
-                                                  (&Simulation::mutate_progeny),
+  .method("mutate_progeny",  (void (SpatialSimulation::*)(const List&, const std::string&))
+                                                  (&SpatialSimulation::mutate_progeny),
           "Duplicate a cell and mutate one of its children")
-  .method("mutate_progeny",  (void (Simulation::*)(const RE::AxisPosition&,
+  .method("mutate_progeny",  (void (SpatialSimulation::*)(const RE::AxisPosition&,
                                                    const RE::AxisPosition&, const std::string&))
-                                                  (&Simulation::mutate_progeny),
+                                                  (&SpatialSimulation::mutate_progeny),
           "Duplicate a cell and mutate one of its children")
 
-//' @name Simulation$run_up_to_time
+//' @name SpatialSimulation$run_up_to_time
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
-//' @seealso `Simulation`, [Simulation$run_up_to_event()],
-//'    [Simulation$run_up_to_size()], [Simulation$run_until()]
+//' @seealso `Simulation`, [SpatialSimulation$run_up_to_event()],
+//'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant("A", growth_rate = 0.2, death_rate = 0.1)
 //' sim$place_cell("A", 500, 500)
 //'
 //' # simulate the tissue up to simulate timed 100
 //' sim$run_up_to_time(40)
-  .method("run_up_to_time", &Simulation::run_up_to_time,
+  .method("run_up_to_time", &SpatialSimulation::run_up_to_time,
           "Simulate the system up to the specified simulation time")
 
-//' @name Simulation$run_up_to_event
+//' @name SpatialSimulation$run_up_to_event
 //' @title Simulating cell evolution
 //' @description This method simulates cell evolution until the number of events that
 //'   have occurred to cells of a species reaches a specified threshold.
 //' @param event The considered event, i.e., `growth`, `death`, or `switch`.
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
-//' @seealso `Simulation`, [Simulation$run_up_to_time()],
-//'    [Simulation$run_up_to_size()], [Simulation$run_until()]
+//' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
+//'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -994,23 +995,23 @@ RCPP_MODULE(Mutants){
 //' # simulate the cell evolution until the number of epigenetic events from
 //' # the species "A+" is less than 100.
 //' sim$run_up_to_event(event = "switch", species = "A+", num_of_events = 100)
-  .method("run_up_to_event", &Simulation::run_up_to_event,
+  .method("run_up_to_event", &SpatialSimulation::run_up_to_event,
           "Simulate the system up to the specified number of events")
 
-//' @name Simulation$run_up_to_size
+//' @name SpatialSimulation$run_up_to_size
 //' @title Simulating cell evolution
 //' @description This method simulates cell evolution until the number of cells in
 //'   a species reaches a specified threshold.
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
-//' @seealso `Simulation`, [Simulation$run_up_to_time()],
-//'    [Simulation$run_up_to_event()], [Simulation$run_until()]
+//' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
+//'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_until()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1020,23 +1021,23 @@ RCPP_MODULE(Mutants){
 //' # simulate the tissue until the species "A+" account for 100
 //' # contemporary cells
 //' sim$run_up_to_size(species = "A+", num_of_cells = 100)
-  .method("run_up_to_size", &Simulation::run_up_to_size,
+  .method("run_up_to_size", &SpatialSimulation::run_up_to_size,
           "Simulate the system up to the specified number of cells in the species")
 
-//' @name Simulation$run_until
+//' @name SpatialSimulation$run_until
 //' @title Simulating cell evolution
 //' @description This method simulates cell evolution until a formula does not
 //'    hold.
 //' @param formula The formula that will be satisfied at the end of the
 //'    simulation.
-//' @seealso `Simulation`, [Simulation$var()], [Simulation$run_up_to_time()],
-//'    [Simulation$run_up_to_event()], [Simulation$run_up_to_size()]
+//' @seealso `Simulation`, [SpatialSimulation$var()], [SpatialSimulation$run_up_to_time()],
+//'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_up_to_size()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1082,10 +1083,10 @@ RCPP_MODULE(Mutants){
 //'
 //' sim
 //' sim$get_clock()
-  .method("run_until", &Simulation::run_until,
+  .method("run_until", &SpatialSimulation::run_until,
           "Simulate the system until a formula is *not* satisfied")
 
-//' @name Simulation$sample_cells
+//' @name SpatialSimulation$sample_cells
 //' @title Sampling a set of cells
 //' @description This method samples a set of tumour cells.
 //' @details It removes the cells from the simulated tissue and
@@ -1098,13 +1099,13 @@ RCPP_MODULE(Mutants){
 //'   in pair with `lower_corner`).
 //' @param num_of_cells The maximum number of tumour cells to collect
 //'   (optional).
-//' @seealso [Simulation$get_samples_info()]
+//' @seealso [SpatialSimulation$get_samples_info()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1125,22 +1126,22 @@ RCPP_MODULE(Mutants){
 //'
 //' sim$get_samples_info()
   .method("sample_cells",
-          (void (Simulation::*)(const std::string&,
+          (void (SpatialSimulation::*)(const std::string&,
                                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
-                                const size_t& num_of_cells) const)(&Simulation::sample_cells),
+                                const size_t& num_of_cells) const)(&SpatialSimulation::sample_cells),
           "Sample a rectangular region of the tissue")
   .method("sample_cells",
-          (void (Simulation::*)(const std::string&,
+          (void (SpatialSimulation::*)(const std::string&,
                                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
-                                const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const)(&Simulation::sample_cells),
+                                const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const)(&SpatialSimulation::sample_cells),
           "Sample a rectangular region of the tissue")
   .method("sample_cells",
-          (void (Simulation::*)(const std::string&,
-                                const size_t& num_of_cells) const)(&Simulation::sample_cells),
+          (void (SpatialSimulation::*)(const std::string&,
+                                const size_t& num_of_cells) const)(&SpatialSimulation::sample_cells),
           "Sample a rectangular region of the tissue")
 
-//' @name Simulation$update_rates
+//' @name SpatialSimulation$update_rates
 //' @title Updating species rates
 //' @description This method updates the rates of a species.
 //' @param species The species whose rates must be updated.
@@ -1150,7 +1151,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1158,10 +1159,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # Set the death and epigenetic switch rates of "A-" to 0
 //' sim$update_rates("A-", c(switch=0, death=0))
-  .method("update_rates", &Simulation::update_rates,
+  .method("update_rates", &SpatialSimulation::update_rates,
           "Update the rates of a species")
 
-//' @name Simulation$search_sample
+//' @name SpatialSimulation$search_sample
 //' @title Searching a rectangular tissue sample
 //' @description This method searches a rectangular tissue sample.
 //' @details The aimed sample mush satisfy the specified number of cells.
@@ -1181,7 +1182,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$death_activation_level <- 50
 //' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1193,10 +1194,10 @@ RCPP_MODULE(Mutants){
 //'
 //' # find a 50x50 sample containing 80 "B" cells and 10 "A" cells at least
 //' sim$search_sample(c("A" = 10, "B" = 80), 50, 50)
-  .method("search_sample", &Simulation::search_sample,
+  .method("search_sample", &SpatialSimulation::search_sample,
           "Search a rectangular sample containing a given number of cells")
 
-//' @name Simulation$search_samples
+//' @name SpatialSimulation$search_samples
 //' @title Searching rectangular tissue samples
 //' @description This method searches a set of rectangular tissue samples.
 //' @details The aimed samples mush satisfy the specified number of cells.
@@ -1219,7 +1220,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$death_activation_level <- 50
 //' sim$add_mutant(name = "A", growth_rate = 0.2, death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1248,16 +1249,16 @@ RCPP_MODULE(Mutants){
 //' }
 //'
 //' plot
-  .method("search_samples", (std::vector<TissueRectangle> (Simulation::*)(const Rcpp::IntegerVector&,
+  .method("search_samples", (std::vector<TissueRectangle> (SpatialSimulation::*)(const Rcpp::IntegerVector&,
                                                                           const uint16_t&, const uint16_t&,
-                                                                          const size_t) const)(&Simulation::search_samples),
+                                                                          const size_t) const)(&SpatialSimulation::search_samples),
           "Search rectangular samples containing a given number of cells")
-  .method("search_samples", (std::vector<TissueRectangle> (Simulation::*)(const Rcpp::IntegerVector&,
+  .method("search_samples", (std::vector<TissueRectangle> (SpatialSimulation::*)(const Rcpp::IntegerVector&,
                                                                           const uint16_t&, const uint16_t&,
-                                                                          const size_t, int) const)(&Simulation::search_samples),
+                                                                          const size_t, int) const)(&SpatialSimulation::search_samples),
           "Search rectangular samples containing a given number of cells")
 
-//' @name Simulation$var
+//' @name SpatialSimulation$var
 //' @title Building a simulation status variable
 //' @description This method builds a simulation status variable.
 //' @details This method builds a logic variable representing one of the
@@ -1275,14 +1276,14 @@ RCPP_MODULE(Mutants){
 //'   occurred since the computation beginning in the species.
 //' @return A variable representing the simulation quantity according to
 //'   the parameter `variable_description`.
-//' @seealso `Simulation`, [Simulation$run_until()]
+//' @seealso `Simulation`, [SpatialSimulation$run_until()]
 //' @examples
 //' # build a simulation and add two species to it
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 //'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -1307,7 +1308,7 @@ RCPP_MODULE(Mutants){
 //'
 //' # get the variable representing the number of deaths in A+
 //' sim$var("A+.deaths")
-  .method("var", &Simulation::get_var,
+  .method("var", &SpatialSimulation::get_var,
           "Get a variable representing a simulation quantity");
 
 //' @name recover_simulation
@@ -1317,7 +1318,7 @@ RCPP_MODULE(Mutants){
 //' @examples
 //' # create a simulation having name "recover_simulation_test" and
 //' # save its snapshots in a local directory
-//' sim <- Simulation("recover_simulation_test",
+//' sim <- SpatialSimulation("recover_simulation_test",
 //'            save_snapshots=TRUE)
 //'
 //' # add the species of "A"
@@ -1348,25 +1349,27 @@ RCPP_MODULE(Mutants){
 //'
 //' # delete dump directory
 //' unlink("recover_simulation_test", recursive = TRUE)
-  function("recover_simulation", &Simulation::load,
+  function("recover_simulation", &SpatialSimulation::load,
            "Recover a simulation");
 
-//' @name Simulation
+//' @name SpatialSimulation
 //' @title Building a new simulation
 //' @description This method builds a new simulation.
-//' @param simulation_name The name of the simulation (default:
-//'     \"races\_<year>\_<hour><minute><second>\").
+//' @param name The name of the simulation (default:
+//'     "`races_<year>_<hour><minute><second>`").
 //' @param width The width of the simulated tissue (default: 1000).
 //' @param height The height of the simulated tissue (default: 1000).
 //' @param save_snapshots A flag to save simulation snapshots on disk
 //'   (default: `FALSE`).
 //' @param seed The seed for the pseudo-random generator (optional).
 //' @examples
-//' # create a Simulation object storing binary dump in a temporary directory.
-//' # The data are deleted from the disk as soon as the object is destroyed.
-//' sim <- Simulation("test")
+//' # create a SpatialSimulation object storing binary dump in a temporary
+//' # directory. The data are deleted from the disk as soon as the object
+//' # is destroyed.
+//' sim <- SpatialSimulation("test")
 //'
-//' # add a new species, place a cell in the tissue, and let the simulation evolve.
+//' # add a new species, place a cell in the tissue, and let the simulation
+//' # evolve.
 //' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
 //' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_time(30)
@@ -1378,10 +1381,10 @@ RCPP_MODULE(Mutants){
 //' # simulation to save its progresses in a local directory whose name
 //' # is the name of the simulation, i.e., "test". This data will be
 //' # preserved when the simulation object will be destroyed.
-//' sim <- Simulation("test", save_snapshots=TRUE)
+//' sim <- SpatialSimulation("test", save_snapshots=TRUE)
 //'
-//' # as done above, we add a new species, place a cell in the tissue, and let the
-//' # simulation evolve.
+//' # as done above, we add a new species, place a cell in the tissue,
+//' # and let the simulation evolve.
 //' sim$add_mutant(name = "A", growth_rate = 0.3, death_rate = 0.02)
 //' sim$place_cell("A", 500, 500)
 //' sim$run_up_to_time(30)
@@ -1394,15 +1397,19 @@ RCPP_MODULE(Mutants){
 //' unlink("test", recursive = TRUE)
 //'
 //' # we can also provide a random seed to the simulation...
-//' sim <- Simulation("test", seed=13)
+//' sim <- SpatialSimulation("test", seed=13)
 //'
 //' # ...or creating a simulation without providing any name. By default, the
 //' # simulation name will have the following format `races_<date>_<hour>`.
-//' sim <- Simulation(seed=13)
-  function("Simulation", &Simulation::build_simulation,
+//' sim <- SpatialSimulation(seed=13)
+//'
+//' # finally we can also specify the size of the simulated space
+//' # by using the optional parameters `width` and `height`
+//' sim <- SpatialSimulation(width=1200, height=900)
+  function("SpatialSimulation", &SpatialSimulation::build_simulation,
            List::create(_["name"] = R_NilValue, _["width"]=1000, _["height"]=1000,
                         _["save_snapshots"] = false, _["seed"] = R_NilValue),
-            "Create a spacial simulation");
+            "Create a spatial simulation");
 
 //' @name SamplesForest
 //' @title The sample cell ancestor forest
@@ -1478,7 +1485,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1524,7 +1531,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1560,7 +1567,7 @@ RCPP_MODULE(Mutants){
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A",
 //'                growth_rate = 0.2,
 //'                death_rate = 0.01)
@@ -1597,13 +1604,13 @@ RCPP_MODULE(Mutants){
 //'    "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of tumour
 //'    cells in the sample and in the bounding box, respectively.
 //' @seealso [PhylogeneticForest$get_samples_info()] for usage examples,
-//'   [Simulation$sample_cells()], [Simulation$get_samples_info()]
+//'   [SpatialSimulation$sample_cells()], [SpatialSimulation$get_samples_info()]
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A", growth_rate = 0.2,
 //'                death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1653,12 +1660,11 @@ RCPP_MODULE(Mutants){
 //'   stick from the higher to the deeper in the forest.
 //' @seealso [PhylogeneticForest$get_sticks()]
 //' @examples
-//' set.seed(0)
 //' # set the seed of the random number generator
 //' set.seed(0)
 //'
 //' # create a simulation
-//' sim <- Simulation()
+//' sim <- SpatialSimulation()
 //' sim$add_mutant(name = "A", growth_rate = 0.2,
 //'                death_rate = 0.01)
 //' sim$place_cell("A", 500, 500)
@@ -1670,13 +1676,13 @@ RCPP_MODULE(Mutants){
 //'
 //' sim$add_mutant(name = "B", growth_rate = 0.3, death_rate = 0.01)
 //' sim$mutate_progeny(sim$choose_cell_in("A"), "B")
-//' sim$run_up_to_size(species = "B", num_of_cells = 100)
+//' sim$run_up_to_size(species = "B", num_of_cells = 120)
 //'
 //' sim$get_clock()
 //'
 //' sim$add_mutant(name = "C", growth_rate = 0.3, death_rate = 0.01)
 //' sim$mutate_progeny(sim$choose_cell_in("B"), "C")
-//' sim$run_up_to_size(species = "C", num_of_cells = 100)
+//' sim$run_up_to_size(species = "C", num_of_cells = 200)
 //'
 //' # search for a 33x33 region containing 50 cells in A and
 //' # 50 cells in B at least and sample it
@@ -1695,8 +1701,8 @@ RCPP_MODULE(Mutants){
 //' forest$get_sticks()
 //'
 //' # search for the forest sticks whose corresponding cells have
-//' # birth times 120.2 time units at most
-//' forest$get_sticks(120.2)
+//' # birth times 40 time units at most
+//' forest$get_sticks(40)
     .method("get_sticks", (std::list<std::list<RACES::Mutants::CellId>> (SamplesForest::*)(const double) const)(&SamplesForest::get_sticks),
             "Get the forest sticks")
     .method("get_sticks", (std::list<std::list<RACES::Mutants::CellId>> (SamplesForest::*)() const)(&SamplesForest::get_sticks),

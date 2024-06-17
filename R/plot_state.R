@@ -26,7 +26,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.02),
 #'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -35,7 +35,7 @@
 #' sim$run_up_to_time(60)
 #' plot_state(sim)
 plot_state <- function(simulation) {
-  stopifnot(inherits(simulation, "Rcpp_Simulation"))
+  stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   counts <- simulation$get_counts() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))

@@ -40,7 +40,7 @@ chance to dynamically change the signatures.
 
 The creation of an object of the type `MutationEngine` requires to download
 the reference sequence and the signature files and to build the
-corresponding two signature indices. The function `build_mutation_engine()`
+corresponding two signature indices. The function `MutationEngine()`
 performs all these steps in a single call.
 
 This function is quite flexible and it allows to customize the mutation
@@ -64,7 +64,7 @@ unlink("demo", recursive = TRUE)
 
 ```{r}
 # building a mutation engine by using the "demo" setup
-m_engine <- build_mutation_engine(setup_code = "demo")
+m_engine <- MutationEngine(setup_code = "demo")
 
 m_engine
 ```
@@ -79,7 +79,7 @@ dir.exists("demo")
 list.files("demo")
 ```
 
-The execution of the function `build_mutation_engine()` may takes some time, but
+The execution of the function `MutationEngine()` may takes some time, but
 it is meant to be performed one for all and, as long as the user does not need to
 change the reference genome or the signature files, it is no more required. In this
 spirit, any call to the function `MutationEngine` checks whether all the building
@@ -88,7 +88,7 @@ performs them.
 
 ```{r}
 # building a mutation engine by using the "demo" set-up configuration
-m_engine <- build_mutation_engine(setup_code = "demo")
+m_engine <- MutationEngine(setup_code = "demo")
 ```
 
 #### Mutant Genetic Characterization
@@ -125,7 +125,7 @@ the same chromosome.
 The genetic specification of the mutant `A` can be declared as it follows.
 
 ```{r, echo=FALSE,  results='hide', message=FALSE}
-m_engine <- build_mutation_engine(setup_code = "demo")
+m_engine <- MutationEngine(setup_code = "demo")
 ```
 
 ```{r}
@@ -243,7 +243,7 @@ some of the data identified in breast carcinoma in the UK,
 the specific CNA can be applied during the simulation as it follows.
 
 ```{r, eval=FALSE}
-m_engine <- build_mutation_engine(setup_code = "demo",
+m_engine <- MutationEngine(setup_code = "demo",
                                   tumour_type = "BRCA-UK")
 ```
 

@@ -22,12 +22,12 @@
 #' @export
 #'
 #' @examples
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #' sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
 #' sim$sample_cells("MySample", c(500, 500), c(510, 510))
-#' m_engine = build_mutation_engine(setup_code = "demo")
+#' m_engine = MutationEngine(setup_code = "demo")
 #'
 #' m_engine$add_mutant(mutant_name = "A",
 #'                     passenger_rates = c(SNV = 1e-9),

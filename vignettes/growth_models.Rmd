@@ -37,7 +37,7 @@ The former exclusively admits duplication of cells that have space to duplicate
 duplications everywhere in the tumour.
 
 The "border"-growth model is the default one. However, users can switch to the
-homogeneous growth model by assigning the `Simulation`'s `border_growth_model`
+homogeneous growth model by assigning the `SpatialSimulation`'s `border_growth_model`
 Boolean field. By setting it to `FALSE`, the homogeneous-growth model is used. If,
 instead, it is set to `TRUE`, the simulation evolves according with the
 "border"-growth model.
@@ -48,13 +48,13 @@ of the very same cancer model.
 
 ### Homogeneous Growth
 
-First of all we need to create a new `Simulation` object and
+First of all we need to create a new `SpatialSimulation` object and
 set `border_growth_model` to `FALSE`.
 
 ```{r}
 library(rRACES)
 
-sim <- Simulation("Homogeneous Growth")
+sim <- SpatialSimulation("Homogeneous Growth")
 
 # Set the homogeneous growth model
 sim$border_growth_model <- FALSE
@@ -153,10 +153,10 @@ plot_forest(forest, highlight = "S_2_2") %>%
 
 ### "Border" Growth
 
-We now build a simulation and use the "border" growth model.
+We now build a spatial simulation and use the "border" growth model.
 
 ```{r}
-sim <- Simulation("Border Growth")
+sim <- SpatialSimulation("Border Growth")
 
 # Setting the "border" growth model is not needed as the
 # border growth model is the default.
@@ -257,7 +257,7 @@ the internal cells cannot duplicate in the former growth model, thus, the number
 cells active for duplication is always greater in it, than in the homogeneous-growth
 model.
 
-Moreover, spacial closeness and closeness in the samples ancestor forest
+Moreover, spatial closeness and closeness in the samples ancestor forest
 are strictly related in the "border" growth model, whereas they appear to be loosely
 related in the homogeneous growth model.
 This features can be easily spotted in the forest plots when

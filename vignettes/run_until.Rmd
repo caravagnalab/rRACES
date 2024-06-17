@@ -45,7 +45,7 @@ of two formulas (`&`), or the disjunction of two formulas (`|`).
 
 Any formula in above language expresses a condition on the simulation
 status and it can be used as the parameter of the method
-`Simulation$run_until()` to let the simulation evolve until
+`SpatialSimulation$run_until()` to let the simulation evolve until
 the condition does not hold.
 
 ### Variables
@@ -56,7 +56,7 @@ The variables represent one among the following quantities:
 -  the number fired event among deaths, duplications and switches in a species;
 -  the elapse simulation time.
 
-All above variables can be built by using the method `Simulation$var()`.
+All above variables can be built by using the method `SpatialSimulation$var()`.
 When the parameter is the string `"Time"`, the elapsed simulation time
 variable is returned.
 
@@ -66,8 +66,8 @@ library(rRACES)
 # set the seed of the random number generator
 set.seed(0)
 
-# build a simulation and add two species to it
-sim <- Simulation()
+# build a spatial simulation and add two species to it
+sim <- SpatialSimulation()
 sim$add_mutant(name = "A",
                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -95,7 +95,7 @@ va_m
 
 Finally, when the parameter is the name of a species followed by
 a `.` and the name of an event among `deaths`, `duplications`,
-or `switches`, `Simulation$var()` returns
+or `switches`, `SpatialSimulation$var()` returns
 the variable associated with the number of
 the corresponding event in the specified species.
 
@@ -131,9 +131,9 @@ A formula is:
 -  the conjunction of two formulas, e.g., `sim$var("A+")>=2 & sim$var("A+")<=500`;
 -  the disjunction of two formulas, e.g., `sim$var("A+")>=2 | sim$var("A+")<=500`.
 
-### The method `Simulation$run_until()`
+### The method `SpatialSimulation$run_until()`
 
-The method `Simulation$run_until()` takes as the parameter a formula and
+The method `SpatialSimulation$run_until()` takes as the parameter a formula and
 lets the simulation evolve until
 the formula does not hold.
 

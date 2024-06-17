@@ -22,7 +22,7 @@
 
 #include <logics.hpp>
 
-class Simulation;
+class SpatialSimulation;
 
 namespace Logics
 {
@@ -34,7 +34,7 @@ public:
 
   void show() const;
 
-  friend class Simulation;
+  friend class SpatialSimulation;
 };
 
 class Expression : public RACES::Mutants::Logics::Expression

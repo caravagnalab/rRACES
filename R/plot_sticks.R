@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #'
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 1,

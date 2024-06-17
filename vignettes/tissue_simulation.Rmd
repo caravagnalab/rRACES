@@ -36,19 +36,21 @@ To simulate a tissue the following steps are required:
 
 3.  actual simulation.
 
-The simulation is managed by an object of the S4 class `Simulation`,
+The simulation is managed by an object of the S4 class `SpatialSimulation`,
 wich allows to program the tissue evolution over time, adding new cells
 as far as the simulation progresses. The state of the simulation and
 tissue can be visualised using `ggplot`-powered plots.
 
 ## Tissue specification
 
-To perform a simulation a new object of class `Simulation` must be
+To perform a simulation a new object of class `SpatialSimulation` must be
 created.
 
 ```{r, eval=FALSE}
+library(rRACES)
+
 # Default constructor
-sim <- Simulation()
+sim <- SpatialSimulation()
 ```
 
 This automatically builds a 1000x1000-cells tissue - which can host $1$
@@ -64,7 +66,7 @@ library(rRACES)
 set.seed(0)
 
 # Call your simulation "Test"
-sim <- Simulation("Test")
+sim <- SpatialSimulation("Test")
 ```
 
 The `set.seed()` call is not mandatory and can be avoided; however, it is
@@ -78,14 +80,14 @@ saved in a directory whose name is the name of the simulation.
 ```{r, eval = FALSE}
 # The progresses of the simulation will saved in the "Test" folder.
 # If the directory "Test" already exists an exception is raised.
-sim <- Simulation("Test", save_snapshots = TRUE)
+sim <- SpatialSimulation("Test", save_snapshots = TRUE)
 ```
 
 ```{r echo=FALSE, results='hide', message=FALSE, warning=FALSE}
 sim$death_activation_level <- 50
 ```
 
-Class `Simulation` exports a `Simulation$show()` method to get information on the
+Class `SpatialSimulation` exports a `SpatialSimulation$show()` method to get information on the
 current object.
 
 ```{r, eval}
@@ -109,9 +111,9 @@ The tissue sizes can be specified during simulation creation using
 the parameters `width` and `height`.
 
 ```{r}
-# build a simulation whose tissue has width 1200 and
+# build a spatial simulation whose tissue has width 1200 and
 # height 900
-sim <- Simulation("Test", width=1200, height=900)
+sim <- SpatialSimulation("Test", width=1200, height=900)
 
 # Get the tissue size, i.e., c(1200,900)
 sim$get_tissue_size()
@@ -185,7 +187,7 @@ duplicate and flip the epigenetic marker of one of the progeny.
 sim$add_mutant(name = "A",
                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
                growth_rates = c("+" = 0.2, "-" = 0.08),
-               death_rates = c("+" = 0.1, "-" = 0.01))
+               death_rates = c("+" = 0.05, "-" = 0.01))
 
 # updated object (counts refer to number of cells of each species)
 sim
@@ -362,7 +364,7 @@ therefore new species `B+` and `B-` - as descending from `A,`we need to:
 -   locate one cell of mutant `A` in the tissue, which is where we
     will inject the new mutant;
 
--   add the specifics of mutant `B` (via `Simulation$add_mutant()`, as we did for
+-   add the specifics of mutant `B` (via `SpatialSimulation$add_mutant()`, as we did for
     `A`);
 
 -   implement the change of the cell of mutant `A` to a cell of

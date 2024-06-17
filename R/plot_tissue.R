@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 #'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -38,7 +38,7 @@
 #' sim$run_up_to_time(60)
 #' plot_tissue(sim)
 plot_tissue <- function(simulation, num_of_bins = 100) {
-  stopifnot(inherits(simulation, "Rcpp_Simulation"))
+  stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   # Get the cells in the tissue at current simulation time
   cells <- simulation$get_cells() %>%

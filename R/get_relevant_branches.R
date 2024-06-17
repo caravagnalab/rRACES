@@ -15,7 +15,7 @@
 #' # set the seed of the random number generator
 #' set.seed(0)
 #'
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #'
 #' sim$add_mutant(name = "A",
 #'                growth_rates = 1,

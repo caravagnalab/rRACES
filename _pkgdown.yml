@@ -36,15 +36,15 @@ articles:
   - SCOUT
 
 reference:
-- title: "Spacial simulation interface"
-  desc:  "Spacial simulation classes and methods"
+- title: "Spatial simulation interface"
+  desc:  "Spatial simulation classes and methods"
   contents:
   - annotate_forest
   - bbox_sampler
   - load_samples_forest
   - starts_with("TissueRectangle")
   - starts_with("SamplesForest")
-  - starts_with("Simulation")
+  - starts_with("SpatialSimulation")
   - plot_firings
   - plot_muller
   - plot_state
@@ -55,7 +55,6 @@ reference:
   desc:  "Mutation simulation classes and methods"
   contents:
   - Amplification
-  - build_mutation_engine
   - starts_with("CNA")
   - Deletion
   - get_mutation_engine_codes

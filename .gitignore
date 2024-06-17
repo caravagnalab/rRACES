@@ -10,7 +10,9 @@ RcppExports.*
 inst/doc
 vignettes/*.html
 vignettes/*.R
+nobuild
 docs
+nobuild
 pkgdown
 _builds
 _install

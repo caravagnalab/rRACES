@@ -45,7 +45,7 @@ collapse_loops <- function(df_edges) {
 #' @export
 #'
 #' @examples
-#' sim <- Simulation()
+#' sim <- SpatialSimulation()
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 #'                growth_rates = c("+" = 0.2, "-" = 0.08),
@@ -55,7 +55,7 @@ collapse_loops <- function(df_edges) {
 #' sim$run_up_to_time(60)
 #' plot_muller(sim)
 plot_muller <- function(simulation) {
-  stopifnot(inherits(simulation, "Rcpp_Simulation"))
+  stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   # Tumour DF
   df_populations <- simulation$get_count_history() %>%
