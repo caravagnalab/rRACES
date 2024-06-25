@@ -364,8 +364,8 @@ therefore new species `B+` and `B-` - as descending from `A,`we need to:
 -   locate one cell of mutant `A` in the tissue, which is where we
     will inject the new mutant;
 
--   add the specifics of mutant `B` (via `SpatialSimulation$add_mutant()`, as we did for
-    `A`);
+-   add the specifics of mutant `B` (via `SpatialSimulation$add_mutant()`, as
+    we did for `A`);
 
 -   implement the change of the cell of mutant `A` to a cell of
     mutant `B`.
@@ -378,7 +378,7 @@ cell
 # Add mutant
 sim$add_mutant(name = "B",
                epigenetic_rates = c("+-" = 0.05, "-+" = 0.05),
-               growth_rates = c("+" = 0.3, "-" = 0.3),
+               growth_rates = c("+" = 0.7, "-" = 0.3),
                death_rates = c("+" = 0.05, "-" = 0.1))
 ```
 
