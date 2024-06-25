@@ -149,7 +149,7 @@ public:
   SpatialSimulation(const std::string& simulation_name, const SEXP& seed,
                     const bool& save_snapshots);
 
-  SpatialSimulation(const std::string& simulation_name, const bool& seed,
+  SpatialSimulation(const std::string& simulation_name, const int& seed,
                     const bool& save_snapshots);
 
   ~SpatialSimulation();

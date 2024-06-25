@@ -508,7 +508,7 @@ SpatialSimulation::SpatialSimulation(const std::string& simulation_name,
   }
 }
 
-SpatialSimulation::SpatialSimulation(const std::string& simulation_name, const bool& seed,
+SpatialSimulation::SpatialSimulation(const std::string& simulation_name, const int& seed,
                                      const bool& save_snapshots):
   name(simulation_name), save_snapshots(save_snapshots)
 {
