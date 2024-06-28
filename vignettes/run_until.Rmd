@@ -1,11 +1,11 @@
 ---
-title: "Formula-base simulation constraints"
+title: "Formula-based simulation constraints"
 output: rmarkdown::html_vignette
 description: >
   Simulate a tissue evolution until a simulation state formula
   does not hold
 vignette: >
-  %\VignetteIndexEntry{Formula-base simulation constraints}
+  %\VignetteIndexEntry{Formula-based simulation constraints}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options:
