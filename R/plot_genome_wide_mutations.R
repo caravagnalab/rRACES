@@ -104,9 +104,7 @@ plot_DR <- function(
     ggplot2::lims(y = c(0, NA)) +
     ggplot2::theme_bw() +
     ggplot2::scale_x_continuous(breaks = chr_means,
-                                labels = unique(d$chr)) +
-    ggplot2::ggtitle(sample, subtitle = paste0('N = ', N, ' (',
-                                               round(100 * N / Ntotal),'%)'))
+                                labels = unique(d$chr))
 }
 
 
@@ -217,9 +215,7 @@ plot_BAF <- function(
     ggplot2::labs(x = "", y = "BAF") +
     ggplot2::lims(y = c(0, 1)) +
     ggplot2::theme_bw() +
-    ggplot2::scale_x_continuous(breaks = chr_means, labels = unique(d$chr)) +
-    ggplot2::ggtitle(sample, subtitle = paste0('N = ', N, ' (',
-                                               round(100 * N / Ntotal), '%)'))
+    ggplot2::scale_x_continuous(breaks = chr_means, labels = unique(d$chr))
 }
 
 
@@ -327,8 +323,5 @@ plot_VAF <- function(seq_res, sample,
     ggplot2::labs(x = "", y = "VAF") +
     ggplot2::lims(y = c(0, 1)) +
     ggplot2::theme_bw() +
-    ggplot2::scale_x_continuous(breaks = chr_means, labels = unique(d$chr)) +
-    ggplot2::ggtitle(sample) +
-    ggplot2::ggtitle(sample, subtitle = paste0('N = ', N, ' (',
-                                               round(100 * N / Ntotal),'%)'))
+    ggplot2::scale_x_continuous(breaks = chr_means, labels = unique(d$chr))
 }

@@ -52,11 +52,6 @@ plot_state <- function(simulation) {
                                    y = .data$counts,
                                    fill = .data$species)) +
     ggplot2::coord_polar(theta = "y") +
-    ggplot2::labs(
-      title = paste0(sim_title, " (t = ", time, ")"),
-      subtitle = paste("Tissue:", "[", tissue_size, "]"),
-      caption = paste("Total number of cells", counts$counts %>% sum())
-    ) +
     ggplot2::theme_void(base_size = 10) +
     ggplot2::scale_fill_manual(values = color_map) +
     ggplot2::theme(legend.position = "bottom")

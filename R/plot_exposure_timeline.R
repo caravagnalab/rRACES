@@ -123,8 +123,7 @@ plot_exposure_timeline <- function(phylogenetic_forest, linewidth = 0.8,
                                        yend = .data$line_pos),
                           linewidth = linewidth) +
     ggplot2::ylim(0, 1) +
-    ggplot2::labs(x = "Time Point", y = "Signature Exposure",
-                  title = "Mutational Signature Exposure Timeline") +
+    ggplot2::labs(x = "Time Point", y = "Signature Exposure") +
     #scale_fill_manual(values=colors) +
     ggplot2::scale_colour_manual(name = "Signatures", values = colors) +
     ggplot2::theme_minimal()  # Apply a minimal theme

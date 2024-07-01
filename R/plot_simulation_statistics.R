@@ -40,11 +40,6 @@ plot_firings <- function(simulation) {
   firings <- simulation$get_firings() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
 
-  time <- simulation$get_clock() %>% round(digits = 3)
-
-  sim_title <- simulation$get_name()
-  tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
-
   ggplot2::ggplot(firings) +
     ggplot2::geom_bar(stat = "identity",
                       ggplot2::aes(x = "", y = .data$fired,
@@ -54,10 +49,7 @@ plot_firings <- function(simulation) {
     ggplot2::labs(
       fill = "Event",
       x = "",
-      y = "",
-      title = paste0(sim_title, " (t = ", time, ")"),
-      subtitle = paste("Tissue:", "[", tissue_size, "]"),
-      caption = paste("Total number of events", firings$fired %>% sum())
+      y = ""
     ) +
     my_theme() +
     ggplot2::scale_fill_brewer(palette = "Dark2") +

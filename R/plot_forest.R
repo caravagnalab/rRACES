@@ -133,9 +133,7 @@ plot_forest <- function(forest, highlight_sample = NULL) {
       ggplot2::scale_color_manual(values = species_colors) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "bottom") +
-      ggplot2::labs(title = "Birth time",
-        subtitle = paste0(ncells, " cells (", ncells_sampled,
-                          " sampled from ", nsamples, " samples)"),
+      ggplot2::labs(
         shape = "Sample",
         x = NULL,
         y = "Cell division"

@@ -44,11 +44,6 @@ plot_timeseries <- function(simulation) {
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
 
-  ncells <- simulation$get_counts() %>% dplyr::pull(counts) %>% sum()
-
-  sim_title <- simulation$get_name()
-  tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
-
   color_map <- get_species_colors(simulation$get_species())
 
   ggplot2::ggplot(counts) +
@@ -58,10 +53,7 @@ plot_timeseries <- function(simulation) {
                                      color = .data$species)) +
     ggplot2::labs(
       color = "Species",
-      alpha = "Epistate",
-      title = paste0(sim_title, " (t = ", time, ")"),
-      subtitle = paste("Tissue:", "[", tissue_size, "]"),
-      caption = paste("Total number of cells", ncells)
+      alpha = "Epistate"
     ) +
     my_theme() +
     ggplot2::scale_color_manual(values = color_map) +

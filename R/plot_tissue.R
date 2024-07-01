@@ -23,19 +23,20 @@
 #' hexagonal heatmap of 2D bins.
 #'
 #' @param simulation A simulation object.
-#' @param num_of_bins The number of bins (optional, default: 100).
+#' @param num_of_bins The number of bins (default: 100)
 #'
 #' @return An editable ggplot plot.
 #' @export
 #'
 #' @examples
+#' set.seed(0)
 #' sim <- SpatialSimulation()
 #' sim$add_mutant(name = "A",
 #'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
 #'                growth_rates = c("+" = 0.2, "-" = 0.08),
 #'                death_rates = c("+" = 0.1, "-" = 0.01))
 #' sim$place_cell("A+", 500, 500)
-#' sim$run_up_to_time(60)
+#' sim$run_up_to_size("A-", 600)
 #' plot_tissue(sim)
 plot_tissue <- function(simulation, num_of_bins = 100) {
   stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
@@ -45,13 +46,6 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
     dplyr::as_tibble() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
 
-  counts <- simulation$get_counts()
-
-  time <- simulation$get_clock() %>% round(digits = 3)
-
-  sim_title <- simulation$get_name()
-  tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
-
   color_map <- get_species_colors(simulation$get_species())
 
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
@@ -60,13 +54,7 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
     ggplot2::geom_hex(bins = num_of_bins) +
     my_theme() +
     ggplot2::labs(x = "Latitude", y = "Longitude",
-                  fill = "Species",
-                  caption = paste("Total number of cells",
-                                  counts$counts %>% sum(),
-                                  "(with", num_of_bins, "bins)"),
-                  title = paste0(sim_title, " (t = ", time, ")"),
-                  subtitle = paste("Tissue:", "[",
-                                   tissue_size, "]")) +
+                  fill = "Species") +
     ggplot2::scale_fill_manual(values = color_map) +
     # ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
     ggplot2::theme(legend.position = "bottom") +

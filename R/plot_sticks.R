@@ -95,11 +95,6 @@ plot_sticks = function(forest, labels, cls = NULL) {
                                 dplyr::pull(label) %>% unique())
       cls["Subclonal"] <- "gainsboro"
     }
-    ncells <- graph %>% tidygraph::activate(nodes) %>% dplyr::pull(.data$name) %>%
-      length()
-    ncells_sampled <- graph %>% tidygraph::activate(nodes) %>%
-      dplyr::filter(sample != "N/A") %>% dplyr::pull(.data$name) %>%
-      length()
     nsamples <- forest$get_samples_info() %>% nrow()
     labels_every <- max_Y/10
     not_subclonal <- forest_data$label[forest_data$label != "Subclonal"] %>%
@@ -120,10 +115,6 @@ plot_sticks = function(forest, labels, cls = NULL) {
       ggplot2::scale_color_manual(values = cls, na.translate=FALSE)  +
       ggplot2::theme_minimal() + ggplot2::theme(legend.position = "bottom") +
       ggplot2::labs(
-        title = "Phylogenetic tree",
-        subtitle = paste0(ncells, " cells (", ncells_sampled,
-                          " sampled from ", nsamples, " samples)"
-        ),
         shape = "Sample",
         x = NULL,
         y = "Birth time"

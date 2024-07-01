@@ -26,9 +26,7 @@ plot_VAFs <- function(x) {
     ggplot2::xlim(0, 1) +
     my_theme() +
     ggplot2::labs(
-      caption = paste(nchr, "chromosomes", nmut, "mutations"),
-      y = "Counts",
-      title = "Variant Allele Frequencies"
+      y = "Counts"
     ) +
     ggplot2::facet_wrap(~.data$type)
   # ggplot2::scale_fill_manual(values = c(`SNV` = "steelblue",
@@ -45,9 +43,7 @@ plot_depth <- function(x) {
                                          fill = .data$type), bins = 30) +
     my_theme() +
     ggplot2::labs(
-      caption = paste(nchr, "chromosomes", nmut, "mutations"),
-      y = "Counts",
-      title = "Sequencing coverage"
+      y = "Counts"
     ) +
     ggplot2::scale_fill_manual(values = c(`SNV` = "steelblue",
                                           `indel` = "indianred3"))
@@ -86,9 +82,7 @@ plot_signatures <- function(x) {
                                    fill = .data$cause), stat = "identity") +
     my_theme() +
     ggplot2::labs(
-      caption = paste(nchr, "chromosomes", nmut, "mutations"),
-      y = "Counts",
-      title = "Signatures"
+      y = "Counts"
     ) +
     ggplot2::facet_grid(.data$cause~.data$substitution, scales = "free_y") +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, hjust = 1))
