@@ -476,7 +476,8 @@ void PhylogeneticForest::set_reference_path(const std::string reference_path)
   this->reference_path = std::filesystem::absolute(std::filesystem::path(reference_path));
 }
 
-void PhylogeneticForest::save(const std::string& filename) const
+void PhylogeneticForest::save(const std::string& filename,
+                              const bool quiet) const
 {
   RACES::Archive::Binary::Out out_archive(filename);
 
@@ -485,11 +486,14 @@ void PhylogeneticForest::save(const std::string& filename) const
   out_archive & ref_str
               & timed_exposures;
 
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
   out_archive.save(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this),
-                   "forest", Rcpp::Rcout);
+                    progress_bar, "forest");
 }
 
-PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
+PhylogeneticForest PhylogeneticForest::load(const std::string& filename,
+                                            const bool quiet)
 {
   RACES::Archive::Binary::In in_archive(filename);
 
@@ -503,8 +507,10 @@ PhylogeneticForest PhylogeneticForest::load(const std::string& filename)
   in_archive & forest.timed_exposures;
 
   try {
+    RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
     in_archive.load(static_cast<RACES::Mutations::PhylogeneticForest&>(forest),
-                    "forest", Rcpp::Rcout);
+                    progress_bar, "forest");
   } catch (RACES::Archive::WrongFileFormatDescr& ex) {
     raise_error(ex, "phylogenetic forest");
   } catch (RACES::Archive::WrongFileFormatVersion& ex) {

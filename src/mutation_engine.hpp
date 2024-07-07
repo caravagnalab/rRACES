@@ -50,7 +50,7 @@ class MutationEngine
 
     GermlineSubject get_germline_subject(const std::string& subject_name) const;
 
-    void init_mutation_engine();
+    void init_mutation_engine(const bool& quiet);
 
     template<typename MUTATION_TYPE>
     void show_timed_exposures() const
@@ -79,7 +79,8 @@ public:
                    const size_t& context_sampling=100,
                    const size_t& max_motif_size=50,
                    const size_t& max_repetition_storage=500000,
-                   const std::string& tumour_type="");
+                   const std::string& tumour_type="",
+                   const bool& quiet=false);
 
     MutationEngine(const std::string& directory,
                    const std::string& reference_source,
@@ -92,7 +93,8 @@ public:
                    const size_t& context_sampling=100,
                    const size_t& max_motif_size=50,
                    const size_t& max_repetition_storage=500000,
-                   const std::string& tumour_type="");
+                   const std::string& tumour_type="",
+                   const bool& quiet=false);
 
     static Rcpp::List get_supported_setups();
 
@@ -204,13 +206,25 @@ public:
                          const size_t& context_sampling,
                          const size_t& max_motif_size,
                          const size_t& max_repetition_storage,
-                         const std::string& tumour_type);
+                         const std::string& tumour_type,
+                         const bool quiet);
 
-    void set_context_sampling(const size_t& context_sampling);
+    inline void set_context_sampling(const size_t& context_sampling)
+    {
+        set_context_sampling(context_sampling, false); 
+    }
 
-    void rebuild_indices();
+    void set_context_sampling(const size_t& context_sampling,
+                              const bool quiet);
 
-    void reset(const bool full=true);
+    inline void rebuild_indices()
+    {
+        rebuild_indices(false);
+    }
+
+    void rebuild_indices(const bool quiet);
+
+    void reset(const bool full=true, const bool quiet=false);
 };
 
 RCPP_EXPOSED_CLASS(MutationEngine)

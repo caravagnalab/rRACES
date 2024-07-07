@@ -179,7 +179,8 @@ get_context_index_path(const GenomicDataStorage& storage, const size_t context_s
 
 template<typename ABSOLUTE_GENOTYPE_POSITION = uint32_t>
 RACES::Mutations::ContextIndex<ABSOLUTE_GENOTYPE_POSITION>
-build_contex_index(const GenomicDataStorage& storage, const size_t context_sampling)
+build_contex_index(const GenomicDataStorage& storage, const size_t context_sampling,
+                   const bool& quiet)
 {
   using namespace RACES;
   using namespace RACES::Mutations;
@@ -193,7 +194,9 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
   if (std::filesystem::exists(contex_index_filename)) {
     Archive::Binary::In archive(contex_index_filename);
     try {
-        archive.load(context_index, "context index", Rcpp::Rcout);
+        RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+        archive.load(context_index, progress_bar, "context index");
     } catch (RACES::Archive::WrongFileFormatDescr& ex) {
         raise_error(ex, "context index");
     } catch (RACES::Archive::WrongFileFormatVersion& ex) {
@@ -221,7 +224,7 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
 
   std::list<GenomicRegion> chr_regions;
   {
-    UI::ProgressBar progress_bar(Rcpp::Rcout);
+    UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
     const auto reference_path = storage.get_reference_path();
     context_index = Index::build_index(reference_path, regions_to_avoid,
                                        context_sampling, &progress_bar);
@@ -229,9 +232,10 @@ build_contex_index(const GenomicDataStorage& storage, const size_t context_sampl
   }
 
   if (chr_regions.size() > 0) {
+    UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
     Archive::Binary::Out archive(contex_index_filename);
 
-    archive.save(context_index, "context index", Rcpp::Rcout);
+    archive.save(context_index, progress_bar, "context index");
   }
 
   Rcout << "done" << std::endl;
@@ -254,7 +258,8 @@ get_rs_index_path(const GenomicDataStorage& storage,
 RACES::Mutations::RSIndex
 build_rs_index(const GenomicDataStorage& storage,
                const size_t max_motif_size,
-               const size_t max_repetition_storage)
+               const size_t max_repetition_storage,
+               const bool& quiet)
 {
   using namespace RACES;
   using namespace RACES::Mutations;
@@ -269,7 +274,9 @@ build_rs_index(const GenomicDataStorage& storage,
   if (std::filesystem::exists(rs_index_filename)) {
     Archive::Binary::In archive(rs_index_filename);
     try {
-        archive.load(rs_index, "RS index", Rcpp::Rcout);
+        RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+        archive.load(rs_index, progress_bar, "RS index");
     } catch (RACES::Archive::WrongFileFormatDescr& ex) {
         raise_error(ex, "RS index");
     } catch (RACES::Archive::WrongFileFormatVersion& ex) {
@@ -281,7 +288,10 @@ build_rs_index(const GenomicDataStorage& storage,
 
   using namespace Rcpp;
 
-  Rcout << "Building repeated sequence index..." << std::endl << std::flush;
+  if (!quiet) {
+    Rcout << "Building repeated sequence index..."
+          << std::endl << std::flush;
+  }
 
 /*
   std::set<GenomicRegion> regions_to_avoid;
@@ -298,7 +308,7 @@ build_rs_index(const GenomicDataStorage& storage,
 */
 
   {
-    UI::ProgressBar progress_bar(Rcpp::Rcout);
+    UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
     const auto reference_path = storage.get_reference_path();
     rs_index = Index::build_index(reference_path, max_motif_size,
                                   max_repetition_storage, &progress_bar);
@@ -306,9 +316,13 @@ build_rs_index(const GenomicDataStorage& storage,
 
   Archive::Binary::Out archive(rs_index_filename);
 
-  archive.save(rs_index, "RS index", Rcpp::Rcout);
+  UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
 
-  Rcout << "done" << std::endl;
+  archive.save(rs_index, progress_bar, "RS index");
+
+  if (!quiet) {
+    Rcout << "done" << std::endl;
+  }
 
   return rs_index;
 }
@@ -439,10 +453,11 @@ std::vector<RACES::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
   return CNAs;
 }
 
-void MutationEngine::init_mutation_engine()
+void MutationEngine::init_mutation_engine(const bool& quiet)
 {
-  context_index = build_contex_index(storage, context_sampling);
-  rs_index = build_rs_index(storage, max_motif_size, max_repetition_storage);
+  context_index = build_contex_index(storage, context_sampling, quiet);
+  rs_index = build_rs_index(storage, max_motif_size,
+                            max_repetition_storage, quiet);
 
   reset();
 }
@@ -452,14 +467,15 @@ MutationEngine::MutationEngine(const std::string& setup_name,
                                const size_t& context_sampling,
                                const size_t& max_motif_size,
                                const size_t& max_repetition_storage,
-                               const std::string& tumour_type):
+                               const std::string& tumour_type,
+                               const bool& quiet):
   storage(setup_storage(setup_name)), germline_subject(germline_subject),
   context_sampling(context_sampling), max_motif_size(max_motif_size),
   max_repetition_storage(max_repetition_storage), tumour_type(tumour_type)
 {
   auto setup_cfg = supported_setups.at(setup_name);
 
-  init_mutation_engine();
+  init_mutation_engine(quiet);
 }
 
 MutationEngine::MutationEngine(const std::string& directory,
@@ -473,7 +489,8 @@ MutationEngine::MutationEngine(const std::string& directory,
                                const size_t& context_sampling,
                                const size_t& max_motif_size,
                                const size_t& max_repetition_storage,
-                               const std::string& tumour_type):
+                               const std::string& tumour_type,
+                               const bool& quiet):
   storage(setup_storage(directory, reference_source, SBS_signatures_source,
                         indel_signatures_source, drivers_source,
                         passenger_CNAs_source, germline_source)),
@@ -482,7 +499,7 @@ MutationEngine::MutationEngine(const std::string& directory,
   max_repetition_storage(max_repetition_storage), 
   tumour_type(tumour_type)
 {
-  init_mutation_engine();
+  init_mutation_engine(quiet);
 }
 
 struct DummyTest
@@ -541,7 +558,8 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                                      const size_t& context_sampling,
                                      const size_t& max_motif_size,
                                      const size_t& max_repetition_storage,
-                                     const std::string& tumour_type)
+                                     const std::string& tumour_type,
+                                     const bool quiet)
 {
   if (setup_code!="") {
     if (directory!="" || reference_source!="" || SBS_signatures_source!=""
@@ -554,7 +572,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
     }
 
     return MutationEngine(setup_code, germline_subject, context_sampling,
-                          max_motif_size, max_repetition_storage, tumour_type);
+                          max_motif_size, max_repetition_storage, tumour_type, quiet);
   }
 
   if (directory=="" || reference_source=="" || SBS_signatures_source==""
@@ -570,7 +588,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                         indel_signatures_source, drivers_source,
                         passenger_CNAs_source, germline_source, germline_subject,
                         context_sampling, max_motif_size, max_repetition_storage, 
-                        tumour_type);
+                        tumour_type, quiet);
 
 }
 
@@ -1018,13 +1036,13 @@ void MutationEngine::show() const
   Rcout << std::endl;
 }
 
-void MutationEngine::rebuild_indices()
+void MutationEngine::rebuild_indices(const bool quiet)
 {
   auto index_path = get_context_index_path(storage, context_sampling);
 
   std::filesystem::remove(index_path);
 
-  context_index = build_contex_index(storage, context_sampling);
+  context_index = build_contex_index(storage, quiet, context_sampling);
 
   index_path = get_rs_index_path(storage, max_motif_size, 
                                  max_repetition_storage);
@@ -1032,19 +1050,20 @@ void MutationEngine::rebuild_indices()
   std::filesystem::remove(index_path);
 
   rs_index = build_rs_index(storage, max_motif_size, 
-                            max_repetition_storage);
+                            max_repetition_storage, quiet);
 }
 
-void MutationEngine::set_context_sampling(const size_t& context_sampling)
+void MutationEngine::set_context_sampling(const size_t& context_sampling,
+                                          const bool quiet)
 {
   this->context_sampling = context_sampling;
 
-  context_index = build_contex_index(storage, context_sampling);
+  context_index = build_contex_index(storage, context_sampling, quiet);
 
   reset();
 }
 
-void MutationEngine::reset(const bool full)
+void MutationEngine::reset(const bool full, const bool quiet)
 {
   using namespace RACES::Mutations;
 
@@ -1080,7 +1099,7 @@ void MutationEngine::reset(const bool full)
     germline_subject = germline_subjects[0].name;
   }
 
-  auto germline = germline_storage.get_germline(germline_subject);
+  auto germline = germline_storage.get_germline(germline_subject, quiet);
 
   m_engine = RACES::Mutations::MutationEngine(context_index, rs_index,
                                               SBS_signatures,

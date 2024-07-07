@@ -207,13 +207,21 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Parameter:} \code{event} - The considered event type, i.e., "growth", "death", or "switch".
 //' \item \emph{Parameter:} \code{species} - The species whose event number is considered.
 //' \item \emph{Parameter:} \code{num_of_events} - The threshold for the event number.
+//' \item \emph{Parameter:} \code{quiet} - A Boolean flag to avoid progress bar (optional).
 //' }
 //' @field run_up_to_size Simulates cell evolution \itemize{
 //' \item \emph{Parameter:} \code{species} - The species whose number of cells is considered.
 //' \item \emph{Parameter:} \code{num_of_cells} - The threshold for the cell number.
+//' \item \emph{Parameter:} \code{quiet} - A Boolean flag to avoid progress bar (optional).
 //' }
 //' @field run_up_to_time Simulates cell evolution \itemize{
 //' \item \emph{Parameter:} \code{time} - The final simulation time.
+//' \item \emph{Parameter:} \code{quiet} - A Boolean flag to avoid progress bar (optional).
+//' }
+//' @field run_until Simulating cell evolution \itemize{
+//' \item \emph{Parameter:} \code{formula} - The formula that will be satisfied at the 
+//'    end of the simulation.
+//' \item \emph{Parameter:} \code{quiet} - A Boolean flag to avoid progress bar (optional).
 //' }
 //' @field sample_cells Sample a tissue rectangle region \itemize{
 //' \item \emph{Parameter:} \code{name} - The sample name.
@@ -955,6 +963,8 @@ RCPP_MODULE(Mutants){
 //' @name SpatialSimulation$run_up_to_time
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
+//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//'   (default: false).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_event()],
 //'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
 //' @examples
@@ -968,7 +978,13 @@ RCPP_MODULE(Mutants){
 //'
 //' # simulate the tissue up to simulate timed 100
 //' sim$run_up_to_time(40)
-  .method("run_up_to_time", &SpatialSimulation::run_up_to_time,
+  .method("run_up_to_time", 
+          (void (SpatialSimulation::*)(const RACES::Time&, const bool))
+          &SpatialSimulation::run_up_to_time,
+          "Simulate the system up to the specified simulation time")
+  .method("run_up_to_time", 
+          (void (SpatialSimulation::*)(const RACES::Time&))
+          &SpatialSimulation::run_up_to_time,
           "Simulate the system up to the specified simulation time")
 
 //' @name SpatialSimulation$run_up_to_event
@@ -978,6 +994,8 @@ RCPP_MODULE(Mutants){
 //' @param event The considered event, i.e., `growth`, `death`, or `switch`.
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
+//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//'   (default: false).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
 //' @examples
@@ -995,7 +1013,15 @@ RCPP_MODULE(Mutants){
 //' # simulate the cell evolution until the number of epigenetic events from
 //' # the species "A+" is less than 100.
 //' sim$run_up_to_event(event = "switch", species = "A+", num_of_events = 100)
-  .method("run_up_to_event", &SpatialSimulation::run_up_to_event,
+  .method("run_up_to_event",
+          (void (SpatialSimulation::*)(const std::string&, const std::string&,
+                                       const size_t&, const bool))
+          &SpatialSimulation::run_up_to_event,
+          "Simulate the system up to the specified number of events")
+  .method("run_up_to_event", 
+          (void (SpatialSimulation::*)(const std::string&, const std::string&,
+                                       const size_t&))
+          &SpatialSimulation::run_up_to_event,
           "Simulate the system up to the specified number of events")
 
 //' @name SpatialSimulation$run_up_to_size
@@ -1004,6 +1030,8 @@ RCPP_MODULE(Mutants){
 //'   a species reaches a specified threshold.
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
+//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//'   (default: false).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_until()]
 //' @examples
@@ -1021,7 +1049,14 @@ RCPP_MODULE(Mutants){
 //' # simulate the tissue until the species "A+" account for 100
 //' # contemporary cells
 //' sim$run_up_to_size(species = "A+", num_of_cells = 100)
-  .method("run_up_to_size", &SpatialSimulation::run_up_to_size,
+  .method("run_up_to_size",
+          (void (SpatialSimulation::*)(const std::string&, const size_t&,
+                                       const bool))
+          &SpatialSimulation::run_up_to_size,
+          "Simulate the system up to the specified number of cells in the species")
+  .method("run_up_to_size",
+          (void (SpatialSimulation::*)(const std::string&, const size_t&))
+          &SpatialSimulation::run_up_to_size,
           "Simulate the system up to the specified number of cells in the species")
 
 //' @name SpatialSimulation$run_until
@@ -1030,6 +1065,8 @@ RCPP_MODULE(Mutants){
 //'    hold.
 //' @param formula The formula that will be satisfied at the end of the
 //'    simulation.
+//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//'   (default: false).
 //' @seealso `Simulation`, [SpatialSimulation$var()], [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_up_to_size()]
 //' @examples
@@ -1083,7 +1120,14 @@ RCPP_MODULE(Mutants){
 //'
 //' sim
 //' sim$get_clock()
-  .method("run_until", &SpatialSimulation::run_until,
+  .method("run_until",
+          (void (SpatialSimulation::*)(const Logics::Formula&,
+                                       const bool))
+          &SpatialSimulation::run_until,
+          "Simulate the system until a formula is *not* satisfied")
+  .method("run_until",
+          (void (SpatialSimulation::*)(const Logics::Formula&))
+          &SpatialSimulation::run_until,
           "Simulate the system until a formula is *not* satisfied")
 
 //' @name SpatialSimulation$sample_cells

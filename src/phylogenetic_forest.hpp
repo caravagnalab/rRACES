@@ -106,9 +106,19 @@ public:
     return germline_subject;
   }
 
-  void save(const std::string& filename) const;
+  inline void save(const std::string& filename) const
+  {
+    save(filename, false);
+  }
 
-  static PhylogeneticForest load(const std::string& filename);
+  void save(const std::string& filename, const bool quiet) const;
+
+  inline static PhylogeneticForest load(const std::string& filename)
+  {
+    return load(filename, false);
+  }
+
+  static PhylogeneticForest load(const std::string& filename, const bool quiet);
 
   static Rcpp::List get_SID_dataframe(const RACES::Mutations::CellGenomeMutations& cell_mutations);
 

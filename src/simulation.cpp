@@ -1016,33 +1016,47 @@ inline void validate_non_empty_tissue(const RACES::Mutants::Evolutions::Tissue& 
 
 void SpatialSimulation::run_up_to_time(const RACES::Time& time)
 {
-  validate_non_empty_tissue(sim_ptr->tissue());
+  run_up_to_time(time, false);
+}
 
-  RACES::UI::ProgressBar bar(Rcpp::Rcout);
+void SpatialSimulation::run_up_to_time(const RACES::Time& time, const bool quiet)
+{
+  validate_non_empty_tissue(sim_ptr->tissue());
 
   RTest<RACES::Mutants::Evolutions::TimeTest> ending_test{time};
 
-  sim_ptr->run(ending_test, bar);
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+  sim_ptr->run(ending_test, progress_bar);
 }
 
 void SpatialSimulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells)
 {
-  RACES::UI::ProgressBar bar(Rcpp::Rcout);
+    run_up_to_size(species_name, num_of_cells, false);
+}
 
+void SpatialSimulation::run_up_to_size(const std::string& species_name, const size_t& num_of_cells, const bool quiet)
+{
   validate_non_empty_tissue(sim_ptr->tissue());
 
   const auto& species_id = sim_ptr->tissue().get_species(species_name).get_id();
 
   RTest<RACES::Mutants::Evolutions::SpeciesCountTest> ending_test{species_id, num_of_cells};
 
-  sim_ptr->run(ending_test, bar);
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+  sim_ptr->run(ending_test, progress_bar);
 }
 
 void SpatialSimulation::run_up_to_event(const std::string& event, const std::string& species_name,
-                                 const size_t& num_of_events)
+                                        const size_t& num_of_events)
 {
-  RACES::UI::ProgressBar bar(Rcpp::Rcout);
+    run_up_to_event(event, species_name, num_of_events, false);
+}
 
+void SpatialSimulation::run_up_to_event(const std::string& event, const std::string& species_name,
+                                        const size_t& num_of_events, const bool quiet)
+{
   validate_non_empty_tissue(sim_ptr->tissue());
 
   if (event_names.count(event)==0) {
@@ -1055,18 +1069,25 @@ void SpatialSimulation::run_up_to_event(const std::string& event, const std::str
 
   RTest<RS::EventCountTest> ending_test{event_names.at(event), species_id, num_of_events};
 
-  sim_ptr->run(ending_test, bar);
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+  sim_ptr->run(ending_test, progress_bar);
 }
 
 void SpatialSimulation::run_until(const Logics::Formula& formula)
 {
-  validate_non_empty_tissue(sim_ptr->tissue());
+  run_until(formula, false);
+}
 
-  RACES::UI::ProgressBar bar(Rcpp::Rcout);
+void SpatialSimulation::run_until(const Logics::Formula& formula, const bool quiet)
+{
+  validate_non_empty_tissue(sim_ptr->tissue());
 
   RTest<RACES::Mutants::Evolutions::FormulaTest> ending_test{formula};
 
-  sim_ptr->run(ending_test, bar);
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+  sim_ptr->run(ending_test, progress_bar);
 }
 
 Rcpp::List SpatialSimulation::get_firings() const

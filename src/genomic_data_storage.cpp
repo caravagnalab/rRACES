@@ -182,7 +182,7 @@ Rcpp::List GermlineStorage::get_subject_df(const std::string& subject_name) cons
 }
 
 RACES::Mutations::GenomeMutations
-GermlineStorage::build_germline(const std::string& subject_name) const
+GermlineStorage::build_germline(const std::string& subject_name, const bool quiet) const
 {
   using namespace RACES::Mutations;
 
@@ -193,24 +193,26 @@ GermlineStorage::build_germline(const std::string& subject_name) const
   auto num_of_alleles = get_alleles_per_chromosome(subject.gender);
 
   auto germline = GermlineMutations::load(get_file(), num_of_alleles,
-                                          subject.name, Rcpp::Rcout);
+                                          subject.name, Rcpp::Rcout, quiet);
 
   RACES::Archive::Binary::Out oarchive(bin_path);
 
-  oarchive.save(germline, "germline", Rcpp::Rcout);
+  RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+  oarchive.save(germline, progress_bar, "germline");
 
   return germline;
 }
 
 RACES::Mutations::GenomeMutations
-GermlineStorage::get_germline(const std::string& subject_name) const
+GermlineStorage::get_germline(const std::string& subject_name, const bool quiet) const
 {
   using namespace RACES::Mutations;
 
   auto bin_path = get_binary_file(subject_name);
 
   if (!std::filesystem::exists(bin_path)) {
-    return build_germline(subject_name);
+    return build_germline(subject_name, quiet);
   }
 
   RACES::Archive::Binary::In iarchive(bin_path);
@@ -218,7 +220,9 @@ GermlineStorage::get_germline(const std::string& subject_name) const
   GenomeMutations germline;
 
   try {
-    iarchive.load(germline, "germline", Rcpp::Rcout);
+    RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
+
+    iarchive.load(germline, progress_bar, "germline");
   } catch (RACES::Archive::WrongFileFormatDescr& ex) {
     raise_error(ex, "germline");
   } catch (RACES::Archive::WrongFileFormatVersion& ex) {

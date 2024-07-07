@@ -236,12 +236,22 @@ public:
 
   void run_up_to_time(const RACES::Time& time);
 
+  void run_up_to_time(const RACES::Time& time, const bool quiet);
+
   void run_up_to_size(const std::string& species_name, const size_t& num_of_cells);
+
+  void run_up_to_size(const std::string& species_name, const size_t& num_of_cells,
+                      const bool quiet);
 
   void run_up_to_event(const std::string& event, const std::string& species_name,
                        const size_t& num_of_events);
 
+  void run_up_to_event(const std::string& event, const std::string& species_name,
+                       const size_t& num_of_events, const bool quiet);
+
   void run_until(const Logics::Formula& formula);
+
+  void run_until(const Logics::Formula& formula, const bool quiet);
 
   void sample_cells(const std::string& sample_name, const size_t& num_of_cells) const;
 

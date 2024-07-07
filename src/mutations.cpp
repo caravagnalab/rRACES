@@ -778,6 +778,8 @@ RCPP_MODULE(Mutations){
 //'   the admissible passenger CNAs. If any passenger CNA in the dataset is
 //'   admissible, use the the empty string `""` (optional: default value is
 //'   `""`).
+//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//'   (default: false).
 //' @seealso [MutationEngine$get_germline_subjects()] to get the available
 //'   germline subjects; [MutationEngine$set_germline_subject()] to set the
 //'   active germline subject; [MutationEngine$get_active_germline()] to get
@@ -863,7 +865,7 @@ RCPP_MODULE(Mutations){
                         _["germline_subject"] = "", _["context_sampling"] = 100,
                         _["max_motif_size"] = 50,
                         _["max_repetition_storage"] = 500000,
-                        _["tumour_type"] = ""),
+                        _["tumour_type"] = "", _["quiet"]=false),
            "Create a MutationEngine");
 
 //' @name get_mutation_engine_codes
@@ -1209,9 +1211,17 @@ RCPP_MODULE(Mutations){
 //' @name PhylogeneticForest$save
 //' @title Saving a phylogenetic forest
 //' @description This method saves a phylogenetic forest in a file.
-//' @param filename The path of the file in which the phylogenetic
+//' @param filename The path of the file in which the phylogenetic.
+//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//'   (default: false).
 //'   forest must be saved.
-    .method("save", &PhylogeneticForest::save,
+    .method("save", 
+            (void (PhylogeneticForest::*)(const std::string&, const bool) const)
+            &PhylogeneticForest::save,
+            "Save a phylogenetic forest")
+    .method("save", 
+            (void (PhylogeneticForest::*)(const std::string&) const)
+            &PhylogeneticForest::save,
             "Save a phylogenetic forest")
 
     // show
@@ -1223,7 +1233,12 @@ RCPP_MODULE(Mutations){
 //' @description This method loads a phylogenetic forest from a file.
 //' @param filename The path of the file from which the phylogenetic
 //'   forest must be load.
+//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//'   (default: false).
 //' @return The load phylogenetic forest
-  function("load_phylogenetic_forest", &PhylogeneticForest::load,
+  function("load_phylogenetic_forest",
+           (PhylogeneticForest (*)(const std::string&, const bool))
+           &PhylogeneticForest::load,
+           List::create(_["filename"] = "", _["quiet"]=false),
            "Recover a phylogenetic forest");
 }

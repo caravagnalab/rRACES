@@ -64,7 +64,8 @@ class GermlineStorage
     return get_path()/("germline_" + subject_name + ".dat");
   }
 
-  RACES::Mutations::GenomeMutations build_germline(const std::string& subject_name) const;
+  RACES::Mutations::GenomeMutations build_germline(const std::string& subject_name,
+                                                   const bool quiet) const;
 
 public:
 
@@ -84,7 +85,8 @@ public:
 
   GermlineSubject get_subject(const std::string& subject_name) const;
 
-  RACES::Mutations::GenomeMutations get_germline(const std::string& subject_name) const;
+  RACES::Mutations::GenomeMutations get_germline(const std::string& subject_name,
+                                                 const bool quiet) const;
 
   Rcpp::List get_subject_df(const std::string& subject_name) const;
   
