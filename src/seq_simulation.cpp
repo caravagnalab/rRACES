@@ -319,9 +319,32 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
   }
 }
 
+std::binomial_distribution<u_int32_t> get_bin_dist(const int& insert_size_mean,
+                                                   const int& insert_size_stddev)
+{
+    double q = static_cast<double>(insert_size_stddev*insert_size_stddev)/insert_size_mean;
+    double p = 1-q;
+    if (p<0) {
+        throw std::runtime_error("The insert size mean (" 
+                                 + std::to_string(insert_size_mean) + ") must"
+                                 + " be greater than or equal to its variance (" 
+                                 + std::to_string(insert_size_stddev) + "*"
+                                 + std::to_string(insert_size_stddev) + "=" 
+                                 + std::to_string(insert_size_stddev*insert_size_stddev)
+                                 + ").\n"
+                                 + "Set the standard deviation and the variance by using "
+                                 + "the optional parameter \"insert_size_stddev\".");
+    }
+
+    u_int32_t t = static_cast<u_int32_t>(insert_size_mean/p);
+
+    return std::binomial_distribution<u_int32_t>(t, p);
+}
+
 Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                         SEXP& chromosome_ids, const double& coverage,
-                        const int& read_size, const int& insert_size,
+                        const int& read_size, const int& insert_size_mean,
+                        const int& insert_size_stddev,
                         const std::string& output_dir, const bool& write_SAM,
                         const bool& update_SAM_dir,
                         const SEXP& FACS_labelling_function,
@@ -355,12 +378,14 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
   }
 
   auto c_seed = get_random_seed<int>(seed);
-  if (insert_size==0) {
+  if (insert_size_mean==0) {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
                                 SAM_mode, c_seed);
   } else {
+    auto insert_size_dist = get_bin_dist(insert_size_mean, insert_size_stddev);
+
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                insert_size, SAM_mode, c_seed);
+                                insert_size_dist, SAM_mode, c_seed);
   }
 
   simulator.enable_SAM_writing(write_SAM);
@@ -390,7 +415,8 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
 
 Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                                SEXP& chromosome_ids, const double& coverage,
-                               const int& read_size, const int& insert_size,
+                               const int& read_size, const int& insert_size_mean,
+                               const int& insert_size_stddev,
                                const std::string& output_dir, const bool& write_SAM,
                                const bool& update_SAM_dir, const SEXP& seed)
 {
@@ -421,12 +447,14 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
   }
 
   auto c_seed = get_random_seed<int>(seed);
-  if (insert_size==0) {
+  if (insert_size_mean==0) {
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
                                 SAM_mode, c_seed);
   } else {
+    auto insert_size_dist = get_bin_dist(insert_size_mean, insert_size_stddev);
+
     simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                insert_size, SAM_mode, c_seed);
+                                insert_size_dist, SAM_mode, c_seed);
   }
 
   simulator.enable_SAM_writing(write_SAM);
