@@ -58,7 +58,7 @@ of 2.5X by as it follows.
 
 ```{r}
 # let us simulate a 50x sequencing of the four sample
-seq_results <- simulate_seq(phylo_forest, coverage = 50)
+seq_results <- simulate_seq(phylo_forest, coverage = 30)
 
 # let us load the dplyr library to filter the `simulate_seq` output
 library(dplyr)
@@ -93,7 +93,7 @@ and the Depth Ratio (DR) of a sample.
 library(dplyr)
 
 # filter germinal mutations
-f_seq <- seq_results %>% filter(causes!="germinal")
+f_seq <- seq_results %>% filter(classes!="germinal")
 
 # plot the VAF of the mutations sequenced on the sample S_2_2
 # over the reference genome
@@ -112,9 +112,6 @@ The VAF and the VAF marginal distributions can be
 plot too.
 
 ```{r}
-# filter the normal sample
-f_seq <- f_seq %>% select(!starts_with("normal"))
-
 # plotting the VAF histogram
 plot_VAF_histogram(f_seq, cuts = c(0.02, 1))
 
@@ -167,7 +164,6 @@ split the reads by sample.
 foo@bar % samtools split  -f "%*_%\!.sam" rRACES_SAM/chr_22.sam
 foo@bar % ls chr_22_*
 chr_22_S_1_1.sam        chr_22_S_1_2.sam        chr_22_S_2_1.sam        chr_22_S_2_2.sam
-chr_22_normal_sample.sam
 ```
 
 The resulting files are named after the samples, each
@@ -183,7 +179,8 @@ section for usage examples of this parameter.
 
 The _sample purity_ represents the concentration of tumour cells in a sample.
 More formally, it is the ratio between the number of tumour cells in the sample
-and that of all the sample cells, either tumour or normal.
+and that of all the sample cells, either tumour or normal (i.e., cells 
+having germline and pre-neoplastic mutations).
 
 rRACES can simulate different sample purity in sequencing
 simulations.
@@ -205,20 +202,10 @@ for (line in readLines(ex_file, n = 10)) {
 The default value of the parameter `purity` is 1, i.e., `simulate_seq()`
 assumes all the cells in the sample to be neoplastic by default.
 
-### Normal Cell Sequencing
-
-The function `simulate_seq()` adds a normal cell sample, named
-`normal_sample` to the samples collected during the simulation. In this
-way, rRACES automatically gathers information about wild-type cells,
-and it also simulates the sequencing of normal cells when the SAM
-writing is enabled.
-
-This default behaviour can be turned off by setting the
-`simulate_seq()` parameter `with_normal_sample` to
-`FALSE`.
-
-The function `simulate_normal_seq()` simulates the normal cell sample
-sequencing *avoiding* tumour sequencing.
+The function `simulate_normal_seq()` simulates the sequencing 
+of a sample whose cells have germline and tumoral pre-neoplastic
+mutations. The pre-neoplastic mutations can be avoided 
+by setting the optional parameter `with_preneoplastic`.
 
 ### Simulating Sequencing Errors
 

@@ -50,14 +50,14 @@
 #'
 #' phylo_forest <- m_engine$place_mutations(forest, 100, 10)
 #'
-#' # simulate sequencing
-#' seq_results <- simulate_seq(phylo_forest, coverage = 100, write_SAM = F)
+#' # simulate sequencing without the normal sample
+#' seq_results <- simulate_seq(phylo_forest, coverage = 100, write_SAM = F,
+#'                             with_normal_sample = FALSE)
 #'
 #' library(dplyr)
 #'
-#' # filter germinal mutations and normal sample
-#' f_seq <- seq_results %>% select(!starts_with("normal")) %>%
-#'      dplyr::filter(causes!="germinal")
+#' # filter germinal mutations
+#' f_seq <- seq_results %>% dplyr::filter(classes!="germinal")
 #'
 #' # label filtered mutations using phylogenetic forest data
 #' labels <- label_mutations(f_seq, phylo_forest)

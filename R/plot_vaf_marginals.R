@@ -57,14 +57,14 @@
 #'
 #' phylo_forest <- m_engine$place_mutations(forest, 10, 10)
 #'
-#' # simulating sequencing
-#' seq_results <- simulate_seq(phylo_forest, coverage = 10, write_SAM = F)
+#' # simulating sequencing without the normal sample
+#' seq_results <- simulate_seq(phylo_forest, coverage = 10, write_SAM = F,
+#'                             with_normal_sample = FALSE)
 #'
 #' library(dplyr)
 #'
-#' # filter germinal mutations and normal sample
-#' f_seq <- seq_results %>% select(!starts_with("normal")) %>%
-#'      filter(causes!="germinal")
+#' # filter germinal mutations
+#' f_seq <- seq_results %>% filter(classes!="germinal")
 #'
 #' # plotting the VAR marginals
 #' plot_VAF_marginals(f_seq)
@@ -103,7 +103,6 @@ plot_VAF_marginals <- function(seq_res, chromosomes = NULL, samples = NULL,
   data <- data %>%
     dplyr::mutate(chr = factor(chr, levels = chromosomes)) %>%
     dplyr::filter(chr %in% chromosomes) %>%
-    dplyr::filter(sample_name != "normal_sample") %>%
     dplyr::filter(VAF <= max(cuts), VAF >= min(cuts))
 
   if (!is.null(samples)) {

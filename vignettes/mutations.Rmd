@@ -169,16 +169,14 @@ The code of the known driver mutations can be used in place of the full
 specification as follows.
 
 ```{r}
-# add the mutant "B" characterized by three driver SNVs on chromosome 22 (no
-# CNA) and two epigenetic states. The first two SNVs are "NF2 R262", which
-# can lay in any available allele, and "NF2 R221*", which instead must lay
-# in the allele 1. The remaining SNV is specified by using the SNV function
+# add the mutant "B" characterized by two driver SNVs on chromosome 22 (no
+# CNA) and two epigenetic states. The first SNV is "NF2 R221*" and it must 
+# lay in the allele 1. The remaining SNV is specified by using the SNV function
 # as done above. The species "B+" and "B-" have passenger SNV rates 8e-7
 # and 5e-8, respectively, and CNA rates 0 for both species.
 m_engine$add_mutant("B", list("+" = c(SNV = 8e-7), "-" = c(SNV = 5e-8)),
-                    list(SNV("22", 12028576, "G"),         # the first SNV
-                         "NF2 R262*",                      # the second SNV
-                         list("NF2 R221*", allele = 1)))   # the third SNV
+                    list(list("NF2 R221*", allele = 1),   # the first SNV
+                         SNV("22", 12028576, "G")))       # the second SNV
 
 m_engine
 ```

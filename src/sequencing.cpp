@@ -155,7 +155,9 @@ RCPP_MODULE(Sequencing){
 //' @name simulate_normal_seq
 //' @title Simulating wild-type sequencing
 //' @description This method simulates a wild-type sample sequencing in a phylogenetic
-//'   forest.
+//'   forest. Add the cells in the wild-type sample contains the germline mutations.
+//'   The forest pre-neoplastic mutations are also added to the sample by default. 
+//'   However, they can be avoided by using the parameter `with_preneoplastic`.
 //' @param phylo_forest A phylogenetic forest.
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
@@ -173,6 +175,8 @@ RCPP_MODULE(Sequencing){
 //' @param write_SAM A Boolean flag to enable/disable SAM generation
 //'   (default: `TRUE`).
 //' @param update_SAM Update the output directory (default: `FALSE`).
+//' @param with_preneoplastic Add the forest pre-neoplastic mutations
+//'   to the sample cells. (default: `TRUE`).
 //' @param seed The random seed for the internal random generator
 //'   (optional).
 //' @return A dataframe representing, for each of the observed
@@ -181,12 +185,12 @@ RCPP_MODULE(Sequencing){
 //'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
-//'   of the sequencied samples `<sample name>`, the returned
+//'   of the sequencied samples `normal_sample`, the returned
 //'   dataframe contains three columns: the number of reads in
 //'   which the corresponding SNV occurs (column
-//'   `<sample name>.occurrences`), the coverage of the SNV
-//'   locus (column `<sample name>.coverage`), and the
-//'   corresponding VAF (column `<sample name>.VAF`).
+//'   `normal_sample.occurrences`), the coverage of the SNV
+//'   locus (column `normal_sample.coverage`), and the
+//'   corresponding VAF (column `normal_sample.VAF`).
 //' @seealso `BasicIlluminaSequencer` and
 //'   `ErrorlessIlluminaSequencer` as sequencer types, and
 //'   `vignette("sequencing")` for usage examples
@@ -198,6 +202,7 @@ RCPP_MODULE(Sequencing){
                         _["insert_size_stddev"] = 10, 
                         _["output_dir"] = "rRACES_normal_SAM",
                         _["write_SAM"] = true, _["update_SAM"] = false,
+                        _["with_preneoplastic"] = true,
                         _["seed"] = R_NilValue),
            "Simulate the sequencing of a normal sample");
 

@@ -283,7 +283,9 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
              SEXP& sequencer,
              std::list<RACES::Mutations::SampleGenomeMutations> mutations_list,
              const std::set<RACES::Mutations::ChromosomeId>& chromosome_ids,
-             const double& coverage, const double purity,
+             const double& coverage,
+             RACES::Mutations::SampleGenomeMutations& normal_sample,
+             const double purity,
              const std::string& base_name, std::ostream& progress_bar_stream)
 {
   switch (TYPEOF(sequencer)) {
@@ -296,7 +298,7 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
         Rcpp::XPtr<BasicIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
 
         return simulator(*sequencer_ptr, mutations_list, chromosome_ids,
-                         coverage, purity, base_name, progress_bar_stream);
+                         coverage, normal_sample, purity, base_name, progress_bar_stream);
       }
       if ( s4obj.is("Rcpp_ErrorlessIlluminaSequencer")) {
         Rcpp::Environment env( s4obj );
@@ -304,7 +306,7 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
         Rcpp::XPtr<ErrorlessIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
 
         return simulator(*sequencer_ptr, mutations_list, chromosome_ids,
-                         coverage, purity, base_name, progress_bar_stream);
+                         coverage, normal_sample, purity, base_name, progress_bar_stream);
       }
     }
     case NILSXP:
@@ -312,7 +314,7 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
         ErrorlessIlluminaSequencer sequencer;
 
         return simulator(sequencer, mutations_list, chromosome_ids, coverage,
-                         purity, base_name, progress_bar_stream);
+                         normal_sample, purity, base_name, progress_bar_stream);
     }
     default:
         throw std::domain_error("Unsupported sequencer type");
@@ -394,17 +396,15 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
 
   apply_FACS_labels(mutations_list, FACS_labelling_function, forest);
 
-  if (with_normal_sample) {
-    const auto& germline = forest.get_germline_mutations();
-    mutations_list.emplace_back("normal_sample", germline);
-    auto germline_structure_ptr = std::make_shared<RACES::Mutations::CellGenomeMutations>(germline.duplicate_structure());
-    mutations_list.back().mutations.push_back(germline_structure_ptr);
-  }
-
   const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
 
+  auto normal_sample = forest.get_germline_sample("normal_sample", true);
+  if (with_normal_sample) {
+    mutations_list.push_back(normal_sample);
+  }
+
   auto result = simulate_seq(simulator, sequencer, mutations_list, chr_ids, coverage,
-                             purity, "chr_", Rcpp::Rcout);
+                             normal_sample, purity, "chr_", Rcpp::Rcout);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);
@@ -418,7 +418,9 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
                                const int& read_size, const int& insert_size_mean,
                                const int& insert_size_stddev,
                                const std::string& output_dir, const bool& write_SAM,
-                               const bool& update_SAM_dir, const SEXP& seed)
+                               const bool& update_SAM_dir,
+                               const bool& with_preneoplastic,
+                               const SEXP& seed)
 {
   using namespace RACES::Mutations::SequencingSimulations;
 
@@ -459,17 +461,14 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
 
   simulator.enable_SAM_writing(write_SAM);
 
-  const auto& germline = forest.get_germline_mutations();
-
   std::list<RACES::Mutations::SampleGenomeMutations> mutations_list;
-  mutations_list.emplace_back("normal_sample", germline);
-  auto germline_structure_ptr = std::make_shared<RACES::Mutations::CellGenomeMutations>(germline.duplicate_structure());
-  mutations_list.front().mutations.push_back(germline_structure_ptr);
+  mutations_list.push_back(forest.get_germline_sample("normal_sample",
+                                                      with_preneoplastic));
 
   const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
 
   auto result = simulate_seq(simulator, sequencer, mutations_list,  chr_ids, coverage,
-                             0, "chr_", Rcpp::Rcout);
+                             mutations_list.front(), 1, "chr_", Rcpp::Rcout);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);

@@ -40,6 +40,8 @@ Rcpp::List  simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequence
                                 const int& read_size, const int& insert_size_mean,
                                 const int& insert_size_stddev,
                                 const std::string& output_dir, const bool& write_SAM,
-                                const bool& update_SAM_dir, const SEXP& seed);
+                                const bool& update_SAM_dir,
+                                const bool& with_preneoplastic,
+                                const SEXP& seed);
 
 #endif // __RRACES_SEQ_SIMULATION__

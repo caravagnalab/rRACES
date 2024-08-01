@@ -1,3 +1,23 @@
+library(dplyr)
+
+get_seq_data <- function(seq_res, sample, chromosomes)
+{
+  chromosomes <- validate_chromosomes(seq_res, chromosomes)
+
+  data <- seq_to_long(seq_res) %>%
+    dplyr::mutate(chr = factor(chr, levels = chromosomes)) %>%
+    dplyr::filter(chr %in% chromosomes)
+
+  normal_data <- data %>% dplyr::filter(sample_name == "normal_sample")
+  if (!sample %in% unique(data$sample_name)) {
+    stop(paste("Inserted 'sample' is not available, available samples are:",
+               paste0(unique(data$sample_name), collapse = ", ")))
+  }
+  tumour_data <- data %>% dplyr::filter(sample_name == sample)
+
+  return(list(tumour=tumour_data, normal=normal_data))
+}
+
 #' Plot the genome-wide Depth Ratio (DR)
 #'
 #' @description This function plots the genome-wide Depth Ratio (DR)
@@ -47,7 +67,7 @@
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% filter(causes!="germinal")
+#' f_seq <- seq_results %>% filter(classes!="germinal")
 #'
 #' plot_DR(f_seq, sample="Sample")
 #'
@@ -58,24 +78,13 @@ plot_DR <- function(
     chromosomes = NULL,
     N = 5000) {
 
-  chromosomes <- validate_chromosomes(seq_res, chromosomes)
+  data <- get_seq_data(seq_res, sample, chromosomes)
 
-  data <- seq_to_long(seq_res) %>%
-    dplyr::mutate(chr = factor(chr, levels = chromosomes)) %>%
-    dplyr::filter(chr %in% chromosomes)
-
-  normal_data <- data %>% dplyr::filter(sample_name == "normal_sample")
-  if (!sample %in% unique(data$sample_name)) {
-    stop(paste("Inserted 'sample' is not available, available samples are:",
-               paste0(unique(data$sample_name), collapse = ", ")))
-  }
-  tumour_data <- data %>% dplyr::filter(sample_name == sample)
-
-  Ntotal <- nrow(tumour_data)
+  Ntotal <- nrow(data$tumour)
   N = min(N, Ntotal)
 
-  d <- tumour_data %>%
-    dplyr::left_join(normal_data, suffix = c(".tumour", ".normal"),
+  d <- data$tumour %>%
+    dplyr::left_join(data$normal, suffix = c(".tumour", ".normal"),
                      by = c("chr", "from", "ref", "alt")) %>%
     dplyr::mutate(DR = DP.tumour / DP.normal) %>%
     dplyr::sample_n(N) %>%
@@ -159,7 +168,7 @@ plot_DR <- function(
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% filter(causes!="germinal")
+#' f_seq <- seq_results %>% filter(classes!="germinal")
 #'
 #' plot_BAF(f_seq, sample="Sample")
 #'
@@ -171,22 +180,12 @@ plot_BAF <- function(
     cuts = c(0, 1),
     N = 5000) {
 
-  chromosomes <- validate_chromosomes(seq_res, chromosomes)
+  data <- get_seq_data(seq_res, sample, chromosomes)
 
-  data <- seq_to_long(seq_res) %>%
-    dplyr::mutate(chr = factor(chr, levels = chromosomes)) %>%
-    dplyr::filter(chr %in% chromosomes)
-
-  if (!sample %in% unique(data$sample_name)) {
-    stop(paste("Inserted 'sample' is not available, available samples are:",
-               paste0(unique(data$sample_name), collapse = ", ")))
-  }
-  tumour_data <- data %>% dplyr::filter(sample_name == sample)
-
-  Ntotal <- nrow(tumour_data)
+  Ntotal <- nrow(data$tumour)
   N = min(N, Ntotal)
 
-  d <- tumour_data %>%
+  d <- data$tumour %>%
     #dplyr::group_by(chr) %>%
     dplyr::sample_n(N) %>%
     #dplyr::ungroup() %>%
@@ -270,7 +269,7 @@ plot_BAF <- function(
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% filter(causes!="germinal")
+#' f_seq <- seq_results %>% filter(classes!="germinal")
 #'
 #' plot_VAF(f_seq, sample="Sample")
 #'
@@ -279,22 +278,12 @@ plot_VAF <- function(seq_res, sample,
     chromosomes = NULL,
     cuts = c(0, 1), N = 5000) {
 
-  chromosomes <- validate_chromosomes(seq_res, chromosomes)
+  data <- get_seq_data(seq_res, sample, chromosomes)
 
-  data <- seq_to_long(seq_res) %>%
-    dplyr::mutate(chr = factor(chr, levels = chromosomes)) %>%
-    dplyr::filter(chr %in% chromosomes)
-
-  if (!sample %in% unique(data$sample_name)) {
-    stop(paste("Inserted 'sample' is not available, available samples are:",
-               paste0(unique(data$sample_name), collapse = ", ")))
-  }
-  tumour_data <- data %>% dplyr::filter(sample_name == sample)
-
-  Ntotal = nrow(tumour_data)
+  Ntotal = nrow(data$tumour)
   N = min(N, Ntotal)
 
-  d <- tumour_data %>%
+  d <- data$tumour %>%
     dplyr::arrange(chr, from) %>%
     #dplyr::group_by(chr) %>%
     dplyr::sample_n(N) %>%
