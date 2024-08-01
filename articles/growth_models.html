@@ -127,6 +127,8 @@ object and set <code>border_growth_model</code> to
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rRACES</span><span class="op">)</span></span>
 <span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpatialSimulation.html">SpatialSimulation</a></span><span class="op">(</span><span class="st">"Homogeneous Growth"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Set the homogeneous growth model</span></span>
@@ -238,7 +240,9 @@ connecting cells in each sample.</p>
 <p>We now build a spatial simulation and use the “border” growth
 model.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpatialSimulation.html">SpatialSimulation</a></span><span class="op">(</span><span class="st">"Border Growth"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/SpatialSimulation.html">SpatialSimulation</a></span><span class="op">(</span><span class="st">"Border Growth"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Setting the "border" growth model is not needed as the</span></span>
 <span><span class="co"># border growth model is the default.</span></span>
@@ -260,7 +264,7 @@ example.</p>
 <span></span>
 <span><span class="co"># Let the simulation evolve until "A+" consists of 1300 cells</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"A+"</span>, <span class="fl">1300</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [█████████████████████████████████████---] 91% [00m:00s] Cells: 31386 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="va">bbox_width</span> <span class="op">&lt;-</span> <span class="fl">15</span></span>
 <span></span>
@@ -289,7 +293,7 @@ example.</p>
 <span></span>
 <span><span class="co"># Let the simulation evolve until "B+" consists of 5000 cells</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span><span class="st">"B+"</span>, <span class="fl">5000</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
+<span><span class="co">#&gt;  [████████████████████████████████████----] 89% [00m:00s] Cells: 69627 [████████████████████████████████████████] 100% [00m:00s] Saving snapshot</span></span>
 <span></span>
 <span><span class="va">ncells</span> <span class="op">&lt;-</span> <span class="fl">0.9</span> <span class="op">*</span> <span class="va">bbox_width</span> <span class="op">*</span> <span class="va">bbox_width</span></span>
 <span></span>

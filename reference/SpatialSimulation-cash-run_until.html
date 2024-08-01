@@ -70,6 +70,11 @@ hold.</p>
 <dd><p>The formula that will be satisfied at the end of the
 simulation.</p></dd>
 
+
+<dt>quiet</dt>
+<dd><p>An optional  Boolean flag to avoid the progress bar
+(default: false).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -127,27 +132,27 @@ simulation.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># run the simulation while c5 does not hold</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_until</span><span class="op">(</span><span class="va">c5</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█████████████████████-------------------] 51% [00m:00s] Saving snapshot                                      [█████████████████████-------------------] 51% [00m:00s] Cells: 0                                             [█████████████████████-------------------] 51% [00m:00s] Cells: 0                                             [█████████████████████-------------------] 51% [00m:00s] Cells: 0                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #BB0000;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> /var/folders/tb/jqmdpgxs2t5129bny6pb96680000gn/T/rRACES_alberto_1d27ae02 ─────────────</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="background-color: #BBBB00;"> rRACES </span> <span style="color: #BBBBBB; background-color: #00BB00;"> D </span> <span style="color: #BBBBBB; background-color: #BB0000;"> S </span> <span style="color: #BBBBBB; background-color: #BB0000;"> M </span> /var/folders/tb/jqmdpgxs2t5129bny6pb96680000gn/T/rRACES_alberto_80cdfd6f ─────────────</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> ── Species: <span style="color: #00BB00;">2</span>, <span style="color: #00BB00;">with</span> epigenetics </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  ====  ====  ======  ===</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    species   λ      δ    ε    counts   % </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  ====  ====  ======  ===</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         A-  0.08  0.01  0.01    0     NaN</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         A+  0.20  0.10  0.01    0     NaN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         A-  0.08  0.01  0.01    30    75 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         A+  0.20  0.10  0.01    10    25 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    =======  ====  ====  ====  ======  ===</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Firings: 3 total </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Firings: 73 total </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	Species [A-]: 0 (deaths), 0 (duplications) and 0 (switches)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	Species [A+]: 2 (deaths), 1 (duplications) and 0 (switches)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	Species [A-]:  5 (deaths), 37 (duplications) and  5 (switches)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	Species [A+]:  8 (deaths), 15 (duplications) and  3 (switches)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BB0000;">✖</span> The simulation has no samples yet!</span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20.91435</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 40.34598</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -109,7 +109,7 @@ the stick.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 30.11838</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 26.09398</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"B"</span>, growth_rate <span class="op">=</span> <span class="fl">0.3</span>, death_rate <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span></span>
@@ -117,12 +117,12 @@ the stick.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [████████████████████████████████████████] 100% [00m:00s] Saving snapshot                                    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 52.1231</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 50.39379</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"C"</span>, growth_rate <span class="op">=</span> <span class="fl">0.3</span>, death_rate <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">mutate_progeny</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"B"</span><span class="op">)</span>, <span class="st">"C"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_size</span><span class="op">(</span>species <span class="op">=</span> <span class="st">"C"</span>, num_of_cells <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [█████████████---------------------------] 32% [00m:00s] Cells: 64193                                         [█████████████████████-------------------] 50% [00m:01s] Cells: 99605                                         [██████████████████████████--------------] 63% [00m:02s] Cells: 130290                                        [███████████████████████████████---------] 75% [00m:03s] Cells: 155825                                        [█████████████████████████████████████---] 90% [00m:04s] Cells: 178743                                        [███████████████████████████████████████-] 97% [00m:05s] Cells: 198669                                        [████████████████████████████████████████] 100% [00m:05s] Saving snapshot                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [██████████████████████------------------] 54% [00m:00s] Cells: 64272                                         [██████████████████████████████----------] 74% [00m:00s] Cells: 106394                                        [███████████████████████████████████-----] 86% [00m:01s] Cells: 138149                                        [█████████████████████████████████████---] 91% [00m:02s] Cells: 157873                                        [████████████████████████████████████████] 100% [00m:03s] Saving snapshot                                    </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># search for a 33x33 region containing 50 cells in A and</span></span></span>
 <span class="r-in"><span><span class="co"># 50 cells in B at least and sample it</span></span></span>
@@ -140,17 +140,18 @@ the stick.</p>
 <span class="r-in"><span><span class="co"># search for the forest sticks</span></span></span>
 <span class="r-in"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_sticks</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  199  241  297  458  508  758  847 1043 1198 1485 1612 1665</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  199  256  369  461  489  656  670  768 1019 1057 1104 1110 1176 1264 1274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] 1279 1493 1586 1805</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[2]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]   0   2   5  11  16  20  36  52  80 184 199</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   0   2   5  10  60  71 195 199</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># search for the forest sticks whose corresponding cells have</span></span></span>
 <span class="r-in"><span><span class="co"># birth times 40 time units at most</span></span></span>
 <span class="r-in"><span><span class="va">forest</span><span class="op">$</span><span class="fu">get_sticks</span><span class="op">(</span><span class="fl">40</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]   0   2   5  11  16  20  36  52  80 184 199</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1]   0   2   5  10  60  71 195 199</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

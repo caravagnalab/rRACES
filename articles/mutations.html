@@ -156,8 +156,8 @@ can be obtained by invoking the function
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; Building repeated sequence index...</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:12s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [███████████████████████-----------------] 57% [00m:01s] Saving RS index [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
-<span><span class="co">#&gt; done</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [█████████████████████████---------------] 60% [00m:01s] Saving RS indexdone</span></span>
+<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving germline [████████████████████████████████████████] 100% [00m:00s] Germline saved</span></span>
 <span></span>
@@ -194,7 +194,7 @@ performs them.</p>
 <code class="sourceCode R"><span><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
 <span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MutationEngine.html">MutationEngine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading context index [████████████████████████████████████████] 100% [00m:00s] Context index loaded</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [███████████████████---------------------] 47% [00m:01s] Loading RS index [█████████████████████████████████████---] 90% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [███████████████████---------------------] 47% [00m:01s] Loading RS index [█████████████████████████████████████---] 91% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="mutant-genetic-characterization">Mutant Genetic Characterization<a class="anchor" aria-label="anchor" href="#mutant-genetic-characterization"></a>
@@ -242,7 +242,7 @@ declared as it follows.</p>
 <span>                                       chr_pos <span class="op">=</span> <span class="fl">10303470</span>, len <span class="op">=</span> <span class="fl">200000</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="../reference/CNA.html">CNA</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"22"</span>, <span class="fl">5010000</span>, <span class="fl">200000</span>,</span>
 <span>                                       allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Retrieving "A" SNVs [█---------------------------------------] 0% [00m:00s] Found 22 [█---------------------------------------] 0% [00m:00s] Reading 22 [█---------------------------------------] 0% [00m:01s] Reading 22 [█---------------------------------------] 0% [00m:02s] Reading 22 [████████████████████████████████████████] 100% [00m:02s] "A" SNVs retrieved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Retrieving "A" SNVs [█---------------------------------------] 0% [00m:00s] Found 22 [█---------------------------------------] 0% [00m:00s] Reading 22 [█---------------------------------------] 0% [00m:01s] Reading 22 [████████████████████████████████████████] 100% [00m:01s] "A" SNVs retrieved</span></span>
 <span></span>
 <span><span class="va">m_engine</span></span>
 <span><span class="co">#&gt; MutationEngine</span></span>
@@ -293,16 +293,14 @@ data frame can be obtained by using the method
 <p>The code of the known driver mutations can be used in place of the
 full specification as follows.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># add the mutant "B" characterized by three driver SNVs on chromosome 22 (no</span></span>
-<span><span class="co"># CNA) and two epigenetic states. The first two SNVs are "NF2 R262", which</span></span>
-<span><span class="co"># can lay in any available allele, and "NF2 R221*", which instead must lay</span></span>
-<span><span class="co"># in the allele 1. The remaining SNV is specified by using the SNV function</span></span>
+<code class="sourceCode R"><span><span class="co"># add the mutant "B" characterized by two driver SNVs on chromosome 22 (no</span></span>
+<span><span class="co"># CNA) and two epigenetic states. The first SNV is "NF2 R221*" and it must </span></span>
+<span><span class="co"># lay in the allele 1. The remaining SNV is specified by using the SNV function</span></span>
 <span><span class="co"># as done above. The species "B+" and "B-" have passenger SNV rates 8e-7</span></span>
 <span><span class="co"># and 5e-8, respectively, and CNA rates 0 for both species.</span></span>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span><span class="st">"B"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">8e-7</span><span class="op">)</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">12028576</span>, <span class="st">"G"</span><span class="op">)</span>,         <span class="co"># the first SNV</span></span>
-<span>                         <span class="st">"NF2 R262*"</span>,                      <span class="co"># the second SNV</span></span>
-<span>                         <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"NF2 R221*"</span>, allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>   <span class="co"># the third SNV</span></span>
+<span>                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"NF2 R221*"</span>, allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,   <span class="co"># the first SNV</span></span>
+<span>                         <span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">12028576</span>, <span class="st">"G"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>       <span class="co"># the second SNV</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Retrieving "B" SNVs [█---------------------------------------] 0% [00m:00s] Found 22 [█---------------------------------------] 0% [00m:00s] Reading 22 [█---------------------------------------] 0% [00m:01s] Reading 22 [████████████████████████████████████████] 100% [00m:01s] "B" SNVs retrieved</span></span>
 <span></span>
 <span><span class="va">m_engine</span></span>
@@ -323,7 +321,6 @@ full specification as follows.</p>
 <span><span class="co">#&gt;    "B" SNVs&amp;indels: </span></span>
 <span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: 1)</span></span>
-<span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: random)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    SBS Timed Exposures</span></span>
@@ -380,7 +377,6 @@ specified time up to the next exposure change.</p>
 <span><span class="co">#&gt;    "B" SNVs&amp;indels: </span></span>
 <span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: 1)</span></span>
-<span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: random)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    SBS Timed Exposures</span></span>
@@ -414,7 +410,6 @@ exposures can be specified by a sigle call to the function
 <span><span class="co">#&gt;    "B" SNVs&amp;indels: </span></span>
 <span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: 1)</span></span>
-<span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: random)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    SBS Timed Exposures</span></span>
@@ -559,16 +554,16 @@ that article.</p>
 <span><span class="co"># place mutations on the sample forest assuming 1000 pre-neoplastic SNVs and</span></span>
 <span><span class="co"># 500 indels</span></span>
 <span><span class="va">phylo_forest</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span>, <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [█████-----------------------------------] 10% [00m:01s] Placing mutations [████████--------------------------------] 19% [00m:02s] Placing mutations [████████████----------------------------] 29% [00m:03s] Placing mutations [█████████████████-----------------------] 40% [00m:04s] Placing mutations [█████████████████████-------------------] 50% [00m:05s] Placing mutations [█████████████████████████---------------] 60% [00m:06s] Placing mutations [████████████████████████████------------] 69% [00m:07s] Placing mutations [█████████████████████████████████-------] 80% [00m:08s] Placing mutations [██████████████████████████████████------] 84% [00m:09s] Placing mutations [███████████████████████████████████-----] 87% [00m:10s] Placing mutations [█████████████████████████████████████---] 90% [00m:12s] Placing mutations [██████████████████████████████████████--] 93% [00m:13s] Placing mutations [████████████████████████████████████████] 100% [00m:13s] Mutations placed</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [█████-----------------------------------] 11% [00m:01s] Placing mutations [█████████-------------------------------] 21% [00m:02s] Placing mutations [█████████████---------------------------] 32% [00m:03s] Placing mutations [██████████████████----------------------] 43% [00m:04s] Placing mutations [██████████████████████------------------] 54% [00m:05s] Placing mutations [██████████████████████████--------------] 64% [00m:06s] Placing mutations [██████████████████████████████----------] 74% [00m:07s] Placing mutations [██████████████████████████████████------] 84% [00m:08s] Placing mutations [███████████████████████████████████-----] 87% [00m:09s] Placing mutations [█████████████████████████████████████---] 90% [00m:11s] Placing mutations [██████████████████████████████████████--] 93% [00m:12s] Placing mutations [████████████████████████████████████████] 100% [00m:13s] Mutations placed</span></span>
 <span></span>
 <span><span class="va">phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
 <span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 20007</span></span>
-<span><span class="co">#&gt;   # of leaves: 5442</span></span>
+<span><span class="co">#&gt;   # of nodes: 18845</span></span>
+<span><span class="co">#&gt;   # of leaves: 5396</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs and indels: 186616</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs and indels: 175505</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The phylogenetic forest stores all the mutations labeling the sampled
 cells which are represented by the forest leaves. Users can retrieve
@@ -582,23 +577,23 @@ such data by using the methods
 <span><span class="co"># the genomes of the sampled cells</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_mutations</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id chr  chr_pos allele       ref     alt  type cause          class</span></span>
-<span><span class="co">#&gt; 1    3072  22 15220157      0 GTTTTTTTT       G indel     A         driver</span></span>
-<span><span class="co">#&gt; 2    3072  22 16125311      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 3    3072  22 16132695      0         C CAAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 4    3072  22 16148349      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 5    3072  22 16156369      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 6    3072  22 16192592      0         C  CTTTTT indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 1    2790  22 15220157      0 GTTTTTTTT       G indel     A         driver</span></span>
+<span><span class="co">#&gt; 2    2790  22 16086691      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 3    2790  22 16140544      0         C CAAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 4    2790  22 16212399      0         C  CAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 5    2790  22 16223616      0         G GAAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 6    2790  22 16282629      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
 <span></span>
 <span><span class="co"># select the first CNAs among all the mutations occuring in</span></span>
 <span><span class="co"># the genomes of the sampled cells</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id type chr    begin      end allele src.allele  class</span></span>
-<span><span class="co">#&gt; 1    3072    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 2    3072    A  22 10303470 10503469      2          0 driver</span></span>
-<span><span class="co">#&gt; 3    6238    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 4    6238    A  22 10303470 10503469      2          0 driver</span></span>
-<span><span class="co">#&gt; 5    7555    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 6    7555    A  22 10303470 10503469      2          0 driver</span></span>
+<span><span class="co">#&gt; 1    2790    D  22  5010000  5209999      1         NA driver</span></span>
+<span><span class="co">#&gt; 2    2790    A  22 10303470 10503469      2          1 driver</span></span>
+<span><span class="co">#&gt; 3    5000    D  22  5010000  5209999      1         NA driver</span></span>
+<span><span class="co">#&gt; 4    5000    A  22 10303470 10503469      2          1 driver</span></span>
+<span><span class="co">#&gt; 5    8774    D  22  5010000  5209999      1         NA driver</span></span>
+<span><span class="co">#&gt; 6    8774    A  22 10303470 10503469      2          1 driver</span></span>
 <span></span>
 <span><span class="co"># get the sampled cells</span></span>
 <span><span class="va">sampled_cells</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -607,12 +602,12 @@ such data by using the methods
 <span><span class="co"># show the first of them</span></span>
 <span><span class="va">sampled_cells</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id ancestor mutant epistate sample birth_time</span></span>
-<span><span class="co">#&gt; 1    3072     1479      A        -  S_1_2   147.5783</span></span>
-<span><span class="co">#&gt; 2    6238     5729      A        -  S_1_2   178.7256</span></span>
-<span><span class="co">#&gt; 3    7555     7152      A        -  S_1_2   187.5936</span></span>
-<span><span class="co">#&gt; 4    8011     3210      A        -  S_1_1   190.5756</span></span>
-<span><span class="co">#&gt; 5    8249     7992      A        -  S_1_2   191.9463</span></span>
-<span><span class="co">#&gt; 6    9002     8514      A        -  S_1_1   196.4062</span></span>
+<span><span class="co">#&gt; 1    2790     2694      A        -  S_1_1   127.8854</span></span>
+<span><span class="co">#&gt; 2    5000     4671      A        -  S_1_2   152.6275</span></span>
+<span><span class="co">#&gt; 3    8774     8274      A        -  S_1_1   180.3081</span></span>
+<span><span class="co">#&gt; 4    9651     8069      A        -  S_1_1   185.6496</span></span>
+<span><span class="co">#&gt; 5   11533     7757      A        -  S_1_1   195.7661</span></span>
+<span><span class="co">#&gt; 6   12905    12464      A        -  S_1_1   202.1142</span></span>
 <span></span>
 <span><span class="co"># get the identifier of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">cell_id</span> <span class="op">&lt;-</span> <span class="va">sampled_cells</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">1</span><span class="op">]</span></span>
@@ -620,18 +615,18 @@ such data by using the methods
 <span><span class="co"># get the SNVs and the indels of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_mutations</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id chr  chr_pos allele       ref     alt  type cause          class</span></span>
-<span><span class="co">#&gt; 1    7555  22 15220157      0 GTTTTTTTT       G indel     A         driver</span></span>
-<span><span class="co">#&gt; 2    7555  22 16125311      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 3    7555  22 16132695      0         C CAAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 4    7555  22 16148349      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 5    7555  22 16156369      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 6    7555  22 16192592      0         C  CTTTTT indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 1    8774  22 15220157      0 GTTTTTTTT       G indel     A         driver</span></span>
+<span><span class="co">#&gt; 2    8774  22 16086691      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 3    8774  22 16140544      0         C CAAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 4    8774  22 16212399      0         C  CAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 5    8774  22 16223616      0         G GAAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 6    8774  22 16282629      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
 <span></span>
 <span><span class="co"># get the CNAs of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id type chr    begin      end allele src.allele  class</span></span>
-<span><span class="co">#&gt; 1    7555    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 2    7555    A  22 10303470 10503469      2          0 driver</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    8774    D  22  5010000  5209999      1         NA driver</span></span>
+<span><span class="co">#&gt; 2    8774    A  22 10303470 10503469      2          1 driver</span></span></code></pre></div>
 <p>The method <code>PhylogeneticForest$get_germline_mutations()</code>
 returns the SNVs and the indels in the germline.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
@@ -720,20 +715,20 @@ load by the function <code><a href="../reference/load_phylogenetic_forest.html">
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the phylogenetic forest in the file "phylo_forest.sff"</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving forest [██--------------------------------------] 4% [00m:01s] Saving forest [███████████████-------------------------] 35% [00m:02s] Saving forest [█████████████████████████████-----------] 70% [00m:03s] Saving forest [████████████████████████████████████████] 100% [00m:03s] Forest saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving forest [█---------------------------------------] 1% [00m:01s] Saving forest [█████████████---------------------------] 32% [00m:02s] Saving forest [███████████████████████████-------------] 65% [00m:03s] Saving forest [████████████████████████████████████████] 99% [00m:04s] Saving forest [████████████████████████████████████████] 100% [00m:04s] Forest saved</span></span>
 <span></span>
 <span><span class="co"># loading the saved forest</span></span>
 <span><span class="va">loaded_phylo_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_phylogenetic_forest.html">load_phylogenetic_forest</a></span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading forest [████------------------------------------] 9% [00m:01s] Loading forest [█████████-------------------------------] 20% [00m:02s] Loading forest [█████████████---------------------------] 30% [00m:03s] Loading forest [█████████████████-----------------------] 40% [00m:04s] Loading forest [█████████████████████-------------------] 51% [00m:05s] Loading forest [█████████████████████████---------------] 61% [00m:06s] Loading forest [█████████████████████████████-----------] 72% [00m:07s] Loading forest [█████████████████████████████████-------] 82% [00m:08s] Loading forest [█████████████████████████████████████---] 91% [00m:09s] Loading forest [████████████████████████████████████████] 100% [00m:10s] Forest loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading forest [████------------------------------------] 9% [00m:01s] Loading forest [████████--------------------------------] 19% [00m:02s] Loading forest [████████████----------------------------] 28% [00m:03s] Loading forest [████████████████------------------------] 38% [00m:04s] Loading forest [████████████████████--------------------] 48% [00m:05s] Loading forest [████████████████████████----------------] 58% [00m:06s] Loading forest [████████████████████████████------------] 68% [00m:07s] Loading forest [████████████████████████████████--------] 78% [00m:08s] Loading forest [███████████████████████████████████-----] 86% [00m:09s] Loading forest [██████████████████████████████████████--] 94% [00m:10s] Loading forest [████████████████████████████████████████] 100% [00m:11s] Forest loaded</span></span>
 <span></span>
 <span><span class="va">loaded_phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
 <span><span class="co">#&gt;   # of trees: 1</span></span>
-<span><span class="co">#&gt;   # of nodes: 20007</span></span>
-<span><span class="co">#&gt;   # of leaves: 5442</span></span>
+<span><span class="co">#&gt;   # of nodes: 18845</span></span>
+<span><span class="co">#&gt;   # of leaves: 5396</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs and indels: 186616</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs and indels: 175505</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 </div>
 <div class="section level3">

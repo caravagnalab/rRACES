@@ -353,7 +353,7 @@ event) has occurred;</li>
 <span><span class="co"># Counts per species now reports 500 for A+</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   mutant epistate counts</span></span>
-<span><span class="co">#&gt; 1      A        -    118</span></span>
+<span><span class="co">#&gt; 1      A        -     42</span></span>
 <span><span class="co">#&gt; 2      A        +    500</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
@@ -367,12 +367,12 @@ event) has occurred;</li>
 <code class="sourceCode R"><span><span class="co"># Get the number of fired event per species</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firings</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    event mutant epistate fired</span></span>
-<span><span class="co">#&gt; 1  death      A        -    16</span></span>
-<span><span class="co">#&gt; 2 growth      A        -    81</span></span>
-<span><span class="co">#&gt; 3 switch      A        -     6</span></span>
-<span><span class="co">#&gt; 4  death      A        +   408</span></span>
-<span><span class="co">#&gt; 5 growth      A        +   960</span></span>
-<span><span class="co">#&gt; 6 switch      A        +    59</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  death      A        -     8</span></span>
+<span><span class="co">#&gt; 2 growth      A        -    17</span></span>
+<span><span class="co">#&gt; 3 switch      A        -     3</span></span>
+<span><span class="co">#&gt; 4  death      A        +   290</span></span>
+<span><span class="co">#&gt; 5 growth      A        +   822</span></span>
+<span><span class="co">#&gt; 6 switch      A        +    36</span></span></code></pre></div>
 <p>A small number of cell deaths have occurred in species
 <code>A-</code> up to this point, so we can simulate the system until
 there are 100 of them.</p>
@@ -384,11 +384,11 @@ there are 100 of them.</p>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_firings</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    event mutant epistate fired</span></span>
 <span><span class="co">#&gt; 1  death      A        -   100</span></span>
-<span><span class="co">#&gt; 2 growth      A        -   391</span></span>
-<span><span class="co">#&gt; 3 switch      A        -    35</span></span>
-<span><span class="co">#&gt; 4  death      A        +  2145</span></span>
-<span><span class="co">#&gt; 5 growth      A        +  4377</span></span>
-<span><span class="co">#&gt; 6 switch      A        +   235</span></span></code></pre></div>
+<span><span class="co">#&gt; 2 growth      A        -   419</span></span>
+<span><span class="co">#&gt; 3 switch      A        -    51</span></span>
+<span><span class="co">#&gt; 4  death      A        +  3042</span></span>
+<span><span class="co">#&gt; 5 growth      A        +  6022</span></span>
+<span><span class="co">#&gt; 6 switch      A        +   281</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot the tissue by using 200 bins</span></span>
 <span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span>, num_of_bins <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
@@ -402,7 +402,7 @@ reference, and simulate further.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the simulation clock</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 108.386</span></span>
+<span><span class="co">#&gt; [1] 81.62523</span></span>
 <span></span>
 <span><span class="co"># Run the simulation for other 15 time units</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">run_up_to_time</span><span class="op">(</span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fl">15</span><span class="op">)</span></span>
@@ -410,7 +410,7 @@ reference, and simulate further.</p>
 <span></span>
 <span><span class="co"># Get again the simulation clock</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_clock</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 123.3874</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 96.62686</span></span></code></pre></div>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_tissue.html">plot_tissue</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span></code></pre></div>
 <p><img src="tissue_simulation_files/figure-html/unnamed-chunk-18-1.png" width="288"></p>
@@ -427,45 +427,44 @@ getters accept parameters to subset the tissue.</p>
 <span><span class="co"># Get the cells in the tissue at current simulation time</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   16982      A        +        462        506</span></span>
-<span><span class="co">#&gt; 2   15537      A        +        463        497</span></span>
-<span><span class="co">#&gt; 3   15538      A        +        463        499</span></span>
-<span><span class="co">#&gt; 4   14810      A        +        463        506</span></span>
-<span><span class="co">#&gt; 5   15158      A        +        464        493</span></span>
-<span><span class="co">#&gt; 6   12373      A        +        464        494</span></span>
+<span><span class="co">#&gt; 1   21730      A        +        458        497</span></span>
+<span><span class="co">#&gt; 2   21697      A        +        458        498</span></span>
+<span><span class="co">#&gt; 3   19846      A        +        459        483</span></span>
+<span><span class="co">#&gt; 4   18816      A        +        459        489</span></span>
+<span><span class="co">#&gt; 5   20217      A        -        459        494</span></span>
+<span><span class="co">#&gt; 6   21729      A        +        459        497</span></span>
 <span></span>
 <span><span class="co"># Get the cells in the tissue rectangular sample having</span></span>
 <span><span class="co"># [500,500] and [505,505] as lower and upper corners, respectively</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">505</span>, <span class="fl">505</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   11473      A        -        500        500</span></span>
-<span><span class="co">#&gt; 2   16430      A        +        500        501</span></span>
-<span><span class="co">#&gt; 3   12787      A        +        500        502</span></span>
-<span><span class="co">#&gt; 4   16365      A        -        500        503</span></span>
-<span><span class="co">#&gt; 5   14624      A        -        500        504</span></span>
-<span><span class="co">#&gt; 6   14623      A        -        500        505</span></span>
+<span><span class="co">#&gt; 1   12150      A        +        500        500</span></span>
+<span><span class="co">#&gt; 2   20546      A        +        500        501</span></span>
+<span><span class="co">#&gt; 3   17481      A        +        500        502</span></span>
+<span><span class="co">#&gt; 4   17482      A        +        500        503</span></span>
+<span><span class="co">#&gt; 5   20091      A        -        500        504</span></span>
+<span><span class="co">#&gt; 6   19642      A        +        500        505</span></span>
 <span></span>
 <span><span class="co"># Get the cells in the tissue having epigenetic state "-"</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   17011      A        -        466        491</span></span>
-<span><span class="co">#&gt; 2   16234      A        -        466        508</span></span>
-<span><span class="co">#&gt; 3   15935      A        -        466        510</span></span>
-<span><span class="co">#&gt; 4   16410      A        -        467        489</span></span>
-<span><span class="co">#&gt; 5   14214      A        -        467        494</span></span>
-<span><span class="co">#&gt; 6   13747      A        -        467        496</span></span>
+<span><span class="co">#&gt; 1   20217      A        -        459        494</span></span>
+<span><span class="co">#&gt; 2   21494      A        -        459        504</span></span>
+<span><span class="co">#&gt; 3   20144      A        -        460        484</span></span>
+<span><span class="co">#&gt; 4   20218      A        -        460        493</span></span>
+<span><span class="co">#&gt; 5   18519      A        -        460        496</span></span>
+<span><span class="co">#&gt; 6   21493      A        -        460        504</span></span>
 <span></span>
 <span><span class="co"># Get the cells in the tissue having epigenetic state "-" and,</span></span>
 <span><span class="co"># at the same time, belonging to rectangular sample bounded by</span></span>
 <span><span class="co"># [500,500] and [505,505] as lower and upper corners, respectively</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_cells</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">500</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">505</span>, <span class="fl">505</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"-"</span><span class="op">)</span><span class="op">)</span>  <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   11473      A        -        500        500</span></span>
-<span><span class="co">#&gt; 2   16365      A        -        500        503</span></span>
-<span><span class="co">#&gt; 3   14624      A        -        500        504</span></span>
-<span><span class="co">#&gt; 4   14623      A        -        500        505</span></span>
-<span><span class="co">#&gt; 5    9065      A        -        501        501</span></span>
-<span><span class="co">#&gt; 6   16366      A        -        501        504</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   20091      A        -        500        504</span></span>
+<span><span class="co">#&gt; 2    9405      A        -        502        500</span></span>
+<span><span class="co">#&gt; 3   21653      A        -        502        504</span></span>
+<span><span class="co">#&gt; 4   21654      A        -        503        505</span></span>
+<span><span class="co">#&gt; 5    4689      A        -        505        502</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -477,17 +476,17 @@ or in a constrained tissue area.</p>
 <code class="sourceCode R"><span><span class="co"># Stochastic sampling from the whole tissue: it can return A+ or A-</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   16890      A        +        477        467</span></span>
+<span><span class="co">#&gt; 1   21730      A        +        458        497</span></span>
 <span></span>
 <span><span class="co"># Calling it again may result in a different cell</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   16982      A        +        462        506</span></span>
+<span><span class="co">#&gt; 1   21546      A        +        492        455</span></span>
 <span></span>
 <span><span class="co"># Constrain sampling in the tissue rectangular selection [500,550]x[350,450]</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span>,  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">500</span>, <span class="fl">350</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">550</span>, <span class="fl">450</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   16890      A        +        477        467</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   17516      A        +        494        456</span></span></code></pre></div>
 <p>This feature can be used to program the generation of new species,
 mimicking new mutants that generate subclonal expansions.</p>
 <p>Imagine we want to add a new mutant <code>B</code> with epistates –
@@ -507,12 +506,12 @@ cell of mutant <code>B</code>.</p></li>
 <span><span class="va">cell</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="fu">choose_cell_in</span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span></span>
 <span><span class="va">cell</span></span>
 <span><span class="co">#&gt;   cell_id mutant epistate position_x position_y</span></span>
-<span><span class="co">#&gt; 1   16982      A        +        462        506</span></span>
+<span><span class="co">#&gt; 1   21546      A        +        492        455</span></span>
 <span></span>
 <span><span class="co"># Add mutant</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"B"</span>,</span>
 <span>               epigenetic_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+-"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-+"</span> <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span>,</span>
-<span>               growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.3</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span>
+<span>               growth_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.7</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span>,</span>
 <span>               death_rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fl">0.05</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Then we inject the cell, and simulate a little bit.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -522,8 +521,8 @@ cell of mutant <code>B</code>.</p></li>
 <span><span class="co"># Generated event A -&gt; B either in + or - epistates is now recorded</span></span>
 <span><span class="va">sim</span><span class="op">$</span><span class="fu">get_counts</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   mutant epistate counts</span></span>
-<span><span class="co">#&gt; 1      A        -    873</span></span>
-<span><span class="co">#&gt; 2      A        +   3338</span></span>
+<span><span class="co">#&gt; 1      A        -   1008</span></span>
+<span><span class="co">#&gt; 2      A        +   4162</span></span>
 <span><span class="co">#&gt; 3      B        -      0</span></span>
 <span><span class="co">#&gt; 4      B        +      1</span></span>
 <span></span>

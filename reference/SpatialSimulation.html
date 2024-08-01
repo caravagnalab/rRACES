@@ -269,17 +269,27 @@ cells in the sample and in the bounding box, respectively.</p></li>
 <dd><p>Simulates cell evolution</p><ul><li><p><em>Parameter:</em> <code>event</code> - The considered event type, i.e., "growth", "death", or "switch".</p></li>
 <li><p><em>Parameter:</em> <code>species</code> - The species whose event number is considered.</p></li>
 <li><p><em>Parameter:</em> <code>num_of_events</code> - The threshold for the event number.</p></li>
+<li><p><em>Parameter:</em> <code>quiet</code> - A Boolean flag to avoid progress bar (optional).</p></li>
 </ul></dd>
 
 
 <dt><code>run_up_to_size</code></dt>
 <dd><p>Simulates cell evolution</p><ul><li><p><em>Parameter:</em> <code>species</code> - The species whose number of cells is considered.</p></li>
 <li><p><em>Parameter:</em> <code>num_of_cells</code> - The threshold for the cell number.</p></li>
+<li><p><em>Parameter:</em> <code>quiet</code> - A Boolean flag to avoid progress bar (optional).</p></li>
 </ul></dd>
 
 
 <dt><code>run_up_to_time</code></dt>
 <dd><p>Simulates cell evolution</p><ul><li><p><em>Parameter:</em> <code>time</code> - The final simulation time.</p></li>
+<li><p><em>Parameter:</em> <code>quiet</code> - A Boolean flag to avoid progress bar (optional).</p></li>
+</ul></dd>
+
+
+<dt><code>run_until</code></dt>
+<dd><p>Simulating cell evolution</p><ul><li><p><em>Parameter:</em> <code>formula</code> - The formula that will be satisfied at the
+end of the simulation.</p></li>
+<li><p><em>Parameter:</em> <code>quiet</code> - A Boolean flag to avoid progress bar (optional).</p></li>
 </ul></dd>
 
 
