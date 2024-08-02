@@ -77,7 +77,7 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
-      "https://www.dropbox.com/scl/fi/g9oloxkip18tr1rm6wjve/germline_data_demo.tar.gz?rlkey=15jshuld3bqgyfcs7fa0bzqeo&dl=1"
+      "https://zenodo.org/records/13166780/files/germline_data_demo.tar.gz"
     }
   },
   {
@@ -89,7 +89,7 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg38.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg38.csv",
-      "https://www.dropbox.com/scl/fi/3rs2put4wde3objxmhvjc/germline_data_hg38.tar.gz?rlkey=imawitklf8d6zphz9ugriv4qm&dl=1"
+      "https://zenodo.org/records/13166780/files/germline_data_hg38.tar.gz"
     }
   },
   {
@@ -101,7 +101,7 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
       "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
-      "https://www.dropbox.com/scl/fi/ckj7k0db0v1qf0o8la2yx/germline_data_hg19.tar.gz?rlkey=aanaz7n9v1bvmfvuqvqamc76o&dl=1"
+      "https://zenodo.org/records/13166780/files/germline_data_hg19.tar.gz"
     }
   }
 };
