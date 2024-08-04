@@ -70,18 +70,17 @@ passenger_cnas_url <- paste0("https://raw.githubusercontent.com/",
                              "caravagnalab/rRACES/main/inst/extdata/",
                              "passenger_CNAs_hg19.csv")
 
-germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
-                       "m6wjve/germline_data_demo.tar.gz?rlkey=15jshul",
-                       "d3bqgyfcs7fa0bzqeo&dl=1")
+germline_url <- paste0("https://zenodo.org/records/13166780/files/",
+                       "germline_data_demo.tar.gz")
 
 # build a mutation engine and place all the files in the directory "Test"
 m_engine <- MutationEngine(directory = "Test",
-                                  reference_src = reference_url,
-                                  SBS_signatures_src = sbs_url,
-                                  indel_signatures_src = indel_url,
-                                  drivers_src = drivers_url,
-                                  passenger_CNAs_src = passenger_cnas_url,
-                                  germline_src = germline_url)
+                           reference_src = reference_url,
+                           SBS_signatures_src = sbs_url,
+                           indel_signatures_src = indel_url,
+                           drivers_src = drivers_url,
+                           passenger_CNAs_src = passenger_cnas_url,
+                           germline_src = germline_url)
 
 dir.exists("Test")
 ```
@@ -167,7 +166,7 @@ Let us rebuild the context index sampling one context every 50.
 # building a mutation engine by using the "demo" set-up configuration
 # and setting max_repetition_storage to 10,000,000
 m_engine <- MutationEngine(setup_code = "demo",
-                                  max_repetition_storage = 10000000)
+                           max_repetition_storage = 10000000)
 ```
 
 Above call uses the already downloaded data in the directory `"demo"` to
@@ -177,5 +176,5 @@ build the repeated sequence index and produces the file
 ```{r}
 # get the size of the context index when `context_sampling` is 50
 utils:::format.object_size(file.size("demo/rs_index_50_10000000.rsif"),
-                                     "auto")
+                           "auto")
 ```
