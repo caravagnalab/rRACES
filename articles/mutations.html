@@ -151,13 +151,13 @@ can be obtained by invoking the function
 <span><span class="co">#&gt; Downloading germline mutations...</span></span>
 <span><span class="co">#&gt; Germline mutations downloaded</span></span>
 <span><span class="co">#&gt; Building context index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█████████████████-----------------------] 40% [00m:01s] Processing chr. 22 [█████████████████████████████████-------] 81% [00m:02s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:02s] Context index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [██████████------------------------------] 24% [00m:00s] Processing chr. 22 [████████████████████--------------------] 49% [00m:02s] Processing chr. 22 [██████████████████████████████----------] 73% [00m:03s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:04s] Context index built</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving context index [████████████████████████████████████████] 100% [00m:00s] Context index saved</span></span>
 <span><span class="co">#&gt; done</span></span>
 <span><span class="co">#&gt; Building repeated sequence index...</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:03s] Processing chr. 22 [█---------------------------------------] 0% [00m:04s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:07s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:12s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:12s] RS index built</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [█████████████████████████---------------] 60% [00m:01s] Saving RS indexdone</span></span>
-<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:01s] RS index saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:00s] Processing chr. 22 [█---------------------------------------] 0% [00m:01s] Processing chr. 22 [█---------------------------------------] 0% [00m:05s] Processing chr. 22 [█---------------------------------------] 0% [00m:06s] Processing chr. 22 [█---------------------------------------] 0% [00m:08s] Processing chr. 22 [█---------------------------------------] 0% [00m:09s] Processing chr. 22 [█---------------------------------------] 0% [00m:11s] Processing chr. 22 [█---------------------------------------] 0% [00m:16s] Processing chr. 22 [████████████████████████████████████████] 100% [00m:17s] RS index built</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving RS index [████████████----------------------------] 29% [00m:01s] Saving RS index [██████████████████████████████████------] 84% [00m:02s] Saving RS indexdone</span></span>
+<span><span class="co">#&gt;  [████████████████████████████████████████] 100% [00m:02s] RS index saved</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving germline [████████████████████████████████████████] 100% [00m:00s] Germline saved</span></span>
 <span></span>
@@ -194,7 +194,7 @@ performs them.</p>
 <code class="sourceCode R"><span><span class="co"># building a mutation engine by using the "demo" set-up configuration</span></span>
 <span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MutationEngine.html">MutationEngine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading context index [████████████████████████████████████████] 100% [00m:00s] Context index loaded</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [███████████████████---------------------] 47% [00m:01s] Loading RS index [█████████████████████████████████████---] 91% [00m:02s] Loading RS index [████████████████████████████████████████] 100% [00m:02s] RS index loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading RS index [████████████----------------------------] 28% [00m:01s] Loading RS index [███████████████████████-----------------] 57% [00m:02s] Loading RS index [██████████████████████████████████------] 83% [00m:03s] Loading RS index [████████████████████████████████████████] 100% [00m:03s] RS index loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="mutant-genetic-characterization">Mutant Genetic Characterization<a class="anchor" aria-label="anchor" href="#mutant-genetic-characterization"></a>
@@ -241,8 +241,9 @@ declared as it follows.</p>
 <span>                                   <span class="fu"><a href="../reference/CNA.html">CNA</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"A"</span>, chr <span class="op">=</span> <span class="st">"22"</span>,</span>
 <span>                                       chr_pos <span class="op">=</span> <span class="fl">10303470</span>, len <span class="op">=</span> <span class="fl">200000</span><span class="op">)</span>,</span>
 <span>                                   <span class="fu"><a href="../reference/CNA.html">CNA</a></span><span class="op">(</span><span class="st">"D"</span>, <span class="st">"22"</span>, <span class="fl">5010000</span>, <span class="fl">200000</span>,</span>
-<span>                                       allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Retrieving "A" SNVs [█---------------------------------------] 0% [00m:00s] Found 22 [█---------------------------------------] 0% [00m:00s] Reading 22 [█---------------------------------------] 0% [00m:01s] Reading 22 [████████████████████████████████████████] 100% [00m:01s] "A" SNVs retrieved</span></span>
+<span>                                       allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>                                   <span class="va">WGD</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Retrieving "A" SNVs [█---------------------------------------] 0% [00m:00s] Found 22 [█---------------------------------------] 0% [00m:00s] Reading 22 [█---------------------------------------] 0% [00m:01s] Reading 22 [█---------------------------------------] 0% [00m:02s] Reading 22 [████████████████████████████████████████] 100% [00m:02s] "A" SNVs retrieved</span></span>
 <span></span>
 <span><span class="va">m_engine</span></span>
 <span><span class="co">#&gt; MutationEngine</span></span>
@@ -255,8 +256,8 @@ declared as it follows.</p>
 <span><span class="co">#&gt;        chr22(10510210)[N&gt;C](allele: 1)</span></span>
 <span><span class="co">#&gt;        chr22(15220157)[GTTTTTTTT&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
-<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt;        CNA("A",chr22(10303470), len: 200000)</span></span>
+<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    SBS Timed Exposures</span></span>
@@ -265,14 +266,34 @@ declared as it follows.</p>
 <p>In the above code, the driver CNAs, SNVs, and indels are declared by
 calling the functions <code><a href="../reference/CNA.html">CNA()</a></code>, <code><a href="../reference/SNV.html">SNV()</a></code>, and
 <code><a href="../reference/Mutation.html">Mutation()</a></code>, respectively. These function allow to specify
-the allele in which the mutation must lay.</p>
+the allele in which the mutation must lay. The mutant <code>A</code> is
+also characterized by a <em>whole genome doubling</em>
+(<code>WGD</code>): a genomic event that simultaneously duplicates all
+the chromosome alleles.</p>
+<p>The driver mutations are applied according to their specification
+order. For instance, the following two pieces of code specify two
+different genomic characterizations for the same mutant
+<code>E</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span><span class="st">"E"</span>, <span class="va">passenger_rates</span>,</span>
+<span>                    drivers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">10510210</span>, <span class="st">"C"</span>, allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>                                   <span class="va">WGD</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span><span class="st">"E"</span>, <span class="va">passenger_rates</span>,</span>
+<span>                    drivers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">WGD</span>,</span>
+<span>                                   <span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">10510210</span>, <span class="st">"C"</span>, allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>The former snippet places an SNV and, afterwards, duplicates all the
+alleles producing a genome in which two alleles contain the placed SNV.
+Instead, the latter snippet requires a whole genome doubling event and,
+then, places the SNV yielding a single occurrence of the SNV in the
+final genome.</p>
 <p>As far as the SNVs and indels concern, rRACES provides the users with
 a more compact and, sometimes, convenient approach. The mutation engine
 stores a list of known driver mutations and labels each of them by a
 code which can be used during the mutant declaration. The corresponding
 data frame can be obtained by using the method
 <code>MutationEngine$get_known_drivers()</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
@@ -292,7 +313,7 @@ data frame can be obtained by using the method
 <span><span class="co">#&gt; 2   NF2 R262*</span></span></code></pre></div>
 <p>The code of the known driver mutations can be used in place of the
 full specification as follows.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add the mutant "B" characterized by two driver SNVs on chromosome 22 (no</span></span>
 <span><span class="co"># CNA) and two epigenetic states. The first SNV is "NF2 R221*" and it must </span></span>
 <span><span class="co"># lay in the allele 1. The remaining SNV is specified by using the SNV function</span></span>
@@ -301,7 +322,7 @@ full specification as follows.</p>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_mutant</span><span class="op">(</span><span class="st">"B"</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"+"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">8e-7</span><span class="op">)</span>, <span class="st">"-"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SNV <span class="op">=</span> <span class="fl">5e-8</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"NF2 R221*"</span>, allele <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,   <span class="co"># the first SNV</span></span>
 <span>                         <span class="fu"><a href="../reference/SNV.html">SNV</a></span><span class="op">(</span><span class="st">"22"</span>, <span class="fl">12028576</span>, <span class="st">"G"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>       <span class="co"># the second SNV</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Retrieving "B" SNVs [█---------------------------------------] 0% [00m:00s] Found 22 [█---------------------------------------] 0% [00m:00s] Reading 22 [█---------------------------------------] 0% [00m:01s] Reading 22 [████████████████████████████████████████] 100% [00m:01s] "B" SNVs retrieved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Retrieving "B" SNVs [█---------------------------------------] 0% [00m:00s] Found 22 [█---------------------------------------] 0% [00m:00s] Reading 22 [█---------------------------------------] 0% [00m:01s] Reading 22 [█---------------------------------------] 0% [00m:02s] Reading 22 [█---------------------------------------] 0% [00m:03s] Reading 22 [█---------------------------------------] 0% [00m:04s] Reading 22 [████████████████████████████████████████] 100% [00m:04s] "B" SNVs retrieved</span></span>
 <span></span>
 <span><span class="va">m_engine</span></span>
 <span><span class="co">#&gt; MutationEngine</span></span>
@@ -316,11 +337,11 @@ full specification as follows.</p>
 <span><span class="co">#&gt;        chr22(10510210)[N&gt;C](allele: 1)</span></span>
 <span><span class="co">#&gt;        chr22(15220157)[GTTTTTTTT&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
-<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt;        CNA("A",chr22(10303470), len: 200000)</span></span>
+<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt;    "B" SNVs&amp;indels: </span></span>
-<span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: 1)</span></span>
+<span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    SBS Timed Exposures</span></span>
@@ -346,7 +367,7 @@ signatures.</p>
 <p>In order to simulate passeger mutations of a given type, we need to
 specify a default exposure for that type. This can be achieved as it
 follows.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add SNV and indel default exposures. This will be used from simulated time 0</span></span>
 <span><span class="co"># up to the successive exposure change.</span></span>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_exposure</span><span class="op">(</span>coefficients <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SBS13 <span class="op">=</span> <span class="fl">0.2</span>, SBS1 <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span><span class="op">)</span></span>
@@ -354,7 +375,7 @@ follows.</p>
 <p>Further exposures can also be defined by specifying an activation
 time for each of them, i.e., the new exposures will be used from the
 specified time up to the next exposure change.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># add a new SNV exposure that will be used from simulated</span></span>
 <span><span class="co"># time 100 up to the successive exposure change.</span></span>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_exposure</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">100</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SBS5 <span class="op">=</span> <span class="fl">0.3</span>, SBS2 <span class="op">=</span> <span class="fl">0.2</span>, SBS3 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
@@ -372,11 +393,11 @@ specified time up to the next exposure change.</p>
 <span><span class="co">#&gt;        chr22(10510210)[N&gt;C](allele: 1)</span></span>
 <span><span class="co">#&gt;        chr22(15220157)[GTTTTTTTT&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
-<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt;        CNA("A",chr22(10303470), len: 200000)</span></span>
+<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt;    "B" SNVs&amp;indels: </span></span>
-<span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: 1)</span></span>
+<span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    SBS Timed Exposures</span></span>
@@ -388,7 +409,7 @@ specified time up to the next exposure change.</p>
 <p>The default exposures and the simultaneous changes in SNV and ID
 exposures can be specified by a sigle call to the function
 <code>MutationEngine$add_exposure()</code> as it follows.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">add_exposure</span><span class="op">(</span>time <span class="op">=</span> <span class="fl">120</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>SBS5 <span class="op">=</span> <span class="fl">0.3</span>, SBS2 <span class="op">=</span> <span class="fl">0.2</span>, SBS3 <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                                    ID1 <span class="op">=</span> <span class="fl">0.8</span>, ID9 <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -405,11 +426,11 @@ exposures can be specified by a sigle call to the function
 <span><span class="co">#&gt;        chr22(10510210)[N&gt;C](allele: 1)</span></span>
 <span><span class="co">#&gt;        chr22(15220157)[GTTTTTTTT&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;    "A" CNAs: </span></span>
-<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt;        CNA("A",chr22(10303470), len: 200000)</span></span>
+<span><span class="co">#&gt;        CNA("D",chr22(5010000), len: 200000, allele: 1)</span></span>
 <span><span class="co">#&gt;    "B" SNVs&amp;indels: </span></span>
-<span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt;        chr22(30057302)[C&gt;T](allele: 1)</span></span>
+<span><span class="co">#&gt;        chr22(12028576)[N&gt;G](allele: random)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  Timed Exposure</span></span>
 <span><span class="co">#&gt;    SBS Timed Exposures</span></span>
@@ -430,7 +451,7 @@ engine by using the <code>tumour_type</code> parameter. For instance, if
 the passenger CNAs file used to build the mutation engine contains some
 of the data identified in breast carcinoma in the UK, the specific CNA
 can be applied during the simulation as it follows.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/MutationEngine.html">MutationEngine</a></span><span class="op">(</span>setup_code <span class="op">=</span> <span class="st">"demo"</span>,</span>
 <span>                                  tumour_type <span class="op">=</span> <span class="st">"BRCA-UK"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -445,7 +466,7 @@ ethnicity.</p>
 <p>The available subjects, together with their sex and ethnicity, can be
 obtained by using the method
 <code>[MutationEngine$get_germline_subjects()]</code>.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">subjects</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">get_germline_subjects</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">subjects</span></span>
@@ -458,7 +479,7 @@ the subjects’ population and super-population codes. The last column,
 <code>gender</code>, includes the subject gender.</p>
 <p>The method <code>MutationEngine$get_population_descritions()</code>
 clarifies the meaning of the codes reported in the pop columns.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_population_descritions</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    code          description</span></span>
 <span><span class="co">#&gt; 1   CHB          Han Chinese</span></span>
@@ -518,7 +539,7 @@ clarifies the meaning of the codes reported in the pop columns.</p>
 <span><span class="co">#&gt; 27                                            Indian Telugu in the UK</span></span></code></pre></div>
 <p>The method <code>MutationEngine$get_active_germline()</code> returns
 the the active germline subject.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_active_germline</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    sample pop super_pop gender</span></span>
 <span><span class="co">#&gt; 1 NA18941 JPT       EAS female</span></span></code></pre></div>
@@ -528,7 +549,7 @@ the the active germline subject.</p>
 representation of the subject genome, saving it for future use. This
 step may take a few minutes. However, all the successive selections of
 the same subject directly load the binary file.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_engine</span><span class="op">$</span><span class="fu">set_germline_subject</span><span class="op">(</span><span class="va">subjects</span><span class="op">[</span><span class="fl">2</span>, <span class="st">"sample"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading germline [████████████████████████████████████████] 100% [00m:00s] Germline loaded</span></span>
 <span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving germline [████████████████████████████████████████] 100% [00m:00s] Germline saved</span></span>
@@ -548,13 +569,13 @@ simulation peformed in Section “<em>Two populations with epigenetic
 state</em>” of <code><a href="../articles/sampling.html">vignette("sampling")</a></code>, we can load its
 samples forest from the file <code>"samples_forest.sff"</code> in saved
 that article.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">samples_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_samples_forest.html">load_samples_forest</a></span><span class="op">(</span><span class="st">"samples_forest.sff"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># place mutations on the sample forest assuming 1000 pre-neoplastic SNVs and</span></span>
 <span><span class="co"># 500 indels</span></span>
 <span><span class="va">phylo_forest</span> <span class="op">&lt;-</span> <span class="va">m_engine</span><span class="op">$</span><span class="fu">place_mutations</span><span class="op">(</span><span class="va">samples_forest</span>, <span class="fl">1000</span>, <span class="fl">500</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [█████-----------------------------------] 11% [00m:01s] Placing mutations [█████████-------------------------------] 21% [00m:02s] Placing mutations [█████████████---------------------------] 32% [00m:03s] Placing mutations [██████████████████----------------------] 43% [00m:04s] Placing mutations [██████████████████████------------------] 54% [00m:05s] Placing mutations [██████████████████████████--------------] 64% [00m:06s] Placing mutations [██████████████████████████████----------] 74% [00m:07s] Placing mutations [██████████████████████████████████------] 84% [00m:08s] Placing mutations [███████████████████████████████████-----] 87% [00m:09s] Placing mutations [█████████████████████████████████████---] 90% [00m:11s] Placing mutations [██████████████████████████████████████--] 93% [00m:12s] Placing mutations [████████████████████████████████████████] 100% [00m:13s] Mutations placed</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Placing mutations [███-------------------------------------] 6% [00m:01s] Placing mutations [██████----------------------------------] 13% [00m:02s] Placing mutations [████████--------------------------------] 19% [00m:03s] Placing mutations [███████████-----------------------------] 26% [00m:04s] Placing mutations [██████████████--------------------------] 33% [00m:05s] Placing mutations [█████████████████-----------------------] 40% [00m:06s] Placing mutations [███████████████████---------------------] 47% [00m:07s] Placing mutations [██████████████████████------------------] 54% [00m:08s] Placing mutations [█████████████████████████---------------] 61% [00m:09s] Placing mutations [████████████████████████████------------] 68% [00m:10s] Placing mutations [███████████████████████████████---------] 75% [00m:11s] Placing mutations [█████████████████████████████████-------] 81% [00m:12s] Placing mutations [███████████████████████████████████-----] 85% [00m:14s] Placing mutations [███████████████████████████████████-----] 87% [00m:15s] Placing mutations [████████████████████████████████████----] 89% [00m:16s] Placing mutations [█████████████████████████████████████---] 91% [00m:18s] Placing mutations [██████████████████████████████████████--] 93% [00m:19s] Placing mutations [████████████████████████████████████████] 100% [00m:20s] Placing mutations</span></span>
 <span></span>
 <span><span class="va">phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
@@ -563,37 +584,37 @@ that article.</p>
 <span><span class="co">#&gt;   # of leaves: 5396</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs and indels: 175505</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs and indels: 174428</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 <p>The phylogenetic forest stores all the mutations labeling the sampled
 cells which are represented by the forest leaves. Users can retrieve
 such data by using the methods
 <code>PhylogeneticForest$get_sampled_cell_mutations()</code> and
 <code>PhylogeneticForest$get_sampled_cell_CNAs()</code>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># select the first mutations among all the mutations occuring in</span></span>
 <span><span class="co"># the genomes of the sampled cells</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_mutations</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id chr  chr_pos allele       ref     alt  type cause          class</span></span>
-<span><span class="co">#&gt; 1    2790  22 15220157      0 GTTTTTTTT       G indel     A         driver</span></span>
-<span><span class="co">#&gt; 2    2790  22 16086691      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 3    2790  22 16140544      0         C CAAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 4    2790  22 16212399      0         C  CAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 5    2790  22 16223616      0         G GAAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 6    2790  22 16282629      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt;   cell_id chr  chr_pos allele ref           alt  type cause          class</span></span>
+<span><span class="co">#&gt; 1    2790  22 16135362      0   C CAAAAAAAAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 2    2790  22 16303759      0   C        CAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 3    2790  22 16370794      0   C             T   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 4    2790  22 16385370      0   G             A   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 5    2790  22 16413396      0   T        TAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 6    2790  22 16420642      0   T        TAAAAA indel   ID1 pre-neoplastic</span></span>
 <span></span>
 <span><span class="co"># select the first CNAs among all the mutations occuring in</span></span>
 <span><span class="co"># the genomes of the sampled cells</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id type chr    begin      end allele src.allele  class</span></span>
-<span><span class="co">#&gt; 1    2790    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 2    2790    A  22 10303470 10503469      2          1 driver</span></span>
-<span><span class="co">#&gt; 3    5000    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 4    5000    A  22 10303470 10503469      2          1 driver</span></span>
-<span><span class="co">#&gt; 5    8774    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 6    8774    A  22 10303470 10503469      2          1 driver</span></span>
+<span><span class="co">#&gt; 1    2790    A  22 10303470 10503469      2          0 driver</span></span>
+<span><span class="co">#&gt; 2    2790    D  22  5010000  5209999      1         NA driver</span></span>
+<span><span class="co">#&gt; 3    5000    A  22 10303470 10503469      2          0 driver</span></span>
+<span><span class="co">#&gt; 4    5000    D  22  5010000  5209999      1         NA driver</span></span>
+<span><span class="co">#&gt; 5    8774    A  22 10303470 10503469      2          0 driver</span></span>
+<span><span class="co">#&gt; 6    8774    D  22  5010000  5209999      1         NA driver</span></span>
 <span></span>
 <span><span class="co"># get the sampled cells</span></span>
 <span><span class="va">sampled_cells</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_nodes</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -614,22 +635,22 @@ such data by using the methods
 <span></span>
 <span><span class="co"># get the SNVs and the indels of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_mutations</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   cell_id chr  chr_pos allele       ref     alt  type cause          class</span></span>
-<span><span class="co">#&gt; 1    8774  22 15220157      0 GTTTTTTTT       G indel     A         driver</span></span>
-<span><span class="co">#&gt; 2    8774  22 16086691      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 3    8774  22 16140544      0         C CAAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 4    8774  22 16212399      0         C  CAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 5    8774  22 16223616      0         G GAAAAAA indel   ID1 pre-neoplastic</span></span>
-<span><span class="co">#&gt; 6    8774  22 16282629      0         G       A   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt;   cell_id chr  chr_pos allele ref           alt  type cause          class</span></span>
+<span><span class="co">#&gt; 1    8774  22 16135362      0   C CAAAAAAAAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 2    8774  22 16303759      0   C        CAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 3    8774  22 16370794      0   C             T   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 4    8774  22 16385370      0   G             A   SNV  SBS1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 5    8774  22 16413396      0   T        TAAAAA indel   ID1 pre-neoplastic</span></span>
+<span><span class="co">#&gt; 6    8774  22 16420642      0   T        TAAAAA indel   ID1 pre-neoplastic</span></span>
 <span></span>
 <span><span class="co"># get the CNAs of the 3rd cell in `sampled_cells`</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_CNAs</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   cell_id type chr    begin      end allele src.allele  class</span></span>
-<span><span class="co">#&gt; 1    8774    D  22  5010000  5209999      1         NA driver</span></span>
-<span><span class="co">#&gt; 2    8774    A  22 10303470 10503469      2          1 driver</span></span></code></pre></div>
+<span><span class="co">#&gt; 1    8774    A  22 10303470 10503469      2          0 driver</span></span>
+<span><span class="co">#&gt; 2    8774    D  22  5010000  5209999      1         NA driver</span></span></code></pre></div>
 <p>The method <code>PhylogeneticForest$get_germline_mutations()</code>
 returns the SNVs and the indels in the germline.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># extract the germline mutation</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_germline_mutations</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   chr  chr_pos allele ref   alt  type cause    class</span></span>
@@ -641,7 +662,7 @@ returns the SNVs and the indels in the germline.</p>
 <span><span class="co">#&gt; 6  22 16058070      0   A     G   SNV       germinal</span></span></code></pre></div>
 <p>Users can also identify the cell in which a mutation emerged even
 when the cell was not sampled.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># select one of the mutations</span></span>
 <span><span class="va">mutation_row</span> <span class="op">&lt;-</span> <span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_sampled_cell_mutations</span><span class="op">(</span><span class="va">cell_id</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span></span>
 <span></span>
@@ -658,7 +679,7 @@ when the cell was not sampled.</p>
 <p>The exposures used in placing the mutations on the cells in the
 phylogenetic forest can be obtained by using the method
 <code>PhylogeneticForest$get_exposures()</code>.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the exposures used in placing the mutations</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_exposures</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    time signature exposure  type</span></span>
@@ -679,7 +700,7 @@ phylogenetic forest can be obtained by using the method
 evolution are available in the mutation engine and they can be retrieved
 by using the methods <code>MutationEngine$get_SNV_signatures()</code>
 and <code>MutationEngine$get_indel_signatures()</code>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># get the SNV signatures used in placing the mutations</span></span>
 <span><span class="va">m_engine</span><span class="op">$</span><span class="fu">get_SNV_signatures</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
 <span><span class="co">#&gt;      Type        SBS1        SBS2       SBS3        SBS4</span></span>
@@ -702,7 +723,7 @@ and <code>MutationEngine$get_indel_signatures()</code>.</p>
 <p>The name of the subject whose germline corresponds to wild-type
 genome in the phylogenetic forest can be obtained by the method
 <code>Phylogenetic$get_germline_subject()</code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_germline_subject</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "NA20513"</span></span></code></pre></div>
 </div>
@@ -712,14 +733,14 @@ genome in the phylogenetic forest can be obtained by the method
 <p>As in the case of the samples forests, the phylogenetic forests can
 be saved by using the method <code>PhylogeneticForest$save()</code> and
 load by the function <code><a href="../reference/load_phylogenetic_forest.html">load_phylogenetic_forest()</a></code>.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># save the phylogenetic forest in the file "phylo_forest.sff"</span></span>
 <span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">save</span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving forest [█---------------------------------------] 1% [00m:01s] Saving forest [█████████████---------------------------] 32% [00m:02s] Saving forest [███████████████████████████-------------] 65% [00m:03s] Saving forest [████████████████████████████████████████] 99% [00m:04s] Saving forest [████████████████████████████████████████] 100% [00m:04s] Forest saved</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Saving forest [█---------------------------------------] 1% [00m:01s] Saving forest [███████████-----------------------------] 25% [00m:02s] Saving forest [████████████████████--------------------] 49% [00m:03s] Saving forest [██████████████████████████████----------] 73% [00m:04s] Saving forest [█████████████████████████████████████---] 91% [00m:05s] Saving forest [████████████████████████████████████████] 100% [00m:05s] Forest saved</span></span>
 <span></span>
 <span><span class="co"># loading the saved forest</span></span>
 <span><span class="va">loaded_phylo_forest</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_phylogenetic_forest.html">load_phylogenetic_forest</a></span><span class="op">(</span><span class="st">"phylo_forest.sff"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading forest [████------------------------------------] 9% [00m:01s] Loading forest [████████--------------------------------] 19% [00m:02s] Loading forest [████████████----------------------------] 28% [00m:03s] Loading forest [████████████████------------------------] 38% [00m:04s] Loading forest [████████████████████--------------------] 48% [00m:05s] Loading forest [████████████████████████----------------] 58% [00m:06s] Loading forest [████████████████████████████------------] 68% [00m:07s] Loading forest [████████████████████████████████--------] 78% [00m:08s] Loading forest [███████████████████████████████████-----] 86% [00m:09s] Loading forest [██████████████████████████████████████--] 94% [00m:10s] Loading forest [████████████████████████████████████████] 100% [00m:11s] Forest loaded</span></span>
+<span><span class="co">#&gt;  [█---------------------------------------] 0% [00m:00s] Loading forest [██--------------------------------------] 4% [00m:01s] Loading forest [█████-----------------------------------] 10% [00m:02s] Loading forest [███████---------------------------------] 15% [00m:03s] Loading forest [█████████-------------------------------] 21% [00m:04s] Loading forest [███████████-----------------------------] 27% [00m:05s] Loading forest [██████████████--------------------------] 33% [00m:06s] Loading forest [████████████████------------------------] 39% [00m:07s] Loading forest [███████████████████---------------------] 45% [00m:08s] Loading forest [█████████████████████-------------------] 51% [00m:09s] Loading forest [███████████████████████-----------------] 57% [00m:10s] Loading forest [█████████████████████████---------------] 62% [00m:11s] Loading forest [████████████████████████████------------] 68% [00m:13s] Loading forest [██████████████████████████████----------] 74% [00m:14s] Loading forest [█████████████████████████████████-------] 80% [00m:15s] Loading forest [███████████████████████████████████-----] 86% [00m:16s] Loading forest [█████████████████████████████████████---] 92% [00m:17s] Loading forest [████████████████████████████████████████] 98% [00m:18s] Loading forest [████████████████████████████████████████] 100% [00m:18s] Forest loaded</span></span>
 <span></span>
 <span><span class="va">loaded_phylo_forest</span></span>
 <span><span class="co">#&gt; PhylogeneticForest</span></span>
@@ -728,7 +749,7 @@ load by the function <code><a href="../reference/load_phylogenetic_forest.html">
 <span><span class="co">#&gt;   # of leaves: 5396</span></span>
 <span><span class="co">#&gt;   samples: {"S_1_1", "S_1_2", "S_2_1", "S_2_2"}</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   # of emerged SNVs and indels: 175505</span></span>
+<span><span class="co">#&gt;   # of emerged SNVs and indels: 174428</span></span>
 <span><span class="co">#&gt;   # of emerged CNAs: 2</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -739,7 +760,7 @@ file path. The methods
 <code>PhylogeneticForest$get_reference_path()</code> and
 <code>PhylogeneticForest$set_reference_path()</code> can be used to get
 the path and set it, respectively.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">phylo_forest</span><span class="op">$</span><span class="fu">get_reference_path</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "/Users/alberto/Library/CloudStorage/Dropbox/Lavoro/Code/rRACES/rRACES/vignettes/demo/reference.fasta"</span></span>
 <span></span>
