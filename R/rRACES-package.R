@@ -21,6 +21,10 @@
   loadModule("Sequencing", TRUE)
   loadModule("Logics", TRUE)
 
+  wg_doubling <- function() new(WholeGenomeDoubling)
+
+  makeActiveBinding("WGD", wg_doubling, .GlobalEnv)
+
   ## usethis namespace: start
   ## usethis namespace: end
     NULL

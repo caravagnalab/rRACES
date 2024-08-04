@@ -23,6 +23,7 @@
 #include "mutation_engine.hpp"
 #include "sid.hpp"
 #include "cna.hpp"
+#include "wg_doubling.hpp"
 
 using namespace Rcpp;
 
@@ -351,6 +352,15 @@ RCPP_MODULE(Mutations){
     .method("get_dataframe",&CNA::get_dataframe, "Get a dataframe representing the CNA")
     .method("show",&CNA::show);
 
+//' @name WholeGenomeDoubling
+//' @title Whole genome doubling events
+//' @description A whole genome doubling event (WGD) 
+//'   produces the simultaneous duplication of all the
+//'   chromosome allele in a genome.
+  class_<WholeGenomeDoubling>("WholeGenomeDoubling")
+    .constructor()
+    .method("show",&WholeGenomeDoubling::show);
+
 //' @name MutationEngine
 //' @title Generating phylogenetic forests
 //' @description A mutation engine can label every node of a descendants
@@ -441,19 +451,23 @@ RCPP_MODULE(Mutations){
 //' @title Adding a mutant specification
 //' @description This method adds a mutant specification to the mutation engine.
 //' @details The users must use it to specify the name and the genomic
-//'   characterization (i.e., SNVs, indels, and CNAs) of all the simulated
-//'   mutants together with the mutation rates of its species.
+//'   characterization (i.e., SNVs, indels, CNAs, and whole genome doubling 
+//'   events (WGD)) of all the simulated mutants together with the mutation
+//'   rates of its species.
+//'   The driver mutations are applied to the mutant progenitor's genome
+//'   respecting the specification order.
 //' @param mutant_name The mutant name.
 //' @param passenger_rates The list of the passenger rates whose names are the
 //'   epigenetic states of the species or a single rate, if the mutant
 //'   does not have an epigenetic state.
-//' @param drivers The list of the driver SNVs, indels, and CNAs characterizing
-//'   the mutant (optional).
+//' @param drivers The list of the driver SNVs, indels, CNAs, and the whole
+//'   genome doubling events (WGD) characterizing the mutant (optional).
 //' @examples
 //' # create a demostrative mutation engine
 //' m_engine <- MutationEngine(setup_code = "demo")
 //'
-//' # add the mutant "A" characterized by one driver SNV on chromosome 22 and
+//' # add the mutant "A" characterized by one driver SNV on chromosome 22, an
+//' # indel on the same chromosome, a whole genome doubling event, and finally
 //' # two CNAs: an amplification and a deletion. The mutant has two epigenetic
 //' # states and its species "A+" and "A-" have passenger SNV rates 1e-9 and
 //' # 3e-8, respectively, and passenger CNA rates 0 and 1e-11, respectively.
@@ -462,15 +476,11 @@ RCPP_MODULE(Mutations){
 //'                     drivers = list(SNV("22", 23657587, "C"),
 //'                                    Mutation("22", 15220157, "GTTTTTTTT",
 //'                                             "G"),
+//'                                    WGD,
 //'                                    CNA(type = "A", chr = "22",
 //'                                        chr_pos = 10303470,
 //'                                        len = 200000),
 //'                                    CNA("D", "22", 5010000, 200000)))
-//'
-//' # add the mutant "B" characterized by one driver SNV on chromosome 1 (no
-//' # CNA) and missing epigenetic state. Its species "B" has passenger SNV
-//' # rate 5e-9 and passenger CNA rate 0.
-//' m_engine$add_mutant("B", c(SNV = 5e-9), list(SNV("22", 10510210, "C")))
 //'
 //' m_engine
     .method("add_mutant", (void (MutationEngine::*)(const std::string&, const Rcpp::List& passenger_rates))(

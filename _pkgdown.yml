@@ -67,6 +67,7 @@ reference:
   - plot_forest
   - plot_sticks
   - SNV
+  - WholeGenomeDoubling
 - title: "Sequencing simulation interface"
   desc:  "Sequencing simulation methods"
   contents:

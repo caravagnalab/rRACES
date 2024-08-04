@@ -144,7 +144,8 @@ m_engine$add_mutant(mutant_name = "A",
                                    CNA(type = "A", chr = "22",
                                        chr_pos = 10303470, len = 200000),
                                    CNA("D", "22", 5010000, 200000,
-                                       allele = 1)))
+                                       allele = 1),
+                                   WGD))
 
 m_engine
 ```
@@ -152,6 +153,28 @@ m_engine
 In the above code, the driver CNAs, SNVs, and indels are declared by calling
 the functions `CNA()`, `SNV()`, and `Mutation()`, respectively. These function
 allow to specify the allele in which the mutation must lay.
+The mutant `A` is also characterized by a _whole genome doubling_ (`WGD`):
+a genomic event that simultaneously duplicates all the chromosome alleles.
+
+The driver mutations are applied according to their specification order.
+For instance, the following two pieces of code specify two different
+genomic characterizations for the same mutant `E`.
+```{r, eval=FALSE}
+m_engine$add_mutant("E", passenger_rates,
+                    drivers = list(SNV("22", 10510210, "C", allele = 1),
+                                   WGD))
+```
+
+```{r, eval=FALSE}
+m_engine$add_mutant("E", passenger_rates,
+                    drivers = list(WGD,
+                                   SNV("22", 10510210, "C", allele = 1)))
+```
+
+The former snippet places an SNV and, afterwards, duplicates all the alleles
+producing a genome in which two alleles contain the placed SNV. Instead, the
+latter snippet requires a whole genome doubling event and, then, places the
+SNV yielding a single occurrence of the SNV in the final genome.
 
 As far as the SNVs and indels concern, rRACES provides the users with a more
 compact and, sometimes, convenient approach. The mutation engine stores a list

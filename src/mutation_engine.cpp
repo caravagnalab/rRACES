@@ -496,7 +496,7 @@ MutationEngine::MutationEngine(const std::string& directory,
                         passenger_CNAs_source, germline_source)),
   germline_subject(germline_subject), context_sampling(context_sampling),
   max_motif_size(max_motif_size),
-  max_repetition_storage(max_repetition_storage), 
+  max_repetition_storage(max_repetition_storage),
   tumour_type(tumour_type)
 {
   init_mutation_engine(quiet);
@@ -587,7 +587,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
   return MutationEngine(directory, reference_source, SBS_signatures_source,
                         indel_signatures_source, drivers_source,
                         passenger_CNAs_source, germline_source, germline_subject,
-                        context_sampling, max_motif_size, max_repetition_storage, 
+                        context_sampling, max_motif_size, max_repetition_storage,
                         tumour_type, quiet);
 
 }
@@ -649,20 +649,26 @@ SIDSpec get_mutation_from_list(const std::map<std::string, RACES::Mutations::SID
 void
 get_mutation_spec(std::list<SIDSpec>& c_sids,
                   std::list<RACES::Mutations::CNA>& c_cnas,
+                  std::list<RACES::Mutations::DriverMutations::MutationType>& application_order,
                   const std::map<std::string, RACES::Mutations::SID>& driver_code_map,
                   const Rcpp::List& rcpp_list, const size_t& index)
 {
     switch (TYPEOF(rcpp_list[index])) {
         case STRSXP:
-            c_sids.emplace_back(RANDOM_ALLELE, 
+            c_sids.emplace_back(RANDOM_ALLELE,
                                 get_mutation_from_name(driver_code_map,
                                                        rcpp_list[index]));
+
+            application_order.push_back(RACES::Mutations::DriverMutations::SID_TURN);
 
             return;
         case VECSXP:
             c_sids.push_back(get_mutation_from_list(driver_code_map,
                                                     rcpp_list[index],
                                                     index+1));
+
+            application_order.push_back(RACES::Mutations::DriverMutations::SID_TURN);
+
             return;
         case S4SXP:
             {
@@ -672,12 +678,22 @@ get_mutation_spec(std::list<SIDSpec>& c_sids,
 
                     c_sids.push_back(static_cast<SIDSpec>(sid));
 
+                    application_order.push_back(RACES::Mutations::DriverMutations::SID_TURN);
+
                     return;
                 }
                 if ( s4obj.is("Rcpp_CNA")) {
                     const auto cna = Rcpp::as<CNA>(rcpp_list[index]);
 
                     c_cnas.push_back(static_cast<const RACES::Mutations::CNA&>(cna));
+
+                    application_order.push_back(RACES::Mutations::DriverMutations::CNA_TURN);
+
+                    return;
+                }
+                if ( s4obj.is("Rcpp_WholeGenomeDoubling")) {
+
+                    application_order.push_back(RACES::Mutations::DriverMutations::WGD_TURN);
 
                     return;
                 }
@@ -695,12 +711,14 @@ get_mutation_spec(std::list<SIDSpec>& c_sids,
 void
 get_mutation_lists(std::list<SIDSpec>& c_sids,
                    std::list<RACES::Mutations::CNA>& c_cnas,
+                   std::list<RACES::Mutations::DriverMutations::MutationType>& application_order,
                    const std::map<std::string, RACES::Mutations::SID>& driver_code_map,
                    const Rcpp::List& rcpp_list)
 {
     const size_t list_size = static_cast<size_t>(rcpp_list.size());
     for (size_t i=0; i<list_size; ++i) {
-        get_mutation_spec(c_sids, c_cnas, driver_code_map, rcpp_list, i);
+        get_mutation_spec(c_sids, c_cnas, application_order,
+                          driver_code_map, rcpp_list, i);
     }
 }
 
@@ -907,13 +925,19 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
   std::list<RACES::Mutations::CNA> c_cnas;
 
   const auto& driver_storage = m_engine.get_driver_storage();
-  get_mutation_lists(c_sids, c_cnas, driver_storage.get_mutations(), drivers);
+
+  std::list<RACES::Mutations::DriverMutations::MutationType> application_order;
+
+  get_mutation_lists(c_sids, c_cnas, application_order,
+                     driver_storage.get_mutations(), drivers);
 
   retrieve_missing_references(mutant_name, storage.get_reference_path(), c_sids);
 
   if (contains_passenger_rates(epistate_passenger_rates)) {
     auto p_rates = get_passenger_rates(epistate_passenger_rates);
-    m_engine.add_mutant(mutant_name, {{"", p_rates}}, c_sids, c_cnas);
+
+    m_engine.add_mutant(mutant_name, {{"", p_rates}}, c_sids, c_cnas,
+                        application_order);
 
     return;
   }
@@ -1044,12 +1068,12 @@ void MutationEngine::rebuild_indices(const bool quiet)
 
   context_index = build_contex_index(storage, quiet, context_sampling);
 
-  index_path = get_rs_index_path(storage, max_motif_size, 
+  index_path = get_rs_index_path(storage, max_motif_size,
                                  max_repetition_storage);
 
   std::filesystem::remove(index_path);
 
-  rs_index = build_rs_index(storage, max_motif_size, 
+  rs_index = build_rs_index(storage, max_motif_size,
                             max_repetition_storage, quiet);
 }
 
