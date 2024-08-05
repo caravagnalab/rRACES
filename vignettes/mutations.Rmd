@@ -130,12 +130,12 @@ m_engine <- MutationEngine(setup_code = "demo")
 
 ```{r}
 # add the mutant "A" characterized by one driver SNV on the allele 1 of
-# chromosome 22, one indel deletion on the same chromosome, and two CNAs:
-# a deletion on the allele 1 of chromosome 22 and an amplification on a
-# random allele of the same chromosome. The mutant has two epigenetic
-# states and its species "A+" and "A-" have passenger SNV rates 1e-9 and
-# 3e-8, respectively, passenger indel rates 1e-10 and 0, respectively,
-# and passenger CNA rates 0 and 1e-11, respectively.
+# chromosome 22, one indel deletion on the same chromosome, two CNAs (a
+# deletion on the allele 1 of chromosome 22 and an amplification on a random
+# allele of the same chromosome) and, finally, a whole genome doubling event
+# (WGD). The mutant has two epigenetic states and its species "A+" and "A-"
+# have passenger SNV rates 1e-9 and 3e-8, respectively, passenger indel rates
+# 1e-10 and 0, respectively, and passenger CNA rates 0 and 1e-11, respectively.
 m_engine$add_mutant(mutant_name = "A",
                     passenger_rates = list("+" = c(SNV = 1e-9, indel = 1e-8),
                                            "-" = c(SNV = 3e-8, CNA = 1e-11)),

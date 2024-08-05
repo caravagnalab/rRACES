@@ -692,7 +692,6 @@ get_mutation_spec(std::list<SIDSpec>& c_sids,
                     return;
                 }
                 if ( s4obj.is("Rcpp_WholeGenomeDoubling")) {
-
                     application_order.push_back(RACES::Mutations::DriverMutations::WGD_TURN);
 
                     return;
@@ -943,7 +942,8 @@ void MutationEngine::add_mutant(const std::string& mutant_name,
   }
 
   auto epi_rates = get_epistate_passenger_rates(epistate_passenger_rates);
-  m_engine.add_mutant(mutant_name, epi_rates, c_sids, c_cnas);
+  m_engine.add_mutant(mutant_name, epi_rates, c_sids, c_cnas,
+                      application_order);
 }
 
 PhylogeneticForest
@@ -1009,6 +1009,41 @@ std::ostream& show_list(std::ostream& os, ITERATOR it, ITERATOR last, const std:
   return os;
 }
 
+std::ostream&
+show_driver_mutations(std::ostream& os,
+                      const RACES::Mutations::DriverMutations& driver_mutations, 
+                      const std::string& indent="")
+{
+    using namespace RACES::Mutations;
+
+    auto SID_it = driver_mutations.SIDs.begin();
+    auto CNA_it = driver_mutations.CNAs.begin();
+
+    for (auto order_it = driver_mutations.application_order.begin();
+        order_it != driver_mutations.application_order.end(); ++order_it) {
+
+        switch(*order_it) {
+            case DriverMutations::SID_TURN:
+                os << indent << *SID_it << std::endl;
+                ++SID_it;
+
+                break;
+            case DriverMutations::CNA_TURN:
+                os << indent << *CNA_it << std::endl;
+                ++CNA_it;
+
+                break;
+            case DriverMutations::WGD_TURN:
+                os << indent << "Whole genome duplication" << std::endl;
+                break;
+            default:
+                throw std::runtime_error("Unsupported driver mutation type.");
+        }
+    }
+   
+    return os;
+}
+
 void MutationEngine::show() const
 {
   using namespace Rcpp;
@@ -1036,18 +1071,9 @@ void MutationEngine::show() const
 
   Rcout << std::endl << std::endl << " Driver mutations" << std::endl;
   for (const auto&[mutant_name, driver_mutations]: m_properties.get_driver_mutations()) {
-    if (driver_mutations.SIDs.size()>0 || driver_mutations.CNAs.size()>0) {
-      if (driver_mutations.SIDs.size()>0) {
-        Rcout << "   \"" << mutant_name << "\" SNVs&indels: " << std::endl;
-
-        show_list(Rcout, driver_mutations.SIDs.begin(), driver_mutations.SIDs.end(), "       ");
-      }
-      if (driver_mutations.CNAs.size()>0) {
-        Rcout << "   \"" << mutant_name << "\" CNAs: " << std::endl;
-
-        show_list(Rcout, driver_mutations.CNAs.begin(),  driver_mutations.CNAs.end(), "       ");
-      }
-    } else {
+    Rcout << "   \"" << mutant_name << "\":" << std::endl;
+    show_driver_mutations(Rcout, driver_mutations, "       ");
+    if (driver_mutations.application_order.size()==0) {
       Rcout << "   No driver mutations for \"" << mutant_name << "\"" << std::endl;
     }
   }

@@ -35,7 +35,7 @@ public:
     {
         using namespace Rcpp;
 
-        Rcout << "Whole Genome Doubling";
+        Rcout << "Whole Genome Doubling" << std::endl;
     }
 };
 
