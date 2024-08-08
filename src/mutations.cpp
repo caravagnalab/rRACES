@@ -810,9 +810,8 @@ RCPP_MODULE(Mutations){
 //' passenger_CNAs_url <- paste0("https://raw.githubusercontent.com/",
 //'                              "caravagnalab/rRACES/main/inst/extdata/",
 //'                              "passenger_CNAs_hg19.csv")
-//' germline_url <- paste0("https://www.dropbox.com/scl/fi/g9oloxkip18tr1r",
-//'                        "m6wjve/germline_data_demo.tar.gz?rlkey=15jshul",
-//'                        "d3bqgyfcs7fa0bzqeo&dl=1")
+//' germline_url <- paste0("https://zenodo.org/records/13166780/files/",
+//'                        "germline_data_demo.tar.gz")
 //'
 //' # build a mutation engine and save the required files into the
 //' # directory "Test". The `drivers_url` parameter is optional, but
