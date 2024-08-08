@@ -94,6 +94,8 @@ public:
 
   Rcpp::List get_timed_exposures() const;
 
+  Rcpp::List get_bulk_allelic_fragmentation(const std::string& sample_name) const;
+
   inline std::string get_reference_path() const
   {
     return reference_path;

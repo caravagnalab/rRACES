@@ -265,7 +265,7 @@ the specific CNA can be applied during the simulation as it follows.
 
 ```{r, eval=FALSE}
 m_engine <- MutationEngine(setup_code = "demo",
-                                  tumour_type = "BRCA-UK")
+                           tumour_type = "BRCA-UK")
 ```
 
 #### Germline Mutations
@@ -409,6 +409,16 @@ phylogenetic forest can be obtained by using the method
 # get the exposures used in placing the mutations
 phylo_forest$get_exposures()
 ```
+The method `MutationEngine$get_bulk_allelic_fragmentation()` returns a dataframe
+reporting the allelic type per genome fragment.
+
+```{r}
+# get the name of the first sample
+sample_name <- phylo_forest$get_samples_info()[["name"]][1]
+
+# print the bulk allelic fragmentation
+phylo_forest@get_bulk_allelic_fragmentation(sample_name) %>% head()
+```
 
 The details about the SNV and indel signatures adopted during the evolution are
 available in the mutation engine and they can be retrieved by using the methods
@@ -422,7 +432,7 @@ m_engine$get_SNV_signatures()[1:6, 1:5]
 m_engine$get_indel_signatures()[1:6, 1:5]
 ```
 
-The name of the subject whose germline corresponds to
+Finally, the name of the subject whose germline corresponds to
 wild-type genome in the phylogenetic forest can be
 obtained by the method `Phylogenetic$get_germline_subject()`.
 

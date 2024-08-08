@@ -1189,6 +1189,24 @@ RCPP_MODULE(Mutations){
     .method("get_exposures", &PhylogeneticForest::get_timed_exposures,
             "Get the timed exposure dataframe")
 
+//' @name PhylogeneticForest$get_bulk_allelic_fragmentation
+//' @title Getting the bulk allelic fragmentation dataframe
+//' @description This method returns a dataframe representing the bulk allelic
+//'     fragmentation of the genome.
+//' @param sample_name The name of the sample whose bulk allelic fragmentation
+//'     is aimed.
+//' @return A dataframe reporting, for each genomic fragment and for all
+//'     the allelic type on the genomic fragment, the chromosome (`chr`),
+//'     the first base position (`begin`), the last base position (`end`),
+//'     the number of copy of the major and minor alleles (`major` and 
+//'     `minor`, respectively), and the ratio between the number of cells
+//'     exhibiting this allelic type and the total number of cells in the
+//'     sample.
+//' @seealso `vignette("mutations")` for usage examples
+    .method("get_bulk_allelic_fragmentation",
+            &PhylogeneticForest::get_bulk_allelic_fragmentation,
+            "Get the bulk allelic fragmentation dataframe")
+
 //' @name PhylogeneticForest$get_first_occurrences
 //' @title Getting the mutation first occurrences
 //' @description This method returns the identifier of the cell in which a mutation occurs

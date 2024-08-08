@@ -466,6 +466,76 @@ Rcpp::List PhylogeneticForest::get_timed_exposures() const
                            _["exposure"]=probs, _["type"]=types);
 }
 
+void fill_allelic_bulk_data(const std::map<RACES::Mutations::AllelicType, size_t>& chr_allelic_count,
+                            const RACES::Mutations::ChromosomeId& chr_id,
+                            const RACES::Mutations::ChrPosition frag_begin,
+                            const RACES::Mutations::ChrPosition frag_end, const double& num_of_cells,
+                            Rcpp::StringVector& chromosomes, Rcpp::IntegerVector& fragment_begins,
+                            Rcpp::IntegerVector& fragment_ends, Rcpp::IntegerVector& major_counts,
+                            Rcpp::IntegerVector& minor_counts, Rcpp::NumericVector& ratios)
+{
+    using namespace RACES::Mutations;
+
+    for (const auto& [atype, count] : chr_allelic_count) {
+        chromosomes.push_back(GenomicPosition::chrtos(chr_id));
+        fragment_begins.push_back(frag_begin);
+        fragment_ends.push_back(frag_end);
+
+        if (atype[0] < atype[1]) {
+            major_counts.push_back(atype[1]);
+            minor_counts.push_back(atype[0]);
+        } else {
+            major_counts.push_back(atype[0]);
+            minor_counts.push_back(atype[1]);
+        }
+
+        ratios.push_back(count/num_of_cells);
+    }
+}
+
+Rcpp::List 
+PhylogeneticForest::get_bulk_allelic_fragmentation(const std::string& sample_name) const
+{
+    using namespace Rcpp;
+    using namespace RACES::Mutations;
+
+    StringVector chromosomes;
+    IntegerVector fragment_begins, fragment_ends;
+    IntegerVector major_counts, minor_counts;
+    NumericVector ratios;
+
+    const double num_of_cells = get_leaves_mutations().size();
+
+    const auto& chr_map = get_germline_mutations().get_chromosomes();
+
+    const auto allelic_count = get_allelic_count(sample_name, 2);
+    for (const auto& [chr_id, chr_allelic_count] : allelic_count) {
+        auto a_count_it = chr_allelic_count.begin();
+        auto next_a_count_it = a_count_it;
+        while (++next_a_count_it != chr_allelic_count.end()) {
+            fill_allelic_bulk_data(a_count_it->second, chr_id,
+                                   a_count_it->first,
+                                   next_a_count_it->first-1, num_of_cells,
+                                   chromosomes, fragment_begins,
+                                   fragment_ends, major_counts,
+                                   minor_counts, ratios);
+
+            a_count_it = next_a_count_it;
+        }
+
+        fill_allelic_bulk_data(a_count_it->second, chr_id,
+                               a_count_it->first,
+                               chr_map.at(chr_id).size(), num_of_cells,
+                               chromosomes, fragment_begins,
+                               fragment_ends, major_counts,
+                               minor_counts, ratios);
+    }
+
+    return DataFrame::create(_["chr"]=chromosomes, _["begin"]=fragment_begins,
+                             _["end"]=fragment_ends, _["major"]=major_counts,
+                             _["minor"]=minor_counts, _["ratio"]=ratios);
+}
+
 void PhylogeneticForest::set_reference_path(const std::string reference_path)
 {
   if (!std::filesystem::exists(reference_path)) {
