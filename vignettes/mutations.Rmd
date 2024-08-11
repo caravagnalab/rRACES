@@ -375,6 +375,22 @@ phylo_forest$get_sampled_cell_mutations(cell_id) %>% head()
 phylo_forest$get_sampled_cell_CNAs(cell_id) %>% head()
 ```
 
+The method `PhylogeneticForest$get_samples_info()` is analogous to
+`DescendantForest$get_samples_info()`: it returns a dataframe containing
+information about the forest samples. However, the former method adds two
+columns to the result of the latter: "`DNA_quantity`" and
+"`equivalent_normal_cells`". The former column reports the overall quantity
+of tumoral DNA in the sample, i.e., the sum of the lengths of all the
+alleles in the corresponding sample. This quantity is a natural number,
+nevertheless, it is stored as a real number as it usually usually exceeds
+the largest natural number that can be natively represented by R.
+The column "`equivalent_normal_cells`" instead contains the number of
+normal cells that contain as much DNA as the sample tumoral cells.
+
+```{r}
+phylo_forest$get_samples_info()
+```
+
 The method `PhylogeneticForest$get_germline_mutations()` returns
 the SNVs and the indels in the germline.
 
@@ -382,7 +398,6 @@ the SNVs and the indels in the germline.
 # extract the germline mutation
 phylo_forest$get_germline_mutations() %>% head()
 ```
-
 
 Users can also identify the cell in which a mutation emerged
 even when the cell was not sampled.
@@ -409,6 +424,7 @@ phylogenetic forest can be obtained by using the method
 # get the exposures used in placing the mutations
 phylo_forest$get_exposures()
 ```
+
 The method `MutationEngine$get_bulk_allelic_fragmentation()` returns a dataframe
 reporting the allelic type per genome fragment.
 

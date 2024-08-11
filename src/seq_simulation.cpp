@@ -400,7 +400,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
 
   const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
 
-  auto normal_sample = forest.get_germline_sample("normal_sample", true);
+  auto normal_sample = forest.get_normal_sample("normal_sample", true);
   if (with_normal_sample) {
     mutations_list.push_back(normal_sample);
   }
@@ -466,8 +466,8 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
   simulator.enable_SAM_writing(write_SAM);
 
   std::list<RACES::Mutations::SampleGenomeMutations> mutations_list;
-  mutations_list.push_back(forest.get_germline_sample("normal_sample",
-                                                      with_preneoplastic));
+  mutations_list.push_back(forest.get_normal_sample("normal_sample",
+                                                    with_preneoplastic));
 
   const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
 

@@ -56,7 +56,46 @@ PhylogeneticForest::PhylogeneticForest(RACES::Mutations::PhylogeneticForest&& or
 
 Rcpp::List PhylogeneticForest::get_samples_info() const
 {
-return SpatialSimulation::get_samples_info(get_samples());
+    auto info = SpatialSimulation::get_samples_info(get_samples());
+
+    const auto& samples = get_samples();
+    std::vector<size_t> DNA(samples.size(), 0);
+    for (const auto& [cell_id, mutations_ptr] : get_leaves_mutations()) {
+        DNA[get_coming_from().at(cell_id)] += mutations_ptr->allelic_size();
+    }
+
+    std::map<std::string, size_t> sample_name_map;
+    for (size_t j=0; j<samples.size(); ++j) {
+        sample_name_map[samples[j].get_name()] = j;
+    }
+
+    size_t normal_DNA_quantity{0}; 
+    for (auto [cell_id, normal_genome] : get_normal_genomes()) {
+        normal_DNA_quantity += normal_genome.allelic_size();
+    }
+    normal_DNA_quantity /= get_roots().size();
+
+    using namespace Rcpp;
+
+    NumericVector DNA_quantities(DNA.size());
+    NumericVector equivalent_normal_cells(DNA.size());
+    StringVector name_col = info["name"];
+    for (size_t i=0; i<name_col.size(); ++i) {
+        const std::string sample_name = Rcpp::as<std::string>(name_col[i]);
+
+        const auto j = sample_name_map.at(sample_name);
+        
+        DNA_quantities[j] = DNA[i];
+        equivalent_normal_cells[j] = static_cast<double>(DNA[i])/normal_DNA_quantity;
+    }
+
+    return DataFrame::create(_["name"]=info["name"], _["xmin"]=info["xmin"],
+                             _["ymin"]=info["ymin"], _["xmax"]=info["xmax"],
+                             _["ymax"]=info["ymax"],
+                             _["tumour_cells"]=info["tumour_cells"],
+                             _["tumour_cells_in_bbox"]=info["tumour_cells_in_bbox"],
+                             _["time"]=info["time"], _["DNA_quantity"]=DNA_quantities,
+                             _["equivalent_normal_cells"]=equivalent_normal_cells);
 }
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const
