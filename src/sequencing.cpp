@@ -80,19 +80,23 @@ RCPP_MODULE(Sequencing){
 //' @name BasicIlluminaSequencer
 //' @description This method builds a basic Illumina sequencer model.
 //' @param error_rate The error rate of the sequencer model.
-//' @param seed The seed of the random error generator.
+//' @param random_quality_scores A Boolean flag to enable a basic quality score 
+//'   model. When it is set to `false`, all the bases with no sequencing
+//'   errors have the same quality score. The random quality score model
+//'   increases the computation time of about 70%. (default: `true`)
+//' @param seed The seed of the random error generator (default: `NULL`).
 //' @return A basic Illumina sequencer model.
 //' @examples
 //' # build a sequencer model having error rate 4e-3
 //' sequencer <- BasicIlluminaSequencer(error_rate=4e-3)
 //' sequencer
 //'
-//' # build a sequencer model having error rate 4e-3
-//' # and set the seed to 5
+//' # build a sequencer model having error rate 4e-3 and set the seed to 5
 //' sequencer <- BasicIlluminaSequencer(error_rate=4e-3, seed=5)
 //' sequencer
     function("BasicIlluminaSequencer", &BasicIlluminaSequencer::build_sequencer,
-             List::create(_["error_rate"], _["seed"] = R_NilValue),
+             List::create(_["error_rate"], _["random_quality_scores"] = true,
+                          _["seed"] = R_NilValue),
              "Create a basic Illumina sequencer model");
 
 //' @name simulate_seq

@@ -32,14 +32,39 @@ public:
     static ErrorlessIlluminaSequencer build_sequencer();
 };
 
-class BasicIlluminaSequencer : public RACES::Sequencers::Illumina::BasicSequencer<>
+class BasicIlluminaSequencer
 {
+    std::shared_ptr<RACES::Sequencers::Illumina::BasicSequencer<RACES::Sequencers::Illumina::BasicQualityScoreModel>> random_score_seq;
+    std::shared_ptr<RACES::Sequencers::Illumina::BasicSequencer<RACES::Sequencers::ConstantQualityScoreModel>> constant_score_seq;
 public:
-    BasicIlluminaSequencer(const double error_rate, const int seed=0);
+
+    BasicIlluminaSequencer(const double error_rate, const bool& random_quality_scores=true,
+                           const int seed=0);
 
     void show() const;
 
+    const double& get_error_rate() const;
+
+    inline bool producing_random_scores() const
+    {
+        return random_score_seq != nullptr;
+    }
+
+    template<typename QUALITY_SCORE_MODEL>
+    RACES::Sequencers::Illumina::BasicSequencer<QUALITY_SCORE_MODEL>& random_score_sequencer() const
+    {
+        if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, RACES::Sequencers::Illumina::BasicSequencer<RACES::Sequencers::Illumina::BasicQualityScoreModel>>) {
+            return *random_score_seq;
+        }
+        if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, RACES::Sequencers::Illumina::BasicSequencer<RACES::Sequencers::ConstantQualityScoreModel>>) {
+            return *constant_score_seq;
+        }
+
+        throw std::domain_error("Unsupported quality score model.");
+    }
+
     static BasicIlluminaSequencer build_sequencer(const SEXP error_rate,
+                                                  const SEXP random_quality_scores,
                                                   const SEXP seed);
 };
 

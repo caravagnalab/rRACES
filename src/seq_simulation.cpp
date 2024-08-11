@@ -297,8 +297,17 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
 
         Rcpp::XPtr<BasicIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
 
-        return simulator(*sequencer_ptr, mutations_list, chromosome_ids,
-                         coverage, normal_sample, purity, base_name, progress_bar_stream);
+        if (sequencer_ptr->producing_random_scores()) {
+            using BasicQualityScoreModel = RACES::Sequencers::Illumina::BasicQualityScoreModel;
+            return simulator(sequencer_ptr->random_score_sequencer<BasicQualityScoreModel>(), 
+                             mutations_list, chromosome_ids, coverage, normal_sample, purity,
+                             base_name, progress_bar_stream);
+        } else {
+            using ConstantQualityScoreModel = RACES::Sequencers::ConstantQualityScoreModel;
+            return simulator(sequencer_ptr->random_score_sequencer<ConstantQualityScoreModel>(), 
+                             mutations_list, chromosome_ids, coverage, normal_sample, purity,
+                             base_name, progress_bar_stream);
+        }
       }
       if ( s4obj.is("Rcpp_ErrorlessIlluminaSequencer")) {
         Rcpp::Environment env( s4obj );
