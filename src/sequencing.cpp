@@ -107,7 +107,7 @@ RCPP_MODULE(Sequencing){
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
 //' @param chromosomes The chromosomes that must be considered (default:
-//'   all the reference chromosomes).
+//'   `NULL`, i.e., all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
 //' @param insert_size_mean The insert size mean. Use 0 for single read 
@@ -170,7 +170,7 @@ RCPP_MODULE(Sequencing){
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
 //' @param chromosomes The chromosomes that must be considered (default:
-//'   all the reference chromosomes).
+//'   `NULL`, i.e., all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
 //' @param insert_size_mean The insert size mean. Use 0 for single read 
