@@ -75,8 +75,8 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://ftp.ensembl.org/pub/grch37/release-111/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.dna.chromosome.22.fa.gz",
       "https://cancer.sanger.ac.uk/signatures/documents/2123/COSMIC_v3.4_SBS_GRCh37.txt",
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
-      "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
-      "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
+      "https://raw.githubusercontent.com/caravagnalab/rRACES/" GIT_HASH "/inst/extdata/driver_mutations_hg19.csv",
+      "https://raw.githubusercontent.com/caravagnalab/rRACES/" GIT_HASH "/inst/extdata/passenger_CNAs_hg19.csv",
       "https://zenodo.org/records/13166780/files/germline_data_demo.tar.gz"
     }
   },
@@ -87,8 +87,8 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://ftp.ensembl.org/pub/release-112/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz",
       "https://cancer.sanger.ac.uk/signatures/documents/2124/COSMIC_v3.4_SBS_GRCh38.txt",
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
-      "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg38.csv",
-      "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg38.csv",
+      "https://raw.githubusercontent.com/caravagnalab/rRACES/" GIT_HASH "/inst/extdata/driver_mutations_hg38.csv",
+      "https://raw.githubusercontent.com/caravagnalab/rRACES/" GIT_HASH "/inst/extdata/passenger_CNAs_hg38.csv",
       "https://zenodo.org/records/13166780/files/germline_data_hg38.tar.gz"
     }
   },
@@ -99,8 +99,8 @@ std::map<std::string, MutationEngineSetup> supported_setups{
       "https://ftp.ensembl.org/pub/grch37/release-111/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz",
       "https://cancer.sanger.ac.uk/signatures/documents/2123/COSMIC_v3.4_SBS_GRCh37.txt",
       "https://cancer.sanger.ac.uk/signatures/documents/2121/COSMIC_v3.4_ID_GRCh37.txt",
-      "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/driver_mutations_hg19.csv",
-      "https://raw.githubusercontent.com/caravagnalab/rRACES/main/inst/extdata/passenger_CNAs_hg19.csv",
+      "https://raw.githubusercontent.com/caravagnalab/rRACES/" GIT_HASH "/inst/extdata/driver_mutations_hg19.csv",
+      "https://raw.githubusercontent.com/caravagnalab/rRACES/" GIT_HASH "/inst/extdata/passenger_CNAs_hg19.csv",
       "https://zenodo.org/records/13166780/files/germline_data_hg19.tar.gz"
     }
   }

@@ -4,9 +4,11 @@ CXX_STD=CXX17
 BUILD_DIR =     ../_builds
 INSTALL_DIR =   ../_install
 
+GIT_HASH = $(shell git describe --always --match 'NOT A TAG')
+
 PKG_LIBS += -L$(INSTALL_DIR)/lib/ -lRACES
 
-PKG_CXXFLAGS += -I$(INSTALL_DIR)/include/
+PKG_CXXFLAGS += -I$(INSTALL_DIR)/include/ -DGIT_HASH=\"$(GIT_HASH)\"
 
 LIBRACES = $(INSTALL_DIR)/lib/libRACES.so
 
