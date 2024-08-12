@@ -258,14 +258,22 @@ m_engine
 
 The passenger CNAs applied during the simulation depend on tumour type.
 The type of tumour can be specified when building the mutation engine
-by using the `tumour_type` parameter. For instance, if the
-passenger CNAs file used to build the mutation engine contains
+by using the parameters `tumour_type` or `tumour_study`. For instance,
+if the passenger CNAs file used to build the mutation engine contains
 some of the data identified in breast carcinoma in the UK,
 the specific CNA can be applied during the simulation as it follows.
 
 ```{r, eval=FALSE}
 m_engine <- MutationEngine(setup_code = "demo",
-                           tumour_type = "BRCA-UK")
+                           tumour_type = "BRCA",
+                           tumour_study = "UK")
+```
+
+The complete list of available tumour types and studies in a set-up
+can be obtained by using the function `get_available_tumours_in()`.
+
+```{r}
+get_available_tumours_in(setup_code = "demo") %>% head()
 ```
 
 #### Germline Mutations

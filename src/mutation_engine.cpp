@@ -408,25 +408,27 @@ RACES::Mutations::GenomicRegion get_CNA_region(const RACES::IO::CSVReader::CSVRo
 
 
 std::vector<RACES::Mutations::CNA> load_passenger_CNAs(const std::filesystem::path& CNAs_csv,
-                                                       const std::string& tumour_type)
+                                                       const std::string& tumour_type,
+                                                       const std::string& tumour_study)
 {
-  std::vector<RACES::Mutations::CNA> CNAs;
+  std::set<RACES::Mutations::CNA> CNAs;
 
   RACES::IO::CSVReader csv_reader(CNAs_csv, true, '\t');
 
   size_t row_num{2};
   for (const auto& row : csv_reader) {
-    if (row.size()<6) {
-      throw std::runtime_error("The CNA CSV must contains at least 6 columns");
+    if (row.size()<7) {
+      throw std::runtime_error("The CNA CSV must contains at least 7 columns");
     }
-    if ((tumour_type=="") || (row.get_field(5) == tumour_type)) {
+    if (((tumour_type=="") || (row.get_field(5) == tumour_type))
+        && ((tumour_study=="") || (row.get_field(6) == tumour_study))) {
       const auto region = get_CNA_region(row, row_num);
 
       const auto major = row.get_field(3);
       try {
         if (major=="NA" || (stoi(major)>1)) {
-          CNAs.emplace_back(region.get_begin(), region.size(),
-                            CNA::Type::AMPLIFICATION);
+          CNAs.emplace(region.get_begin(), region.size(),
+                       CNA::Type::AMPLIFICATION);
         }
       } catch (std::invalid_argument const&) {
         throw std::domain_error("Unknown major specification " + major
@@ -437,8 +439,8 @@ std::vector<RACES::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
       const auto minor = row.get_field(4);
       try {
         if (minor=="NA" || (stoi(minor)<1)) {
-          CNAs.emplace_back(region.get_begin(), region.size(),
-                            CNA::Type::DELETION);
+          CNAs.emplace(region.get_begin(), region.size(),
+                       CNA::Type::DELETION);
         }
       } catch (std::invalid_argument const&) {
         throw std::domain_error("Unknown minor specification " + major
@@ -450,7 +452,7 @@ std::vector<RACES::Mutations::CNA> load_passenger_CNAs(const std::filesystem::pa
     ++row_num;
   }
 
-  return CNAs;
+  return std::vector<RACES::Mutations::CNA>(CNAs.begin(), CNAs.end());
 }
 
 void MutationEngine::init_mutation_engine(const bool& quiet)
@@ -468,10 +470,12 @@ MutationEngine::MutationEngine(const std::string& setup_name,
                                const size_t& max_motif_size,
                                const size_t& max_repetition_storage,
                                const std::string& tumour_type,
+                               const std::string& tumor_study,
                                const bool& quiet):
   storage(setup_storage(setup_name)), germline_subject(germline_subject),
   context_sampling(context_sampling), max_motif_size(max_motif_size),
-  max_repetition_storage(max_repetition_storage), tumour_type(tumour_type)
+  max_repetition_storage(max_repetition_storage), tumour_type(tumour_type),
+  tumor_study(tumor_study)
 {
   auto setup_cfg = supported_setups.at(setup_name);
 
@@ -490,6 +494,7 @@ MutationEngine::MutationEngine(const std::string& directory,
                                const size_t& max_motif_size,
                                const size_t& max_repetition_storage,
                                const std::string& tumour_type,
+                               const std::string& tumor_study,
                                const bool& quiet):
   storage(setup_storage(directory, reference_source, SBS_signatures_source,
                         indel_signatures_source, drivers_source,
@@ -497,7 +502,7 @@ MutationEngine::MutationEngine(const std::string& directory,
   germline_subject(germline_subject), context_sampling(context_sampling),
   max_motif_size(max_motif_size),
   max_repetition_storage(max_repetition_storage),
-  tumour_type(tumour_type)
+  tumour_type(tumour_type), tumor_study(tumor_study)
 {
   init_mutation_engine(quiet);
 }
@@ -559,6 +564,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                                      const size_t& max_motif_size,
                                      const size_t& max_repetition_storage,
                                      const std::string& tumour_type,
+                                     const std::string& tumor_study,
                                      const bool quiet)
 {
   if (setup_code!="") {
@@ -572,7 +578,8 @@ MutationEngine::build_MutationEngine(const std::string& directory,
     }
 
     return MutationEngine(setup_code, germline_subject, context_sampling,
-                          max_motif_size, max_repetition_storage, tumour_type, quiet);
+                          max_motif_size, max_repetition_storage, tumour_type,
+                          tumor_study, quiet);
   }
 
   if (directory=="" || reference_source=="" || SBS_signatures_source==""
@@ -588,8 +595,40 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                         indel_signatures_source, drivers_source,
                         passenger_CNAs_source, germline_source, germline_subject,
                         context_sampling, max_motif_size, max_repetition_storage,
-                        tumour_type, quiet);
+                        tumour_type, tumor_study, quiet);
 
+}
+
+Rcpp::List MutationEngine::get_available_tumour_type(const std::string& setup_code)
+{
+    auto setup_cfg = supported_setups.at(setup_code);
+
+    auto storage = setup_storage(setup_code);
+
+    std::set<std::pair<std::string, std::string>> CNA_type_study;
+
+    RACES::IO::CSVReader csv_reader(storage.get_passenger_CNAs_path(), true, '\t');
+    for (const auto& row : csv_reader) {
+        if (row.size()<7) {
+            throw std::runtime_error("The CNA CSV must contains at least 7 columns");
+        }
+
+        CNA_type_study.insert({row.get_field(5), row.get_field(6)});
+    }
+
+    using namespace Rcpp;
+
+    StringVector types(CNA_type_study.size()), studies(CNA_type_study.size());
+
+    size_t i{0};
+    for (const auto& [type, study] : CNA_type_study) {
+        types[i] = type;
+        studies[i] = study;
+
+        ++i;
+    }
+    
+    return DataFrame::create(_["type"]=types, _["study"]=studies);
 }
 
 
@@ -1133,7 +1172,7 @@ void MutationEngine::reset(const bool full, const bool quiet)
   auto indel_signatures = load_signature<IDType>(storage);
 
   auto passenger_CNAs = load_passenger_CNAs(storage.get_passenger_CNAs_path(),
-                                            tumour_type);
+                                            tumour_type, tumor_study);
 
   auto driver_storage = DriverStorage::load(storage.get_driver_mutations_path());
 

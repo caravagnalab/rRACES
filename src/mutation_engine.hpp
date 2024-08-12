@@ -43,6 +43,7 @@ class MutationEngine
     size_t max_motif_size;
     size_t max_repetition_storage;
     std::string tumour_type;
+    std::string tumor_study;
 
     RACES::Mutations::ContextIndex<AbsGenotypePosition> context_index;
     RACES::Mutations::RSIndex rs_index;
@@ -80,6 +81,7 @@ public:
                    const size_t& max_motif_size=50,
                    const size_t& max_repetition_storage=500000,
                    const std::string& tumour_type="",
+                   const std::string& tumor_study="",
                    const bool& quiet=false);
 
     MutationEngine(const std::string& directory,
@@ -94,6 +96,7 @@ public:
                    const size_t& max_motif_size=50,
                    const size_t& max_repetition_storage=500000,
                    const std::string& tumour_type="",
+                   const std::string& tumor_study="",
                    const bool& quiet=false);
 
     static Rcpp::List get_supported_setups();
@@ -207,7 +210,10 @@ public:
                          const size_t& max_motif_size,
                          const size_t& max_repetition_storage,
                          const std::string& tumour_type,
+                         const std::string& tumour_study,
                          const bool quiet);
+
+    static Rcpp::List get_available_tumour_type(const std::string& setup_code);
 
     inline void set_context_sampling(const size_t& context_sampling)
     {

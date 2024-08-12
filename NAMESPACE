@@ -19,6 +19,7 @@ export(bbox_sampler)
 export(annotate_forest)
 export(load_samples_forest)
 
+export(get_available_tumours_in)
 export(get_mutation_engine_codes)
 export(get_relevant_branches)
 export(load_phylogenetic_forest)

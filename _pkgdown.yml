@@ -57,6 +57,7 @@ reference:
   - Amplification
   - starts_with("CNA")
   - Deletion
+  - get_available_tumours_in
   - get_mutation_engine_codes
   - get_relevant_branches
   - load_phylogenetic_forest

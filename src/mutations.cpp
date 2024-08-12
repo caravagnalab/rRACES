@@ -788,6 +788,10 @@ RCPP_MODULE(Mutations){
 //'   the admissible passenger CNAs. If any passenger CNA in the dataset is
 //'   admissible, use the the empty string `""` (optional: default value is
 //'   `""`).
+//' @param tumour_study The nationality code of the tumour study. This is 
+//'   used to select the admissible passenger CNAs. If any tumor study in
+//'   the dataset is admissible, use the the empty string `""` (optional:
+//'   default value is `""`).
 //' @param quiet An optional  Boolean flag to avoid the progress bar 
 //'   (default: false).
 //' @seealso [MutationEngine$get_germline_subjects()] to get the available
@@ -874,8 +878,27 @@ RCPP_MODULE(Mutations){
                         _["germline_subject"] = "", _["context_sampling"] = 100,
                         _["max_motif_size"] = 50,
                         _["max_repetition_storage"] = 500000,
-                        _["tumour_type"] = "", _["quiet"]=false),
+                        _["tumour_type"] = "", _["tumour_study"] = "",
+                        _["quiet"]=false),
            "Create a MutationEngine");
+
+//' @name get_available_tumours_in
+//' @title Getting the tumour types and studies available for a set-up code.
+//' @description This method returns the tumour types and studies available
+//'   for a set-up code.
+//' @param setup_code The set-up code whose available tumour types and studies
+//'   are requested. 
+//' @return A dataframe reporting the types and the studies available for a
+//'   set-up code.
+//' @seealso [MutationEngine()] to build a mutation engine
+//' @export
+//' @examples
+//' # get the types and studies available for the "demo" set-up code
+//' get_available_tumours_in("demo")
+  function("get_available_tumours_in",
+           &MutationEngine::get_available_tumour_type,
+           List::create(_["setup_code"]),
+           "Get the set of tumour types and studies for a set-up code.");
 
 //' @name get_mutation_engine_codes
 //' @title Getting the supported set-up codes
