@@ -80,7 +80,7 @@ Rcpp::List PhylogeneticForest::get_samples_info() const
     NumericVector DNA_quantities(DNA.size());
     NumericVector equivalent_normal_cells(DNA.size());
     StringVector name_col = info["name"];
-    for (size_t i=0; i<name_col.size(); ++i) {
+    for (auto i=0; i<name_col.size(); ++i) {
         const std::string sample_name = Rcpp::as<std::string>(name_col[i]);
 
         const auto j = sample_name_map.at(sample_name);
