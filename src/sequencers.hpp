@@ -51,12 +51,12 @@ public:
     }
 
     template<typename QUALITY_SCORE_MODEL>
-    RACES::Sequencers::Illumina::BasicSequencer<QUALITY_SCORE_MODEL>& random_score_sequencer() const
+    RACES::Sequencers::Illumina::BasicSequencer<QUALITY_SCORE_MODEL>& basic_sequencer() const
     {
-        if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, RACES::Sequencers::Illumina::BasicSequencer<RACES::Sequencers::Illumina::BasicQualityScoreModel>>) {
+        if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, RACES::Sequencers::Illumina::BasicQualityScoreModel>) {
             return *random_score_seq;
         }
-        if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, RACES::Sequencers::Illumina::BasicSequencer<RACES::Sequencers::ConstantQualityScoreModel>>) {
+        if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, RACES::Sequencers::ConstantQualityScoreModel>) {
             return *constant_score_seq;
         }
 
