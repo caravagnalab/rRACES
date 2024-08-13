@@ -6,6 +6,10 @@ INSTALL_DIR =   ../_install
 
 GIT_HASH = $(shell git describe --always --match 'NOT A TAG')
 
+ifeq ("$(GIT_HASH)", "")
+   GIT_HASH = 60fbe68
+endif
+
 PKG_LIBS += -L$(INSTALL_DIR)/lib/ -lRACES
 
 PKG_CXXFLAGS += -I$(INSTALL_DIR)/include/ -DGIT_HASH=\"$(GIT_HASH)\"
