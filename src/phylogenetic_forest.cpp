@@ -532,6 +532,18 @@ void fill_allelic_bulk_data(const std::map<RACES::Mutations::AllelicType, size_t
     }
 }
 
+const std::list<RACES::Mutants::CellId>&
+PhylogeneticForest::get_cell_ids_in(const std::string& sample_name) const
+{
+    for (const auto& sample: get_samples()) {
+        if (sample.get_name() == sample_name) {
+            return sample.get_cell_ids();
+        }
+    }
+
+    throw std::domain_error("Unknown sample \"" + sample_name +"\".");
+}
+
 Rcpp::List 
 PhylogeneticForest::get_bulk_allelic_fragmentation(const std::string& sample_name) const
 {
@@ -543,7 +555,7 @@ PhylogeneticForest::get_bulk_allelic_fragmentation(const std::string& sample_nam
     IntegerVector major_counts, minor_counts;
     NumericVector ratios;
 
-    const double num_of_cells = get_leaves_mutations().size();
+    const double num_of_cells = get_cell_ids_in(sample_name).size();
 
     const auto& chr_map = get_germline_mutations().get_chromosomes();
 

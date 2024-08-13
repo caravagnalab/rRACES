@@ -58,6 +58,9 @@ public:
     return ForestCore::get_nodes(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this));
   }
 
+  const std::list<RACES::Mutants::CellId>&
+  get_cell_ids_in(const std::string& sample_name) const;
+
   Rcpp::List get_samples_info() const;
 
   inline Rcpp::List get_species_info() const
