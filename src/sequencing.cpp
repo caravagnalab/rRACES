@@ -128,6 +128,8 @@ RCPP_MODULE(Sequencing){
 //'   (default: `1`).
 //' @param with_normal_sample A Boolean flag to enable/disable the
 //'   analysis of a normal sample (default: `TRUE`).
+//' @param filename_prefix The prefix of the output SAM file name
+//'   (default: `"chr_"`).
 //' @param template_name_prefix The template name prefix (default:
 //'   `"r"`).
 //' @param seed The random seed for the internal random generator
@@ -156,6 +158,7 @@ RCPP_MODULE(Sequencing){
                         _["write_SAM"] = false, _["update_SAM"] = false,
                         _["cell_labelling"] = R_NilValue, _["purity"] = 1,
                         _["with_normal_sample"] = true,
+                        _["filename_prefix"] = "chr_",
                         _["template_name_prefix"] = "r",
                         _["seed"] = R_NilValue),
            "Simulate the sequencing of the samples in a phylogenetic forest");
@@ -185,6 +188,8 @@ RCPP_MODULE(Sequencing){
 //' @param update_SAM Update the output directory (default: `FALSE`).
 //' @param with_preneoplastic Add the forest pre-neoplastic mutations
 //'   to the sample cells. (default: `TRUE`).
+//' @param filename_prefix The prefix of the output SAM file name
+//'   (default: `"chr_"`).
 //' @param template_name_prefix The template name prefix (default:
 //'   `"r"`).
 //' @param seed The random seed for the internal random generator
@@ -213,6 +218,7 @@ RCPP_MODULE(Sequencing){
                         _["output_dir"] = "rRACES_normal_SAM",
                         _["write_SAM"] = true, _["update_SAM"] = false,
                         _["with_preneoplastic"] = true,
+                        _["filename_prefix"] = "chr_",
                         _["template_name_prefix"] = "r",
                         _["seed"] = R_NilValue),
            "Simulate the sequencing of a normal sample");

@@ -33,6 +33,7 @@ Rcpp::List  simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                          const bool& update_SAM_dir,
                          const SEXP& FACS_labelling_function,
                          const double& purity, const bool& with_normal_sample,
+                         const std::string& filename_prefix,
                          const std::string& template_name_prefix,
                          const SEXP& seed);
 
@@ -43,6 +44,7 @@ Rcpp::List  simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequence
                                 const std::string& output_dir, const bool& write_SAM,
                                 const bool& update_SAM_dir,
                                 const bool& with_preneoplastic,
+                                const std::string& filename_prefix,
                                 const std::string& template_name_prefix,
                                 const SEXP& seed);
 

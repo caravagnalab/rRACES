@@ -360,6 +360,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                         const bool& update_SAM_dir,
                         const SEXP& FACS_labelling_function,
                         const double& purity, const bool& with_normal_sample,
+                        const std::string& filename_prefix,
                         const std::string& template_name_prefix,
                         const SEXP& seed)
 {
@@ -415,7 +416,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
   }
 
   auto result = simulate_seq(simulator, sequencer, mutations_list, chr_ids, coverage,
-                             normal_sample, purity, "chr_", Rcpp::Rcout);
+                             normal_sample, purity, filename_prefix, Rcpp::Rcout);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);
@@ -431,6 +432,7 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
                                const std::string& output_dir, const bool& write_SAM,
                                const bool& update_SAM_dir,
                                const bool& with_preneoplastic,
+                               const std::string& filename_prefix,
                                const std::string& template_name_prefix,
                                const SEXP& seed)
 {
@@ -480,8 +482,8 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
 
   const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
 
-  auto result = simulate_seq(simulator, sequencer, mutations_list,  chr_ids, coverage,
-                             mutations_list.front(), 1, "chr_", Rcpp::Rcout);
+  auto result = simulate_seq(simulator, sequencer, mutations_list, chr_ids, coverage,
+                             mutations_list.front(), 1, filename_prefix, Rcpp::Rcout);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);
