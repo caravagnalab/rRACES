@@ -274,7 +274,7 @@ get_relevant_chr_set(std::list<RACES::Mutations::SampleGenomeMutations> mutation
         return chr_ids;
     }
     default:
-        throw std::domain_error("Unsupported sequencer type");
+        throw std::domain_error("Unsupported chromosome list type");
   }
 }
 
