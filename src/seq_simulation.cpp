@@ -206,6 +206,43 @@ apply_FACS_labels(std::list<RACES::Mutations::SampleGenomeMutations>& sample_mut
     } 
 }
 
+std::string
+get_reference_genome(const PhylogeneticForest& forest,
+                     const SEXP& reference_genome)
+{
+    switch (TYPEOF(reference_genome)) {
+        case NILSXP:
+        {
+            const auto ref_genome = forest.get_reference_path();
+            if (!std::filesystem::exists(ref_genome)) {
+                throw std::runtime_error("The reference genome file \""
+                                         + to_string(ref_genome)
+                                         + "\" does not exists anymore. "
+                                         + "Please, re-build the mutation "
+                                         + "engine or use the parameter "
+                                         + "\"reference_genome\".");
+            }
+
+            return ref_genome;
+        }
+        case STRSXP:
+        {
+            const auto ref_genome = Rcpp::as<std::string>(reference_genome);
+
+            if (!std::filesystem::exists(ref_genome)) {
+                throw std::runtime_error("The reference genome file \""
+                                        + to_string(ref_genome)
+                                        + "\" does not exists.");
+            }
+
+            return ref_genome;
+        }
+        default:
+            throw std::domain_error("The parameter \"reference_genome\" must be "
+                                    "either NULL or a string.");
+    }
+}
+
 std::set<RACES::Mutations::ChromosomeId>
 get_genome_chromosome_ids(const std::list<RACES::Mutations::SampleGenomeMutations>& mutations_list)
 {
@@ -353,6 +390,7 @@ std::binomial_distribution<u_int32_t> get_bin_dist(const int& insert_size_mean,
 }
 
 Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
+                        SEXP& reference_genome,
                         SEXP& chromosome_ids, const double& coverage,
                         const int& read_size, const int& insert_size_mean,
                         const int& insert_size_stddev,
@@ -366,14 +404,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
 {
   using namespace RACES::Mutations::SequencingSimulations;
 
-  ReadSimulator<> simulator;
-
-  if (!std::filesystem::exists(forest.get_reference_path())) {
-    throw std::runtime_error("The reference genome file \""
-                             + to_string(forest.get_reference_path())
-                             + "\" does not exists anymore. Please, re-build "
-                             + "the mutation engine.");
-  }
+  const auto ref_genome = get_reference_genome(forest, reference_genome);
 
   std::filesystem::path output_path = output_dir;
 
@@ -390,14 +421,15 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
     SAM_mode = ReadSimulator<>::Mode::UPDATE;
   }
 
+  ReadSimulator<> simulator;
   auto c_seed = get_random_seed<int>(seed);
   if (insert_size_mean==0) {
-    simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
+    simulator = ReadSimulator<>(output_path, ref_genome, read_size,
                                 SAM_mode, false, template_name_prefix, c_seed);
   } else {
     auto insert_size_dist = get_bin_dist(insert_size_mean, insert_size_stddev);
 
-    simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
+    simulator = ReadSimulator<>(output_path, ref_genome, read_size,
                                 insert_size_dist, SAM_mode, false,
                                 template_name_prefix, c_seed);
   }
@@ -426,6 +458,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
 }
 
 Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer,
+                               SEXP& reference_genome,
                                SEXP& chromosome_ids, const double& coverage,
                                const int& read_size, const int& insert_size_mean,
                                const int& insert_size_stddev,
@@ -438,14 +471,7 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
 {
   using namespace RACES::Mutations::SequencingSimulations;
 
-  ReadSimulator<> simulator;
-
-  if (!std::filesystem::exists(forest.get_reference_path())) {
-    throw std::runtime_error("The reference genome file \""
-                             + to_string(forest.get_reference_path())
-                             + "\" does not exists anymore. Please, re-build "
-                             + "the mutation engine.");
-  }
+  const auto ref_genome = get_reference_genome(forest, reference_genome);
 
   std::filesystem::path output_path = output_dir;
 
@@ -462,14 +488,15 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
     SAM_mode = ReadSimulator<>::Mode::UPDATE;
   }
 
+  ReadSimulator<> simulator;
   auto c_seed = get_random_seed<int>(seed);
   if (insert_size_mean==0) {
-    simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
-                                SAM_mode, false, template_name_prefix, c_seed);
+    simulator = ReadSimulator<>(output_path, ref_genome, read_size,
+                                SAM_mode, false, template_name_prefix,c_seed);
   } else {
     auto insert_size_dist = get_bin_dist(insert_size_mean, insert_size_stddev);
 
-    simulator = ReadSimulator<>(output_path, forest.get_reference_path(), read_size,
+    simulator = ReadSimulator<>(output_path, ref_genome, read_size,
                                 insert_size_dist, SAM_mode, false,
                                 template_name_prefix, c_seed);
   }

@@ -106,6 +106,8 @@ RCPP_MODULE(Sequencing){
 //' @param phylo_forest A phylogenetic forest.
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
+//' @param reference_genome The reference genome (default: NULL to use the 
+//'    mutation engine reference genome).
 //' @param chromosomes The chromosomes that must be considered (default:
 //'   `NULL`, i.e., all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
@@ -150,6 +152,7 @@ RCPP_MODULE(Sequencing){
 //'   `vignette("sequencing")` for usage examples
   function("simulate_seq", &simulate_seq,
            List::create(_["phylo_forest"], _["sequencer"] = R_NilValue,
+                        _["reference_genome"] = R_NilValue,
                         _["chromosomes"] = R_NilValue,
                         _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size_mean"] = 0,
@@ -172,6 +175,8 @@ RCPP_MODULE(Sequencing){
 //' @param phylo_forest A phylogenetic forest.
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
+//' @param reference_genome The reference genome (default: NULL to use the 
+//'    mutation engine reference genome).
 //' @param chromosomes The chromosomes that must be considered (default:
 //'   `NULL`, i.e., all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
@@ -211,6 +216,7 @@ RCPP_MODULE(Sequencing){
 //'   `vignette("sequencing")` for usage examples
   function("simulate_normal_seq", &simulate_normal_seq,
            List::create(_["phylo_forest"], _["sequencer"] = R_NilValue,
+                        _["reference_genome"] = R_NilValue,
                         _["chromosomes"] = R_NilValue,
                         _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size_mean"] = 0,

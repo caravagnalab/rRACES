@@ -26,6 +26,7 @@
 #include "phylogenetic_forest.hpp"
 
 Rcpp::List  simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
+                         SEXP& reference_genome,
                          SEXP& chromosome_ids, const double& coverage,
                          const int& read_size, const int& insert_size_mean,
                          const int& insert_size_stddev,
@@ -38,6 +39,7 @@ Rcpp::List  simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                          const SEXP& seed);
 
 Rcpp::List  simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer,
+                                SEXP& reference_genome,
                                 SEXP& chromosome_ids, const double& coverage,
                                 const int& read_size, const int& insert_size_mean,
                                 const int& insert_size_stddev,
