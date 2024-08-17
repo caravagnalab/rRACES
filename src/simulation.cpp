@@ -338,6 +338,14 @@ SpatialSimulation SpatialSimulation::load(const std::string& directory_name)
   simulation.save_snapshots = true;
   simulation.name = directory_name;
 
+  if (!std::filesystem::exists(directory_name)) {
+    throw std::domain_error("The directory \"" + directory_name + "\" does not exist.");
+  }
+
+  if (!std::filesystem::is_directory(directory_name)) {
+    throw std::domain_error("\"" + directory_name + "\" is not a directory.");
+  }
+
   auto snapshot_path = BinaryLogger::find_last_snapshot_in(directory_name);
 
   RACES::Archive::Binary::In archive(snapshot_path);

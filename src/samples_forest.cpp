@@ -53,6 +53,14 @@ SamplesForest SamplesForest::load(const std::string& filename)
 {
   SamplesForest forest;
 
+  if (!std::filesystem::exists(filename)) {
+    throw std::domain_error("The file \"" + filename + "\" does not exist.");
+  }
+
+  if (!std::filesystem::is_regular_file(filename)) {
+    throw std::domain_error("The file \"" + filename + "\" is not a regular file.");
+  }
+
   RACES::Archive::Binary::In in_archive(filename);
 
   try {
