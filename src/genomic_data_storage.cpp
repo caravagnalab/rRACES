@@ -33,10 +33,29 @@
 #include "utility.hpp"
 
 
+GermlineSubject::GermlineSubject()
+{}
+
 GermlineSubject::GermlineSubject(const std::string& name, const std::string& population,
                                  const std::string& super_population, const std::string& gender):
   name(name), population(population), super_population(super_population), gender(gender)
 {}
+
+Rcpp::List GermlineSubject::get_dataframe() const
+{
+  using namespace Rcpp;
+
+  CharacterVector sample(1), pop(1), super_pop(1), gender(1);
+
+  sample[0] = name;
+  pop[0] = population;
+  super_pop[0] = super_population;
+  gender[0] = this->gender;
+
+  return DataFrame::create(_["sample"] = sample, _["pop"] = pop,
+                           _["super_pop"] = super_pop,
+                           _["gender"] = gender);
+}
 
 GermlineStorage::GermlineStorage()
 {}
@@ -139,15 +158,12 @@ GermlineStorage::get_alleles_per_chromosome(const std::string& gender) const
 
 GermlineSubject GermlineStorage::get_subject(const std::string& subject_name) const
 {
-  auto gemline_subjects = get_population();
+  RACES::IO::CSVReader csv_reader(get_population_file(), true, '\t');
 
-  if (gemline_subjects.size()==0) {
-    throw std::runtime_error("No germline subject available.");
-  }
-
-  for (const auto& subject : gemline_subjects) {
-    if (subject_name == subject.name) {
-      return subject;
+  for (const auto& row : csv_reader) {
+    if (row.get_field(0) == subject_name) {
+      return {row.get_field(0), row.get_field(1),
+              row.get_field(2), row.get_field(3)};
     }
   }
 
@@ -158,27 +174,7 @@ GermlineSubject GermlineStorage::get_subject(const std::string& subject_name) co
 
 Rcpp::List GermlineStorage::get_subject_df(const std::string& subject_name) const
 {
-  using namespace Rcpp;
-
-  RACES::IO::CSVReader csv_reader(get_population_file(), true, '\t');
-
-  for (const auto& row : csv_reader) {
-    if (row.get_field(0) == subject_name) {
-      CharacterVector sample(1), pop(1), super_pop(1), gender(1);
-
-      sample[0] = row.get_field(0);
-      pop[0] = row.get_field(1);
-      super_pop[0] = row.get_field(2);
-      gender[0] = row.get_field(3);
-
-      return DataFrame::create(_["sample"] = sample, _["pop"] = pop,
-                               _["super_pop"] = super_pop,
-                               _["gender"] = gender);
-    }
-  }
-
-  throw std::runtime_error("Germline subject \"" + subject_name
-                           + "\" unknown.");
+  return get_subject(subject_name).get_dataframe();
 }
 
 RACES::Mutations::GenomeMutations

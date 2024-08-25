@@ -31,8 +31,34 @@ struct GermlineSubject
   std::string super_population;
   std::string gender;
 
+  GermlineSubject();
+
   GermlineSubject(const std::string& name, const std::string& population,
                   const std::string& super_population, const std::string& gender);
+
+  Rcpp::List get_dataframe() const;
+
+  template<typename ARCHIVE, std::enable_if_t<std::is_base_of_v<RACES::Archive::Basic::Out, ARCHIVE>, bool> = true>
+  inline void save(ARCHIVE& archive) const
+  {
+      archive & name
+              & population
+              & super_population
+              & gender;
+  }
+
+  template<typename ARCHIVE, std::enable_if_t<std::is_base_of_v<RACES::Archive::Basic::In, ARCHIVE>, bool> = true>
+  inline static GermlineSubject load(ARCHIVE& archive)
+  {
+    GermlineSubject germline_subject;
+
+    archive & germline_subject.name
+            & germline_subject.population
+            & germline_subject.super_population
+            & germline_subject.gender;
+    
+    return germline_subject;
+  }
 };
 
 class GermlineStorage

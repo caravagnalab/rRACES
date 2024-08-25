@@ -456,7 +456,7 @@ m_engine$get_SNV_signatures()[1:6, 1:5]
 m_engine$get_indel_signatures()[1:6, 1:5]
 ```
 
-Finally, the name of the subject whose germline corresponds to
+Finally, the data of the subject whose germline corresponds to
 wild-type genome in the phylogenetic forest can be
 obtained by the method `Phylogenetic$get_germline_subject()`.
 

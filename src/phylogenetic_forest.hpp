@@ -26,13 +26,14 @@
 #include <phylogenetic_forest.hpp>
 #include <mutation_engine.hpp>
 
+#include "genomic_data_storage.hpp"
 #include "forest.hpp"
 
 class MutationEngine;
 
 class PhylogeneticForest : public RACES::Mutations::PhylogeneticForest
 {
-  std::string germline_subject;
+  GermlineSubject germline_subject;
   std::filesystem::path reference_path;
 
   using TimedMutationalExposure = std::map<RACES::Time, RACES::Mutations::MutationalExposure>;
@@ -40,13 +41,13 @@ class PhylogeneticForest : public RACES::Mutations::PhylogeneticForest
   std::map<RACES::Mutations::MutationType::Type, TimedMutationalExposure> timed_exposures;
 
   PhylogeneticForest(const RACES::Mutations::PhylogeneticForest& orig,
-                     const std::string& germline_subject,
+                     const GermlineSubject& germline_subject,
                      const std::filesystem::path reference_path,
                      const TimedMutationalExposure& timed_SBS_exposures,
                      const TimedMutationalExposure& timed_indel_exposures);
 
   PhylogeneticForest(RACES::Mutations::PhylogeneticForest&& orig,
-                     const std::string& germline_subject,
+                     const GermlineSubject& germline_subject,
                      const std::filesystem::path reference_path,
                      const TimedMutationalExposure& timed_SBS_exposures,
                      const TimedMutationalExposure& timed_indel_exposures);
@@ -106,10 +107,15 @@ public:
 
   void set_reference_path(const std::string reference_path);
 
-  inline const std::string& get_germline_subject() const
+  inline const GermlineSubject& get_germline_subject() const
   {
     return germline_subject;
   }
+
+  inline Rcpp::List get_germline_subject_df() const
+  {
+    return germline_subject.get_dataframe();
+  }  
 
   inline void save(const std::string& filename) const
   {

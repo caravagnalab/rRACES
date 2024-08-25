@@ -1103,11 +1103,14 @@ RCPP_MODULE(Mutations){
             "Get the recorded species")
 
 //' @name PhylogeneticForest$get_germline_subject
-//' @title Getting the germline subject name
-//' @description This method returns the name of the germline subject.
+//' @title Getting the germline subject
+//' @description This method returns a dataframe reporting the germline
+//'   subject name (column "sample"), population (column "pop"),
+//'   super-population (column "super_pop"), and gender (column "gender").
 //' @return The name of the subject whose germline is used.
-    .method("get_germline_subject", &PhylogeneticForest::get_germline_subject,
-            "Get the germline subject name")
+    .method("get_germline_subject",
+            &PhylogeneticForest::get_germline_subject_df,
+            "Get the germline subject")
 
 //' @name PhylogeneticForest$get_sampled_cell_CNAs
 //' @title Getting the sampled cells CNAs

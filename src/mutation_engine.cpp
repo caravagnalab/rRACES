@@ -1008,7 +1008,9 @@ MutationEngine::place_mutations(const SamplesForest& forest,
 
   const auto& const_m_engine = m_engine;
 
-  return {std::move(phylo_forest), germline_subject, storage.get_reference_path(),
+  const auto subject = storage.get_germline_storage().get_subject(germline_subject);
+
+  return {std::move(phylo_forest), subject, storage.get_reference_path(),
           const_m_engine.get_timed_exposures(MutationType::Type::SBS),
           const_m_engine.get_timed_exposures(MutationType::Type::INDEL)};
 }

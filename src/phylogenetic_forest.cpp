@@ -29,7 +29,7 @@ PhylogeneticForest::PhylogeneticForest():
 {}
 
 PhylogeneticForest::PhylogeneticForest(const RACES::Mutations::PhylogeneticForest& orig,
-                                       const std::string& germline_subject,
+                                       const GermlineSubject& germline_subject,
                                        const std::filesystem::path reference_path,
                                        const TimedMutationalExposure& timed_SBS_exposures,
                                        const TimedMutationalExposure& timed_indel_exposures):
@@ -42,7 +42,7 @@ PhylogeneticForest::PhylogeneticForest(const RACES::Mutations::PhylogeneticFores
 }
 
 PhylogeneticForest::PhylogeneticForest(RACES::Mutations::PhylogeneticForest&& orig,
-                                       const std::string& germline_subject,
+                                       const GermlineSubject& germline_subject,
                                        const std::filesystem::path reference_path,
                                        const TimedMutationalExposure& timed_SBS_exposures,
                                        const TimedMutationalExposure& timed_indel_exposures):
@@ -604,7 +604,8 @@ void PhylogeneticForest::save(const std::string& filename,
 
   auto ref_str = to_string(reference_path);
 
-  out_archive & ref_str
+  out_archive & germline_subject
+              & ref_str
               & timed_exposures;
 
   RACES::UI::ProgressBar progress_bar(Rcpp::Rcout, quiet);
@@ -626,11 +627,12 @@ PhylogeneticForest PhylogeneticForest::load(const std::string& filename,
 
   RACES::Archive::Binary::In in_archive(filename);
 
-  std::string reference_path;
-
-  in_archive & reference_path;
-
   PhylogeneticForest forest;
+
+  in_archive & forest.germline_subject;
+
+  std::string reference_path;
+  in_archive & reference_path;
   forest.reference_path = reference_path;
 
   in_archive & forest.timed_exposures;
