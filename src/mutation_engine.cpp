@@ -471,11 +471,12 @@ MutationEngine::MutationEngine(const std::string& setup_name,
                                const size_t& max_repetition_storage,
                                const std::string& tumour_type,
                                const std::string& tumor_study,
+                               const bool& avoid_homozygous_losses,
                                const bool& quiet):
   storage(setup_storage(setup_name)), germline_subject(germline_subject),
   context_sampling(context_sampling), max_motif_size(max_motif_size),
   max_repetition_storage(max_repetition_storage), tumour_type(tumour_type),
-  tumor_study(tumor_study)
+  tumor_study(tumor_study), avoid_homozygous_losses(avoid_homozygous_losses)
 {
   auto setup_cfg = supported_setups.at(setup_name);
 
@@ -495,6 +496,7 @@ MutationEngine::MutationEngine(const std::string& directory,
                                const size_t& max_repetition_storage,
                                const std::string& tumour_type,
                                const std::string& tumor_study,
+                               const bool& avoid_homozygous_losses,
                                const bool& quiet):
   storage(setup_storage(directory, reference_source, SBS_signatures_source,
                         indel_signatures_source, drivers_source,
@@ -502,7 +504,8 @@ MutationEngine::MutationEngine(const std::string& directory,
   germline_subject(germline_subject), context_sampling(context_sampling),
   max_motif_size(max_motif_size),
   max_repetition_storage(max_repetition_storage),
-  tumour_type(tumour_type), tumor_study(tumor_study)
+  tumour_type(tumour_type), tumor_study(tumor_study),
+  avoid_homozygous_losses(avoid_homozygous_losses)
 {
   init_mutation_engine(quiet);
 }
@@ -565,6 +568,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                                      const size_t& max_repetition_storage,
                                      const std::string& tumour_type,
                                      const std::string& tumor_study,
+                                     const bool avoid_homozygous_losses,
                                      const bool quiet)
 {
   if (setup_code!="") {
@@ -579,7 +583,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
 
     return MutationEngine(setup_code, germline_subject, context_sampling,
                           max_motif_size, max_repetition_storage, tumour_type,
-                          tumor_study, quiet);
+                          tumor_study, avoid_homozygous_losses, quiet);
   }
 
   if (directory=="" || reference_source=="" || SBS_signatures_source==""
@@ -595,7 +599,7 @@ MutationEngine::build_MutationEngine(const std::string& directory,
                         indel_signatures_source, drivers_source,
                         passenger_CNAs_source, germline_source, germline_subject,
                         context_sampling, max_motif_size, max_repetition_storage,
-                        tumour_type, tumor_study, quiet);
+                        tumour_type, tumor_study, avoid_homozygous_losses, quiet);
 
 }
 
@@ -1203,6 +1207,8 @@ void MutationEngine::reset(const bool full, const bool quiet)
       m_engine.add(time, exposure);
     }
   }
+
+  m_engine.avoid_homozygous_losses = avoid_homozygous_losses;
 }
 
 void MutationEngine::set_germline_subject(const std::string& germline_subject)

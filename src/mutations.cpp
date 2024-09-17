@@ -354,7 +354,7 @@ RCPP_MODULE(Mutations){
 
 //' @name WholeGenomeDoubling
 //' @title Whole genome doubling events
-//' @description A whole genome doubling event (WGD) 
+//' @description A whole genome doubling event (WGD)
 //'   produces the simultaneous duplication of all the
 //'   chromosome allele in a genome.
   class_<WholeGenomeDoubling>("WholeGenomeDoubling")
@@ -451,7 +451,7 @@ RCPP_MODULE(Mutations){
 //' @title Adding a mutant specification
 //' @description This method adds a mutant specification to the mutation engine.
 //' @details The users must use it to specify the name and the genomic
-//'   characterization (i.e., SNVs, indels, CNAs, and whole genome doubling 
+//'   characterization (i.e., SNVs, indels, CNAs, and whole genome doubling
 //'   events (WGD)) of all the simulated mutants together with the mutation
 //'   rates of its species.
 //'   The driver mutations are applied to the mutant progenitor's genome
@@ -788,12 +788,16 @@ RCPP_MODULE(Mutations){
 //'   the admissible passenger CNAs. If any passenger CNA in the dataset is
 //'   admissible, use the the empty string `""` (optional: default value is
 //'   `""`).
-//' @param tumour_study The nationality code of the tumour study. This is 
+//' @param tumour_study The nationality code of the tumour study. This is
 //'   used to select the admissible passenger CNAs. If any tumor study in
 //'   the dataset is admissible, use the the empty string `""` (optional:
 //'   default value is `""`).
-//' @param quiet An optional  Boolean flag to avoid the progress bar 
-//'   (default: false).
+//' @param avoid_homozygous_losses An optional Boolean flag to avoid
+//'   homozygous losses. When set to `TRUE`, passenger CNAs will be
+//'   exclusively applied to regions covered by two alleles at least.
+//'   (default: TRUE).
+//' @param quiet An optional Boolean flag to avoid the progress bar
+//'   (default: FALSE).
 //' @seealso [MutationEngine$get_germline_subjects()] to get the available
 //'   germline subjects; [MutationEngine$set_germline_subject()] to set the
 //'   active germline subject; [MutationEngine$get_active_germline()] to get
@@ -879,7 +883,8 @@ RCPP_MODULE(Mutations){
                         _["max_motif_size"] = 50,
                         _["max_repetition_storage"] = 500000,
                         _["tumour_type"] = "", _["tumour_study"] = "",
-                        _["quiet"]=false),
+                        _["avoid_homozygous_losses"] = true,
+                        _["quiet"] = false),
            "Create a MutationEngine");
 
 //' @name get_available_tumours_in
@@ -887,7 +892,7 @@ RCPP_MODULE(Mutations){
 //' @description This method returns the tumour types and studies available
 //'   for a set-up code.
 //' @param setup_code The set-up code whose available tumour types and studies
-//'   are requested. 
+//'   are requested.
 //' @return A dataframe reporting the types and the studies available for a
 //'   set-up code.
 //' @seealso [MutationEngine()] to build a mutation engine
@@ -1230,7 +1235,7 @@ RCPP_MODULE(Mutations){
 //' @return A dataframe reporting, for each genomic fragment and for all
 //'     the allelic type on the genomic fragment, the chromosome (`chr`),
 //'     the first base position (`begin`), the last base position (`end`),
-//'     the number of copy of the major and minor alleles (`major` and 
+//'     the number of copy of the major and minor alleles (`major` and
 //'     `minor`, respectively), and the ratio between the number of cells
 //'     exhibiting this allelic type and the total number of cells in the
 //'     sample.
@@ -1272,14 +1277,14 @@ RCPP_MODULE(Mutations){
 //' @title Saving a phylogenetic forest
 //' @description This method saves a phylogenetic forest in a file.
 //' @param filename The path of the file in which the phylogenetic.
-//' @param quiet An optional  Boolean flag to avoid the progress bar 
-//'   (default: false).
+//' @param quiet An optional  Boolean flag to avoid the progress bar
+//'   (default: FALSE).
 //'   forest must be saved.
-    .method("save", 
+    .method("save",
             (void (PhylogeneticForest::*)(const std::string&, const bool) const)
             &PhylogeneticForest::save,
             "Save a phylogenetic forest")
-    .method("save", 
+    .method("save",
             (void (PhylogeneticForest::*)(const std::string&) const)
             &PhylogeneticForest::save,
             "Save a phylogenetic forest")
@@ -1293,8 +1298,8 @@ RCPP_MODULE(Mutations){
 //' @description This method loads a phylogenetic forest from a file.
 //' @param filename The path of the file from which the phylogenetic
 //'   forest must be load.
-//' @param quiet An optional  Boolean flag to avoid the progress bar 
-//'   (default: false).
+//' @param quiet An optional  Boolean flag to avoid the progress bar
+//'   (default: FALSE).
 //' @return The load phylogenetic forest
   function("load_phylogenetic_forest",
            (PhylogeneticForest (*)(const std::string&, const bool))

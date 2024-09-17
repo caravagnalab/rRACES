@@ -49,6 +49,8 @@ class MutationEngine
     RACES::Mutations::RSIndex rs_index;
     RACES::Mutations::MutationEngine<AbsGenotypePosition, std::mt19937_64> m_engine;
 
+    bool avoid_homozygous_losses;
+
     GermlineSubject get_germline_subject(const std::string& subject_name) const;
 
     void init_mutation_engine(const bool& quiet);
@@ -82,6 +84,7 @@ public:
                    const size_t& max_repetition_storage=500000,
                    const std::string& tumour_type="",
                    const std::string& tumor_study="",
+                   const bool& avoid_homozygous_losses=true,
                    const bool& quiet=false);
 
     MutationEngine(const std::string& directory,
@@ -97,6 +100,7 @@ public:
                    const size_t& max_repetition_storage=500000,
                    const std::string& tumour_type="",
                    const std::string& tumor_study="",
+                   const bool& avoid_homozygous_losses=true,
                    const bool& quiet=false);
 
     static Rcpp::List get_supported_setups();
@@ -211,6 +215,7 @@ public:
                          const size_t& max_repetition_storage,
                          const std::string& tumour_type,
                          const std::string& tumour_study,
+                         const bool avoid_homozygous_losses,
                          const bool quiet);
 
     static Rcpp::List get_available_tumour_type(const std::string& setup_code);

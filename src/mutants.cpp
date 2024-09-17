@@ -964,7 +964,7 @@ RCPP_MODULE(Mutants){
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
 //' @param quiet An optional  Boolean flag to avoid the progress bar 
-//'   (default: false).
+//'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_event()],
 //'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
 //' @examples
@@ -995,7 +995,7 @@ RCPP_MODULE(Mutants){
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
 //' @param quiet An optional  Boolean flag to avoid the progress bar 
-//'   (default: false).
+//'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
 //' @examples
@@ -1031,7 +1031,7 @@ RCPP_MODULE(Mutants){
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
 //' @param quiet An optional  Boolean flag to avoid the progress bar 
-//'   (default: false).
+//'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_until()]
 //' @examples
@@ -1066,7 +1066,7 @@ RCPP_MODULE(Mutants){
 //' @param formula The formula that will be satisfied at the end of the
 //'    simulation.
 //' @param quiet An optional  Boolean flag to avoid the progress bar 
-//'   (default: false).
+//'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$var()], [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_up_to_size()]
 //' @examples
