@@ -515,6 +515,8 @@ void fill_allelic_bulk_data(const std::map<RACES::Mutations::AllelicType, size_t
 {
     using namespace RACES::Mutations;
 
+    double total_count{0.0};
+
     for (const auto& [atype, count] : chr_allelic_count) {
         chromosomes.push_back(GenomicPosition::chrtos(chr_id));
         fragment_begins.push_back(frag_begin);
@@ -529,6 +531,18 @@ void fill_allelic_bulk_data(const std::map<RACES::Mutations::AllelicType, size_t
         }
 
         ratios.push_back(count/num_of_cells);
+        total_count += count;
+    }
+
+    if (num_of_cells >= total_count+1) {
+        chromosomes.push_back(GenomicPosition::chrtos(chr_id));
+        fragment_begins.push_back(frag_begin);
+        fragment_ends.push_back(frag_end);
+
+        major_counts.push_back(0);
+        minor_counts.push_back(0);
+
+        ratios.push_back((num_of_cells-total_count)/num_of_cells);
     }
 }
 
