@@ -12,7 +12,7 @@ forest."><meta property="og:image" content="https://caravagnalab.github.io/rRACE
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,9 +75,14 @@ forest.</p>
 (default: an <code>ErrorlessIlluminaSequencer</code>).</p></dd>
 
 
+<dt>reference_genome</dt>
+<dd><p>The reference genome (default: NULL to use the
+mutation engine reference genome).</p></dd>
+
+
 <dt>chromosomes</dt>
 <dd><p>The chromosomes that must be considered (default:
-all the reference chromosomes).</p></dd>
+<code>NULL</code>, i.e., all the reference chromosomes).</p></dd>
 
 
 <dt>coverage</dt>
@@ -88,10 +93,15 @@ all the reference chromosomes).</p></dd>
 <dd><p>The read size (default: <code>150</code>).</p></dd>
 
 
-<dt>insert_size</dt>
-<dd><p>The insert size. Use 0 for single read sequencing
-and any value greater than 0 for pair read sequencing
+<dt>insert_size_mean</dt>
+<dd><p>The insert size mean. Use 0 for single read
+sequencing and any value greater than 0 for pair read sequencing
 (default: <code>0</code>).</p></dd>
+
+
+<dt>insert_size_stddev</dt>
+<dd><p>The insert size standard deviation.
+(default: <code>10</code>).</p></dd>
 
 
 <dt>output_dir</dt>
@@ -125,9 +135,26 @@ ones. This value must belong to the interval 0,1
 analysis of a normal sample (default: <code>TRUE</code>).</p></dd>
 
 
-<dt>rnd_seed</dt>
+<dt>filename_prefix</dt>
+<dd><p>The prefix of the output SAM file name
+(default: <code>"chr_"</code>).</p></dd>
+
+
+<dt>template_name_prefix</dt>
+<dd><p>The template name prefix (default:
+<code>"r"</code>).</p></dd>
+
+
+<dt>include_non_sequenced_mutations</dt>
+<dd><p>A Boolean flag to include
+in the resulting dataframe also the mutations that are not
+covered by any of the simulated reads, but occur to one of the
+samples at least (default: <code>FALSE</code>).</p></dd>
+
+
+<dt>seed</dt>
 <dd><p>The random seed for the internal random generator
-(default: <code>0</code>).</p></dd>
+(optional).</p></dd>
 
 </dl></div>
     <div class="section level2">

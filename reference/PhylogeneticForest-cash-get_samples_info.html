@@ -14,7 +14,7 @@ of the samples forest."><meta property="og:image" content="https://caravagnalab.
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,18 +71,25 @@ of the samples forest.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A dataframe containing, for each sample collected
-during the simulation, the columns "<code>name</code>", "<code>time</code>", "<code>ymin</code>",
-"<code>xmin</code>", "<code>ymax</code>", "<code>xmax</code>", "<code>tumour_cells</code>", and
-"<code>tumour_cells_in_bbox</code>". The columns "<code>ymin</code>", "<code>xmin</code>", "<code>ymax</code>",
-"<code>xmax</code>" report the boundaries of the sample bounding box, while
-"<code>tumour_cells</code>" and "<code>tumour_cells_in_bbox</code>" are the number of
-tumour cells in the sample and in the bounding box, respectively.</p>
+<p>A dataframe containing, for each sample collected during the
+simulation, the columns "<code>name</code>", "<code>time</code>", "<code>ymin</code>", "<code>xmin</code>", "<code>ymax</code>",
+"<code>ymax</code>", "<code>xmax</code>", "<code>tumour_cells</code>", "<code>tumour_cells_in_bbox</code>",
+"<code>DNA_quantity</code>", and "<code>equivalent_normal_cells</code>". The columns "<code>ymin</code>",
+"<code>xmin</code>", "<code>ymax</code>", and "<code>xmax</code>" report the boundaries of the sample
+bounding box, while "<code>tumour_cells</code>" and "<code>tumour_cells_in_bbox</code>" are the
+number of tumour cells in the sample and in the bounding box,
+respectively. Finally, "<code>DNA_quantity</code>" contains the overall number of
+tumoral bases, i.e., the sum of the lengths of all the alleles of all the
+sample tumoral cells, and "<code>equivalent_normal_cells</code>" contains the number
+of normal cells that contain as much DNA as the sample tumoral cells.
+The "<code>DNA_quantity</code>" is stored as a real number despite being a natural
+number as it usually exceeds the largest natural number that can be
+natively represented by R.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="SamplesForest-cash-get_samples_info.html">SamplesForest$get_samples_info()</a></code> for usage examples,
-<code><a href="Simulation-cash-get_samples_info.html">Simulation$get_samples_info()</a></code></p></div>
+<code>Simulation$get_samples_info()</code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

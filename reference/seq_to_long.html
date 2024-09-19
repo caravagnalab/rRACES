@@ -16,7 +16,7 @@ renames and reorders columns to match the desired output format."><meta property
     
     <a class="navbar-brand me-2" href="../index.html">rRACES</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,7 @@ renames and reorders columns to match the desired output format.</p>
     
 
 <p>A data frame in long format with columns "<code>chr</code>", "<code>from</code>", "<code>to</code>",
-"<code>ALT</code>", "<code>NV</code>", "<code>DP</code>", "<code>VAF</code>", and "<code>sample_name</code>".</p>
+"<code>ref</code>", "<code>alt</code>", "<code>NV</code>", "<code>DP</code>", "<code>VAF</code>", and "<code>sample_name</code>".</p>
     </div>
 
     <div class="section level2">
@@ -116,7 +116,7 @@ renames and reorders columns to match the desired output format.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Convert to long format</span></span></span>
 <span class="r-in"><span><span class="fu">seq_to_long</span><span class="op">(</span><span class="va">seq_results</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    chr from ref ALT causes   classes NV  DP  VAF   sample_name  to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    chr from ref alt causes   classes NV  DP  VAF   sample_name  to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 chr1  100   A   T   SBS5  germinal 10 100 0.10      Sample.A 100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 chr2  200   C   G   SBS1 passneger 90 100 0.90      Sample.A 200</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 chr1  100   A   T   SBS5  germinal 45 100 0.45 normal_sample 100</span>
