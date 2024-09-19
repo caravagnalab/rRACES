@@ -134,6 +134,10 @@ RCPP_MODULE(Sequencing){
 //'   (default: `"chr_"`).
 //' @param template_name_prefix The template name prefix (default:
 //'   `"r"`).
+//' @param include_non_sequenced_mutations A Boolean flag to include
+//'   in the resulting dataframe also the mutations that are not
+//'   covered by any of the simulated reads, but occur to one of the
+//'   samples at least (default: `FALSE`).
 //' @param seed The random seed for the internal random generator
 //'   (optional).
 //' @return A dataframe representing, for each of the observed SNVs
@@ -163,6 +167,7 @@ RCPP_MODULE(Sequencing){
                         _["with_normal_sample"] = true,
                         _["filename_prefix"] = "chr_",
                         _["template_name_prefix"] = "r",
+                        _["include_non_sequenced_mutations"] = false,
                         _["seed"] = R_NilValue),
            "Simulate the sequencing of the samples in a phylogenetic forest");
 
@@ -197,6 +202,10 @@ RCPP_MODULE(Sequencing){
 //'   (default: `"chr_"`).
 //' @param template_name_prefix The template name prefix (default:
 //'   `"r"`).
+//' @param include_non_sequenced_mutations A Boolean flag to include
+//'   in the resulting dataframe also the mutations that are not
+//'   covered by any of the simulated reads, but occur to one of the
+//'   samples at least (default: `FALSE`).
 //' @param seed The random seed for the internal random generator
 //'   (optional).
 //' @return A dataframe representing, for each of the observed
@@ -226,6 +235,7 @@ RCPP_MODULE(Sequencing){
                         _["with_preneoplastic"] = true,
                         _["filename_prefix"] = "chr_",
                         _["template_name_prefix"] = "r",
+                        _["include_non_sequenced_mutations"] = false,
                         _["seed"] = R_NilValue),
            "Simulate the sequencing of a normal sample");
 

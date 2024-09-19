@@ -50,12 +50,13 @@ std::set<std::string> get_descriptions(const std::set<RACES::Mutations::Mutation
 }
 
 void add_SNV_data(Rcpp::DataFrame& df,
-                  const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
+                  const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics,
+                  const std::set<RACES::Mutations::SID>& mutations)
 {
   using namespace Rcpp;
   using namespace RACES::Mutations;
 
-  size_t num_of_mutations = sample_statistics.get_data().size();
+  size_t num_of_mutations = mutations.size();
 
   IntegerVector chr_pos(num_of_mutations);
   CharacterVector chr_names(num_of_mutations), ref(num_of_mutations),
@@ -63,24 +64,24 @@ void add_SNV_data(Rcpp::DataFrame& df,
                   classes(num_of_mutations);
 
   size_t index{0};
-  for (const auto& [mutation, data] : sample_statistics.get_data()) {
-    chr_names[index] = GenomicPosition::chrtos(mutation.chr_id);
-    chr_pos[index] = mutation.position;
-    ref[index] = mutation.ref;
-    alt[index] = mutation.alt;
+  for (const auto& mutation : mutations) {
+    auto it = sample_statistics.get_data().find(mutation);
 
-    auto full_causes = join(data.causes, ';');
-
-    if (full_causes == "") {
-      causes[index] = NA_STRING;
-    } else {
-      causes[index] = full_causes;
+    if (it != sample_statistics.get_data().end()) {
+      chr_names[index] = GenomicPosition::chrtos(mutation.chr_id);
+      chr_pos[index] = mutation.position;
+      ref[index] = mutation.ref;
+      alt[index] = mutation.alt;
+      auto full_causes = join(it->second.causes, ';');
+      if (full_causes == "") {
+        causes[index] = NA_STRING;
+      } else {
+        causes[index] = full_causes;
+      }
+      auto descr = get_descriptions(it->second.nature_set);
+      classes[index] = join(descr, ';');
+      ++index;
     }
-
-    auto descr = get_descriptions(data.nature_set);
-    classes[index] = join(descr, ';');
-
-    ++index;
   }
 
   df.push_back(chr_names, "chr");
@@ -92,13 +93,14 @@ void add_SNV_data(Rcpp::DataFrame& df,
 }
 
 void add_sample_statistics(Rcpp::DataFrame& df,
-                           const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics)
+                           const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics,
+                           const std::set<RACES::Mutations::SID>& mutations)
 {
   if (df.nrows()==0) {
-    add_SNV_data(df, sample_statistics);
+    add_SNV_data(df, sample_statistics, mutations);
   }
 
-  size_t num_of_mutations = sample_statistics.get_data().size();
+  size_t num_of_mutations = mutations.size();
 
   if (num_of_mutations != static_cast<size_t>(df.nrows())) {
     throw std::runtime_error("SeqSimResults are not canonical!!!");
@@ -113,17 +115,21 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   size_t index{0};
   auto coverage_it = sample_statistics.get_coverage().begin();
   std::less<GenomicPosition> come_before;
-  for (const auto& [mutation, mutation_data] : sample_statistics.get_data()) {
-    occurrences[index] = mutation_data.num_of_occurrences;
+  for (const auto& mutation : mutations) {
+    auto it = sample_statistics.get_data().find(mutation);
 
-    if (come_before(coverage_it->first, mutation)) {
-      ++coverage_it;
+    if (it != sample_statistics.get_data().end()) {
+      occurrences[index] = it->second.num_of_occurrences;
+
+      while (come_before(coverage_it->first, mutation)) {
+        ++coverage_it;
+      }
+
+      coverages[index] = coverage_it->second;
+      VAF[index] = static_cast<double>(it->second.num_of_occurrences)/coverage_it->second;
+
+      ++index;
     }
-
-    coverages[index] = coverage_it->second;
-    VAF[index] = static_cast<double>(mutation_data.num_of_occurrences)/coverage_it->second;
-
-    ++index;
   }
 
   const auto& sample_name = sample_statistics.get_sample_name();
@@ -133,12 +139,36 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   df.push_back(VAF, sample_name+".VAF");
 }
 
-Rcpp::List get_result_dataframe(const RACES::Mutations::SequencingSimulations::SampleSetStatistics& sample_set_statistics)
+std::set<RACES::Mutations::SID>
+get_active_mutations(const RACES::Mutations::SequencingSimulations::SampleSetStatistics& sample_set_statistics,
+                     const bool& include_non_sequenced_mutations)
 {
-  auto df = Rcpp::DataFrame::create();
+  std::set<RACES::Mutations::SID> active_mutations;
 
   for (const auto& [sample_name, sample_stats] : sample_set_statistics) {
-    add_sample_statistics(df, sample_stats);
+    for (const auto& [mutation, mutation_data]: sample_stats.get_data()) {
+      if (mutation_data.num_of_occurrences>0 || include_non_sequenced_mutations) {
+        active_mutations.insert(mutation);
+      }
+    }
+
+    if (include_non_sequenced_mutations) {
+      return active_mutations;
+    }
+  }
+
+  return active_mutations;
+}
+
+Rcpp::List get_result_dataframe(const RACES::Mutations::SequencingSimulations::SampleSetStatistics& sample_set_statistics,
+                                const bool& include_non_sequenced_mutations)
+{
+  const auto mutations = get_active_mutations(sample_set_statistics,
+                                              include_non_sequenced_mutations);
+
+  auto df = Rcpp::DataFrame::create();
+  for (const auto& [sample_name, sample_stats] : sample_set_statistics) {
+    add_sample_statistics(df, sample_stats, mutations);
   }
 
   return df;
@@ -203,7 +233,7 @@ apply_FACS_labels(std::list<RACES::Mutations::SampleGenomeMutations>& sample_mut
         }
         default:
             throw std::domain_error("The FACs_labelling_function must be a function.");
-    } 
+    }
 }
 
 std::string
@@ -336,12 +366,12 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
 
         if (sequencer_ptr->producing_random_scores()) {
             using BasicQualityScoreModel = RACES::Sequencers::Illumina::BasicQualityScoreModel;
-            return simulator(sequencer_ptr->basic_sequencer<BasicQualityScoreModel>(), 
+            return simulator(sequencer_ptr->basic_sequencer<BasicQualityScoreModel>(),
                              mutations_list, chromosome_ids, coverage, normal_sample, purity,
                              base_name, progress_bar_stream);
         } else {
             using ConstantQualityScoreModel = RACES::Sequencers::ConstantQualityScoreModel;
-            return simulator(sequencer_ptr->basic_sequencer<ConstantQualityScoreModel>(), 
+            return simulator(sequencer_ptr->basic_sequencer<ConstantQualityScoreModel>(),
                              mutations_list, chromosome_ids, coverage, normal_sample, purity,
                              base_name, progress_bar_stream);
         }
@@ -373,11 +403,11 @@ std::binomial_distribution<u_int32_t> get_bin_dist(const int& insert_size_mean,
     double q = static_cast<double>(insert_size_stddev*insert_size_stddev)/insert_size_mean;
     double p = 1-q;
     if (p<0) {
-        throw std::runtime_error("The insert size mean (" 
+        throw std::runtime_error("The insert size mean ("
                                  + std::to_string(insert_size_mean) + ") must"
-                                 + " be greater than or equal to its variance (" 
+                                 + " be greater than or equal to its variance ("
                                  + std::to_string(insert_size_stddev) + "*"
-                                 + std::to_string(insert_size_stddev) + "=" 
+                                 + std::to_string(insert_size_stddev) + "="
                                  + std::to_string(insert_size_stddev*insert_size_stddev)
                                  + ").\n"
                                  + "Set the standard deviation and the variance by using "
@@ -400,6 +430,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                         const double& purity, const bool& with_normal_sample,
                         const std::string& filename_prefix,
                         const std::string& template_name_prefix,
+                        const bool& include_non_sequenced_mutations,
                         const SEXP& seed)
 {
   using namespace RACES::Mutations::SequencingSimulations;
@@ -454,7 +485,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
     std::filesystem::remove_all(output_path);
   }
 
-  return get_result_dataframe(result);
+  return get_result_dataframe(result, include_non_sequenced_mutations);
 }
 
 Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer,
@@ -467,6 +498,7 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
                                const bool& with_preneoplastic,
                                const std::string& filename_prefix,
                                const std::string& template_name_prefix,
+                               const bool& include_non_sequenced_mutations,
                                const SEXP& seed)
 {
   using namespace RACES::Mutations::SequencingSimulations;
@@ -516,5 +548,5 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
     std::filesystem::remove_all(output_path);
   }
 
-  return get_result_dataframe(result);
+  return get_result_dataframe(result, include_non_sequenced_mutations);
 }
