@@ -46,8 +46,14 @@ RESULT_TYPE get_random_seed(const SEXP seed)
         case REALSXP:
             return Rcpp::as<RESULT_TYPE>(seed);
         case NILSXP:
-            return R::runif(std::numeric_limits<RESULT_TYPE>::min(),
-                            std::numeric_limits<RESULT_TYPE>::max());
+        {
+            GetRNGstate();
+            auto r_seed = R::runif(std::numeric_limits<RESULT_TYPE>::min(),
+                                   std::numeric_limits<RESULT_TYPE>::max());
+
+            PutRNGstate();
+            return static_cast<RESULT_TYPE>(r_seed);
+        }
         default:
             break;
     }
