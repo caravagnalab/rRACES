@@ -40,7 +40,8 @@ collapse_loops <- function(df_edges) {
 #' and package ggmuller.
 #'
 #' @param simulation A simulation object.
-#'
+#' @param color_map A named vector representing the simulation species color
+#'   map (optional).
 #' @return An editable ggplot plot.
 #' @export
 #'
@@ -53,8 +54,15 @@ collapse_loops <- function(df_edges) {
 #' sim$history_delta = 1
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
+#'
 #' plot_muller(sim)
-plot_muller <- function(simulation) {
+#'
+#' # define a custom color map
+#' color_map <- c("#B2DF8A", "#E31A1C")
+#' names(color_map) <- c("A+", "A-")
+#'
+#' plot_muller(sim, color_map=color_map)
+plot_muller <- function(simulation, color_map = NULL) {
   stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   # Tumour DF
@@ -95,7 +103,9 @@ plot_muller <- function(simulation) {
     df_populations
   )
 
-  color_map <- get_species_colors(simulation$get_species())
+  if (is.null(color_map)) {
+    color_map <- get_species_colors(simulation$get_species())
+  }
 
   suppressWarnings({
     muller_df <- ggmuller::get_Muller_df(df_edges, t_wt_dynamics)

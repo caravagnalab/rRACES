@@ -25,19 +25,27 @@
 #' @param highlight_sample If a sample name, the path from root to the sampled
 #'   cells in the sample is highlighted. If `NULL` (default), nothing is
 #'   highlighted.
-#'
+#' @param color_map A named vector representing the simulation species color
+#'   map (optional).
 #' @return A `ggraph` tree plot.
 #' @export
 #'
 #' @examples
 #' sim <- SpatialSimulation()
-#' sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.01)
+#' sim$add_mutant(name = "A", growth_rates = 0.08, death_rates = 0.0)
 #' sim$place_cell("A", 500, 500)
 #' sim$run_up_to_time(60)
 #' sim$sample_cells("MySample", c(500, 500), c(510, 510))
 #' forest <- sim$get_samples_forest()
+#'
 #' plot_forest(forest)
-plot_forest <- function(forest, highlight_sample = NULL) {
+#'
+#' # define a custom color map
+#' color_map <- c("#B2DF8A")
+#' names(color_map) <- c("A")
+#'
+#' plot_forest(forest, color_map=color_map)
+plot_forest <- function(forest, highlight_sample = NULL, color_map = NULL) {
   stopifnot(inherits(forest, "Rcpp_SamplesForest"))
 
   nodes <- forest$get_nodes()
@@ -95,22 +103,13 @@ plot_forest <- function(forest, highlight_sample = NULL) {
 
     layout$y <- layout$reversed_btime
 
-    species_colors <- get_species_colors(forest$get_species_info())
-
-    ncells <- graph %>%
-      tidygraph::activate(nodes) %>%
-      dplyr::pull(.data$name) %>%
-      length()
-
-    ncells_sampled <- graph %>%
-      tidygraph::activate(nodes) %>%
-      dplyr::filter(sample != "N/A") %>%
-      dplyr::pull(.data$name) %>%
-      length()
+    if (is.null(color_map)) {
+      color_map <- get_species_colors(forest$get_species_info())
+    }
 
     nsamples <- forest$get_samples_info() %>% nrow()
 
-    labels_every <- max_Y/10
+    labels_every <- max_Y / 10
 
     point_size <- c(.5, rep(1, nsamples))
     names(point_size) <- c("N/A", forest$get_samples_info() %>%
@@ -130,7 +129,7 @@ plot_forest <- function(forest, highlight_sample = NULL) {
                                                           .data$sample),
                                            size = .data$sample)) +
       ggplot2::scale_shape_manual(values = c(0:nsamples + 1)) +
-      ggplot2::scale_color_manual(values = species_colors) +
+      ggplot2::scale_color_manual(values = color_map) +
       ggplot2::theme_minimal() +
       ggplot2::theme(legend.position = "bottom") +
       ggplot2::labs(
@@ -146,7 +145,8 @@ plot_forest <- function(forest, highlight_sample = NULL) {
       ) +
       ggplot2::scale_y_continuous(labels = seq(0, max_Y,
                                                labels_every) %>%
-          round %>% rev,
+          round %>%
+          rev,
         breaks = seq(0, max_Y, labels_every) %>% round
       ) +
       ggplot2::theme(

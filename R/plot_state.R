@@ -21,7 +21,8 @@
 #' also provides annotations for the simulation data.
 #'
 #' @param simulation A simulation.
-#'
+#' @param color_map A named vector representing the simulation species color
+#'   map (optional).
 #' @return A ggplot plot.
 #' @export
 #'
@@ -33,18 +34,23 @@
 #'                death_rates = c("+" = 0.1, "-" = 0.01))
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
+#'
 #' plot_state(sim)
-plot_state <- function(simulation) {
+#'
+#' # define a custom color map
+#' color_map <- c("#B2DF8A", "#E31A1C")
+#' names(color_map) <- c("A+", "A-")
+#'
+#' plot_state(sim, color_map=color_map)
+plot_state <- function(simulation, color_map = NULL) {
   stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   counts <- simulation$get_counts() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
-  time <- simulation$get_clock() %>% round(digits = 3)
 
-  sim_title <- simulation$get_name()
-  tissue_size <- paste(simulation$get_tissue_size(), collapse = " x ")
-
-  color_map <- get_species_colors(simulation$get_species())
+  if (is.null(color_map)) {
+    color_map <- get_species_colors(simulation$get_species())
+  }
 
   ggplot2::ggplot(counts) +
     ggplot2::geom_bar(stat = "identity",

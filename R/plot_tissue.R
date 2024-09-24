@@ -23,8 +23,9 @@
 #' hexagonal heatmap of 2D bins.
 #'
 #' @param simulation A simulation object.
-#' @param num_of_bins The number of bins (default: 100)
-#'
+#' @param num_of_bins The number of bins (default: 100).
+#' @param color_map A named vector representing the simulation species color
+#'   map (optional).
 #' @return An editable ggplot plot.
 #' @export
 #'
@@ -37,8 +38,15 @@
 #'                death_rates = c("+" = 0.1, "-" = 0.01))
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_size("A-", 600)
+#'
 #' plot_tissue(sim)
-plot_tissue <- function(simulation, num_of_bins = 100) {
+#'
+#' # define a custom color map
+#' color_map <- c("#B2DF8A", "#E31A1C")
+#' names(color_map) <- c("A+", "A-")
+#'
+#' plot_tissue(sim, color_map=color_map)
+plot_tissue <- function(simulation, num_of_bins = 100, color_map = NULL) {
   stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   # Get the cells in the tissue at current simulation time
@@ -46,7 +54,9 @@ plot_tissue <- function(simulation, num_of_bins = 100) {
     dplyr::as_tibble() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
 
-  color_map <- get_species_colors(simulation$get_species())
+  if (is.null(color_map)) {
+    color_map <- get_species_colors(simulation$get_species())
+  }
 
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
                                       y = .data$position_y,

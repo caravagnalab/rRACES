@@ -21,7 +21,8 @@
 #' also provides annotations for the simulation data.
 #'
 #' @param simulation A simulation.
-#'
+#' @param color_map A named vector representing the simulation species color
+#'   map (optional).
 #' @return A ggplot plot.
 #' @export
 #'
@@ -35,16 +36,23 @@
 #' sim$place_cell("A+", 500, 500)
 #' sim$run_up_to_time(60)
 #'
-#' # Set the frequency of storing
 #' plot_timeseries(sim)
-plot_timeseries <- function(simulation) {
+#'
+#' # define a custom color map
+#' color_map <- c("#B2DF8A", "#E31A1C")
+#' names(color_map) <- c("A+", "A-")
+#'
+#' plot_timeseries(sim, color_map=color_map)
+plot_timeseries <- function(simulation, color_map = NULL) {
   stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   counts <- simulation$get_count_history() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
   time <- simulation$get_clock() %>% round(digits = 3)
 
-  color_map <- get_species_colors(simulation$get_species())
+  if (is.null(color_map)) {
+    color_map <- get_species_colors(simulation$get_species())
+  }
 
   ggplot2::ggplot(counts) +
     ggplot2::geom_line(ggplot2::aes(x = time, y = .data$count,
