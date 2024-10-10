@@ -65,23 +65,30 @@ void add_SNV_data(Rcpp::DataFrame& df,
 
   size_t index{0};
   for (const auto& mutation : mutations) {
+    chr_names[index] = GenomicPosition::chrtos(mutation.chr_id);
+    chr_pos[index] = mutation.position;
+    ref[index] = mutation.ref;
+    alt[index] = mutation.alt;
+    
     auto it = sample_statistics.get_data().find(mutation);
 
+    std::string full_causes;
     if (it != sample_statistics.get_data().end()) {
-      chr_names[index] = GenomicPosition::chrtos(mutation.chr_id);
-      chr_pos[index] = mutation.position;
-      ref[index] = mutation.ref;
-      alt[index] = mutation.alt;
-      auto full_causes = join(it->second.causes, ';');
-      if (full_causes == "") {
-        causes[index] = NA_STRING;
-      } else {
-        causes[index] = full_causes;
-      }
-      auto descr = get_descriptions(it->second.nature_set);
-      classes[index] = join(descr, ';');
-      ++index;
+      full_causes = join(it->second.causes, ';');
+      auto descr_set = get_descriptions(it->second.nature_set);
+      classes[index] = join(descr_set, ';');
+    } else {
+      full_causes = mutation.cause;
+      classes[index] = RACES::Mutations::Mutation::get_nature_description(mutation.nature);
     }
+
+    if (full_causes == "") {
+      causes[index] = NA_STRING;
+    } else {
+      causes[index] = full_causes;
+    }
+
+    ++index;
   }
 
   df.push_back(chr_names, "chr");
@@ -96,7 +103,7 @@ void add_sample_statistics(Rcpp::DataFrame& df,
                            const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics,
                            const std::set<RACES::Mutations::SID>& mutations)
 {
-  if (df.nrows()==0) {
+  if (df.length()==0) {
     add_SNV_data(df, sample_statistics, mutations);
   }
 
@@ -116,20 +123,23 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   auto coverage_it = sample_statistics.get_coverage().begin();
   std::less<GenomicPosition> come_before;
   for (const auto& mutation : mutations) {
-    auto it = sample_statistics.get_data().find(mutation);
 
+    while (come_before(coverage_it->first, mutation)) {
+        ++coverage_it;
+    }
+
+    coverages[index] = coverage_it->second;
+
+    auto it = sample_statistics.get_data().find(mutation);
     if (it != sample_statistics.get_data().end()) {
       occurrences[index] = it->second.num_of_occurrences;
-
-      while (come_before(coverage_it->first, mutation)) {
-        ++coverage_it;
-      }
-
-      coverages[index] = coverage_it->second;
       VAF[index] = static_cast<double>(it->second.num_of_occurrences)/coverage_it->second;
-
-      ++index;
+    } else {
+      occurrences[index] = 0;
+      VAF[index] = 0;
     }
+
+    ++index;
   }
 
   const auto& sample_name = sample_statistics.get_sample_name();
@@ -150,10 +160,6 @@ get_active_mutations(const RACES::Mutations::SequencingSimulations::SampleSetSta
       if (mutation_data.num_of_occurrences>0 || include_non_sequenced_mutations) {
         active_mutations.insert(mutation);
       }
-    }
-
-    if (include_non_sequenced_mutations) {
-      return active_mutations;
     }
   }
 
