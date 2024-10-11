@@ -34,7 +34,7 @@ get_exposure_ends <- function(phylo_forest) {
   last_time <- max(phylo_forest$get_samples_info()["time"])
   time_points <- sort(unique(append(time_points, last_time)))
   end_time <- apply(exposure, 1, function(x) {
-    time_points[which(time_points == as.numeric(x[1])) + 1]
+    time_points[which( round(time_points, 2) == round(as.numeric(x[1]), 2) ) + 1]
   })
   end_time[is.na(end_time)] <- as.numeric(last_time)
 
