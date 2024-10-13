@@ -7,13 +7,16 @@
 #' @param chromosomes A character vector specifying the chromosomes to
 #'   include in the plot (default: all the chromosomes in `seq_res`).
 #' @param samples A character vector specifying the sample names to include
-#'   in the plot (default: NULL. It includes all samples except the
-#'   "normal_sample").
+#'   in the plot. When set to `NULL`, the function includes all samples
+#'   except the "normal_sample" (default: `NULL`).
 #' @param colour_by A character indicating whether to color the histogram
 #'   bars by "causes" or "classes" (default: "causes").
+#' @param binwidth The width of the plot bins. When set to `NULL`, the
+#'   function computes the most convinient bin width according to the
+#'   maximum coverage reported in the dataframe (default: `NULL`).
 #' @param cuts A numeric vector specifying the range of VAF values to
 #'   include in the plot (default: `c(0, 1)`).
-#' @return A ggplot2 object showing the histogram of VAF.
+#' @return A ggplot2 object showing the VAF histogram.
 #' @seealso `plot_VAF_marginals()`, `plot_VAF()`
 #' @export
 #'
@@ -78,6 +81,7 @@ plot_VAF_histogram <- function(
     chromosomes = NULL,
     samples = NULL,
     labels = NULL,
+    binwidth = NULL,
     cuts = c(0, 1)
 ) {
   data <- seq_to_long(seq_res)
@@ -125,8 +129,12 @@ plot_VAF_histogram <- function(
         ggplot2::ggplot(mapping = ggplot2::aes(x = VAF))
   }
 
+  if (is.null(binwidth)) {
+    binwidth <- 1 / max(data$DP)
+  }
+
   plot +
-    ggplot2::geom_histogram(binwidth = 0.01, alpha = 0.5) +
+    ggplot2::geom_histogram(binwidth = binwidth, alpha = 0.5) +
     ggplot2::facet_grid(sample_name ~ chr, scales = "free_y") +
     ggplot2::theme_bw() +
     ggplot2::scale_x_continuous(labels = scales::label_number(accuracy = 0.1)) +
