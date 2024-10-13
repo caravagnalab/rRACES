@@ -50,8 +50,7 @@ std::set<std::string> get_descriptions(const std::set<RACES::Mutations::Mutation
 }
 
 void add_SNV_data(Rcpp::DataFrame& df,
-                  const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics,
-                  const std::set<RACES::Mutations::SID>& mutations)
+                  const std::map<RACES::Mutations::SID, RACES::Mutations::SequencingSimulations::SIDData>& mutations)
 {
   using namespace Rcpp;
   using namespace RACES::Mutations;
@@ -64,29 +63,20 @@ void add_SNV_data(Rcpp::DataFrame& df,
                   classes(num_of_mutations);
 
   size_t index{0};
-  for (const auto& mutation : mutations) {
+  for (const auto& [mutation, data] : mutations) {
     chr_names[index] = GenomicPosition::chrtos(mutation.chr_id);
     chr_pos[index] = mutation.position;
     ref[index] = mutation.ref;
     alt[index] = mutation.alt;
-    
-    auto it = sample_statistics.get_data().find(mutation);
 
-    std::string full_causes;
-    if (it != sample_statistics.get_data().end()) {
-      full_causes = join(it->second.causes, ';');
-      auto descr_set = get_descriptions(it->second.nature_set);
-      classes[index] = join(descr_set, ';');
-    } else {
-      full_causes = mutation.cause;
-      classes[index] = RACES::Mutations::Mutation::get_nature_description(mutation.nature);
-    }
-
-    if (full_causes == "") {
+    if (data.causes.size()==0) {
       causes[index] = NA_STRING;
     } else {
-      causes[index] = full_causes;
+      causes[index] = join(data.causes, ';');
     }
+
+    auto descr_set = get_descriptions(data.nature_set);
+    classes[index] = join(descr_set, ';');
 
     ++index;
   }
@@ -101,10 +91,10 @@ void add_SNV_data(Rcpp::DataFrame& df,
 
 void add_sample_statistics(Rcpp::DataFrame& df,
                            const RACES::Mutations::SequencingSimulations::SampleStatistics& sample_statistics,
-                           const std::set<RACES::Mutations::SID>& mutations)
+                           const std::map<RACES::Mutations::SID, RACES::Mutations::SequencingSimulations::SIDData>& mutations)
 {
   if (df.length()==0) {
-    add_SNV_data(df, sample_statistics, mutations);
+    add_SNV_data(df, mutations);
   }
 
   size_t num_of_mutations = mutations.size();
@@ -122,7 +112,7 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   size_t index{0};
   auto coverage_it = sample_statistics.get_coverage().begin();
   std::less<GenomicPosition> come_before;
-  for (const auto& mutation : mutations) {
+  for (const auto& [mutation, mutation_data] : mutations) {
 
     while (come_before(coverage_it->first, mutation)) {
         ++coverage_it;
@@ -149,16 +139,26 @@ void add_sample_statistics(Rcpp::DataFrame& df,
   df.push_back(VAF, sample_name+".VAF");
 }
 
-std::set<RACES::Mutations::SID>
+std::map<RACES::Mutations::SID, RACES::Mutations::SequencingSimulations::SIDData>
 get_active_mutations(const RACES::Mutations::SequencingSimulations::SampleSetStatistics& sample_set_statistics,
                      const bool& include_non_sequenced_mutations)
 {
-  std::set<RACES::Mutations::SID> active_mutations;
+  std::map<RACES::Mutations::SID, RACES::Mutations::SequencingSimulations::SIDData> active_mutations;
 
   for (const auto& [sample_name, sample_stats] : sample_set_statistics) {
     for (const auto& [mutation, mutation_data]: sample_stats.get_data()) {
       if (mutation_data.num_of_occurrences>0 || include_non_sequenced_mutations) {
-        active_mutations.insert(mutation);
+
+        auto it = active_mutations.find(mutation);
+        if (it == active_mutations.end()) {
+          active_mutations.insert({mutation, mutation_data});
+        } else {
+          auto& data = it->second;
+          data.num_of_occurrences += mutation_data.num_of_occurrences;
+
+          data.causes = get_union(data.causes, mutation_data.causes);
+          data.nature_set = get_union(data.nature_set, mutation_data.nature_set);
+        }
       }
     }
   }
