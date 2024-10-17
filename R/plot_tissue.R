@@ -26,6 +26,8 @@
 #' @param num_of_bins The number of bins (default: 100).
 #' @param color_map A named vector representing the simulation species color
 #'   map (optional).
+#' @param list_all_species A Boolean flag to show all species in
+#'   the legend (default: FALSE).
 #' @return An editable ggplot plot.
 #' @export
 #'
@@ -46,7 +48,9 @@
 #' names(color_map) <- c("A+", "A-")
 #'
 #' plot_tissue(sim, color_map=color_map)
-plot_tissue <- function(simulation, num_of_bins = 100, color_map = NULL) {
+plot_tissue <- function(simulation, num_of_bins = 100,
+                        color_map = NULL,
+                        list_all_species = FALSE) {
   stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
   # Get the cells in the tissue at current simulation time
@@ -58,14 +62,18 @@ plot_tissue <- function(simulation, num_of_bins = 100, color_map = NULL) {
     color_map <- get_species_colors(simulation$get_species())
   }
 
+  cells$species <- factor(cells$species,
+                          levels = simulation$get_species()$mutant)
+
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
                                       y = .data$position_y,
                                       fill = .data$species)) +
-    ggplot2::geom_hex(bins = num_of_bins) +
+    ggplot2::geom_hex(bins = num_of_bins, show.legend = TRUE) +
+    ggplot2::scale_fill_manual(values = color_map,
+                               drop = !list_all_species) +
     my_theme() +
     ggplot2::labs(x = "Latitude", y = "Longitude",
                   fill = "Species") +
-    ggplot2::scale_fill_manual(values = color_map) +
     # ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::xlim(-1, simulation$get_tissue_size()[1] + 1) +
