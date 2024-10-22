@@ -11,6 +11,7 @@ Description: A wrapper for RACES. This package supports
         spacial evolution of different mutants, different
         epigenetic mutant states, timed-triggered driver
         mutations.
+URL: https://caravagnalab.github.io/rRACES
 License: GPL-3 + file LICENSE
 LinkingTo: Rcpp
 Encoding: UTF-8
