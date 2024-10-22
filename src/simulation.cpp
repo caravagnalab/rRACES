@@ -887,20 +887,20 @@ Rcpp::List SpatialSimulation::get_counts() const
 
   size_t num_of_rows = sim_ptr->tissue().num_of_species();
 
-  CharacterVector mutant_names(num_of_rows);
-  CharacterVector epi_states(num_of_rows);
-  IntegerVector counts(num_of_rows);
+  CharacterVector mutant_names(num_of_rows), epi_states(num_of_rows);
+  IntegerVector counts(num_of_rows), overall(num_of_rows);
 
   size_t i{0};
   for (const auto& species: sim_ptr->tissue()) {
     mutant_names[i] = species.get_mutant_name();
     epi_states[i] = get_signature_string(species);
     counts[i] = species.num_of_cells();
+    overall[i] = species.num_of_simulated_cells();
     ++i;
   }
 
   return DataFrame::create(_["mutant"]=mutant_names, _["epistate"]=epi_states,
-                            _["counts"]=counts);
+                            _["counts"]=counts, _["overall"]=overall);
 }
 
 std::map<RACES::Mutants::SpeciesId, std::string>

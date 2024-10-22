@@ -141,9 +141,9 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Returns:} A dataframe reporting "`mutant`", "`epistate`", "`counts`",
 //'   and "`time`" for each species and for each sampled time.
 //' }
-//' @field get_counts Counts the number of cells \itemize{
-//' \item \emph{Returns:} A dataframe reporting "`mutant`", "`epistate`", "counts" for each
-//'   species in the simulation.
+//' @field get_counts Counts the number of cells per species\itemize{
+//' \item \emph{Returns:} A dataframe reporting "`mutant`", "`epistate`", "`counts`", and
+//'   "`overall`" for each species in the simulation.
 //' }
 //' @field get_firing_history Gets the history of the number of fired events \itemize{
 //' \item \emph{Returns:} A dataframe reporting "event", "`mutant`", "`epistate`", "`fired`",
@@ -695,10 +695,10 @@ RCPP_MODULE(Mutants){
 
 //' @name SpatialSimulation$get_counts
 //' @title Counting the cell number
-//' @description This method returns the number of cells per species
-//'   along the tumour simulation.
-//' @return A dataframe reporting `mutant`, `epistate`, `counts` for each
-//'   species in the simulation.
+//' @description This method returns the current number of cells per
+//'   species and that since the simulation began.
+//' @return A dataframe reporting `mutant`, `epistate`, `counts`, and
+//'   `overall` for each species in the simulation.
 //' @examples
 //' # set the seed of the random number generator
 //' set.seed(0)
@@ -713,7 +713,9 @@ RCPP_MODULE(Mutants){
 //'
 //' # counts the number of cells per species
 //' sim$get_counts()
-  .method("get_counts", &SpatialSimulation::get_counts, "Get the current number of cells per species")
+  .method("get_counts", &SpatialSimulation::get_counts,
+          "Get the current number of cells and that "
+          "throughout the entire simulation")
 
 //' @name SpatialSimulation$get_count_history
 //' @title Getting the history of the number of cells per species
