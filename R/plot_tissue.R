@@ -62,8 +62,12 @@ plot_tissue <- function(simulation, num_of_bins = 100,
     color_map <- get_species_colors(simulation$get_species())
   }
 
+  species_name_df <- simulation$get_species() %>%
+    dplyr::as_tibble() %>%
+    dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
+
   cells$species <- factor(cells$species,
-                          levels = simulation$get_species()$mutant)
+                          levels = unique(species_name_df$species))
 
   ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
                                       y = .data$position_y,
