@@ -14,7 +14,7 @@ evolution simulator.
 
 #### Help and support
 
-## [![](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg)](https://caravagnalab.github.io/rRACES/)
+## [![rRACES GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-https://caravagnalab.github.io/rRACES/-yellow.svg)](https://caravagnalab.github.io/rRACES/)
 
 ### Installation
 
@@ -40,5 +40,5 @@ devtools::install_github("caravagnalab/rRACES")
 Giulio Caravagna, Alberto Casagrande. Cancer Data Science (CDS)
 Laboratory.
 
-[![](https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg)](https://github.com/caravagnalab)
-[![](https://img.shields.io/badge/CDS%20Lab%20webpage-https://www.caravagnalab.org/-red.svg)](https://www.caravagnalab.org/)
+[![CDS Lab GitHub](https://img.shields.io/badge/CDS%20Lab%20Github-caravagnalab-seagreen.svg)](https://github.com/caravagnalab)
+[![CDS Lab Webpage](https://img.shields.io/badge/CDS%20Lab%20webpage-https://www.caravagnalab.org/-red.svg)](https://www.caravagnalab.org/)
