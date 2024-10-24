@@ -258,11 +258,7 @@ The function `simulate_seq()` allows users to simulate the
 sequencing of a selection of the reference chromosomes by using
 the parameter `chromosomes`.
 
-```{r, echo=FALSE, results='hide', message=FALSE}
-unlink("rRACES_SAM", recursive = TRUE)
-```
-
-```{r}
+```{r, eval=FALSE}
 # let us simulate a 2.5x sequencing of the chromosomes 22 and
 # X of the four sample
 seq_results <- simulate_seq(phylo_forest, chromosomes = c("22", "X"),

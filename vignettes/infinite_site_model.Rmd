@@ -144,8 +144,6 @@ samples_forest <- load_samples_forest("samples_forest.sff")
 # place mutations on the sample forest assuming 1000 pre-neoplastic SNVs and
 # 500 indels
 phylo_forest <- m_engine$place_mutations(samples_forest, 1000, 500)
-
-detach("package:rRACES", unload=TRUE)
 ```
 
 ```{r}
