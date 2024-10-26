@@ -166,16 +166,16 @@ void fill_mutation_lists(const RACES::Mutations::CellGenomeMutations& cell_mutat
   for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
     for (const auto& [allele_id, allele]: chromosome.get_alleles()) {
       for (const auto& [fragment_pos, fragment]: allele.get_fragments()) {
-        for (const auto& [mutation_pos, mutation]: fragment.get_mutations()) {
+        for (const auto& [mutation_pos, mutation_ptr]: fragment.get_mutations()) {
           cell_ids[index] = cell_mutations.get_id();
           chr_names[index] = GenomicPosition::chrtos(chr_id);
-          chr_pos[index] = mutation.position;
+          chr_pos[index] = mutation_ptr->position;
           alleles[index] = allele_id;
-          ref[index] = mutation.ref;
-          alt[index] = mutation.alt;
-          types[index] = (mutation.is_SBS()?"SNV":"indel");
-          causes[index] = mutation.cause;
-          classes[index] = mutation.get_nature_description();
+          ref[index] = mutation_ptr->ref;
+          alt[index] = mutation_ptr->alt;
+          types[index] = (mutation_ptr->is_SBS()?"SNV":"indel");
+          causes[index] = mutation_ptr->cause;
+          classes[index] = mutation_ptr->get_nature_description();
 
           ++index;
         }
@@ -192,15 +192,15 @@ void fill_CNA_lists(const RACES::Mutations::CellGenomeMutations& cell_mutations,
                     size_t& index)
 {
   for (const auto& [chr_id, chromosome]: cell_mutations.get_chromosomes()) {
-    for (const auto& cna: chromosome.get_CNAs()) {
+    for (const auto& cna_ptr: chromosome.get_CNAs()) {
       cell_ids[index] = cell_mutations.get_id();
       chr_names[index] = RACES::Mutations::GenomicPosition::chrtos(chr_id);
-      CNA_begins[index] = cna.get_initial_position();
-      CNA_ends[index] = cna.get_final_position();
-      bool is_amp = cna.type == RACES::Mutations::CNA::Type::AMPLIFICATION;
-      src_alleles[index] = (is_amp? cna.source: NA_INTEGER);
-      dst_alleles[index] = cna.dest;
-      classes[index] = cna.get_nature_description();
+      CNA_begins[index] = cna_ptr->get_initial_position();
+      CNA_ends[index] = cna_ptr->get_final_position();
+      bool is_amp = cna_ptr->type == RACES::Mutations::CNA::Type::AMPLIFICATION;
+      src_alleles[index] = (is_amp? cna_ptr->source: NA_INTEGER);
+      dst_alleles[index] = cna_ptr->dest;
+      classes[index] = cna_ptr->get_nature_description();
 
       types[index] = (is_amp?"A":"D");
 
@@ -261,15 +261,15 @@ Rcpp::List PhylogeneticForest::get_germline_SIDs() const
   for (const auto& [chr_id, chr] : germline.get_chromosomes()) {
     for (const auto& [allele_id, allele] : chr.get_alleles()) {
       for (const auto& [f_pos, fragment] : allele.get_fragments()) {
-        for (const auto& [mutation_pos, mutation] : fragment.get_mutations()) {
+        for (const auto& [mutation_pos, mutation_ptr] : fragment.get_mutations()) {
           chr_names[index] = RACES::Mutations::GenomicPosition::chrtos(chr_id);
-          chr_pos[index] = mutation.position;
+          chr_pos[index] = mutation_ptr->position;
           alleles[index] = allele_id;
-          ref[index] = mutation.ref;
-          alt[index] = mutation.alt;
-          types[index] = (mutation.is_SBS()?"SNV":"indel");
-          causes[index] = mutation.cause;
-          classes[index] = mutation.get_nature_description();
+          ref[index] = mutation_ptr->ref;
+          alt[index] = mutation_ptr->alt;
+          types[index] = (mutation_ptr->is_SBS()?"SNV":"indel");
+          causes[index] = mutation_ptr->cause;
+          classes[index] = mutation_ptr->get_nature_description();
 
           ++index;
         }
