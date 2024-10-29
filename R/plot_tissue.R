@@ -76,7 +76,7 @@ plot_tissue <- function(simulation, num_of_bins = 100,
     ggplot2::scale_fill_manual(values = color_map,
                                drop = !list_all_species) +
     my_theme() +
-    ggplot2::labs(x = "Latitude", y = "Longitude",
+    ggplot2::labs(x = NULL, y = NULL,
                   fill = "Species") +
     # ggplot2::scale_alpha_manual(values = c(`+` = 1, `-` = .5)) +
     ggplot2::theme(legend.position = "bottom") +

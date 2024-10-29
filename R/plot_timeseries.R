@@ -60,6 +60,7 @@ plot_timeseries <- function(simulation, color_map = NULL) {
     ggplot2::geom_point(ggplot2::aes(x = time, y = .data$count,
                                      color = .data$species)) +
     ggplot2::labs(
+      x = "Time", y = "Cell count",
       color = "Species",
       alpha = "Epistate"
     ) +

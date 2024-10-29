@@ -60,5 +60,6 @@ plot_state <- function(simulation, color_map = NULL) {
     ggplot2::coord_polar(theta = "y") +
     ggplot2::theme_void(base_size = 10) +
     ggplot2::scale_fill_manual(values = color_map) +
-    ggplot2::theme(legend.position = "bottom")
+    ggplot2::theme(legend.position = "bottom") +
+    ggplot2::labs(fill = "Species")
 }

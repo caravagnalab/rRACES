@@ -48,8 +48,8 @@ plot_firings <- function(simulation) {
     ggplot2::coord_polar(theta = "y") +
     ggplot2::labs(
       fill = "Event",
-      x = "",
-      y = ""
+      x = NULL,
+      y = NULL
     ) +
     my_theme() +
     ggplot2::scale_fill_brewer(palette = "Dark2") +

@@ -109,7 +109,7 @@ plot_DR <- function(
     ggplot2::geom_vline(xintercept = chr_limits, linetype = "solid",
                         alpha = 0.4) +
     ggplot2::geom_point(size = 0.2, alpha = 0.3) +
-    ggplot2::labs(x = "", y = "DR") +
+    ggplot2::labs(x = NULL, y = "DR") +
     ggplot2::lims(y = c(0, NA)) +
     ggplot2::theme_bw() +
     ggplot2::scale_x_continuous(breaks = chr_means,
@@ -211,7 +211,7 @@ plot_BAF <- function(
     ggplot2::geom_vline(xintercept = chr_limits, linetype = "solid",
                         alpha = 0.4) +
     ggplot2::geom_point(size = 0.2, alpha = 0.3) +
-    ggplot2::labs(x = "", y = "BAF") +
+    ggplot2::labs(x = NULL, y = "BAF") +
     ggplot2::lims(y = c(0, 1)) +
     ggplot2::theme_bw() +
     ggplot2::scale_x_continuous(breaks = chr_means, labels = unique(d$chr))
@@ -309,7 +309,7 @@ plot_VAF <- function(seq_res, sample,
     ggplot2::geom_vline(xintercept = chr_limits, linetype = "solid",
                         alpha = 0.4) +
     ggplot2::geom_point(size = 0.5, alpha = 0.4) +
-    ggplot2::labs(x = "", y = "VAF") +
+    ggplot2::labs(x = NULL, y = "VAF") +
     ggplot2::lims(y = c(0, 1)) +
     ggplot2::theme_bw() +
     ggplot2::scale_x_continuous(breaks = chr_means, labels = unique(d$chr))
