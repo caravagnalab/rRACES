@@ -98,7 +98,11 @@ public:
 
   Rcpp::List get_timed_exposures() const;
 
+  Rcpp::List get_bulk_allelic_fragmentation() const;
+
   Rcpp::List get_bulk_allelic_fragmentation(const std::string& sample_name) const;
+
+  Rcpp::List get_cell_allelic_fragmentation() const;
 
   inline std::string get_reference_path() const
   {
@@ -115,7 +119,7 @@ public:
   inline Rcpp::List get_germline_subject_df() const
   {
     return germline_subject.get_dataframe();
-  }  
+  }
 
   inline void save(const std::string& filename) const
   {

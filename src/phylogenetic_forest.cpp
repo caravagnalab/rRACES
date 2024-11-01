@@ -69,7 +69,7 @@ Rcpp::List PhylogeneticForest::get_samples_info() const
         sample_name_map[samples[j].get_name()] = j;
     }
 
-    size_t normal_DNA_quantity{0}; 
+    size_t normal_DNA_quantity{0};
     for (auto [cell_id, normal_genome] : get_normal_genomes()) {
         normal_DNA_quantity += normal_genome.allelic_size();
     }
@@ -84,7 +84,7 @@ Rcpp::List PhylogeneticForest::get_samples_info() const
         const std::string sample_name = Rcpp::as<std::string>(name_col[i]);
 
         const auto j = sample_name_map.at(sample_name);
-        
+
         DNA_quantities[j] = DNA[i];
         equivalent_normal_cells[j] = static_cast<double>(DNA[i])/normal_DNA_quantity;
     }
@@ -558,8 +558,12 @@ PhylogeneticForest::get_cell_ids_in(const std::string& sample_name) const
     throw std::domain_error("Unknown sample \"" + sample_name +"\".");
 }
 
-Rcpp::List 
-PhylogeneticForest::get_bulk_allelic_fragmentation(const std::string& sample_name) const
+
+Rcpp::List
+get_bulk_allelic_fragmentation(const RACES::Mutations::PhylogeneticForest::AllelicCount& allelic_count,
+                               const std::map<RACES::Mutations::ChromosomeId,
+                                              RACES::Mutations::ChromosomeMutations>& chr_map,
+                               const double& num_of_cells)
 {
     using namespace Rcpp;
     using namespace RACES::Mutations;
@@ -569,11 +573,6 @@ PhylogeneticForest::get_bulk_allelic_fragmentation(const std::string& sample_nam
     IntegerVector major_counts, minor_counts;
     NumericVector ratios;
 
-    const double num_of_cells = get_cell_ids_in(sample_name).size();
-
-    const auto& chr_map = get_germline_mutations().get_chromosomes();
-
-    const auto allelic_count = get_allelic_count(sample_name, 2);
     for (const auto& [chr_id, chr_allelic_count] : allelic_count) {
         auto a_count_it = chr_allelic_count.begin();
         auto next_a_count_it = a_count_it;
@@ -600,6 +599,99 @@ PhylogeneticForest::get_bulk_allelic_fragmentation(const std::string& sample_nam
                              _["end"]=fragment_ends, _["major"]=major_counts,
                              _["minor"]=minor_counts, _["ratio"]=ratios);
 }
+
+Rcpp::List
+PhylogeneticForest::get_bulk_allelic_fragmentation() const
+{
+    const double num_of_cells = get_leaves_mutations().size();
+    const auto& chr_map = get_germline_mutations().get_chromosomes();
+    const auto allelic_count = get_allelic_count(2);
+
+    return ::get_bulk_allelic_fragmentation(allelic_count, chr_map, num_of_cells);
+}
+
+Rcpp::List
+PhylogeneticForest::get_bulk_allelic_fragmentation(const std::string& sample_name) const
+{
+    const double num_of_cells = get_cell_ids_in(sample_name).size();
+    const auto& chr_map = get_germline_mutations().get_chromosomes();
+    const auto allelic_count = get_allelic_count(sample_name, 2);
+
+    return ::get_bulk_allelic_fragmentation(allelic_count, chr_map, num_of_cells);
+}
+
+void fill_allelic_cell_data(const RACES::Mutations::AllelicType& allelic_type,
+                            const RACES::Mutants::CellId& cell_id,
+                            const RACES::Mutations::ChromosomeId& chr_id,
+                            const RACES::Mutations::ChrPosition frag_begin,
+                            const RACES::Mutations::ChrPosition frag_end, Rcpp::IntegerVector& ids,
+                            Rcpp::StringVector& chromosomes, Rcpp::IntegerVector& fragment_begins,
+                            Rcpp::IntegerVector& fragment_ends, Rcpp::IntegerVector& major_counts,
+                            Rcpp::IntegerVector& minor_counts)
+{
+    using namespace RACES::Mutations;
+
+    ids.push_back(cell_id);
+    chromosomes.push_back(GenomicPosition::chrtos(chr_id));
+    fragment_begins.push_back(frag_begin);
+    fragment_ends.push_back(frag_end);
+
+    if (allelic_type[0] < allelic_type[1]) {
+        major_counts.push_back(allelic_type[1]);
+        minor_counts.push_back(allelic_type[0]);
+    } else {
+        major_counts.push_back(allelic_type[0]);
+        minor_counts.push_back(allelic_type[1]);
+    }
+}
+
+Rcpp::List
+PhylogeneticForest::get_cell_allelic_fragmentation() const
+{
+    using namespace Rcpp;
+    using namespace RACES::Mutations;
+
+    IntegerVector ids;
+    StringVector chromosomes;
+    IntegerVector fragment_begins, fragment_ends;
+    IntegerVector major_counts, minor_counts;
+
+    const auto& chr_map = get_germline_mutations().get_chromosomes();
+
+    for (const auto& [cell_id, mutations] : get_leaves_mutations()) {
+        const auto b_points = mutations->get_CNA_break_points();
+        const auto allelic_map = mutations->get_allelic_map(b_points, 2);
+
+        for (const auto& [chr_id, chr_allelic_map] : allelic_map) {
+            auto a_map_it = chr_allelic_map.begin();
+            auto next_a_map_it = a_map_it;
+            while (++next_a_map_it != chr_allelic_map.end()) {
+                fill_allelic_cell_data(a_map_it->second, cell_id,
+                                       chr_id, a_map_it->first,
+                                       next_a_map_it->first-1, ids,
+                                       chromosomes, fragment_begins,
+                                       fragment_ends, major_counts,
+                                       minor_counts);
+
+                a_map_it = next_a_map_it;
+            }
+
+            fill_allelic_cell_data(a_map_it->second, cell_id,
+                                   chr_id, a_map_it->first,
+                                   chr_map.at(chr_id).size(), ids,
+                                   chromosomes, fragment_begins,
+                                   fragment_ends, major_counts,
+                                   minor_counts);
+        }
+
+    }
+
+    return DataFrame::create(_["cell_id"]=ids, _["chr"]=chromosomes,
+                             _["begin"]=fragment_begins,
+                             _["end"]=fragment_ends, _["major"]=major_counts,
+                             _["minor"]=minor_counts);
+}
+
 
 void PhylogeneticForest::set_reference_path(const std::string reference_path)
 {

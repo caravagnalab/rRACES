@@ -1231,7 +1231,7 @@ RCPP_MODULE(Mutations){
 //' @description This method returns a dataframe representing the bulk allelic
 //'     fragmentation of the genome.
 //' @param sample_name The name of the sample whose bulk allelic fragmentation
-//'     is aimed.
+//'     is aimed (optional).
 //' @return A dataframe reporting, for each genomic fragment and for all
 //'     the allelic type on the genomic fragment, the chromosome (`chr`),
 //'     the first base position (`begin`), the last base position (`end`),
@@ -1241,8 +1241,29 @@ RCPP_MODULE(Mutations){
 //'     sample.
 //' @seealso `vignette("mutations")` for usage examples
     .method("get_bulk_allelic_fragmentation",
-            &PhylogeneticForest::get_bulk_allelic_fragmentation,
+            (Rcpp::List (PhylogeneticForest::*)(const std::string&) const)
+                (&PhylogeneticForest::get_bulk_allelic_fragmentation),
             "Get the bulk allelic fragmentation dataframe")
+    .method("get_bulk_allelic_fragmentation",
+            (Rcpp::List (PhylogeneticForest::*)() const)
+                (&PhylogeneticForest::get_bulk_allelic_fragmentation),
+            "Get the bulk allelic fragmentation dataframe")
+
+//' @name PhylogeneticForest$get_cell_allelic_fragmentation
+//' @title Getting the cell allelic fragmentation dataframe
+//' @description This method returns a dataframe representing the allelic
+//'     fragmentation of each sampled cell.
+//' @return A dataframe reporting, for each cell, for each genomic fragment,
+//'     and for all the allelic type on the genomic fragment, the cell
+//'     identifier (`cell_id`), the chromosome (`chr`), the first base
+//'     position (`begin`), the last base position (`end`), and the number
+//'     of copy of the major and minor alleles (`major` and `minor`,
+//'     respectively).
+//' @seealso `vignette("mutations")` for usage examples
+    .method("get_cell_allelic_fragmentation",
+            (Rcpp::List (PhylogeneticForest::*)() const)
+                (&PhylogeneticForest::get_cell_allelic_fragmentation),
+            "Get the cell allelic fragmentation dataframe")
 
 //' @name PhylogeneticForest$get_first_occurrences
 //' @title Getting the mutation first occurrences

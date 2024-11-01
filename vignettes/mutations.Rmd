@@ -444,6 +444,14 @@ sample_name <- phylo_forest$get_samples_info()[["name"]][1]
 phylo_forest$get_bulk_allelic_fragmentation(sample_name) %>% head()
 ```
 
+Instead, the method `MutationEngine$get_cell_allelic_fragmentation()` returns the allelic 
+fragmentation per cell.
+
+```{r}
+# print the cell allelic fragmentation
+phylo_forest$get_cell_allelic_fragmentation() %>% head()
+```
+
 The details about the SNV and indel signatures adopted during the evolution are
 available in the mutation engine and they can be retrieved by using the methods
 `MutationEngine$get_SNV_signatures()` and `MutationEngine$get_indel_signatures()`.
