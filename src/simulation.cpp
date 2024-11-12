@@ -254,11 +254,28 @@ bool SpatialSimulation::has_names_in(const Rcpp::List& list, std::set<std::strin
   return true;
 }
 
+Rcpp::List 
+SpatialSimulation::get_cells(const std::string& sample_name) const
+{
+    if (!already_collected_sample(sample_name)) {
+        std::ostringstream oss;
+        
+        oss << "Unknown sample \"" << sample_name << "\".";
+
+        ::Rf_error("%s", oss.str().c_str());
+    }
+
+    const auto tissue = load_tissue(pre_sample_tissue_image_path(sample_name));
+
+    return get_cells(tissue);
+}
+
 Rcpp::List
-SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+SpatialSimulation::get_cells(const RACES::Mutants::Evolutions::Tissue& tissue,
+                      const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                       const std::set<RACES::Mutants::SpeciesId> &species_filter,
-                      const std::set<std::string> &epigenetic_filter) const
+                      const std::set<std::string> &epigenetic_filter)
 {
   using namespace Rcpp;
   using namespace RACES::Mutants;
@@ -273,7 +290,7 @@ SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisP
     ::Rf_error("The upper corner must be a vector having size 2");
   }
 
-  size_t num_of_rows = count_driver_mutated_cells(sim_ptr->tissue(), lower_corner, upper_corner,
+  size_t num_of_rows = count_driver_mutated_cells(tissue, lower_corner, upper_corner,
                                                   species_filter, epigenetic_filter);
 
   IntegerVector ids(num_of_rows);
@@ -283,12 +300,12 @@ SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisP
   size_t i{0};
   for (auto x=lower_corner[0]; x<=upper_corner[0]; ++x) {
     for (auto y=lower_corner[1]; y<=upper_corner[1]; ++y) {
-      auto cell_proxy = sim_ptr->tissue()({x,y});
+      auto cell_proxy = tissue({x,y});
       if(!cell_proxy.is_wild_type()) {
 
         const RS::CellInTissue& cell = cell_proxy;
 
-        const auto& species = sim_ptr->tissue().get_species(cell.get_species_id());
+        const auto& species = tissue.get_species(cell.get_species_id());
         const auto sign_string = get_signature_string(species);
 
         if (species_filter.count(cell.get_species_id())>0
@@ -781,40 +798,42 @@ void SpatialSimulation::place_cell(const std::string& species_name,
   sim_ptr->place_cell(species.get_id(), {x,y});
 }
 
-Rcpp::List SpatialSimulation::get_cells() const
+Rcpp::List SpatialSimulation::get_cells(const RACES::Mutants::Evolutions::Tissue& tissue) const
 {
   namespace RS = RACES::Mutants::Evolutions;
 
-  std::vector<RS::AxisPosition> upper_corner = sim_ptr->tissue().size();
+  std::vector<RS::AxisPosition> upper_corner = tissue.size();
   upper_corner.resize(2);
 
   for (auto& value : upper_corner) {
     --value;
   }
 
-  return get_cells({0,0}, upper_corner);
+  return get_cells(tissue, {0,0}, upper_corner);
 }
 
-Rcpp::List SpatialSimulation::get_cell(const RACES::Mutants::Evolutions::AxisPosition& x,
-                          const RACES::Mutants::Evolutions::AxisPosition& y) const
+Rcpp::List SpatialSimulation::get_cell(const RACES::Mutants::Evolutions::Tissue& tissue,
+                                       const RACES::Mutants::Evolutions::AxisPosition& x,
+                                       const RACES::Mutants::Evolutions::AxisPosition& y) const
 {
   namespace RS = RACES::Mutants::Evolutions;
 
-  const RS::CellInTissue& cell = sim_ptr->tissue()({x,y});
+  const RS::CellInTissue& cell = tissue({x,y});
 
   return wrap_a_cell(cell);
 }
 
-Rcpp::List SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
-                           const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
+Rcpp::List SpatialSimulation::get_cells(const RACES::Mutants::Evolutions::Tissue& tissue,
+                                        const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                                        const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
 {
   std::set<RACES::Mutants::SpeciesId> species_ids;
 
-  for (const auto& species: sim_ptr->tissue()) {
+  for (const auto& species: tissue) {
     species_ids.insert(species.get_id());
   }
 
-  return get_cells(lower_corner, upper_corner, species_ids, {"+", "-", ""});
+  return get_cells(tissue, lower_corner, upper_corner, species_ids, {"+", "-", ""});
 }
 
 Rcpp::List SpatialSimulation::get_cells(const SEXP& first_param, const SEXP& second_param) const
@@ -853,7 +872,7 @@ Rcpp::List SpatialSimulation::get_cells(const SEXP& first_param, const SEXP& sec
 }
 
 Rcpp::List SpatialSimulation::get_cells(const std::vector<std::string>& species_filter,
-                           const std::vector<std::string>& epigenetic_filter) const
+                                        const std::vector<std::string>& epigenetic_filter) const
 {
   namespace RS = RACES::Mutants::Evolutions;
 
@@ -864,10 +883,11 @@ Rcpp::List SpatialSimulation::get_cells(const std::vector<std::string>& species_
     --value;
   }
 
-  return get_cells({0,0}, upper_corner, species_filter, epigenetic_filter);
+  return get_cells(sim_ptr->tissue(), {0,0}, upper_corner, species_filter, epigenetic_filter);
 }
 
-Rcpp::List SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+Rcpp::List SpatialSimulation::get_cells(const RACES::Mutants::Evolutions::Tissue& tissue,
+                           const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                            const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                            const std::vector<std::string>& mutant_filter,
                            const std::vector<std::string>& epigenetic_filter) const
@@ -875,9 +895,9 @@ Rcpp::List SpatialSimulation::get_cells(const std::vector<RACES::Mutants::Evolut
   std::set<std::string> mutant_set(mutant_filter.begin(), mutant_filter.end());
   std::set<std::string> epigenetic_set(epigenetic_filter.begin(), epigenetic_filter.end());
 
-  auto species_ids = get_species_ids_from_mutant_name(sim_ptr->tissue(), mutant_set);
+  auto species_ids = get_species_ids_from_mutant_name(tissue, mutant_set);
 
-  return get_cells(lower_corner, upper_corner, species_ids, epigenetic_set);
+  return get_cells(tissue, lower_corner, upper_corner, species_ids, epigenetic_set);
 }
 
 Rcpp::List SpatialSimulation::get_counts() const
@@ -1391,22 +1411,42 @@ void SpatialSimulation::mutate_progeny(const Rcpp::List& cell_position,
   return mutate_progeny(vector_position[0], vector_position[1], mutated_mutant);
 }
 
+bool SpatialSimulation::already_collected_sample(const std::string& sample_name) const
+{
+    for (const auto& sample : sim_ptr->get_tissue_samples()) {
+        if (sample.get_name() == sample_name) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void SpatialSimulation::validate_usable_sample_name(const std::string& sample_name) const
+{
+  if (sample_name == "normal_sample") {
+    ::Rf_error("Sample name \"normal_sample\" is reserved.");
+  }
+
+  if (already_collected_sample(sample_name)) {
+    std::ostringstream oss;
+    
+    oss << "The sample \"" << sample_name << "\" has been already collected.";
+
+    ::Rf_error("%s", oss.str().c_str());
+  }
+}
+
 void SpatialSimulation::sample_cells(const std::string& sample_name,
                               const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                               const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
 {
   using namespace RACES::Mutants;
 
-  if (sample_name == "normal_sample") {
-    ::Rf_error("Sample name \"normal_sample\" is reserved.");
-  }
+  const auto bounding_box = get_rectangle(lower_corner, upper_corner);
+  const auto num_of_cells = bounding_box.size();
 
-  auto bounding_box = get_rectangle(lower_corner, upper_corner);
-  auto num_of_cells = bounding_box.size();
-
-  RACES::Mutants::Evolutions::SampleSpecification spec(sample_name, bounding_box, num_of_cells);
-
-  sim_ptr->sample_tissue(spec);
+  sample_cells(sample_name, lower_corner, upper_corner, num_of_cells);
 }
 
 void SpatialSimulation::sample_cells(const std::string& sample_name,
@@ -1429,9 +1469,8 @@ void SpatialSimulation::sample_cells(const std::string& sample_name,
 {
   using namespace RACES::Mutants;
 
-  if (sample_name == "normal_sample") {
-    ::Rf_error("Sample name \"normal_sample\" is reserved.");
-  }
+  validate_usable_sample_name(sample_name);
+  save_tissue(pre_sample_tissue_image_path(sample_name));
 
   auto bounding_box = get_rectangle(lower_corner, upper_corner);
 

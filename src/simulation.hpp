@@ -82,10 +82,12 @@ class SpatialSimulation
 
   static std::vector<RACES::Mutants::Evolutions::Direction> get_possible_directions();
 
-  Rcpp::List get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+  static
+  Rcpp::List get_cells(const RACES::Mutants::Evolutions::Tissue& tissue,
+                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                  const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
                  const std::set<RACES::Mutants::SpeciesId> &species_filter,
-                 const std::set<std::string> &epigenetic_filter) const;
+                 const std::set<std::string> &epigenetic_filter);
 
   Rcpp::List wrap_a_cell(const RACES::Mutants::Evolutions::CellInTissue& cell) const;
 
@@ -105,8 +107,19 @@ class SpatialSimulation
     return std::filesystem::absolute(sim_ptr->get_logger().get_directory()/
                                         get_rates_update_history_file_name());
   }
-public:
 
+  void validate_usable_sample_name(const std::string& sample_name) const;
+  
+  inline
+  std::filesystem::path
+  pre_sample_tissue_image_path(const std::string& sample_name) const
+  {
+    const auto sim_path = sim_ptr->get_logger().get_directory();
+
+    return sim_path / std::filesystem::path(sample_name + ".rff");
+  }
+
+public:
   template<typename SAMPLES>
   static Rcpp::List get_samples_info(const SAMPLES& samples)
   {
@@ -189,6 +202,8 @@ public:
   size_t count_history_sample_in(const RACES::Time& minimum_time,
                                  const RACES::Time& maximum_time) const;
 
+  bool already_collected_sample(const std::string& sample_name) const;
+
   Rcpp::List get_added_cells() const;
 
   Rcpp::List get_counts() const;
@@ -203,23 +218,56 @@ public:
   Rcpp::List get_count_history(const RACES::Time& minimum_time,
                          const RACES::Time& maximum_time) const;
 
-  Rcpp::List get_cells() const;
+  inline Rcpp::List get_cells() const
+  {
+    return this->get_cells(sim_ptr->tissue());
+  }
 
+  Rcpp::List get_cells(const std::string& sample_name) const;
+
+  inline
   Rcpp::List get_cell(const RACES::Mutants::Evolutions::AxisPosition& x,
-                const RACES::Mutants::Evolutions::AxisPosition& y) const;
+                      const RACES::Mutants::Evolutions::AxisPosition& y) const
+  {
+    return this->get_cell(sim_ptr->tissue(), x, y);
+  }
 
+  inline 
   Rcpp::List get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
-                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const;
+                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
+  {
+    return this->get_cells(sim_ptr->tissue(), lower_corner, upper_corner);
+  }
+
+  Rcpp::List get_cells(const RACES::Mutants::Evolutions::Tissue& tissue) const;
+
+  Rcpp::List get_cell(const RACES::Mutants::Evolutions::Tissue& tissue,
+                      const RACES::Mutants::Evolutions::AxisPosition& x,
+                      const RACES::Mutants::Evolutions::AxisPosition& y) const;
+
+  Rcpp::List get_cells(const RACES::Mutants::Evolutions::Tissue& tissue,
+                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const;
 
   Rcpp::List get_cells(const SEXP& first_param, const SEXP& second_param) const;
 
   Rcpp::List get_cells(const std::vector<std::string>& species_filter,
-                 const std::vector<std::string>& epigenetic_filter) const;
+                       const std::vector<std::string>& epigenetic_filter) const;
 
+  inline
   Rcpp::List get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
-                 const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
-                 const std::vector<std::string>& mutant_filter,
-                 const std::vector<std::string>& epigenetic_filter) const;
+                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
+                       const std::vector<std::string>& mutant_filter,
+                       const std::vector<std::string>& epigenetic_filter) const
+  {
+    return get_cells(sim_ptr->tissue(), lower_corner, upper_corner, mutant_filter, epigenetic_filter);
+  }
+
+  Rcpp::List get_cells(const RACES::Mutants::Evolutions::Tissue& tissue,
+                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
+                       const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner,
+                       const std::vector<std::string>& mutant_filter,
+                       const std::vector<std::string>& epigenetic_filter) const;
 
   Rcpp::List get_lineage_graph() const;
 
@@ -401,6 +449,20 @@ public:
   static SpatialSimulation build_simulation(const SEXP& simulation_name, const SEXP& width,
                                             const SEXP& height, const SEXP& save_snapshots,
                                             const SEXP& seed);
+
+  inline void save_tissue(const std::filesystem::path tissue_file_path) const
+  {
+    RACES::Archive::Binary::Out sample_file(tissue_file_path);
+  
+    sample_file & sim_ptr->tissue();
+  }
+  
+  inline RACES::Mutants::Evolutions::Tissue load_tissue(const std::filesystem::path tissue_file_path) const
+  {
+    RACES::Archive::Binary::In sample_file(tissue_file_path);
+
+    return RACES::Mutants::Evolutions::Tissue::load(sample_file);
+  }
 };
 
 RCPP_EXPOSED_CLASS(SpatialSimulation)

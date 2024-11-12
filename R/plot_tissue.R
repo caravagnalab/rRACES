@@ -24,6 +24,11 @@
 #'
 #' @param simulation A simulation object.
 #' @param num_of_bins The number of bins (default: 100).
+#' @param at_sample A sample name. This function will represent the tissue
+#'   just before or just after the specified sampling (optional).
+#' @param plot_sample_region A Boolean value. When `at_sample` is set,
+#'   and `plot_sample_region` is set to be TRUE, this function also
+#'   plots the sample region (default: TRUE).
 #' @param color_map A named vector representing the simulation species color
 #'   map (optional).
 #' @param list_all_species A Boolean flag to show all species in
@@ -49,13 +54,20 @@
 #'
 #' plot_tissue(sim, color_map=color_map)
 plot_tissue <- function(simulation, num_of_bins = 100,
+                        at_sample = NULL,
+                        plot_sample_region = TRUE,
                         color_map = NULL,
                         list_all_species = FALSE) {
   stopifnot(inherits(simulation, "Rcpp_SpatialSimulation"))
 
-  # Get the cells in the tissue at current simulation time
-  cells <- simulation$get_cells() %>%
-    dplyr::as_tibble() %>%
+  # Get the cells
+  if (is.null(at_sample)) {
+    cells <- simulation$get_cells()
+  } else {
+    cells <- simulation$get_cells(at_sample)
+  }
+
+  cells <- cells %>% dplyr::as_tibble() %>%
     dplyr::mutate(species = paste0(.data$mutant, .data$epistate))
 
   if (is.null(color_map)) {
@@ -69,9 +81,9 @@ plot_tissue <- function(simulation, num_of_bins = 100,
   cells$species <- factor(cells$species,
                           levels = unique(species_name_df$species))
 
-  ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
-                                      y = .data$position_y,
-                                      fill = .data$species)) +
+  pl <- ggplot2::ggplot(cells, ggplot2::aes(x = .data$position_x,
+                                            y = .data$position_y,
+                                            fill = .data$species)) +
     ggplot2::geom_hex(bins = num_of_bins, show.legend = TRUE) +
     ggplot2::scale_fill_manual(values = color_map,
                                drop = !list_all_species) +
@@ -82,6 +94,19 @@ plot_tissue <- function(simulation, num_of_bins = 100,
     ggplot2::theme(legend.position = "bottom") +
     ggplot2::xlim(-1, simulation$get_tissue_size()[1] + 1) +
     ggplot2::ylim(-1, simulation$get_tissue_size()[2] + 1)
+
+  if (!is.null(at_sample) && plot_sample_region) {
+    sample_info <- simulation$get_samples_info() %>%
+      filter(.data$name == at_sample)
+
+    pl <- pl + ggplot2::geom_rect(xmin = sample_info$xmin[[1]],
+                                  xmax = sample_info$xmax[[1]],
+                                  ymin = sample_info$ymin[[1]],
+                                  ymax = sample_info$ymax[[1]],
+                                  fill = NA, color = "black")
+  }
+
+  return(pl)
 }
 
 

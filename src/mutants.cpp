@@ -597,6 +597,10 @@ RCPP_MODULE(Mutants){
           (List (SpatialSimulation::*)(const SEXP&, const SEXP&) const)
                     (&SpatialSimulation::get_cells),
           "Get cells from the simulated tissue")
+  .method("get_cells",
+          (List (SpatialSimulation::*)(const std::string&) const)(
+            &SpatialSimulation::get_cells),
+          "Get cells from what was the simulated tissue status before a sampling")
   .method("get_cells", (List (SpatialSimulation::*)() const)(&SpatialSimulation::get_cells),
           "Get cells from the simulated tissue")
 
