@@ -109,7 +109,7 @@ class SpatialSimulation
   }
 
   void validate_usable_sample_name(const std::string& sample_name) const;
-  
+
   inline
   std::filesystem::path
   pre_sample_tissue_image_path(const std::string& sample_name) const
@@ -129,7 +129,8 @@ public:
     IntegerVector ymin(samples.size()), ymax(samples.size()),
                   xmin(samples.size()), xmax(samples.size()),
                   num_of_cells(samples.size()),
-                  tumour_in_bbox(samples.size());
+                  tumour_in_bbox(samples.size()),
+                  id(samples.size());
 
     size_t i{0};
     for (const auto& sample : samples) {
@@ -137,6 +138,7 @@ public:
         time[i] = sample.get_time();
         num_of_cells[i] = sample.get_cell_ids().size();
         tumour_in_bbox[i] = sample.get_tumour_cells_in_bbox();
+        id[i] = sample.get_id();
         const auto& bounding_box = sample.get_bounding_box();
         xmin[i] = bounding_box.lower_corner.x;
         xmax[i] = bounding_box.upper_corner.x;
@@ -145,9 +147,9 @@ public:
         ++i;
     }
 
-    return DataFrame::create(_["name"]=sample_name, _["xmin"]=xmin,
-                             _["ymin"]=ymin, _["xmax"]=xmax,
-                             _["ymax"]=ymax,
+    return DataFrame::create(_["name"]=sample_name, _["id"]=id,
+                             _["xmin"]=xmin, _["ymin"]=ymin,
+                             _["xmax"]=xmax, _["ymax"]=ymax,
                              _["tumour_cells"]=num_of_cells,
                              _["tumour_cells_in_bbox"]=tumour_in_bbox,
                              _["time"]=time);
@@ -172,7 +174,7 @@ public:
                             const RACES::Mutants::Evolutions::AxisSize& height)
   {
     auto history_delta = get_history_delta();
-  
+
     sim_ptr->set_tissue(name, {width, height});
 
     set_history_delta(history_delta);
@@ -232,7 +234,7 @@ public:
     return this->get_cell(sim_ptr->tissue(), x, y);
   }
 
-  inline 
+  inline
   Rcpp::List get_cells(const std::vector<RACES::Mutants::Evolutions::AxisPosition>& lower_corner,
                        const std::vector<RACES::Mutants::Evolutions::AxisPosition>& upper_corner) const
   {
@@ -445,7 +447,7 @@ public:
                  const size_t num_of_samples, int seed) const;
 
   Logics::Variable get_var(const std::string& name) const;
-  
+
   static SpatialSimulation build_simulation(const SEXP& simulation_name, const SEXP& width,
                                             const SEXP& height, const SEXP& save_snapshots,
                                             const SEXP& seed);
@@ -453,10 +455,10 @@ public:
   inline void save_tissue(const std::filesystem::path tissue_file_path) const
   {
     RACES::Archive::Binary::Out sample_file(tissue_file_path);
-  
+
     sample_file & sim_ptr->tissue();
   }
-  
+
   inline RACES::Mutants::Evolutions::Tissue load_tissue(const std::filesystem::path tissue_file_path) const
   {
     RACES::Archive::Binary::In sample_file(tissue_file_path);

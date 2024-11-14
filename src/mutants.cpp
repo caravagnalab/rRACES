@@ -219,7 +219,7 @@ RCPP_MODULE(Mutants){
 //' \item \emph{Parameter:} \code{quiet} - A Boolean flag to avoid progress bar (optional).
 //' }
 //' @field run_until Simulating cell evolution \itemize{
-//' \item \emph{Parameter:} \code{formula} - The formula that will be satisfied at the 
+//' \item \emph{Parameter:} \code{formula} - The formula that will be satisfied at the
 //'    end of the simulation.
 //' \item \emph{Parameter:} \code{quiet} - A Boolean flag to avoid progress bar (optional).
 //' }
@@ -464,7 +464,7 @@ RCPP_MODULE(Mutants){
 //' # create a simulation
 //' sim <- SpatialSimulation()
 //'
-//' # is the simulation using the border driven growth model 
+//' # is the simulation using the border driven growth model
 //' # (default: TRUE)
 //' sim$border_growth_model
 //'
@@ -863,8 +863,8 @@ RCPP_MODULE(Mutants){
 //' @description This method retrieves information about
 //'   the samples collected along the simulation.
 //' @return A dataframe containing, for each sample collected
-//'   during the simulation, the columns "`name`", "`time`", "`ymin`",
-//'   "`xmin`", "`ymax`", "`xmax`", "`tumour_cells`", and
+//'   during the simulation, the columns "`name`", "`time`", "`id`",
+//'   "`ymin`", "`xmin`", "`ymax`", "`xmax`", "`tumour_cells`", and
 //'   "`tumour_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
 //'   "`xmax`" report the boundaries of the sample bounding box, while
 //'   "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of tumour
@@ -969,7 +969,7 @@ RCPP_MODULE(Mutants){
 //' @name SpatialSimulation$run_up_to_time
 //' @title Simulates cell evolution
 //' @param time The final simulation time.
-//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//' @param quiet An optional  Boolean flag to avoid the progress bar
 //'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_event()],
 //'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
@@ -984,11 +984,11 @@ RCPP_MODULE(Mutants){
 //'
 //' # simulate the tissue up to simulate timed 100
 //' sim$run_up_to_time(40)
-  .method("run_up_to_time", 
+  .method("run_up_to_time",
           (void (SpatialSimulation::*)(const RACES::Time&, const bool))
           &SpatialSimulation::run_up_to_time,
           "Simulate the system up to the specified simulation time")
-  .method("run_up_to_time", 
+  .method("run_up_to_time",
           (void (SpatialSimulation::*)(const RACES::Time&))
           &SpatialSimulation::run_up_to_time,
           "Simulate the system up to the specified simulation time")
@@ -1000,7 +1000,7 @@ RCPP_MODULE(Mutants){
 //' @param event The considered event, i.e., `growth`, `death`, or `switch`.
 //' @param species The species whose event number is considered.
 //' @param num_of_events The threshold for the event number.
-//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//' @param quiet An optional  Boolean flag to avoid the progress bar
 //'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_size()], [SpatialSimulation$run_until()]
@@ -1024,7 +1024,7 @@ RCPP_MODULE(Mutants){
                                        const size_t&, const bool))
           &SpatialSimulation::run_up_to_event,
           "Simulate the system up to the specified number of events")
-  .method("run_up_to_event", 
+  .method("run_up_to_event",
           (void (SpatialSimulation::*)(const std::string&, const std::string&,
                                        const size_t&))
           &SpatialSimulation::run_up_to_event,
@@ -1036,7 +1036,7 @@ RCPP_MODULE(Mutants){
 //'   a species reaches a specified threshold.
 //' @param species The species whose number of cells is considered.
 //' @param num_of_cells The threshold for the cell number.
-//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//' @param quiet An optional  Boolean flag to avoid the progress bar
 //'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_until()]
@@ -1071,7 +1071,7 @@ RCPP_MODULE(Mutants){
 //'    hold.
 //' @param formula The formula that will be satisfied at the end of the
 //'    simulation.
-//' @param quiet An optional  Boolean flag to avoid the progress bar 
+//' @param quiet An optional  Boolean flag to avoid the progress bar
 //'   (default: FALSE).
 //' @seealso `Simulation`, [SpatialSimulation$var()], [SpatialSimulation$run_up_to_time()],
 //'    [SpatialSimulation$run_up_to_event()], [SpatialSimulation$run_up_to_size()]
@@ -1647,12 +1647,12 @@ RCPP_MODULE(Mutants){
 //'   the samples whose cells were used as leaves
 //'   of the samples forest.
 //' @return A dataframe containing, for each sample collected
-//'   during the simulation, the columns "`name`", "`time`", "`ymin`",
-//'   "`xmin`", "`ymax`", "`xmax`", "`tumour_cells`", and
+//'   during the simulation, the columns "`name`", "`time`", "`id`",
+//'   "`ymin`", "`xmin`", "`ymax`", "`xmax`", "`tumour_cells`", and
 //'   "`tumour_cells_in_bbox`". The columns "`ymin`", "`xmin`", "`ymax`",
-//'    "`xmax`" report the boundaries of the sample bounding box, while
-//'    "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of tumour
-//'    cells in the sample and in the bounding box, respectively.
+//'   "`xmax`" report the boundaries of the sample bounding box, while
+//'   "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of tumour
+//'   cells in the sample and in the bounding box, respectively.
 //' @seealso [PhylogeneticForest$get_samples_info()] for usage examples,
 //'   [SpatialSimulation$sample_cells()], [SpatialSimulation$get_samples_info()]
 //' @examples

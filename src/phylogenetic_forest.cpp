@@ -89,9 +89,9 @@ Rcpp::List PhylogeneticForest::get_samples_info() const
         equivalent_normal_cells[j] = static_cast<double>(DNA[i])/normal_DNA_quantity;
     }
 
-    return DataFrame::create(_["name"]=info["name"], _["xmin"]=info["xmin"],
-                             _["ymin"]=info["ymin"], _["xmax"]=info["xmax"],
-                             _["ymax"]=info["ymax"],
+    return DataFrame::create(_["name"]=info["name"], _["id"]=info["id"],
+                             _["xmin"]=info["xmin"], _["ymin"]=info["ymin"],
+                             _["xmax"]=info["xmax"], _["ymax"]=info["ymax"],
                              _["tumour_cells"]=info["tumour_cells"],
                              _["tumour_cells_in_bbox"]=info["tumour_cells_in_bbox"],
                              _["time"]=info["time"], _["DNA_quantity"]=DNA_quantities,

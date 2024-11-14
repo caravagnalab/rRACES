@@ -1081,8 +1081,8 @@ RCPP_MODULE(Mutations){
 //'   the samples whose cells were used as leaves
 //'   of the samples forest.
 //' @return A dataframe containing, for each sample collected during the
-//'   simulation, the columns "`name`", "`time`", "`ymin`", "`xmin`", "`ymax`",
-//'   "`ymax`", "`xmax`", "`tumour_cells`", "`tumour_cells_in_bbox`",
+//'   simulation, the columns "`name`", "`time`", "`id`", "`ymin`", "`xmin`",
+//'    "`ymax`", "`ymax`", "`xmax`", "`tumour_cells`", "`tumour_cells_in_bbox`",
 //'   "`DNA_quantity`", and "`equivalent_normal_cells`". The columns "`ymin`",
 //'   "`xmin`", "`ymax`", and "`xmax`" report the boundaries of the sample
 //'   bounding box, while "`tumour_cells`" and "`tumour_cells_in_bbox`" are the
