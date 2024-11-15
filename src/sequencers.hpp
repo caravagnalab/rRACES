@@ -27,6 +27,11 @@ class ErrorlessIlluminaSequencer : public RACES::Sequencers::Illumina::ErrorLess
 public:
     ErrorlessIlluminaSequencer();
 
+    inline const double get_error_rate() const
+    {
+        return 0;
+    }
+
     void show() const;
 
     static ErrorlessIlluminaSequencer build_sequencer();
@@ -43,7 +48,7 @@ public:
 
     void show() const;
 
-    const double& get_error_rate() const;
+    const double get_error_rate() const;
 
     inline bool producing_random_scores() const
     {

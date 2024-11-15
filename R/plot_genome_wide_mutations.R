@@ -23,7 +23,7 @@ get_seq_data <- function(seq_res, sample, chromosomes)
 #' @description This function plots the genome-wide Depth Ratio (DR)
 #'   of a specific sample.
 #'
-#' @param seq_res A data frame containing sequencing results in wide format.
+#' @param seq_result A data frame containing sequencing results.
 #' @param sample The name of the sample for which the plot will be generated.
 #' @param chromosomes A character vector specifying the chromosomes to include
 #'   in the plot (default: NULL, i.e., all the chromosomes).
@@ -67,16 +67,25 @@ get_seq_data <- function(seq_res, sample, chromosomes)
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% filter(classes!="germinal")
+#' f_seq <- seq_results$mutations %>% filter(classes!="germinal")
 #'
 #' plot_DR(f_seq, sample="Sample")
 #'
 #' unlink('demo', recursive = T)
 plot_DR <- function(
-    seq_res,
+    seq_result,
     sample,
     chromosomes = NULL,
     N = 5000) {
+
+  # if the type of seq_res is a list and seq_res contains a field "mutations"
+  if (is.list(seq_result) && ("mutations" %in% names(seq_result))) {
+
+    # extract the field
+    seq_res <- seq_result["mutations"]
+  } else {
+    seq_res <- seq_result
+  }
 
   data <- get_seq_data(seq_res, sample, chromosomes)
 
@@ -122,7 +131,7 @@ plot_DR <- function(
 #' @description This function plots the genome-wide B-Allele Frequency (BAF)
 #'   of a specific sample.
 #'
-#' @param seq_res A data frame containing sequencing results in wide format.
+#' @param seq_result A data frame containing sequencing results.
 #' @param sample The name of the sample for which the plot will be generated.
 #' @param chromosomes A character vector specifying the chromosomes to include
 #'   in the plot (default: NULL, i.e., all the chromosomes).
@@ -168,17 +177,26 @@ plot_DR <- function(
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% filter(classes!="germinal")
+#' f_seq <- seq_results$mutations %>% filter(classes!="germinal")
 #'
 #' plot_BAF(f_seq, sample="Sample")
 #'
 #' unlink('demo', recursive = T)
 plot_BAF <- function(
-    seq_res,
+    seq_result,
     sample,
     chromosomes = NULL,
     cuts = c(0, 1),
     N = 5000) {
+
+  # if the type of seq_res is a list and seq_res contains a field "mutations"
+  if (is.list(seq_result) && ("mutations" %in% names(seq_result))) {
+
+    # extract the field
+    seq_res <- seq_result["mutations"]
+  } else {
+    seq_res <- seq_result
+  }
 
   data <- get_seq_data(seq_res, sample, chromosomes)
 
@@ -223,7 +241,7 @@ plot_BAF <- function(
 #' @description This function plots the genome-wide Variant Allele
 #'   Frequency (VAF) of a specific sample.
 #'
-#' @param seq_res A data frame containing sequencing results in wide format.
+#' @param seq_result A data frame containing sequencing results.
 #' @param sample The name of the sample for which the plot will be generated.
 #' @param chromosomes A character vector specifying the chromosomes to include
 #'   in the plot (default: NULL, i.e., all the chromosomes).
@@ -269,14 +287,23 @@ plot_BAF <- function(
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% filter(classes!="germinal")
+#' f_seq <- seq_results$mutations %>% filter(classes!="germinal")
 #'
 #' plot_VAF(f_seq, sample="Sample")
 #'
 #' unlink('demo', recursive = T)
-plot_VAF <- function(seq_res, sample,
+plot_VAF <- function(seq_result, sample,
     chromosomes = NULL,
     cuts = c(0, 1), N = 5000) {
+
+  # if the type of seq_res is a list and seq_res contains a field "mutations"
+  if (is.list(seq_result) && ("mutations" %in% names(seq_result))) {
+
+    # extract the field
+    seq_res <- seq_result["mutations"]
+  } else {
+    seq_res <- seq_result
+  }
 
   data <- get_seq_data(seq_res, sample, chromosomes)
 

@@ -425,6 +425,60 @@ std::binomial_distribution<u_int32_t> get_bin_dist(const int& insert_size_mean,
     return std::binomial_distribution<u_int32_t>(t, p);
 }
 
+template<typename SEQUENCER_CLASS>
+Rcpp::List extract_sequencer_data(SEXP& sequencer, const std::string& seq_class_name)
+{
+  using namespace Rcpp;
+
+  S4 s4obj( sequencer );
+  Environment env( s4obj );
+
+  XPtr<SEQUENCER_CLASS> rel_ptr( env.get(".pointer") );
+
+  return List::create(_["name"] = seq_class_name,
+                      _["error_rate"] = rel_ptr->get_error_rate());
+}
+
+Rcpp::List get_sequencer_data(SEXP& sequencer)
+{
+  using namespace Rcpp;
+
+  switch (TYPEOF(sequencer)) {
+    case NILSXP:
+    {
+        return sequencer;
+    }
+    case S4SXP:
+    {
+        S4 s4obj( sequencer );
+
+        std::string seq_class_name = s4obj.attr("class");
+        seq_class_name = seq_class_name.substr(strlen("Rcpp_"));
+
+        if ( s4obj.is("Rcpp_BasicIlluminaSequencer")) {
+            return extract_sequencer_data<BasicIlluminaSequencer>(sequencer, seq_class_name);
+        }
+        if ( s4obj.is("Rcpp_ErrorlessIlluminaSequencer")) {
+            return extract_sequencer_data<ErrorlessIlluminaSequencer>(sequencer, seq_class_name);
+        }
+
+        std::ostringstream oss;
+
+        oss << "Unsupported sequencer class \"" << seq_class_name << "\"";
+
+        throw std::domain_error(oss.str());
+    }
+    default:
+    {
+        Function stop("stop"), paste0("paste");
+
+        stop(paste0(sequencer, " is not supported as sequencer"));
+    }
+  }
+
+  throw std::domain_error("Unsupported sequencer type");
+}
+
 Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
                         SEXP& reference_genome,
                         SEXP& chromosome_ids, const double& coverage,
@@ -491,7 +545,23 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
     std::filesystem::remove_all(output_path);
   }
 
-  return get_result_dataframe(result, include_non_sequenced_mutations);
+  using namespace Rcpp;
+
+  auto parameters = List::create(_["sequencer"] = get_sequencer_data(sequencer),
+                                 _["reference_genome"] = reference_genome,
+                                 _["chromosomes"] = chromosome_ids, _["coverage"] = coverage,
+                                 _["read_size"] = read_size, _["insert_size_mean"] = insert_size_mean,
+                                 _["insert_size_stddev"] = insert_size_stddev, _["output_dir"] = output_dir,
+                                 _["write_SAM"] = write_SAM, _["update_SAM"] = update_SAM_dir,
+                                 _["cell_labelling"] = FACS_labelling_function,
+                                 _["purity"] = purity, _["with_normal_sample"] = with_normal_sample,
+                                 _["filename_prefix"] = filename_prefix,
+                                 _["template_name_prefix"] = template_name_prefix,
+                                 _["include_non_sequenced_mutations"] = include_non_sequenced_mutations,
+                                 _["seed"] = c_seed);
+
+  return List::create(_["mutations"] = get_result_dataframe(result, include_non_sequenced_mutations) ,
+                      _["parameters"] = parameters);
 }
 
 Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer,
@@ -554,5 +624,20 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
     std::filesystem::remove_all(output_path);
   }
 
-  return get_result_dataframe(result, include_non_sequenced_mutations);
+  using namespace Rcpp;
+
+  auto parameters = List::create(_["sequencer"] = get_sequencer_data(sequencer),
+                                 _["reference_genome"] = reference_genome,
+                                 _["chromosomes"] = chromosome_ids, _["coverage"] = coverage,
+                                 _["read_size"] = read_size, _["insert_size_mean"] = insert_size_mean,
+                                 _["insert_size_stddev"] = insert_size_stddev, _["output_dir"] = output_dir,
+                                 _["write_SAM"] = write_SAM, _["update_SAM"] = update_SAM_dir,
+                                 _["with_preneoplastic"] = with_preneoplastic,
+                                 _["filename_prefix"] = filename_prefix,
+                                 _["template_name_prefix"] = template_name_prefix,
+                                 _["include_non_sequenced_mutations"] = include_non_sequenced_mutations,
+                                 _["seed"] = c_seed);
+
+  return List::create(_["mutations"] = get_result_dataframe(result, include_non_sequenced_mutations) ,
+                      _["parameters"] = parameters);
 }

@@ -60,16 +60,18 @@ follows.
 # the labelling function parameter has type `SampledCell`
 epi_labelling <- function(cell) {
 
-    # epigenetic state is "+", "-", "". However, "+" and "-"
-    # are not supported in R dataframe column names, so, we
-    # can replace them by "P" and "N", respectively
-    if (cell$epistate == "+") {
-        return("P");
-    }
-    if (cell$epistate == "-") {
-        return("N");
-    }
-    return("");
+  # epigenetic state is "+", "-", "". However, "+" and "-"
+  # are not supported in R dataframe column names, so, we
+  # can replace them by "P" and "N", respectively
+  if (cell$epistate == "+") {
+    return("P")
+  }
+
+  if (cell$epistate == "-") {
+    return("N")
+  }
+
+  return("")
 }
 
 seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
@@ -77,7 +79,7 @@ seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
 
 library(dplyr)
 
-seq_results %>% head()
+seq_results$mutations %>% head()
 ```
 
 The same approach can be easily applied to group sampled cells
@@ -86,13 +88,13 @@ by mutant name...
 ```{r}
 # a mutant-name-based labelling function
 mutant_labelling <- function(cell) {
-    return(cell$mutant);
+  return(cell$mutant)
 }
 
 seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
                             cell_labelling = mutant_labelling)
 
-seq_results %>% head()
+seq_results$mutations %>% head()
 ```
 
 ..., birth time...
@@ -100,21 +102,21 @@ seq_results %>% head()
 ```{r}
 # a birth-time-based labelling function
 birth_time_labelling <- function(cell) {
-    if (cell$birth_time>421) {
-        return("YOUNG");
-    }
+  if (cell$birth_time > 421) {
+    return("YOUNG")
+  }
 
-    if (cell$birth_time>321) {
-        return("MIDDLE_AGED");
-    }
+  if (cell$birth_time > 321) {
+    return("MIDDLE_AGED")
+  }
 
-    return("OLD");
+  return("OLD")
 }
 
 seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
                             cell_labelling = birth_time_labelling)
 
-seq_results %>% head()
+seq_results$mutations %>% head()
 ```
 
 ..., mutations...
@@ -122,30 +124,33 @@ seq_results %>% head()
 ```{r}
 # collect all the sample passenger indels
 passenger_indels <- phylo_forest$get_sampled_cell_mutations() %>%
-    filter(class=="passenger", type == "indel")
+  filter(class == "passenger", type == "indel")
 
 # get one of the passenger indels
-p_indel <- passenger_indels[sample(1:nrow(passenger_indels),1),]
+p_indel <- passenger_indels[sample(seq_len(nrow(passenger_indels)), 1), ]
 
 p_indel
 
 # a mutation-based labelling function that discriminates sampled cells
 # containing indel `p_indel` from the other sampled cells
 mutations_labelling <- function(cell) {
-    has_indel <- nrow(cell$mutations %>%
-        filter(chr == p_indel[["chr"]], chr_pos == p_indel[["chr_pos"]],
-               ref == p_indel[["ref"]], alt == p_indel[["alt"]])) > 0
+  has_indel <- nrow(cell$mutations %>%
+                      filter(chr == p_indel[["chr"]],
+                             chr_pos == p_indel[["chr_pos"]],
+                             ref == p_indel[["ref"]],
+                             alt == p_indel[["alt"]])) > 0
 
-    if (has_indel) {
-        return("HAS_MUTATION");
-    }
-    return("MISSES_MUTATION")
+  if (has_indel) {
+    return("HAS_MUTATION");
+  }
+
+  return("MISSES_MUTATION")
 }
 
 seq_results <- simulate_seq(phylo_forest, coverage = 0.5,
                             cell_labelling = mutations_labelling)
 
-seq_results %>% head()
+seq_results$mutations %>% head()
 ```
 
 ... or combination of these properties.

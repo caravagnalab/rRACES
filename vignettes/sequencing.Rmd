@@ -63,16 +63,20 @@ seq_results <- simulate_seq(phylo_forest, coverage = 30)
 # let us load the dplyr library to filter the `simulate_seq` output
 library(dplyr)
 
-seq_results %>% head
+seq_results$parameters
+
+seq_results$mutations %>% head
 ```
 
-The function `simulate_seq()` returns a data frame whose rows
-represent the mutations observed in the simulated reads.
+The function `simulate_seq()` returns named list of two elements:
+a data frame whose rows represent the mutations observed in the
+simulated reads (name "`mutations`") and the
+calling parameters (name "`parameters`").
 
-The number of columns in the data frame depends on the number
-of samples in the phylogenetic forest. The first four columns
-describe the mutation and report the chromosome and the position
-in the chromosome of the mutation (columns `chr` and
+The number of columns in the data frame "`mutations`" depends on
+the number of samples in the phylogenetic forest. The first four
+columns describe the mutation and report the chromosome and the
+position in the chromosome of the mutation (columns `chr` and
 `chr_pos`, respectively), the genetic context in which the
 mutation occurs (column `context`), and the new base (column
 `alt_base`).
@@ -93,19 +97,19 @@ and the Depth Ratio (DR) of a sample.
 library(dplyr)
 
 # filter germinal mutations
-f_seq <- seq_results %>% filter(classes!="germinal")
+f_seq <- seq_results$mutations %>% filter(classes != "germinal")
 
 # plot the VAF of the mutations sequenced on the sample S_2_2
 # over the reference genome
-plot_VAF(f_seq, sample="S_2_2")
+plot_VAF(f_seq, sample = "S_2_2")
 
 # plot the BAF of the mutations sequenced on the sample S_2_2
 # over the reference genome
-plot_BAF(f_seq, sample="S_2_2")
+plot_BAF(f_seq, sample = "S_2_2")
 
 # plot the DR of the mutations sequenced on the sample S_2_2
 # over the reference genome
-plot_DR(f_seq, sample="S_2_2")
+plot_DR(f_seq, sample = "S_2_2")
 ```
 
 The VAF and the VAF marginal distributions can be
@@ -179,7 +183,7 @@ section for usage examples of this parameter.
 
 The _sample purity_ represents the concentration of tumour cells in a sample.
 More formally, it is the ratio between the number of tumour cells in the sample
-and that of all the sample cells, either tumour or normal (i.e., cells 
+and that of all the sample cells, either tumour or normal (i.e., cells
 having germline and pre-neoplastic mutations).
 
 rRACES can simulate different sample purity in sequencing
@@ -202,9 +206,9 @@ for (line in readLines(ex_file, n = 10)) {
 The default value of the parameter `purity` is 1, i.e., `simulate_seq()`
 assumes all the cells in the sample to be neoplastic by default.
 
-The function `simulate_normal_seq()` simulates the sequencing 
+The function `simulate_normal_seq()` simulates the sequencing
 of a sample whose cells have germline and tumoral pre-neoplastic
-mutations. The pre-neoplastic mutations can be avoided 
+mutations. The pre-neoplastic mutations can be avoided
 by setting the optional parameter `with_preneoplastic`.
 
 ### Simulating Sequencing Errors

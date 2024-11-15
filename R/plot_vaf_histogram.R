@@ -3,7 +3,7 @@
 #' This function generates a histogram showing the distribution of Variant
 #' Allele Frequency (VAF) across samples and chromosomes.
 #'
-#' @param seq_res A data frame containing sequencing results in wide format.
+#' @param seq_result A data frame containing sequencing results.
 #' @param chromosomes A character vector specifying the chromosomes to
 #'   include in the plot (default: all the chromosomes in `seq_res`).
 #' @param samples A character vector specifying the sample names to include
@@ -66,7 +66,7 @@
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% dplyr::filter(classes!="germinal")
+#' f_seq <- seq_results$mutations %>% dplyr::filter(classes!="germinal")
 #'
 #' # plotting the VAF histogram
 #' plot_VAF_histogram(f_seq, cuts = c(0.02, 1))
@@ -77,28 +77,37 @@
 #' # deleting the mutation engine directory
 #' unlink('demo', recursive = T)
 plot_VAF_histogram <- function(
-    seq_res,
+    seq_result,
     chromosomes = NULL,
     samples = NULL,
     labels = NULL,
     binwidth = NULL,
     cuts = c(0, 1)
 ) {
+  # if the type of seq_res is a list and seq_res contains a field "mutations"
+  if (is.list(seq_result) && ("mutations" %in% names(seq_result))) {
+
+    # extract the field
+    seq_res <- seq_result["mutations"]
+  } else {
+    seq_res <- seq_result
+  }
+
   data <- seq_to_long(seq_res)
 
   if (!is.null(labels)) {
     if (!is(labels, "data.frame")) {
-        stop("The parameter \"labels\" must be a data frame when non-NULL.")
+      stop("The parameter \"labels\" must be a data frame when non-NULL.")
     }
 
     if (length(labels) != 1) {
-        stop(paste0("The parameters \"labels\" must be a data frame ",
-                    "with one column when non-NULL."))
+      stop(paste0("The parameters \"labels\" must be a data frame ",
+                  "with one column when non-NULL."))
     }
 
     if (nrow(labels) != nrow(seq_res)) {
-        stop(paste0("The parameters \"seq_res\" and \"labels\"",
-                    " must have the same number of rows."))
+      stop(paste0("The parameters \"seq_res\" and \"labels\"",
+                  " must have the same number of rows."))
     }
 
     data["labels"] <- labels
@@ -121,12 +130,12 @@ plot_VAF_histogram <- function(
 
   if (!is.null(labels)) {
     plot <- data %>%
-        ggplot2::ggplot(mapping = ggplot2::aes(x = VAF,
-                                               fill = labels)) +
-        ggplot2::labs(col = data$labels, fill = label_name)
+      ggplot2::ggplot(mapping = ggplot2::aes(x = VAF,
+                                             fill = labels)) +
+      ggplot2::labs(col = data$labels, fill = label_name)
   } else {
     plot <- data %>%
-        ggplot2::ggplot(mapping = ggplot2::aes(x = VAF))
+      ggplot2::ggplot(mapping = ggplot2::aes(x = VAF))
   }
 
   if (is.null(binwidth)) {

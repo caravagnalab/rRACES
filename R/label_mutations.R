@@ -57,7 +57,7 @@
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% dplyr::filter(classes!="germinal")
+#' f_seq <- seq_results$mutations %>% dplyr::filter(classes!="germinal")
 #'
 #' # label filtered mutations using phylogenetic forest data
 #' labels <- label_mutations(f_seq, phylo_forest)
@@ -65,24 +65,31 @@
 #'
 #' # plotting histogram of the VAF with phylogenetic labels
 #' plot_VAF_histogram(f_seq, labels = labels["label"], cuts = c(0.02, 1))
-label_mutations <- function(seq_results, phylo_forest)
-{
-    if (!inherits(phylo_forest, "Rcpp_PhylogeneticForest")) {
-        stop("The second parameter must be a phylogenetic forest.")
-    }
-    cell_labels <- get_relevant_branches(phylo_forest)
+label_mutations <- function(seq_results, phylo_forest) {
 
-    mutations_with_cell <- seq_results %>%
-      dplyr::rowwise() %>%
-      dplyr::mutate(cell_id = phylo_forest$get_first_occurrences(Mutation(
-        chr, chr_pos, ref, alt
-      ))[[1]]) %>%
-      dplyr::ungroup()
+  # if the type of seq_res is a list and seq_res contains a field "mutations"
+  if (is.list(seq_results) && ("mutations" %in% names(seq_results))) {
 
-    labelled_mutations <- dplyr::full_join(mutations_with_cell,
-                                           cell_labels,
-                                           by = "cell_id") %>%
-      dplyr::filter(!is.na(chr))
+    # extract the field
+    seq_res <- seq_results["mutations"]
+  } else {
+    seq_res <- seq_results
+  }
 
-    return(labelled_mutations)
+  if (!inherits(phylo_forest, "Rcpp_PhylogeneticForest")) {
+    stop("The second parameter must be a phylogenetic forest.")
+  }
+
+  cell_labels <- get_relevant_branches(phylo_forest)
+  mutations_with_cell <- seq_res %>%
+    dplyr::rowwise() %>%
+    dplyr::mutate(cell_id = phylo_forest$get_first_occurrences(Mutation(
+      chr, chr_pos, ref, alt
+    ))[[1]]) %>%
+    dplyr::ungroup()
+  labelled_mutations <- dplyr::full_join(mutations_with_cell,
+                                         cell_labels,
+                                         by = "cell_id") %>%
+    dplyr::filter(!is.na(chr))
+  return(labelled_mutations)
 }

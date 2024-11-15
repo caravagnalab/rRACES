@@ -3,7 +3,7 @@
 #' This function generates scatter plots showing the marginal distributions of
 #' Variant Allele Frequency (VAF) for pairs of samples on a specific chromosome.
 #'
-#' @param seq_res A data frame containing sequencing results in wide format.
+#' @param seq_result A data frame containing sequencing results in wide format.
 #' @param chromosome A character specifying the chromosome to analyze (default:
 #'   all the chromosomes in `seq_res`).
 #' @param colour_by A character indicating whether to color the scatter points
@@ -64,7 +64,7 @@
 #' library(dplyr)
 #'
 #' # filter germinal mutations
-#' f_seq <- seq_results %>% filter(classes!="germinal")
+#' f_seq <- seq_results$mutations %>% filter(classes!="germinal")
 #'
 #' # plotting the VAR marginals
 #' plot_VAF_marginals(f_seq)
@@ -74,28 +74,36 @@
 #'
 #' # deleting the mutation engine directory
 #' unlink('demo', recursive = T)
-plot_VAF_marginals <- function(seq_res, chromosomes = NULL, samples = NULL,
-                           labels = NULL, cuts = c(0, 1)) {
+plot_VAF_marginals <- function(seq_result, chromosomes = NULL, samples = NULL,
+                               labels = NULL, cuts = c(0, 1)) {
+
+  # if the type of seq_res is a list and seq_res contains a field "mutations"
+  if (is.list(seq_result) && ("mutations" %in% names(seq_result))) {
+
+    # extract the field
+    seq_res <- seq_result["mutations"]
+  } else {
+    seq_res <- seq_result
+  }
 
   data <- seq_to_long(seq_res)
 
   if (!is.null(labels)) {
     if (!is(labels, "data.frame")) {
-        stop("The parameter \"labels\" must be a data frame when non-NULL.")
+      stop("The parameter \"labels\" must be a data frame when non-NULL.")
     }
 
     if (length(labels) != 1) {
-        stop(paste0("The parameters \"labels\" must be a data frame ",
-                    "with one column when non-NULL."))
+      stop(paste0("The parameters \"labels\" must be a data frame ",
+                  "with one column when non-NULL."))
     }
 
     if (nrow(labels) != nrow(seq_res)) {
-        stop(paste0("The parameters \"seq_res\" and \"labels\"",
-                    " must have the same number of rows."))
+      stop(paste0("The parameters \"seq_res\" and \"labels\"",
+                  " must have the same number of rows."))
     }
 
     data["labels"] <- labels
-    label_name <- names(labels)
   }
 
   chromosomes <- validate_chromosomes(seq_res, chromosomes)
@@ -112,18 +120,16 @@ plot_VAF_marginals <- function(seq_res, chromosomes = NULL, samples = NULL,
     data <- data %>% dplyr::filter(sample_name %in% samples)
   }
 
-  if (length(unique(data$sample_name))<2) {
+  if (length(unique(data$sample_name)) < 2) {
     stop("At least two samples are required.")
   }
 
   combinations <- utils::combn(unique(data$sample_name), m = 2)
 
-  lapply(1:ncol(combinations), function(i) {
+  lapply(seq_len(ncol(combinations)), function(i) {
     couple <- combinations[, i]
-    d1 <- data %>% dplyr::filter(sample_name == couple[1]) #%>%
-      #  dplyr::mutate(mut_id = paste(chr, from, to, sep = ":"))
-    d2 <- data %>% dplyr::filter(sample_name == couple[2]) #%>%
-      #  dplyr::mutate(mut_id = paste(chr, from, to, sep = ":"))
+    d1 <- data %>% dplyr::filter(sample_name == couple[1])
+    d2 <- data %>% dplyr::filter(sample_name == couple[2])
 
     djoin <- dplyr::full_join(d1, d2, by = c("chr", "from", "ref", "alt"))
     #djoin$col <- djoin[["labels.x"]]
@@ -131,13 +137,13 @@ plot_VAF_marginals <- function(seq_res, chromosomes = NULL, samples = NULL,
     plot <- djoin %>% dplyr::filter(!is.na(sample_name.y))
 
     if (!is.null(labels)) {
-        plot <- djoin %>%
-          ggplot2::ggplot(mapping = ggplot2::aes(x = VAF.x, y = VAF.y,
-                                                 col = labels.x))
+      plot <- djoin %>%
+        ggplot2::ggplot(mapping = ggplot2::aes(x = VAF.x, y = VAF.y,
+                                               col = labels.x))
     } else {
-        plot <- djoin %>%
-          ggplot2::ggplot(mapping = ggplot2::aes(x = VAF.x,
-                                                 y = VAF.y))
+      plot <- djoin %>%
+        ggplot2::ggplot(mapping = ggplot2::aes(x = VAF.x,
+                                               y = VAF.y))
     }
 
     plot +

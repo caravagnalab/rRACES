@@ -83,10 +83,10 @@ void SamplesForest::show() const
     num_of_leaves += sample.get_cell_ids().size();
   }
 
-  Rcout << "SamplesForest" << std::endl 
-        << "  # of trees: " << get_roots().size() << std::endl 
-        << "  # of nodes: " << num_of_nodes() << std::endl 
-        << "  # of leaves: " << num_of_leaves << std::endl 
+  Rcout << "SamplesForest" << std::endl
+        << "  # of trees: " << get_roots().size() << std::endl
+        << "  # of nodes: " << num_of_nodes() << std::endl
+        << "  # of leaves: " << num_of_leaves << std::endl
         << "  samples: {";
 
   std::string sep = "";

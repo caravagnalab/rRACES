@@ -29,21 +29,31 @@
 #' # Convert to long format
 #' seq_to_long(seq_results)
 seq_to_long <- function(seq_results) {
+
+  # if the type of seq_res is a list and seq_res contains a field "mutations"
+  if (is.list(seq_results) && ("mutations" %in% names(seq_results))) {
+
+    # extract the field
+    seq_res <- seq_results["mutations"]
+  } else {
+    seq_res <- seq_results
+  }
+
   # Extract sample names from column names
-  sample_names <- strsplit(colnames(seq_results)[grepl(".VAF",
-                                                       colnames(seq_results),
-                                                       fixed = TRUE)],
+  sample_names <- strsplit(colnames(seq_res)[grepl(".VAF",
+                                                   colnames(seq_res),
+                                                   fixed = TRUE)],
                            ".VAF") %>% unlist()
 
   # Process each sample separately to create a list of data frames
   seq_df <- lapply(sample_names, function(sn) {
     # Select relevant columns for the current sample
     cc <- c("chr", "chr_pos", "ref", "alt", "causes", "classes",
-            colnames(seq_results)[grepl(paste0(sn, "."),
-                                        colnames(seq_results), fixed = TRUE)])
+            colnames(seq_res)[grepl(paste0(sn, "."),
+                                    colnames(seq_res), fixed = TRUE)])
 
     # Rename columns and add sample_name column
-    seq_results[, cc] %>%
+    seq_res[, cc] %>%
       `colnames<-`(c("chr", "chr_pos", "ref", "alt", "causes", "classes",
                      "occurences", "coverage", "VAF")) %>%
       dplyr::mutate(sample_name = sn)

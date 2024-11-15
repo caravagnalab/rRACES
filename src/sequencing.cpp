@@ -39,7 +39,7 @@ RCPP_MODULE(Sequencing){
             "Show a description for the sequencer");
 
 //' @name ErrorlessIlluminaSequencer
-//' @description This method builds an error-less Illumina 
+//' @description This method builds an error-less Illumina
 //'   sequencer model.
 //' @return A new error-less Illumina sequencer.
 //' @examples
@@ -80,7 +80,7 @@ RCPP_MODULE(Sequencing){
 //' @name BasicIlluminaSequencer
 //' @description This method builds a basic Illumina sequencer model.
 //' @param error_rate The error rate of the sequencer model.
-//' @param random_quality_scores A Boolean flag to enable a basic quality score 
+//' @param random_quality_scores A Boolean flag to enable a basic quality score
 //'   model. When it is set to `false`, all the bases with no sequencing
 //'   errors have the same quality score. The random quality score model
 //'   increases the computation time of about 70%. (default: `true`)
@@ -106,13 +106,13 @@ RCPP_MODULE(Sequencing){
 //' @param phylo_forest A phylogenetic forest.
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
-//' @param reference_genome The reference genome (default: NULL to use the 
+//' @param reference_genome The reference genome (default: NULL to use the
 //'    mutation engine reference genome).
 //' @param chromosomes The chromosomes that must be considered (default:
 //'   `NULL`, i.e., all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
-//' @param insert_size_mean The insert size mean. Use 0 for single read 
+//' @param insert_size_mean The insert size mean. Use 0 for single read
 //'   sequencing and any value greater than 0 for pair read sequencing
 //'   (default: `0`).
 //' @param insert_size_stddev The insert size standard deviation.
@@ -135,18 +135,23 @@ RCPP_MODULE(Sequencing){
 //' @param template_name_prefix The template name prefix (default:
 //'   `"r"`).
 //' @param include_non_sequenced_mutations A Boolean flag to include
-//'   in the resulting dataframe also the mutations that are not
+//'   in the resulting data frame also the mutations that are not
 //'   covered by any of the simulated reads, but occur to one of the
 //'   samples at least (default: `FALSE`).
 //' @param seed The random seed for the internal random generator
 //'   (optional).
-//' @return A dataframe representing, for each of the observed SNVs
-//'   and indels, the chromosome and the position in which it occurs
-//'   (columns `chr` and `chr_pos`), the mutation reference and
-//'   alterate sequences (columns `ref` and `alt`, respectively), its
-//'   cause and class (columns `causes`, and `classes`, respectively).
+//' @return A named list of two elements: the sequencing output data
+//'   frame (name "`mutations`") and the calling parameters (name
+//'   "`parameters`").
+//'
+//'   The sequencing output data frame reports, for each of the
+//'   observed SNVs and indels, the chromosome and the position in
+//'   which it occurs (columns `chr` and `chr_pos`), the reference
+//'   and alterate sequences (columns `ref` and `alt`, respectively),
+//'   its cause and class (columns `causes`, and `classes`,
+//'   respectively).
 //'   Moreover, for each of the sequencied samples `<sample name>`,
-//'   the returned dataframe contains three columns: the number of
+//'   the returned data frame contains three columns: the number of
 //'   reads in which the corresponding mutation occurs (column
 //'   `<sample name>.occurrences`), the coverage of the mutation
 //'   (column `<sample name>.coverage`), and the corresponding VAF
@@ -160,7 +165,7 @@ RCPP_MODULE(Sequencing){
                         _["chromosomes"] = R_NilValue,
                         _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size_mean"] = 0,
-                        _["insert_size_stddev"] = 10, 
+                        _["insert_size_stddev"] = 10,
                         _["output_dir"] = "rRACES_SAM",
                         _["write_SAM"] = false, _["update_SAM"] = false,
                         _["cell_labelling"] = R_NilValue, _["purity"] = 1,
@@ -173,20 +178,21 @@ RCPP_MODULE(Sequencing){
 
 //' @name simulate_normal_seq
 //' @title Simulating wild-type sequencing
-//' @description This method simulates a wild-type sample sequencing in a phylogenetic
-//'   forest. Add the cells in the wild-type sample contains the germline mutations.
-//'   The forest pre-neoplastic mutations are also added to the sample by default. 
-//'   However, they can be avoided by using the parameter `with_preneoplastic`.
+//' @description This method simulates a wild-type sample sequencing in a
+//'   phylogenetic forest. Add the cells in the wild-type sample contains
+//'   the germline mutations. The forest pre-neoplastic mutations are also
+//'   added to the sample by default. However, they can be avoided by
+//'   using the parameter `with_preneoplastic`.
 //' @param phylo_forest A phylogenetic forest.
 //' @param sequencer The sequencer that performs the sequencing simulation
 //'   (default: an `ErrorlessIlluminaSequencer`).
-//' @param reference_genome The reference genome (default: NULL to use the 
+//' @param reference_genome The reference genome (default: NULL to use the
 //'    mutation engine reference genome).
 //' @param chromosomes The chromosomes that must be considered (default:
 //'   `NULL`, i.e., all the reference chromosomes).
 //' @param coverage The sequencing coverage (default: `10`).
 //' @param read_size The read size (default: `150`).
-//' @param insert_size_mean The insert size mean. Use 0 for single read 
+//' @param insert_size_mean The insert size mean. Use 0 for single read
 //'   sequencing and any value greater than 0 for pair read sequencing
 //'   (default: `0`).
 //' @param insert_size_stddev The insert size standard deviation.
@@ -203,19 +209,23 @@ RCPP_MODULE(Sequencing){
 //' @param template_name_prefix The template name prefix (default:
 //'   `"r"`).
 //' @param include_non_sequenced_mutations A Boolean flag to include
-//'   in the resulting dataframe also the mutations that are not
+//'   in the resulting data frame also the mutations that are not
 //'   covered by any of the simulated reads, but occur to one of the
 //'   samples at least (default: `FALSE`).
 //' @param seed The random seed for the internal random generator
 //'   (optional).
-//' @return A dataframe representing, for each of the observed
-//'   SNVs, the chromosome and the position in which
-//'   it occurs (columns `chr` and `chr_pos`),
+//' @return A named list of two elements: the sequencing output data
+//'   frame (name "`mutations`") and the calling parameters
+//'   (name "`parameters`").
+//'
+//'   The sequencing output data frame reports, for each of the
+//'   observed SNVs and indels, the chromosome and the position in
+//'   which it occurs (columns `chr` and `chr_pos`),
 //'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
 //'   of the sequencied samples `normal_sample`, the returned
-//'   dataframe contains three columns: the number of reads in
+//'   data frame contains three columns: the number of reads in
 //'   which the corresponding SNV occurs (column
 //'   `normal_sample.occurrences`), the coverage of the SNV
 //'   locus (column `normal_sample.coverage`), and the
@@ -229,7 +239,7 @@ RCPP_MODULE(Sequencing){
                         _["chromosomes"] = R_NilValue,
                         _["coverage"] = 10,
                         _["read_size"] = 150, _["insert_size_mean"] = 0,
-                        _["insert_size_stddev"] = 10, 
+                        _["insert_size_stddev"] = 10,
                         _["output_dir"] = "rRACES_normal_SAM",
                         _["write_SAM"] = true, _["update_SAM"] = false,
                         _["with_preneoplastic"] = true,
@@ -283,8 +293,8 @@ RCPP_MODULE(Sequencing){
 //' @name SampledCell$mutations
 //' @title Getting the sampled cell mutations
 //' @description The mutations of the sampled cell.
-//' @details This property contains a dataframe that represents the sampled
-//'   cell mutations. The dataframe format is analoguous to that returned by
+//' @details This property contains a data frame that represents the sampled
+//'   cell mutations. The data frame format is analoguous to that returned by
 //'   `PhylogeneticForest$get_sampled_cell_mutations()`: it has columns
 //'   `cell_id`, `chr`, (i.e., the mutation chromosome), `chr_pos` (i.e.,
 //'   position in the chromosome), `allele` (in which the mutation occurs),
@@ -293,5 +303,5 @@ RCPP_MODULE(Sequencing){
 //'   `"preneoplastic"`).
 //' @seealso `simulate_seq()` and `vignette("sample_partition")`
     .property("mutations", &SampledCell::mutations,
-              "The cell mutation dataframe");
+              "The cell mutation data frame");
 }
