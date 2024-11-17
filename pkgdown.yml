@@ -1,5 +1,5 @@
-pandoc: '3.2'
-pkgdown: 2.0.9
+pandoc: '3.5'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   custom_engine: custom_engine.html
@@ -15,8 +15,7 @@ articles:
   three_sampling: three_sampling.html
   time_series: time_series.html
   tissue_simulation: tissue_simulation.html
-last_built: 2024-05-30T12:33Z
+last_built: 2024-11-17T18:37Z
 urls:
   reference: https://caravagnalab.github.io/rRACES/reference
   article: https://caravagnalab.github.io/rRACES/articles
-

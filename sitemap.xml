@@ -1,453 +1,155 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/404.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/SCOUT.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/custom_engine.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/growth_models.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/infinite_site_model.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/mutations.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/rRACES.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/run_until.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/sample_partition.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/sampling.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/sequencing.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/three_sampling.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/time_series.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/articles/tissue_simulation.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/index.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Amplification.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer-cash-get_error_rate.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer-cash-new.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_allele.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_chromosome.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_dataframe.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_length.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_position_in_chromosome.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_src_allele.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/CNA.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Deletion.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/ErrorlessIlluminaSequencer-cash-new.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/ErrorlessIlluminaSequencer.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Expression.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Formula.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_alt.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_cause.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_chromosome.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_dataframe.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_position_in_chromosome.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_ref.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Mutation.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_exposure.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_mutant.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_SNV_signatures.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_active_germline.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_germline_subjects.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_indel_signatures.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_known_drivers.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_population_descritions.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-infinite_sites_model.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-place_mutations.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-set_germline_subject.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_absolute_chromosome_positions.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_coalescent_cells.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_exposures.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_first_occurrences.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_germline_mutations.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_germline_subject.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_nodes.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_reference_path.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_CNAs.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_mutations.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_samples_info.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_species_info.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sticks.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_subforest_for.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-save.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-set_reference_path.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SNV.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-birth_time.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-epistate.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-mutant.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-mutations.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-species.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SampledCell.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_coalescent_cells.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_nodes.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_samples_info.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_species_info.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_sticks.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_subforest_for.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-save.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-add_mutant.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-choose_cell_in.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-death_activation_level.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-duplicate_internal_cells.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_added_cells.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_cell.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_cells.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_clock.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_count_history.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_counts.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_firing_history.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_firings.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_lineage_graph.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_name.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_rates.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_rates_update_history.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_samples_forest.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_samples_info.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_species.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_tissue_name.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-get_tissue_size.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-history_delta.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-mutate_progeny.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-new.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-place_cell.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_until.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_up_to_event.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_up_to_size.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-run_up_to_time.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-sample_cells.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-schedule_mutation.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-search_sample.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-search_samples.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-update_rates.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-update_tissue.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation-cash-var.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Simulation.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-lower_corner.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-new.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-upper_corner.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/Variable.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/annotate_forest.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/bbox_sampler.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/build_mutation_engine.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/get_mutation_engine_codes.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/load_phylogenetic_forest.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/load_samples_forest.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_BAF_gw.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_DR_gw.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_VAF_gw.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_exposure_timeline.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_firings.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_forest.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_histogram_vaf.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_marginals.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_muller.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_state.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_timeseries.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/plot_tissue.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/seq_to_long.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/simulate_normal_seq.html</loc>
-  </url>
-  <url>
-    <loc>https://caravagnalab.github.io/rRACES/reference/simulate_seq.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://caravagnalab.github.io/rRACES/404.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/LICENSE-text.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/SCOUT.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/custom_engine.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/growth_models.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/index.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/infinite_site_model.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/mutations.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/rRACES.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/run_until.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/sample_partition.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/sampling.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/sequencing.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/three_sampling.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/time_series.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/articles/tissue_simulation.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/authors.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/index.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Amplification.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer-cash-error_rate.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer-cash-random_quality_scores.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/BasicIlluminaSequencer.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_allele.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_chromosome.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_dataframe.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_length.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_position_in_chromosome.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/CNA-cash-get_src_allele.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/CNA.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Deletion.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/ErrorlessIlluminaSequencer.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Expression.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Formula.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_alt.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_cause.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_chromosome.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_dataframe.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_position_in_chromosome.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Mutation-cash-get_ref.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Mutation.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_exposure.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_mutant.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_SNV_signatures.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_active_germline.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_germline_subjects.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_indel_signatures.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_known_drivers.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_population_descritions.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-infinite_sites_model.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-place_mutations.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-set_germline_subject.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_absolute_chromosome_positions.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_bulk_allelic_fragmentation.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_cell_allelic_fragmentation.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_coalescent_cells.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_exposures.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_first_occurrences.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_germline_mutations.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_germline_subject.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_nodes.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_reference_path.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_CNAs.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sampled_cell_mutations.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_samples_info.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_species_info.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_sticks.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_subforest_for.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-save.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-set_reference_path.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SNV.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-birth_time.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-epistate.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-mutant.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-mutations.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SampledCell-cash-species.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SampledCell.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_coalescent_cells.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_nodes.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_samples_info.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_species_info.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_sticks.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-get_subforest_for.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest-cash-save.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SamplesForest.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-add_mutant.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-border_growth_model.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-choose_cell_in.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-death_activation_level.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_added_cells.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_cell.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_cells.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_clock.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_count_history.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_counts.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_firing_history.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_firings.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_lineage_graph.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_name.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_rates.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_rates_update_history.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_samples_forest.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_samples_info.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_species.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-get_tissue_size.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-history_delta.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-mutate_progeny.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-place_cell.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-run_until.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-run_up_to_event.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-run_up_to_size.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-run_up_to_time.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-sample_cells.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-schedule_mutation.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-search_sample.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-search_samples.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-update_rates.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation-cash-var.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/SpatialSimulation.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-lower_corner.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-new.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle-cash-upper_corner.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/TissueRectangle.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/Variable.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/WholeGenomeDoubling.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/annotate_forest.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/bbox_sampler.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/get_available_tumours_in.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/get_mutation_engine_codes.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/get_relevant_branches.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/index.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/label_mutations.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/load_phylogenetic_forest.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/load_samples_forest.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_BAF.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_DR.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_VAF.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_VAF_histogram.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_VAF_marginals.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_exposure_timeline.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_firings.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_forest.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_muller.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_state.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_sticks.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_timeseries.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/plot_tissue.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/recover_simulation.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/seq_to_long.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/simulate_normal_seq.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/simulate_seq.html</loc></url>
 </urlset>
+
