@@ -19,14 +19,15 @@
 
 #include "utility.hpp"
 
-ErrorlessIlluminaSequencer::ErrorlessIlluminaSequencer():
-    RACES::Sequencers::Illumina::ErrorLessSequencer()
+ErrorlessIlluminaSequencer::ErrorlessIlluminaSequencer()
 {}
 
 void ErrorlessIlluminaSequencer::show() const
 {
-    Rcpp::Rcout << get_model_name() << " (platform: \""
-                << get_platform_name() << "\")" << std::endl;
+    RACES::Sequencers::Illumina::ErrorLessSequencer seq;
+
+    Rcpp::Rcout << seq.get_model_name() << " (platform: \""
+                << seq.get_platform_name() << "\")" << std::endl;
 }
 
 ErrorlessIlluminaSequencer
@@ -36,24 +37,18 @@ ErrorlessIlluminaSequencer::build_sequencer()
 }
 
 BasicIlluminaSequencer::BasicIlluminaSequencer(const double error_rate,
-                                               const bool& random_quality_scores,
-                                               const int seed):
-    random_score_seq(nullptr), constant_score_seq(nullptr)
-{
-    using namespace RACES::Sequencers;
-    if (random_quality_scores) {
-        random_score_seq = std::make_shared<Illumina::BasicSequencer<>>(error_rate, seed);
-    } else {
-        constant_score_seq = std::make_shared<Illumina::BasicSequencer<ConstantQualityScoreModel>>(error_rate, seed);
-    }
-}
+                                               const bool& random_quality_scores):
+    error_rate(error_rate), random_quality_scores(random_quality_scores)
+{}
 
 template<typename QUALITY_SCORE_MODEL>
-void show_sequencer(const RACES::Sequencers::Illumina::BasicSequencer<QUALITY_SCORE_MODEL>& seq)
+void show_sequencer(const double& error_rate)
 {
+    RACES::Sequencers::Illumina::BasicSequencer<QUALITY_SCORE_MODEL> seq(error_rate);
+
     Rcpp::Rcout << seq.get_model_name() << " (platform: \""
                 << seq.get_platform_name() << "\" error rate: "
-                << std::to_string(seq.get_error_rate());
+                << std::to_string(error_rate);
 
     using namespace RACES::Sequencers;
 
@@ -70,26 +65,18 @@ void show_sequencer(const RACES::Sequencers::Illumina::BasicSequencer<QUALITY_SC
 
 void BasicIlluminaSequencer::show() const
 {
-    if (producing_random_scores()) {
-        show_sequencer(*random_score_seq);
-    } else {
-        show_sequencer(*constant_score_seq);
-    }
-}
+    using namespace RACES::Sequencers;
 
-const double BasicIlluminaSequencer::get_error_rate() const
-{
     if (producing_random_scores()) {
-        return random_score_seq->get_error_rate();
+        show_sequencer<Illumina::BasicQualityScoreModel>(error_rate);
     } else {
-        return constant_score_seq->get_error_rate();
+        show_sequencer<ConstantQualityScoreModel>(error_rate);
     }
 }
 
 BasicIlluminaSequencer
 BasicIlluminaSequencer::build_sequencer(const SEXP error_rate,
-                                        const SEXP random_quality_scores,
-                                        const SEXP seed)
+                                        const SEXP random_quality_scores)
 {
     using namespace Rcpp;
 
@@ -112,7 +99,5 @@ BasicIlluminaSequencer::build_sequencer(const SEXP error_rate,
 
     const auto c_random_quality_scores = as<bool>(random_quality_scores);
 
-    auto c_seed = get_random_seed<int>(seed);
-
-    return {c_error_rate, c_random_quality_scores, c_seed};
+    return {c_error_rate, c_random_quality_scores};
 }

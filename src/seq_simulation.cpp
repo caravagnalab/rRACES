@@ -351,6 +351,27 @@ get_relevant_chr_set(std::list<RACES::Mutations::SampleGenomeMutations> mutation
   }
 }
 
+template<typename QUALITY_SCORE_MODEL>
+inline RACES::Mutations::SequencingSimulations::SampleSetStatistics
+simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator,
+             const Rcpp::XPtr<BasicIlluminaSequencer>& R_seq,
+             std::list<RACES::Mutations::SampleGenomeMutations> mutations_list,
+             const std::set<RACES::Mutations::ChromosomeId>& chromosome_ids,
+             const double& coverage,
+             RACES::Mutations::SampleGenomeMutations& normal_sample,
+             const double purity,
+             const std::string& base_name, std::ostream& progress_bar_stream,
+             const int& seed)
+{
+    using namespace RACES::Sequencers;
+
+    Illumina::BasicSequencer<QUALITY_SCORE_MODEL> sequencer(R_seq->get_error_rate(),
+                                                            seed);
+
+    return simulator(sequencer, mutations_list, chromosome_ids, coverage, normal_sample,
+                     purity, base_name, progress_bar_stream);
+}
+
 RACES::Mutations::SequencingSimulations::SampleSetStatistics
 simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator,
              SEXP& sequencer,
@@ -359,7 +380,8 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
              const double& coverage,
              RACES::Mutations::SampleGenomeMutations& normal_sample,
              const double purity,
-             const std::string& base_name, std::ostream& progress_bar_stream)
+             const std::string& base_name, std::ostream& progress_bar_stream,
+             const int& seed)
 {
   switch (TYPEOF(sequencer)) {
     case S4SXP:
@@ -372,31 +394,36 @@ simulate_seq(RACES::Mutations::SequencingSimulations::ReadSimulator<>& simulator
 
         if (sequencer_ptr->producing_random_scores()) {
             using BasicQualityScoreModel = RACES::Sequencers::Illumina::BasicQualityScoreModel;
-            return simulator(sequencer_ptr->basic_sequencer<BasicQualityScoreModel>(),
-                             mutations_list, chromosome_ids, coverage, normal_sample, purity,
-                             base_name, progress_bar_stream);
+
+            return simulate_seq<BasicQualityScoreModel>(simulator, sequencer_ptr, mutations_list,
+                                                        chromosome_ids, coverage, normal_sample, 
+                                                        purity, base_name, progress_bar_stream,
+                                                        seed);
         } else {
             using ConstantQualityScoreModel = RACES::Sequencers::ConstantQualityScoreModel;
-            return simulator(sequencer_ptr->basic_sequencer<ConstantQualityScoreModel>(),
-                             mutations_list, chromosome_ids, coverage, normal_sample, purity,
-                             base_name, progress_bar_stream);
+
+            return simulate_seq<ConstantQualityScoreModel>(simulator, sequencer_ptr,
+                                                           mutations_list, chromosome_ids,
+                                                           coverage, normal_sample, purity,
+                                                           base_name, progress_bar_stream,
+                                                           seed);
         }
       }
       if ( s4obj.is("Rcpp_ErrorlessIlluminaSequencer")) {
-        Rcpp::Environment env( s4obj );
+        RACES::Sequencers::Illumina::ErrorLessSequencer seq;
 
-        Rcpp::XPtr<ErrorlessIlluminaSequencer> sequencer_ptr( env.get(".pointer") );
-
-        return simulator(*sequencer_ptr, mutations_list, chromosome_ids,
-                         coverage, normal_sample, purity, base_name, progress_bar_stream);
+        return simulator(seq, mutations_list, chromosome_ids, coverage, normal_sample,
+                         purity, base_name, progress_bar_stream);
       }
+
+      throw std::domain_error("Unsupported sequencer type");
     }
     case NILSXP:
     {
-        ErrorlessIlluminaSequencer sequencer;
+        RACES::Sequencers::Illumina::ErrorLessSequencer seq;
 
-        return simulator(sequencer, mutations_list, chromosome_ids, coverage,
-                         normal_sample, purity, base_name, progress_bar_stream);
+        return simulator(seq, mutations_list, chromosome_ids, coverage, normal_sample,
+                         purity, base_name, progress_bar_stream);
     }
     default:
         throw std::domain_error("Unsupported sequencer type");
@@ -435,8 +462,18 @@ Rcpp::List extract_sequencer_data(SEXP& sequencer, const std::string& seq_class_
 
   XPtr<SEQUENCER_CLASS> rel_ptr( env.get(".pointer") );
 
-  return List::create(_["name"] = seq_class_name,
-                      _["error_rate"] = rel_ptr->get_error_rate());
+  if constexpr (std::is_base_of_v<SEQUENCER_CLASS, BasicIlluminaSequencer>) {
+    return List::create(_["name"] = seq_class_name,
+                        _["error_rate"] = rel_ptr->get_error_rate(),
+                        _["random_quality_scores"] = rel_ptr->producing_random_scores());
+  }
+
+  if constexpr (std::is_base_of_v<SEQUENCER_CLASS, ErrorlessIlluminaSequencer>) {
+    return List::create(_["name"] = seq_class_name,
+                        _["error_rate"] = rel_ptr->get_error_rate());
+  }
+
+  throw std::domain_error("Unsupported sequencer type");
 }
 
 Rcpp::List get_sequencer_data(SEXP& sequencer)
@@ -539,7 +576,7 @@ Rcpp::List simulate_seq(const PhylogeneticForest& forest, SEXP& sequencer,
   }
 
   auto result = simulate_seq(simulator, sequencer, mutations_list, chr_ids, coverage,
-                             normal_sample, purity, filename_prefix, Rcpp::Rcout);
+                             normal_sample, purity, filename_prefix, Rcpp::Rcout, c_seed);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);
@@ -618,7 +655,7 @@ Rcpp::List simulate_normal_seq(const PhylogeneticForest& forest, SEXP& sequencer
   const auto chr_ids = get_relevant_chr_set(mutations_list, chromosome_ids);
 
   auto result = simulate_seq(simulator, sequencer, mutations_list, chr_ids, coverage,
-                             mutations_list.front(), 1, filename_prefix, Rcpp::Rcout);
+                             mutations_list.front(), 1, filename_prefix, Rcpp::Rcout, c_seed);
 
   if (remove_output_path) {
     std::filesystem::remove_all(output_path);

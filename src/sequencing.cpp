@@ -61,7 +61,7 @@ RCPP_MODULE(Sequencing){
     .method("show", &BasicIlluminaSequencer::show,
             "Show a description for the sequencer")
 
-//' @name BasicIlluminaSequencer$get_error_rate
+//' @name BasicIlluminaSequencer$error_rate
 //' @title Getting error rate
 //' @description This method returns the sequencing error rate of the
 //'   simulated illumina sequencer.
@@ -71,20 +71,49 @@ RCPP_MODULE(Sequencing){
 //' # at rate 4e-3
 //' sequencer <- BasicIlluminaSequencer(4e-3)
 //'
-//' sequencer$get_error_rate()
-    .method("get_error_rate",
-            (const double& (BasicIlluminaSequencer::*)())(
+//' sequencer$error_rate
+//'
+//' sequencer$error_rate <- 5e-2
+//'
+//' sequencer$error_rate
+    .property("error_rate",
+              (const double& (BasicIlluminaSequencer::*)() const)(
                 &BasicIlluminaSequencer::get_error_rate),
-            "Get the sequencer error rate");
+              (void (BasicIlluminaSequencer::*)(const double&))(
+                &BasicIlluminaSequencer::set_error_rate),
+              "The sequencer error rate")
+
+//' @name BasicIlluminaSequencer$random_quality_scores
+//' @title Check non-constant quality score model.
+//' @description This method returns `TRUE` if and only if the sequencers
+//'    implements a non-constant quality score model.
+//' @return `TRUE` if and only if the sequencers sequencers implements
+//'    a non-constant quality score model.
+//' @examples
+//' # build a basic Illumina sequencer model whose quality scores are
+//' # non-constant
+//' sequencer <- BasicIlluminaSequencer(4e-3)
+//'
+//' sequencer$random_quality_scores
+//'
+//' sequencer$random_quality_scores <- FALSE
+//'
+//' sequencer$random_quality_scores
+    .property("random_quality_scores",
+              (const bool& (BasicIlluminaSequencer::*)() const)(
+                &BasicIlluminaSequencer::producing_random_scores),
+              (void (BasicIlluminaSequencer::*)(const bool&))(
+                &BasicIlluminaSequencer::set_random_scores),
+              "A Boolean flag enabling non-constant quality score model");
 
 //' @name BasicIlluminaSequencer
 //' @description This method builds a basic Illumina sequencer model.
 //' @param error_rate The error rate of the sequencer model.
-//' @param random_quality_scores A Boolean flag to enable a basic quality score
-//'   model. When it is set to `false`, all the bases with no sequencing
-//'   errors have the same quality score. The random quality score model
-//'   increases the computation time of about 70%. (default: `true`)
-//' @param seed The seed of the random error generator (default: `NULL`).
+//' @param random_quality_scores A Boolean flag to enable a basic
+//'   non-constant quality score model. When it is set to `FALSE`, all
+//'   the bases with no sequencing errors have the same quality score.
+//'   The random quality score model increases the computation time of
+//'   about 70%. (default: `TRUE`)
 //' @return A basic Illumina sequencer model.
 //' @examples
 //' # build a sequencer model having error rate 4e-3
@@ -95,8 +124,7 @@ RCPP_MODULE(Sequencing){
 //' sequencer <- BasicIlluminaSequencer(error_rate=4e-3, seed=5)
 //' sequencer
     function("BasicIlluminaSequencer", &BasicIlluminaSequencer::build_sequencer,
-             List::create(_["error_rate"], _["random_quality_scores"] = true,
-                          _["seed"] = R_NilValue),
+             List::create(_["error_rate"], _["random_quality_scores"] = true),
              "Create a basic Illumina sequencer model");
 
 //' @name simulate_seq
