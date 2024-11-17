@@ -1130,7 +1130,35 @@ RCPP_MODULE(Mutations){
 //'   `allele`, `src allele` (the allele origin for amplifications, `NA` for
 //'   deletions), and `class` (i.e., `"driver"`, `"passenger"`, `"germinal"`
 //'   or `"preneoplastic"`).
-//' @seealso `vignette("mutations")` for usage examples
+//' @examples
+//' sim <- SpatialSimulation()
+//'
+//' sim$add_mutant(name = "Clone_1",
+//'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                death_rates = c("+" = 0.05, "-" = 0.01))
+//' sim$place_cell("Clone_1+", 500, 500)
+//' sim$run_up_to_size("Clone_1-", 1000)
+//'
+//' sim$sample_cells("Sample_A", c(475, 475), c(525, 525))
+//' sample_forest <- sim$get_samples_forest()
+//'
+//' m_engine <- MutationEngine(setup_code = "demo")
+//'
+//' m_engine$add_mutant("Clone_1", list("+" = c(SNV = 1e-7, indel = 1e-8),
+//'                                     "-" = c(SNV = 3e-7, CNA = 1e-11)),
+//'                     list(SNV("22", 10510210, "C", allele = 1),
+//'                          CNA("D", "22", 5010000, 200000,
+//'                                    allele = 1)))
+//'
+//' m_engine$add_exposure(c(ID1 = 1, SBS1 = 0.5, SBS2 = 0.5))
+//'
+//' phylo_forest <- m_engine$place_mutations(sample_forest, 1, 1)
+//'
+//' mutations <- phylo_forest$get_sampled_cell_CNAs()
+//'
+//' head(mutations)
+//' @seealso `PhylogeneticForest$$get_sampled_cell_mutations()`
     .method("get_sampled_cell_CNAs", (List (PhylogeneticForest::*)(const RACES::Mutants::CellId&) const)
                 (&PhylogeneticForest::get_sampled_cell_CNAs),
             "Get the CNAs of a sampled cell")
@@ -1154,7 +1182,35 @@ RCPP_MODULE(Mutations){
 //'   `"SNV"` or `"indel"`), `cause`, and `class` (i.e., `"driver"`,
 //'   `"passenger"`, `"germinal"` or `"preneoplastic"`) for each mutation
 //'   in the sampled cell genomes.
-//' @seealso `vignette("mutations")` for usage examples
+//' @examples
+//' sim <- SpatialSimulation()
+//'
+//' sim$add_mutant(name = "Clone_1",
+//'                epigenetic_rates = c("+-" = 0.01, "-+" = 0.01),
+//'                growth_rates = c("+" = 0.2, "-" = 0.08),
+//'                death_rates = c("+" = 0.05, "-" = 0.01))
+//' sim$place_cell("Clone_1+", 500, 500)
+//' sim$run_up_to_size("Clone_1-", 1000)
+//'
+//' sim$sample_cells("Sample_A", c(475, 475), c(525, 525))
+//' sample_forest <- sim$get_samples_forest()
+//'
+//' m_engine <- MutationEngine(setup_code = "demo")
+//'
+//' m_engine$add_mutant("Clone_1", list("+" = c(SNV = 1e-7, indel = 1e-8),
+//'                                     "-" = c(SNV = 3e-7, CNA = 1e-11)),
+//'                     list(SNV("22", 10510210, "C", allele = 1),
+//'                          CNA("D", "22", 5010000, 200000,
+//'                                    allele = 1)))
+//'
+//' m_engine$add_exposure(c(ID1 = 1, SBS1 = 0.5, SBS2 = 0.5))
+//'
+//' phylo_forest <- m_engine$place_mutations(sample_forest, 1, 1)
+//'
+//' mutations <- phylo_forest$get_sampled_cell_mutations()
+//'
+//' head(mutations)
+//' @seealso `PhylogeneticForest$$get_sampled_cell_CNAs()`
     .method("get_sampled_cell_mutations",
             (List (PhylogeneticForest::*)(const RACES::Mutants::CellId&) const)
                 (&PhylogeneticForest::get_sampled_cell_SIDs),
