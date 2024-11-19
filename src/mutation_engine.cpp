@@ -1035,6 +1035,30 @@ Rcpp::List MutationEngine::get_indel_signatures_dataframe() const
                     Rcpp::_["quote"]="");
 }
 
+Rcpp::List MutationEngine::get_genome_info() const
+{
+    const auto& chromosomes = (m_engine.get_germline_mutations()).get_chromosomes();
+
+    const size_t num_of_chromosomes = chromosomes.size();
+
+    using namespace Rcpp;
+
+    StringVector chr_names(num_of_chromosomes);
+    IntegerVector sizes(num_of_chromosomes), num_of_alleles(num_of_chromosomes);
+
+    size_t i=0;
+    for (const auto& [chr_id, chromosome]: chromosomes) {
+        chr_names[i] = RACES::Mutations::GenomicPosition::chrtos(chr_id);
+        sizes[i] = chromosome.size();
+        num_of_alleles[i] = chromosome.get_alleles().size();
+        ++i;
+    }
+
+    return DataFrame::create(_["chr"] = chr_names, _["size"] = sizes,
+                             _["num_of_alleles"] = num_of_alleles);
+}
+
+
 Rcpp::List MutationEngine::get_known_driver_mutations() const
 {
   auto driver_filename = m_engine.get_driver_storage().get_source_path().string();

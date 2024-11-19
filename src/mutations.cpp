@@ -570,6 +570,20 @@ RCPP_MODULE(Mutations){
                                                     const SEXP& seed))(&MutationEngine::place_mutations),
             "Place mutations on a SamplesForest")
 
+//' @name MutationEngine$get_genome_info
+//' @title Getting the genome information
+//' @description This method returns information about the genome.
+//' @details This method returns a data frame reporting the name
+//'    (column "`name`"), the size (column "`size`"), and the number
+//'    of alleles (colum "`num_of_alleles`") of each chromosome.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- MutationEngine(setup_code = "demo")
+//'
+//' # get the genome information
+//' m_engine$get_genome_info()
+    .method("get_genome_info", &MutationEngine::get_genome_info)
+
 //' @name MutationEngine$get_active_germline
 //' @title Getting the active germline subject
 //' @description This method returns the active germline subject.

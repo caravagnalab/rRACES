@@ -198,6 +198,8 @@ public:
 
     Rcpp::List get_indel_signatures_dataframe() const;
 
+    Rcpp::List get_genome_info() const;
+
     void show() const;
 
     static MutationEngine
