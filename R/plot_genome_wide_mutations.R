@@ -87,6 +87,13 @@ plot_DR <- function(
     seq_res <- seq_result
   }
 
+  if (!("normal_sample.occurrences" %in% names(seq_res)
+        && "normal_sample.coverage" %in% names(seq_res)
+        && "normal_sample.VAF" %in% names(seq_res))) {
+    stop(paste("The parameter \"seq_result\" does not contain",
+               "the mandatory normal sample \"normal_sample\"."))
+  }
+
   data <- get_seq_data(seq_res, sample, chromosomes)
 
   Ntotal <- nrow(data$tumour)
