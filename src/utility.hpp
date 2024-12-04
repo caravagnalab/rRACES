@@ -43,6 +43,7 @@ template<typename RESULT_TYPE = int,
 RESULT_TYPE get_random_seed(const SEXP seed)
 {
     switch (TYPEOF(seed)) {
+        case INTSXP:
         case REALSXP:
             return Rcpp::as<RESULT_TYPE>(seed);
         case NILSXP:

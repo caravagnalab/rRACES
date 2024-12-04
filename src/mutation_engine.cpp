@@ -677,7 +677,8 @@ SIDSpec get_mutation_from_list(const std::map<std::string, RACES::Mutations::SID
     RACES::Mutations::AlleleId allele_id = RANDOM_ALLELE;
 
     if (spec_size>1) {
-        if (TYPEOF(SID_spec[1])!=REALSXP) {
+        const auto SID_spec_type = TYPEOF(SID_spec[1]);
+        if (SID_spec_type != REALSXP && SID_spec_type != INTSXP) {
             throw std::domain_error("The " + ordtostr(index)
                                 + " element in the driver mutation list"
                                 + " is not an mutation specification");
@@ -686,7 +687,8 @@ SIDSpec get_mutation_from_list(const std::map<std::string, RACES::Mutations::SID
         allele_id = Rcpp::as<RACES::Mutations::AlleleId>(SID_spec[1]);
     }
 
-    return SIDSpec(allele_id, get_mutation_from_name(driver_code_map, SID_spec[0]));
+    return SIDSpec(allele_id, get_mutation_from_name(driver_code_map,
+			                                         SID_spec[0]));
 }
 
 void

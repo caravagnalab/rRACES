@@ -93,6 +93,7 @@ RACES::Mutations::AlleleId
 get_allele_id(const SEXP allele_id, const std::string& parameter_name)
 {
     switch (TYPEOF(allele_id)) {
+        case INTSXP:
         case REALSXP:
         {
             long int allele_l;
