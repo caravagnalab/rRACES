@@ -52,11 +52,13 @@ void show_sequencer(const double& error_rate)
 
     using namespace RACES::Sequencers;
 
-    if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL,Illumina::BasicQualityScoreModel> ) {
+    if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, Sanger::BasicQualityScoreModel> ) {
         Rcpp::Rcout << " random quality scores";
     }
 
-    if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL,ConstantQualityScoreModel> ) {
+    using ConstantQualityScoreModel = RACES::Sequencers::ConstantQualityScoreModel<>;
+
+    if constexpr (std::is_base_of_v<QUALITY_SCORE_MODEL, ConstantQualityScoreModel> ) {
         Rcpp::Rcout << " constant quality scores" << std::endl;
     }
 
@@ -68,9 +70,9 @@ void BasicIlluminaSequencer::show() const
     using namespace RACES::Sequencers;
 
     if (producing_random_scores()) {
-        show_sequencer<Illumina::BasicQualityScoreModel>(error_rate);
+        show_sequencer<Sanger::BasicQualityScoreModel>(error_rate);
     } else {
-        show_sequencer<ConstantQualityScoreModel>(error_rate);
+        show_sequencer<ConstantQualityScoreModel<>>(error_rate);
     }
 }
 
