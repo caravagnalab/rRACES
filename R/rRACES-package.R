@@ -466,7 +466,7 @@
 
       cat("\n")
 
-      ncells <- samples$tumoural.cells %>% sum
+      ncells <- samples$tumour_cells %>% sum
 
       cli::cli_h3(text = paste0("Samples ({.emph multi-region} ",
                                 "{is_multiregion}, {.emph longitudinal} ",
