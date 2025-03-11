@@ -29,7 +29,7 @@ RCPP_MODULE(Sequencing){
 
 //' @name ErrorlessIlluminaSequencer
 //' @title An error-less Illumina sequencer class
-//' @description This class implements a perferct Illumina sequencers that
+//' @description This class implements a perfect Illumina sequencers that
 //'   does not commit errors.
 //' @seealso `simulate_seq()`, `simulate_normal_seq()`, and
 //'   `vignette("sequencing")` for usage examples
@@ -65,7 +65,7 @@ RCPP_MODULE(Sequencing){
 //' @title Getting error rate
 //' @description This method returns the sequencing error rate of the
 //'   simulated illumina sequencer.
-//' @return The sequencing error rate of the simualted sequencer.
+//' @return The sequencing error rate of the simulated sequencer.
 //' @examples
 //' # build a basic Illumina sequencer model whose errors occur
 //' # at rate 4e-3
@@ -152,7 +152,7 @@ RCPP_MODULE(Sequencing){
 //' @param update_SAM Update the output directory (default: `FALSE`).
 //' @param cell_labelling The labelling function for sampled cells
 //'   See `vignette("sample_partition")` for details (default: `NULL`).
-//' @param purity The ratio between the number of sample tumeral cell
+//' @param purity The ratio between the number of sample tumour cell
 //'   and that of all the cells, i.e., tumour and normal
 //'   ones. This value must belong to the interval [0,1]
 //'   (default: `1`).
@@ -178,7 +178,7 @@ RCPP_MODULE(Sequencing){
 //'   and alterate sequences (columns `ref` and `alt`, respectively),
 //'   its cause and class (columns `causes`, and `classes`,
 //'   respectively).
-//'   Moreover, for each of the sequencied samples `<sample name>`,
+//'   Moreover, for each of the sequenced samples `<sample name>`,
 //'   the returned data frame contains three columns: the number of
 //'   reads in which the corresponding mutation occurs (column
 //'   `<sample name>.occurrences`), the coverage of the mutation
@@ -252,7 +252,7 @@ RCPP_MODULE(Sequencing){
 //'   the SNV reference base, the alterate base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
-//'   of the sequencied samples `normal_sample`, the returned
+//'   of the sequenced samples `normal_sample`, the returned
 //'   data frame contains three columns: the number of reads in
 //'   which the corresponding SNV occurs (column
 //'   `normal_sample.occurrences`), the coverage of the SNV
@@ -322,7 +322,7 @@ RCPP_MODULE(Sequencing){
 //' @title Getting the sampled cell mutations
 //' @description The mutations of the sampled cell.
 //' @details This property contains a data frame that represents the sampled
-//'   cell mutations. The data frame format is analoguous to that returned by
+//'   cell mutations. The data frame format is analogous to that returned by
 //'   `PhylogeneticForest$get_sampled_cell_mutations()`: it has columns
 //'   `cell_id`, `chr`, (i.e., the mutation chromosome), `chr_pos` (i.e.,
 //'   position in the chromosome), `allele` (in which the mutation occurs),

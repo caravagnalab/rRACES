@@ -118,7 +118,7 @@ public:
   
   Rcpp::List get_population_df() const;
   
-  Rcpp::List get_population_descritions_df() const;
+  Rcpp::List get_population_descriptions_df() const;
 };
 
 class GenomicDataStorage

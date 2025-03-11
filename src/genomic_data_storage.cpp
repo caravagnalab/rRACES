@@ -120,7 +120,7 @@ Rcpp::List GermlineStorage::get_population_df() const
                   _["quote"]="", _["header"]=true, _["sep"] = "\t");
 }
 
-Rcpp::List GermlineStorage::get_population_descritions_df() const
+Rcpp::List GermlineStorage::get_population_descriptions_df() const
 {
   using namespace Rcpp;
 

@@ -369,7 +369,7 @@ RCPP_MODULE(Mutations){
 //'   factors:
 //'     - the mutational rates of the species involved in the descendants
 //'       forest
-//'     - the genotycal characterization of the mutants involved in the
+//'     - the genotypical characterization of the mutants involved in the
 //'       descendants forest, i.e., the SVNs and CNAs characterizing the
 //'       mutant genotypes
 //'     - the SBS signature coefficients active along the species
@@ -427,7 +427,7 @@ RCPP_MODULE(Mutations){
 //'   a discrete probability distribution over a set of signature.
 //'   The indel and SNV exposures can be specified in the same list.
 //' @examples
-//' # create a demostrative mutation engine
+//' # create a demonstrative mutation engine
 //' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # add a default set of coefficients that will be used from simulated
@@ -463,7 +463,7 @@ RCPP_MODULE(Mutations){
 //' @param drivers The list of the driver SNVs, indels, CNAs, and the whole
 //'   genome doubling events (WGD) characterizing the mutant (optional).
 //' @examples
-//' # create a demostrative mutation engine
+//' # create a demonstrative mutation engine
 //' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # add the mutant "A" characterized by one driver SNV on chromosome 22, an
@@ -495,7 +495,7 @@ RCPP_MODULE(Mutations){
 //' @title Placing the mutations
 //' @description This methods places mutations on a samples forest.
 //' @details Each node of a samples forest is labelled by the
-//'   mutations occuring in the cell represented by the node itself
+//'   mutations occurring in the cell represented by the node itself
 //'   and produces a phylogenetic forest.
 //' @param samples_forest A samples forest.
 //' @param num_of_preneoplatic_SNVs The number of pre-neoplastic SNVs.
@@ -575,7 +575,7 @@ RCPP_MODULE(Mutations){
 //' @description This method returns information about the genome.
 //' @details This method returns a data frame reporting the name
 //'    (column "`name`"), the size (column "`size`"), and the number
-//'    of alleles (colum "`num_of_alleles`") of each chromosome.
+//'    of alleles (column "`num_of_alleles`") of each chromosome.
 //' @examples
 //' # build a mutation engine
 //' m_engine <- MutationEngine(setup_code = "demo")
@@ -625,11 +625,11 @@ RCPP_MODULE(Mutations){
 //' @title Getting the germline subjects
 //' @description This method returns the available germline subjects.
 //' @details The germline subjects method returns a dataframe
-//'   containing the avaiable germline subjects. The column `sample`
+//'   containing the available germline subjects. The column `sample`
 //'   reports the subject name; the columns `pop` and `super_pop`
 //'   contain the subject population and super population,
 //'   respectively; the column `gender` declares the subject gender.
-//' @return A dataframe the avaiable germline subjects.
+//' @return A dataframe the available germline subjects.
 //' @seealso [MutationEngine$get_active_germline()] to get the
 //'   available germline subjects; [MutationEngine$set_germline_subject()]
 //'   to set the active germline.
@@ -641,7 +641,7 @@ RCPP_MODULE(Mutations){
 //' head(m_engine$get_germline_subjects(), 5)
     .method("get_germline_subjects", &MutationEngine::get_germline_subjects)
 
-//' @name MutationEngine$get_population_descritions
+//' @name MutationEngine$get_population_descriptions
 //' @title Getting the population descriptions
 //' @description This method returns the population descriptions.
 //' @details The population descriptions are stored in a
@@ -655,8 +655,9 @@ RCPP_MODULE(Mutations){
 //' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # get the active germline subject dataframe
-//' head(m_engine$get_population_descritions(), 5)
-    .method("get_population_descritions", &MutationEngine::get_population_descritions)
+//' head(m_engine$get_population_descriptions(), 5)
+    .method("get_population_descriptions",
+            &MutationEngine::get_population_descriptions)
 
 //' @name MutationEngine$get_SNV_signatures
 //' @title Getting the SNV signatures
@@ -744,7 +745,7 @@ RCPP_MODULE(Mutations){
 //' @details There are two building modalities: the first one is more
 //'   general, but it requires to specify all the data sources; the
 //'   second one adopts some pre-set configurations, but it is more
-//'   convient than the former in many cases.
+//'   suitable than the former in many cases.
 //'
 //'   The first building modality requires to specify the directory in
 //'   which the data must be saved, the path or URL of the reference
@@ -760,7 +761,7 @@ RCPP_MODULE(Mutations){
 //'   The number of context sampling is an optional parameter that allows
 //'   sampling the reference contexts while building the context index.
 //'   This parameter, which is set to 100 by default, specifies how many
-//'   occurences of the same context must be identified before adding
+//'   occurrences of the same context must be identified before adding
 //'   one of them to the context index. The larger the number of context
 //'   sampling, the larger the context index. On the other side, the
 //'   lower the number of context sampling, the lower the number of sites
@@ -862,8 +863,8 @@ RCPP_MODULE(Mutations){
 //'                                   passenger_CNAs_url, germline_url,
 //'                                   context_sampling = 50)
 //'
-//' # a futher contruction with the same parameters avoids both downloads
-//' # and context index construction.
+//' # a further construction with the same parameters avoids both
+//' # downloads and context index construction.
 //' m_engine <- MutationEngine("Test", reference_url, sbs_url,
 //'                                   indel_url, drivers_url,
 //'                                   passenger_CNAs_url, germline_url,
@@ -937,8 +938,8 @@ RCPP_MODULE(Mutations){
 //' @description This class represents the phylogenetic forest of the
 //'   cells sampled during the computation.
 //' @details The leaves of his forest are the sampled cells.
-//'   This class is analoguous to the class [SamplesForest],
-//'   but each node is labelled with the mutations occuring
+//'   This class is analogous to the class [SamplesForest],
+//'   but each node is labelled with the mutations occurring
 //'   for the first time on the cell represented by the node
 //'   itself. Moreover each leaf is also associated with the
 //'   genome mutations occurring in the corresponding cell.
@@ -1017,7 +1018,7 @@ RCPP_MODULE(Mutations){
 //'   the list of cell identifiers labelling the nodes in the stick
 //'   from the higher to the deeper in the forest.
 //' }
-//' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
+//' @field get_subforest_for Build a sub-forest using as leaves some of the original samples \itemize{
 //' \item \emph{Parameter:} \code{sample_names} - The names of the samples whose cells will be used
 //'   as leaves of the new forest.
 //' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
@@ -1187,7 +1188,7 @@ RCPP_MODULE(Mutations){
 //'   and the indel mutations in the cells sampled during the simulation
 //'   and represented by the leaves of the phylogenetic forest.
 //'   The dataframe also reports the allele in which the mutations occur to
-//'   support double occurrencies due to CNAs.
+//'   support double occurrences due to CNAs.
 //' @param cell_id The identifier of the cell whose mutations are aimed
 //'   (optional).
 //' @return A dataframe reporting `cell_id`, `chr`, (i.e., the mutation
@@ -1239,7 +1240,7 @@ RCPP_MODULE(Mutations){
 //' @details Its builds a dataframe representing all the germinal
 //'   SNVs and indels of the cells represented in the phylogenetic forest.
 //'   The dataframe also reports the allele in which the mutations occur to
-//'   support double occurrencies due to CNAs.
+//'   support double occurrences due to CNAs.
 //' @return A dataframe reporting "`chr`", "`chr_pos`" (i.e., the position in
 //'   the chromosome), "`allele`" (in which the mutation occurs), "`ref`",
 //'   "`alt`", "`cause`", "`type`" (i.e., either `"SNV"` or `"indel"`) and

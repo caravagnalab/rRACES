@@ -127,9 +127,9 @@ public:
         return storage.get_germline_storage().get_population_df();
     }
 
-    inline Rcpp::List get_population_descritions() const
+    inline Rcpp::List get_population_descriptions() const
     {
-        return storage.get_germline_storage().get_population_descritions_df();
+        return storage.get_germline_storage().get_population_descriptions_df();
     }
 
     Rcpp::List get_known_driver_mutations() const;

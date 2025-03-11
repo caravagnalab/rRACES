@@ -1109,7 +1109,7 @@ RCPP_MODULE(Mutants){
 //' c2 <- va_p + va_m > 1e5
 //'
 //' # build a condition that holds when less than 4000 switched
-//' # from A+ have occured
+//' # from A+ have occurred
 //' c3 <- va_ps < 4000
 //'
 //' # build a condition that holds when 40 time unit have been
@@ -1440,7 +1440,7 @@ RCPP_MODULE(Mutants){
 //' sim$run_up_to_time(30)
 //'
 //' # the directory "test" exists and contains a binary dump of
-//' # sthe simulation.
+//' # the simulation.
 //' "test" %in% list.files(".")
 //'
 //' # let us manually delete the "test" directory
@@ -1507,7 +1507,7 @@ RCPP_MODULE(Mutants){
 //'   the list of cell identifiers labelling the nodes in the stick
 //'   from the higher to the deeper in the forest.
 //' }
-//' @field get_subforest_for Build a subforest using as leaves some of the original samples \itemize{
+//' @field get_subforest_for Build a sub-forest using as leaves some of the original samples \itemize{
 //' \item \emph{Parameter:} \code{sample_names} - The names of the samples whose cells will be used
 //'   as leaves of the new forest.
 //' \item \emph{Returns:} A samples forest built on the samples mentioned in `sample_names`.
@@ -1606,8 +1606,8 @@ RCPP_MODULE(Mutants){
             "Get the most recent common ancestor of all the forest trees")
 
 //' @name SamplesForest$get_subforest_for
-//' @title Building subforests
-//' @description This method builds a subforest using as leaves some of the original
+//' @title Building sub-forests
+//' @description This method builds a sub-forest using as leaves some of the original
 //'   samples.
 //' @param sample_names The names of the samples whose cells will be used
 //'   as leaves of the new forest
