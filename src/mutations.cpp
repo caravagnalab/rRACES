@@ -395,7 +395,7 @@ RCPP_MODULE(Mutations){
 //' @details When it is `TRUE`, the infinite sites model is enabled and
 //'   new mutations are exclusively placed in mutation-free loci.
 //' @examples
-//' # create a demostrative mutation engine
+//' # create a demonstrative mutation engine
 //' m_engine <- MutationEngine(setup_code = "demo")
 //'
 //' # the infinite sites model is enabled by default
