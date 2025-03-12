@@ -52,8 +52,8 @@ cells sampled during the computation.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The leaves of his forest are the sampled cells.
-This class is analoguous to the class <a href="SamplesForest.html">SamplesForest</a>,
-but each node is labelled with the mutations occuring
+This class is analogous to the class <a href="SamplesForest.html">SamplesForest</a>,
+but each node is labelled with the mutations occurring
 for the first time on the cell represented by the node
 itself. Moreover each leaf is also associated with the
 genome mutations occurring in the corresponding cell.</p>
@@ -144,9 +144,16 @@ tumour cells in the sample and in the bounding box, respectively.</p></li>
 </ul></dd>
 
 
+<dt><code>get_driver_mutations</code></dt>
+<dd><p>Getting the driver mutations</p><ul><li><p><em>Returns:</em> A dataframe reporting <code>mutant</code>, <code>order</code>,
+<code>type</code>, <code>CNA_type</code>, <code>chr</code>, <code>start</code>, <code>end</code>, <code>ref</code>, <code>alt</code>,
+<code>allele</code>, and <code>src_allele</code> for each driver mutations.</p></li>
+</ul></dd>
+
+
 <dt><code>get_species_info</code></dt>
-<dd><p>Gets the species data</p><ul><li><p><em>Returns:</em> A dataframe reporting <code>mutant</code> and <code>epistate</code>
-for each registered species.</p></li>
+<dd><p>Gets the species data</p><ul><li><p><em>Returns:</em> A dataframe reporting <code>mutant</code>, <code>epistate</code>,
+<code>SNV_rate</code>, <code>indel_rate</code>, and <code>CNA_rate</code> for each registered species.</p></li>
 </ul></dd>
 
 
@@ -158,7 +165,7 @@ from the higher to the deeper in the forest.</p></li>
 
 
 <dt><code>get_subforest_for</code></dt>
-<dd><p>Build a subforest using as leaves some of the original samples</p><ul><li><p><em>Parameter:</em> <code>sample_names</code> - The names of the samples whose cells will be used
+<dd><p>Build a sub-forest using as leaves some of the original samples</p><ul><li><p><em>Parameter:</em> <code>sample_names</code> - The names of the samples whose cells will be used
 as leaves of the new forest.</p></li>
 <li><p><em>Returns:</em> A samples forest built on the samples mentioned in <code>sample_names</code>.</p></li>
 </ul></dd>

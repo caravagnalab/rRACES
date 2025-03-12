@@ -43,10 +43,12 @@
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-add_mutant.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_SNV_signatures.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_active_germline.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_genome_info.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_germline_subjects.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_indel_signatures.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_known_drivers.html</loc></url>
-<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_population_descritions.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_population_descriptions.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-get_species_rates.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-infinite_sites_model.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-place_mutations.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/MutationEngine-cash-set_germline_subject.html</loc></url>
@@ -55,6 +57,7 @@
 <url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_bulk_allelic_fragmentation.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_cell_allelic_fragmentation.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_coalescent_cells.html</loc></url>
+<url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_driver_mutations.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_exposures.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_first_occurrences.html</loc></url>
 <url><loc>https://caravagnalab.github.io/rRACES/reference/PhylogeneticForest-cash-get_germline_mutations.html</loc></url>
