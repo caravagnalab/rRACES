@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2025 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1113,6 +1113,34 @@ show_driver_mutations(std::ostream& os,
     }
    
     return os;
+}
+
+Rcpp::List MutationEngine::get_species_rates() const
+{
+    using namespace Rcpp;
+    using namespace RACES::Mutations;
+
+    const auto& m_properties = m_engine.get_mutational_properties();
+
+    const size_t num_of_species =  m_properties.get_passenger_rates().size();
+    CharacterVector species_names(num_of_species);
+    NumericVector SNV_rates(num_of_species), CNA_rates(num_of_species),
+                  indel_rates(num_of_species);
+
+    size_t i{0};
+    for (const auto& [species_name, p_rates] : m_properties.get_passenger_rates()) {
+        species_names[i] = species_name;
+        SNV_rates[i] = p_rates.snv;
+        CNA_rates[i] = p_rates.cna;
+        indel_rates[i] = p_rates.indel;
+
+        ++i;
+    }
+
+    return DataFrame::create(_["species"]=species_names,
+                             _["SNV_rate"]=SNV_rates,
+                             _["CNA_rate"]=CNA_rates,
+                             _["indel_rate"]=indel_rates);
 }
 
 void MutationEngine::show() const

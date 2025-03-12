@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2025 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,6 +96,172 @@ Rcpp::List PhylogeneticForest::get_samples_info() const
                              _["tumour_cells_in_bbox"]=info["tumour_cells_in_bbox"],
                              _["time"]=info["time"], _["DNA_quantity"]=DNA_quantities,
                              _["equivalent_normal_cells"]=equivalent_normal_cells);
+}
+
+inline
+void fill_SID_row(const RACES::Mutations::MutationSpec<RACES::Mutations::SID>& sid,
+                  Rcpp::CharacterVector& types, Rcpp::CharacterVector& CNA_types,
+                  Rcpp::CharacterVector& chrs, Rcpp::CharacterVector& refs,
+                  Rcpp::CharacterVector& alts, Rcpp::IntegerVector& starts,
+                  Rcpp::IntegerVector& ends, Rcpp::IntegerVector& alleles,
+                  Rcpp::IntegerVector& src_alleles, const size_t& i)
+{
+    using namespace Rcpp;
+    using namespace RACES::Mutations;
+
+    types[i] = "SID";
+    CNA_types[i] = NA_STRING;
+    refs[i] = sid.ref;
+    alts[i] = sid.alt;
+    chrs[i] = GenomicPosition::chrtos(sid.chr_id);
+    starts[i] = sid.position;
+    ends[i] = sid.position+sid.ref.size()-1;
+    alleles[i] = sid.allele_id;
+    src_alleles[i] = NA_INTEGER;
+}
+
+inline
+void fill_CNA_row(const RACES::Mutations::CNA& cna,
+                  Rcpp::CharacterVector& types, Rcpp::CharacterVector& CNA_types,
+                  Rcpp::CharacterVector& chrs, Rcpp::CharacterVector& refs,
+                  Rcpp::CharacterVector& alts, Rcpp::IntegerVector& starts,
+                  Rcpp::IntegerVector& ends, Rcpp::IntegerVector& alleles,
+                  Rcpp::IntegerVector& src_alleles, const size_t& i)
+{
+    using namespace Rcpp;
+    using namespace RACES::Mutations;
+
+    types[i] = "CNA";
+    refs[i] = NA_STRING;
+    alts[i] = NA_STRING;
+    chrs[i] = GenomicPosition::chrtos(cna.chr_id);
+    starts[i] = cna.position;
+    ends[i] = cna.position+cna.length-1;
+    alleles[i] = cna.dest;
+
+    if (cna.type==RACES::Mutations::CNA::Type::AMPLIFICATION) {
+        src_alleles[i] = cna.source;
+        CNA_types[i] = "A";
+    } else {
+        src_alleles[i] = NA_INTEGER;
+        CNA_types[i] = "D";
+    }
+}
+
+inline
+void fill_WGD_row(Rcpp::CharacterVector& types, Rcpp::CharacterVector& CNA_types,
+                  Rcpp::CharacterVector& chrs, Rcpp::CharacterVector& refs,
+                  Rcpp::CharacterVector& alts, Rcpp::IntegerVector& starts,
+                  Rcpp::IntegerVector& ends, Rcpp::IntegerVector& alleles,
+                  Rcpp::IntegerVector& src_alleles, const size_t& i)
+{
+    using namespace Rcpp;
+    using namespace RACES::Mutations;
+
+    types[i] = "WGD";
+    CNA_types[i] = NA_STRING;
+    refs[i] = NA_STRING;
+    alts[i] = NA_STRING;
+    chrs[i] = NA_INTEGER;
+    starts[i] = NA_INTEGER;
+    ends[i] = NA_INTEGER;
+    alleles[i] = NA_INTEGER;
+    src_alleles[i] = NA_INTEGER;
+}
+
+Rcpp::List PhylogeneticForest::get_driver_mutations() const
+{
+    using namespace Rcpp;
+    using namespace RACES::Mutations;
+
+    const auto& mutational_properties = get_mutational_properties();
+
+    size_t num_of_rows{0};
+    for (const auto& [mutant, driver_mutations]: mutational_properties.get_driver_mutations()) {
+        num_of_rows += driver_mutations.size();
+    }
+
+    CharacterVector mutant_names(num_of_rows), chrs(num_of_rows),
+                    types(num_of_rows), CNA_types(num_of_rows),
+                    refs(num_of_rows), alts(num_of_rows);
+    IntegerVector starts(num_of_rows), ends(num_of_rows),
+                  application_order(num_of_rows), alleles(num_of_rows),
+                  src_alleles(num_of_rows);
+
+    size_t i{0};
+    for (const auto& [mutant, driver_mutations]: mutational_properties.get_driver_mutations()) {
+
+        size_t mut_i{0};
+        for (auto dm_it = driver_mutations.begin(); dm_it != driver_mutations.end(); ++dm_it, ++mut_i, ++i) {
+            mutant_names[i] = driver_mutations.name;
+            application_order[i] = mut_i;
+            switch(dm_it.get_type()) {
+                case MutationList::MutationType::SID_TURN:
+                    fill_SID_row(dm_it.get_last_SID(), types, CNA_types,
+                                 chrs, refs, alts, starts, ends, alleles,
+                                 src_alleles, i);
+                    break;
+                case MutationList::MutationType::CNA_TURN:
+                    fill_CNA_row(dm_it.get_last_CNA(), types, CNA_types,
+                                 chrs, refs, alts, starts, ends, alleles,
+                                 src_alleles, i);
+                    break;
+                case MutationList::MutationType::WGD_TURN:
+                    fill_WGD_row(types, CNA_types, chrs, refs, alts,
+                                 starts, ends, alleles, src_alleles, i);
+                    break;
+                default:
+                    throw std::runtime_error("Unsupported mutation type "
+                                             + std::to_string(dm_it.get_type()));
+            }
+        }
+    }
+
+    return DataFrame::create(_["mutant"] = mutant_names,
+                             _["order"] = application_order, _["type"] = types,
+                             _["CNA_type"] = CNA_types, _["chr"] = chrs,
+                             _["start"] = starts, _["end"] = ends,
+                             _["ref"] = refs, _["alt"] = alts,
+                             _["allele"] = alleles,
+                             _["src_allele"] = src_alleles);
+}
+
+Rcpp::List PhylogeneticForest::get_species_info() const
+{
+  using namespace Rcpp;
+
+  size_t num_of_rows = get_species_data().size();
+
+  CharacterVector mutant_names(num_of_rows), epi_states(num_of_rows);
+  NumericVector SNV_rates(num_of_rows), CNA_rates(num_of_rows),
+                indel_rates(num_of_rows);
+
+  using namespace RACES::Mutants;
+
+  size_t i{0};
+  const auto& p_rates = get_mutational_properties().get_passenger_rates();
+
+  for (const auto& [species_id, species_data]: get_species_data()) {
+    const auto m_name = get_mutant_name(species_data.mutant_id);
+    const auto epi_state = MutantProperties::signature_to_string(species_data.signature);
+
+    const auto found = p_rates.find(m_name+epi_state);
+
+    if (found == p_rates.end()) {
+        throw std::runtime_error("Unknown species \""+m_name+epi_state+"\"");
+    }
+
+    mutant_names[i] = m_name;
+    epi_states[i] = epi_state;
+    SNV_rates[i] = found->second.snv;
+    CNA_rates[i] = found->second.cna;
+    indel_rates[i] = found->second.indel;
+    ++i;
+  }
+
+  return DataFrame::create(_["mutant"]=mutant_names, _["epistate"]=epi_states,
+                           _["SNV_rate"]=SNV_rates, _["indel_rate"]=indel_rates,
+                           _["CNA_rate"]=CNA_rates);
 }
 
 PhylogeneticForest PhylogeneticForest::get_subforest_for(const std::vector<std::string>& sample_names) const

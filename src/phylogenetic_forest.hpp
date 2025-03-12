@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2025 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,10 +64,9 @@ public:
 
   Rcpp::List get_samples_info() const;
 
-  inline Rcpp::List get_species_info() const
-  {
-    return ForestCore::get_species_info(static_cast<const RACES::Mutations::PhylogeneticForest&>(*this));
-  }
+  Rcpp::List get_driver_mutations() const;
+
+  Rcpp::List get_species_info() const;
 
   inline Rcpp::List get_coalescent_cells() const
   {

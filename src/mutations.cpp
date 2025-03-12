@@ -1,6 +1,6 @@
 /*
  * This file is part of the rRACES (https://github.com/caravagnalab/rRACES/).
- * Copyright (c) 2023-2024 Alberto Casagrande <alberto.casagrande@uniud.it>
+ * Copyright (c) 2023-2025 Alberto Casagrande <alberto.casagrande@uniud.it>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -659,6 +659,23 @@ RCPP_MODULE(Mutations){
     .method("get_population_descriptions",
             &MutationEngine::get_population_descriptions)
 
+//' @name MutationEngine$get_species_rates
+//' @title Getting the registered species rates
+//' @description This method returns the registered species rates.
+//' @details The registered species rates are returned in a
+//'   dataframe. The column `species` contains the species names;
+//'   the columns `SNV_rate`, `CNA_rate`, and `indel_rate`
+//'   store the SNV, CNA, and indel rates, respectively.
+//' @return A dataframe containing the registered species rates.
+//' @examples
+//' # build a mutation engine
+//' m_engine <- MutationEngine(setup_code = "demo")
+//'
+//' # get the active germline subject dataframe
+//' head(m_engine$get_species_rates(), 5)
+    .method("get_species_rates",
+            &MutationEngine::get_species_rates)
+
 //' @name MutationEngine$get_SNV_signatures
 //' @title Getting the SNV signatures
 //' @description This method returns the available SNV
@@ -1009,9 +1026,14 @@ RCPP_MODULE(Mutations){
 //'   "`tumour_cells`" and "`tumour_cells_in_bbox`" are the number of
 //'   tumour cells in the sample and in the bounding box, respectively.
 //' }
+//' @field get_driver_mutations Getting the driver mutations\itemize{
+//' \item \emph{Returns:} A dataframe reporting `mutant`, `order`,
+//'   `type`, `CNA_type`, `chr`, `start`, `end`, `ref`, `alt`,
+//'   `allele`, and `src_allele` for each driver mutations.
+//' }
 //' @field get_species_info Gets the species data\itemize{
-//' \item \emph{Returns:} A dataframe reporting `mutant` and `epistate`
-//'   for each registered species.
+//' \item \emph{Returns:} A dataframe reporting `mutant`, `epistate`,
+//'   `SNV_rate`, `indel_rate`, and `CNA_rate` for each registered species.
 //' }
 //' @field get_sticks Compute the forest sticks \itemize{
 //' \item \emph{Returns:} The list of the forest sticks. Each stick is represented as
@@ -1114,11 +1136,36 @@ RCPP_MODULE(Mutations){
     .method("get_samples_info", &PhylogeneticForest::get_samples_info,
             "Get some pieces of information about the samples")
 
+//' @name PhylogeneticForest$get_driver_mutations
+//' @title Getting the driver mutations
+//' @description This method returns the applied driver mutations.
+//' @return A dataframe consisting in eight columns `mutant`, `order`, `type`, 
+//'    `CNA_type`, `chr`, `start`, `end`, `ref`, `alt`, `allele`, and
+//'    `allele_srd`. Each row in the dataframe reports one driver mutations.
+//'    The fields `mutant` and `order` report the name of the mutant and the
+//'    application order among the mutant driver mutations, respectively.
+//'    The column `type` declares the mutation type and contains "`SID`",
+//'    "`CNA`", or "`WGD`" when the mutation is an SNV/indel, a CNA, or 
+//'    a whole genome duplication, respectively. When the mutation is a CNA,
+//'    the `CNA_type` can either be "`A`" (i.e., amplification) or "`D`"
+//'    (i.e., deletion). When the mutation is not a WGD, the fields `chr`, 
+//'    `start`, and `end` contains the mutation chromosome, the initial and
+//'    the final position on the chromosome, respectively. When the mutation
+//'    is a SID , the fields `ref` and `alt` contains the mutation reference
+//'    genome and alternate sequences, respectively. When the mutation is a
+//'    SID or a CNA deletion, the field `allele` stores the allele in which
+//'    the mutation was applied. When instead the mutation is a CNA 
+//'    amplification, the fields `allele` and `src_allele` reports the
+//'    identifiers of the new allele and of the original allele, respectively.
+//'    In all the remaining cases, the fields contains the value `NA`.
+    .method("get_driver_mutations", &PhylogeneticForest::get_driver_mutations,
+            "Get the applied driver mutations")
+
 //' @name PhylogeneticForest$get_species_info
 //' @title Getting the species
-//' @description This method returns the simulated species.
-//' @return A dataframe reporting `mutant` and `epistate`
-//'   for each registered species.
+//' @description This method describes the simulated species.
+//' @return A dataframe reporting `mutant`, `epistate`, `SNV_rate`,
+//'   `indel_rate`, and `CNA_rate` for each registered species.
     .method("get_species_info", &PhylogeneticForest::get_species_info,
             "Get the recorded species")
 
