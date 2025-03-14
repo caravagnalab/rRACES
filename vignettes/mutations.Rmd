@@ -299,11 +299,11 @@ The columns `pop` and `super_pop` report the subjects' population
 and super-population codes. The last column,
 `gender`, includes the subject gender.
 
-The method `MutationEngine$get_population_descritions()` clarifies
+The method `MutationEngine$get_population_descriptions()` clarifies
 the meaning of the codes reported in the pop columns.
 
 ```{r}
-m_engine$get_population_descritions()
+m_engine$get_population_descriptions()
 ```
 
 The method `MutationEngine$get_active_germline()` returns the

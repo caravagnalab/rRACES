@@ -249,7 +249,7 @@ RCPP_MODULE(Sequencing){
 //'   The sequencing output data frame reports, for each of the
 //'   observed SNVs and indels, the chromosome and the position in
 //'   which it occurs (columns `chr` and `chr_pos`),
-//'   the SNV reference base, the alterate base, the causes,
+//'   the SNV reference base, the alternative base, the causes,
 //'   and the classes of the SNV (columns `ref_base`, `alt_base`,
 //'   `causes`, and `classes`, respectively). Moreover, for each
 //'   of the sequenced samples `normal_sample`, the returned
